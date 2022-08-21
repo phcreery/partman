@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<svg width="451" height="451" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <!-- Created with SVG-edit - https://github.com/SVG-Edit/svgedit-->
+ <g class="layer">
+  <title>bg</title>
+  <rect fill="#000000" height="450.6" id="svg_37" stroke="#1e5f4c" stroke-width="0" width="450.6" x="0" y="0"/>
+ </g>
+ <g class="layer">
+  <title>Content</title>
+  <path d="m210.99,416.98l0,-384.75c0,0 194.5,73.25 194.5,73c0,-0.25 0.25,237.75 0.25,237.5c0,-0.25 -194.75,74.25 -194.75,74.25z" fill="#1e5f4c" id="svg_29" stroke="#000000" stroke-width="0"/>
+  <path d="m231.99,66.48l0,214.5l156.75,-22.5c0,0 0,-140 0,-140c0,0 -156.75,-52 -156.75,-52z" fill="#000000" id="svg_25" stroke="#000000"/>
+  <path d="m48.24,32.98l0,381l66,-23l0,-333l-66,-25z" fill="#1e5f4c" id="svg_5" stroke="#d12727" stroke-width="0"/>
+  <path d="m129.24,31.98l0,384l68,-25l0,-332l-68,-27z" fill="#1e5f4c" id="svg_6" stroke="#d12727" stroke-width="0"/>
+  <ellipse cx="361.4" cy="263.98" fill="#000000" id="svg_8" rx="2.75" ry="2.49" stroke="#d12727" stroke-width="0" transform="matrix(0.986889 -0.187048 0.161403 1.1437 -39.9142 43.6884)"/>
+  <ellipse cx="368.04" cy="271.41" fill="#000000" id="svg_9" rx="2.75" ry="2.49" stroke="#d12727" stroke-width="0" transform="matrix(0.986889 -0.187048 0.161403 1.1437 -39.9142 43.6884)"/>
+  <ellipse cx="366.54" cy="279.03" fill="#000000" id="svg_10" rx="2.75" ry="2.49" stroke="#d12727" stroke-width="0" transform="matrix(0.986889 -0.187048 0.161403 1.1437 -39.9142 43.6884)"/>
+  <ellipse cx="374.78" cy="278.19" fill="#000000" id="svg_11" rx="2.75" ry="2.49" stroke="#d12727" stroke-width="0" transform="matrix(0.986889 -0.187048 0.161403 1.1437 -39.9142 43.6884)"/>
+  <ellipse cx="376.46" cy="271.04" fill="#000000" id="svg_12" rx="2.75" ry="2.49" stroke="#d12727" stroke-width="0" transform="matrix(0.986889 -0.187048 0.161403 1.1437 -39.9142 43.6884)"/>
+  <ellipse cx="358.82" cy="279.74" fill="#000000" id="svg_13" rx="2.75" ry="2.49" stroke="#d12727" stroke-width="0" transform="matrix(0.986889 -0.187048 0.161403 1.1437 -39.9142 43.6884)"/>
+  <ellipse cx="365.36" cy="286.27" fill="#000000" id="svg_14" rx="2.75" ry="2.49" stroke="#d12727" stroke-width="0" transform="matrix(0.986889 -0.187048 0.161403 1.1437 -39.9142 43.6884)"/>
+  <ellipse cx="359.87" cy="271.82" fill="#000000" id="svg_15" rx="2.75" ry="2.49" stroke="#d12727" stroke-width="0" transform="matrix(0.986889 -0.187048 0.161403 1.1437 -39.9142 43.6884)"/>
+  <ellipse cx="377.43" cy="263.54" fill="#000000" id="svg_16" rx="2.75" ry="2.49" stroke="#d12727" stroke-width="0" transform="matrix(0.986889 -0.187048 0.161403 1.1437 -39.9142 43.6884)"/>
+  <ellipse cx="369.26" cy="263.96" fill="#000000" id="svg_17" rx="2.75" ry="2.49" stroke="#d12727" stroke-width="0" transform="matrix(0.986889 -0.187048 0.161403 1.1437 -39.9142 43.6884)"/>
+  <path d="m344.74,123.48l39,-1.25l0,133.5l-39,-1.25l0,-11l0,-120z" fill="#1e5f4c" id="svg_19" stroke="#27ce61" stroke-width="0"/>
+  <line fill="none" id="svg_21" stroke="#1e5f4c" stroke-width="4" x1="247.74" x2="348.24" y1="102.98" y2="132.73"/>
+  <line fill="none" id="svg_22" stroke="#1e5f4c" stroke-width="4" transform="rotate(-6.85512 297.991 160.601)" x1="247.74" x2="348.24" y1="145.73" y2="175.48"/>
+  <line fill="none" id="svg_23" points="null" stroke="#1e5f4c" stroke-width="4" x1="246.38" x2="351.1" y1="200.93" y2="205.27"/>
+  <path d="m233.74,291.73c0,0 63.5,-10.5 63.5,-10.5c0,0 0,50.26 0,50.25c0,-0.01 -63.5,21.75 -63.5,21.75c0,0 0,-61.5 0,-61.5z" fill="#000000" fill-opacity="0.06" id="svg_26" stroke="#000000" stroke-width="2"/>
+  <path d="m234.24,318.23l59.75,13.5l-60.75,22l1,-35.5z" fill="#000000" id="svg_28" stroke="#000000"/>
+  <line fill="none" id="svg_24" points="null" stroke="#1e5f4c" stroke-width="4" x1="246.52" x2="350.96" y1="249.52" y2="240.68"/>
+ </g>
+</svg>

@@ -1,0 +1,179 @@
+// * set up notification Hierarchical loading Above
+.el-notification {
+	z-index: 99999 !important;
+}
+
+// * set up message Hierarchical loading Above
+.el-message {
+	z-index: 99999 !important;
+}
+
+// * el-table style
+.table-box {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+
+	// sheet search style
+	.table-search {
+		display: flex;
+		margin-bottom: 10px;
+		.el-form {
+			max-width: 1260px;
+			.el-form-item {
+				margin-right: 5px;
+				.el-input,
+				.el-select,
+				.el-date-editor--timerange {
+					width: 210px;
+				}
+				.el-date-editor--datetimerange,
+				.el-date-editor--daterange {
+					width: 400px;
+				}
+
+				// Remove the time selector up and down padding
+				.el-range-editor.el-input__wrapper {
+					padding: 0 10px;
+				}
+
+				// el-select Do not change the display when choosing a multi -choice
+				.el-select__tags {
+					overflow: hidden;
+					white-space: nowrap;
+				}
+			}
+			.more-item {
+				display: inline;
+			}
+		}
+		.search-operation {
+			margin-left: 15px;
+			white-space: nowrap;
+			.search-isOpen {
+				margin-left: 20px;
+			}
+		}
+	}
+
+	// sheet header style
+	.table-header {
+		.header-button-lf {
+			float: left;
+			.el-button {
+				margin-bottom: 20px;
+			}
+		}
+		.header-button-ri {
+			float: right;
+			.el-button {
+				margin-bottom: 20px;
+			}
+		}
+	}
+
+	// el-table Table style
+	.el-table {
+		// The form is adaptive to support the entire page(already setup flex:1,The table on the page must be added height Attributes)
+		flex: 1;
+		.el-table__header th,
+		.el-table__body td {
+			// text-align: center;
+		}
+		.el-table__header th {
+			height: 50px;
+			font-size: 15px;
+			font-weight: bold;
+			color: #252525;
+			background: #fafafa;
+		}
+
+		// table middle image Picture style
+		.table-image {
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+		}
+
+		// solve el-table middle header Text change problem
+		.el-table__header .el-table__cell > .cell {
+			white-space: nowrap;
+		}
+		.el-table__row {
+			// height: 52px;
+		}
+
+		// Solve the form data of the form data is not in the middle of the time(Only in Element-In Plus)
+		.el-table__empty-block {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+		.table-empty {
+			line-height: 30px;
+		}
+
+		// solve keep-alive || Browser window size changes lead to el-table Motivation of style (2.1.4 There will be problems, and the problem has been solved after the upgrade)
+		// .el-table__body-wrapper {
+		// 	height: calc(100% - 50px) !important;
+		// }
+		// .el-table__inner-wrapper,
+		// .el-scrollbar__wrap {
+		// 	height: 100% !important;
+		// }
+	}
+
+	// Form Paggment style
+	.el-pagination {
+		display: flex;
+		justify-content: flex-end;
+		margin: 23px 0 10px;
+	}
+}
+
+// * EL-DRAWER style
+.el-drawer {
+	// DRAWER Header style
+	.el-drawer__header {
+		padding: 15px 20px 14px;
+		margin-bottom: 0;
+		border-bottom: 1px solid #ebeef5;
+		span {
+			font-size: 17px;
+			color: #303133;
+		}
+	}
+
+	// DRAWER Header style
+	.el-drawer__footer {
+		border-top: 1px solid #ebeef5;
+	}
+	.el-select {
+		width: 100%;
+	}
+
+	// DRAWER-FORM multi-column form-item
+	.drawer-multiColumn-form {
+		display: flex;
+		flex-wrap: wrap;
+		.el-form-item {
+			width: 47%;
+			&:nth-child(2n-1) {
+				margin-right: 5%;
+			}
+		}
+	}
+}
+
+// * El-Dialog style
+.el-dialog {
+	.el-dialog__header {
+		padding: 15px 20px;
+		margin: 0;
+		border-bottom: 1px solid #f0f0f0;
+		.el-dialog__title {
+			font-size: 17px;
+		}
+	}
+}

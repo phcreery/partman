@@ -1,0 +1,63 @@
+{
+	"code": 200,
+	"data": [
+		{
+			"icon": "home-filled",
+			"title": "Home",
+			"path": "/home/index"
+		},
+		{
+			"title": "Inventory",
+			"icon": "cpu",
+			"path": "/inventory/index"
+		},
+		{
+			"title": "Categories",
+			"icon": "folder",
+			"path": "/categories"
+		},
+		{
+			"title": "Footprints",
+			"icon": "menu",
+			"path": "/footprints/index"
+		},
+		{
+			"icon": "TakeawayBox",
+			"title": "Storage",
+			"path": "/storage"
+		},
+		{
+			"icon": "promotion",
+			"title": "Builds",
+			"path": "/builds"
+		},
+		{
+			"icon": "goods",
+			"title": "Purchase",
+			"path": "/builds"
+		},
+		{
+			"icon": "setting",
+			"title": "Settings",
+			"path": "/settings",
+			"children": [
+				{
+					"path": "/404",
+					"title": "Users",
+					"icon": "user"
+				},
+				{
+					"path": "/404",
+					"title": "Export",
+					"icon": "Download"
+				},
+				{
+					"path": "/404",
+					"title": "Import",
+					"icon": "Upload"
+				}
+			]
+		}
+	],
+	"msg": "success"
+}

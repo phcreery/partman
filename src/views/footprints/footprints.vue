@@ -1,7 +1,13 @@
 <template>
 	<el-row :gutter="20" style="height: 100%">
 		<el-col :span="6">
-			<ProTree ref="proTree" :requestApi="getFootprintCategoryEnumTree" :initParam="initParam" :dataCallback="dataCallbackTree">
+			<ProTree
+				ref="proTree"
+				:requestApi="getFootprintCategoryEnumTree"
+				:initParam="initParamCategory"
+				:dataCallback="dataCallbackTree"
+				@handle-node-click="handleCategorySelect"
+			>
 				<template #treeHeader="scope">
 					<el-button type="primary" :icon="CirclePlus" @click="openDrawer('New')" v-if="BUTTONS.add"></el-button>
 					<el-button
@@ -56,7 +62,7 @@
 </template>
 
 <script setup lang="tsx" name="useComponent">
-import { ref, reactive } from "vue";
+import { ref, reactive, watch } from "vue";
 import { ElMessage } from "element-plus";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
@@ -81,11 +87,15 @@ import {
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
 const proTable = ref();
+const proTree = ref();
 
 // If the table needs to initialize the request parameter, it will be directly defined to the propable (each request will automatically bring the parameter every time, and it will always be brought to
 const initParam = reactive({
+	filter: { category: "9CbWotNGuWNTK0E" },
 	expand: ""
 });
+
+const initParamCategory = reactive({});
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
 const dataCallbackTree = (data: ResList<Footprint.ResGetFootprintRecord>) => {
@@ -107,6 +117,12 @@ const dataCallbackTable = (data: ResList<Footprint.ResGetFootprintRecord>) => {
 		pageSize: data.perPage
 	};
 };
+
+const handleCategorySelect = (data: any) => {
+	console.log(data);
+	initParam.filter.category = data.id;
+};
+
 // Page button permission
 const { BUTTONS } = useAuthButtons();
 
@@ -157,13 +173,13 @@ const columns: Partial<ColumnProps>[] = [
 ];
 
 // Delete user information
-const deleteComponent = async (params: Component.ResGetComponentRecord) => {
+const deleteFootprint = async (params: Component.ResGetComponentRecord) => {
 	await useHandleData(deleteComponents, { ids: [params.id] }, `Delete [${params.name}] component`);
 	proTable.value.refresh();
 };
-// Batch delete components
+// Batch delete footprints
 const batchDelete = async (ids: string[]) => {
-	await useHandleData(deleteComponents, { ids }, "Delete the selected component(s)");
+	await useHandleData(deleteFootprints, { ids }, "Delete the selected component(s)");
 	proTable.value.refresh();
 };
 
@@ -189,71 +205,4 @@ const openDrawer = (title: string, rowData: Partial<Component.ResGetComponentRec
 	};
 	drawerRef.value!.acceptParams(params);
 };
-
-interface Tree {
-	label: string;
-	children?: Tree[];
-}
-
-const handleNodeClick = (data: Tree) => {
-	console.log(data);
-};
-
-const data: Tree[] = [
-	{
-		label: "Level one 1",
-		children: [
-			{
-				label: "Level two 1-1",
-				children: [
-					{
-						label: "Level three 1-1-1"
-					}
-				]
-			}
-		]
-	},
-	{
-		label: "Level one 2",
-		children: [
-			{
-				label: "Level two 2-1",
-				children: [
-					{
-						label: "Level three 2-1-1"
-					}
-				]
-			},
-			{
-				label: "Level two 2-2",
-				children: [
-					{
-						label: "Level three 2-2-1"
-					}
-				]
-			}
-		]
-	},
-	{
-		label: "Level one 3",
-		children: [
-			{
-				label: "Level two 3-1",
-				children: [
-					{
-						label: "Level three 3-1-1"
-					}
-				]
-			},
-			{
-				label: "Level two 3-2",
-				children: [
-					{
-						label: "Level three 3-2-1"
-					}
-				]
-			}
-		]
-	}
-];
 </script>

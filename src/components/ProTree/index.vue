@@ -6,7 +6,7 @@
 		<!-- Header Operation button -->
 		<div class="table-header">
 			<div class="header-button-lf">
-				<slot name="treeHeader" :ids="selectedListIds" :isSelected="isSelected"></slot>
+				<slot name="treeHeader"></slot>
 			</div>
 			<div class="header-button-ri" v-if="toolButton">
 				<el-button-group>
@@ -27,6 +27,7 @@ import { useTable } from "@/hooks/useTable";
 import { useSelection } from "@/hooks/useSelection";
 import { Refresh, Operation, Search, Filter } from "@element-plus/icons-vue";
 import { ColumnProps } from "@/components/ProTable/interface";
+import { AnyKindOfDictionary } from "lodash";
 
 // Form DOM element
 const tableRef = ref();
@@ -35,7 +36,6 @@ const tableRef = ref();
 const isShowSearch = ref<boolean>(false);
 
 interface componentProps {
-	columns: Partial<ColumnProps>[]; // Column configuration item
 	requestApi: (params: any) => Promise<any>; // API ==> must be passed on the request form data
 	dataCallback?: (data: any) => any; // The callback function of the data can be processed on the data
 	initParam?: any; // Initialize request parameters ==> Non -Perminal (Faculty {})
@@ -43,6 +43,19 @@ interface componentProps {
 	toolButton?: boolean; // Whether the table function button is displayed ==> Non -pass (default TRUE)
 	// childrenName?: string; // When the data exists in children, specify the children key name ==> Non -component (default "children")
 }
+
+// Accept the parent component parameter, configure the default value
+const props = withDefaults(defineProps<componentProps>(), {
+	pagination: true,
+	initParam: {},
+	border: true,
+	toolButton: true
+	// childrenName: "children"
+});
+
+const emit = defineEmits<{
+	(e: "handleNodeClick", node: any): void;
+}>();
 
 const useTree = (api: (params: any) => Promise<any>, initParam: object = {}, dataCallBack?: (data: any) => any) => {
 	const state = reactive({
@@ -131,16 +144,6 @@ const useTree = (api: (params: any) => Promise<any>, initParam: object = {}, dat
 	};
 };
 
-// Accept the parent component parameter, configure the default value
-const props = withDefaults(defineProps<componentProps>(), {
-	columns: () => [],
-	pagination: true,
-	initParam: {},
-	border: true,
-	toolButton: true
-	// childrenName: "children"
-});
-
 const { treeData, getTreeList, search, reset } = useTree(props.requestApi, props.initParam, props.dataCallback);
 
 // The monitoring page Initparam is modified, and the table data is re -obtained
@@ -152,27 +155,19 @@ watch(
 	{ deep: true }
 );
 
-// If the current enum needs to request data in the background data, call the request interface to get the enum data
-// tableColumns.value.forEach(async item => {
-// 	if (item.enumFunction && typeof item.enumFunction === "function") {
-// 		const { data } = await item.enumFunction();
-// 		item.enum = data;
-// 	}
-// 	if (item.enumTreeFunction && typeof item.enumTreeFunction === "function") {
-// 		const { data } = await item.enumTreeFunction();
-// 		item.enumTree = data;
-// 	}
-// });
-
 const refresh = () => {
 	tableRef.value!.clearSelection();
 	getTreeList();
 };
 
-const handleNodeClick = (data: Tree) => {
-  console.log(data)
-}
+const selectedFootprintID = ref();
+
+const handleNodeClick = (data: any) => {
+	// console.log(data);
+	selectedFootprintID.value = data.id;
+	emit("handleNodeClick", data);
+};
 
 // Parameters and methods exposed to parent components
-defineExpose({ refresh });
+defineExpose({ selectedFootprintID, refresh });
 </script>

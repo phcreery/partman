@@ -44,7 +44,7 @@ const maxWidth = ref<number>(1260);
 
 onMounted(() => {
 	// * Temporarily only judge these two situations (the fourth search item is time/date range || The first three existence time/date range selection box)
-	// * In the later period, the adaptive width change of the text box through CSS has achieved the same style as Pro-Table in Antd, but the self-feel is not very good, so I don’t use 😆 😆 😆 😆
+	// * In the later period, the adaptive width change of the text box through CSS has achieved the same style as Pro-Table in Antd, but the self-feel is not very good, so I don’t use
 	if (props.columns.length >= 4) {
 		const searchTypeArr = ["datetimerange", "daterange"];
 		searchTypeArr.includes(props.columns[3].searchType!) ? ((maxWidth.value = 945), (maxLength.value = 3)) : null;

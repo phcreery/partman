@@ -1,7 +1,7 @@
 <template>
 	<el-row :gutter="20" style="height: 100%">
 		<el-col :span="6">
-			<ProTree ref="proTree" :requestApi="getFootprintCategoryEnumTree" :initParam="initParam" :dataCallback="dataCallback">
+			<ProTree ref="proTree" :requestApi="getFootprintCategoryEnumTree" :initParam="initParam" :dataCallback="dataCallbackTree">
 				<template #treeHeader="scope">
 					<el-button type="primary" :icon="CirclePlus" @click="openDrawer('New')" v-if="BUTTONS.add"></el-button>
 					<el-button
@@ -24,7 +24,7 @@
 					:requestApi="getFootprintList"
 					:initParam="initParam"
 					:isPageable="true"
-					:dataCallback="dataCallback"
+					:dataCallback="dataCallbackTable"
 				>
 					<!-- Table header button -->
 					<template #tableHeader="scope">
@@ -65,7 +65,7 @@ import ProTable from "@/components/ProTable/index.vue";
 import ProTree from "@/components/ProTree/index.vue";
 import FootprintDrawer from "@/views/footprints/components/FootprintDrawer.vue";
 import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh, DCaret } from "@element-plus/icons-vue";
-import { ResList, Component } from "@/api/interface";
+import { ResList, Component, Footprint } from "@/api/interface";
 import {
 	getComponentList,
 	postComponentCreate,
@@ -81,13 +81,25 @@ import {
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
 const proTable = ref();
+
 // If the table needs to initialize the request parameter, it will be directly defined to the propable (each request will automatically bring the parameter every time, and it will always be brought to
 const initParam = reactive({
 	expand: ""
 });
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
-const dataCallback = (data: ResList<Component.ResGetComponentRecord>) => {
+const dataCallbackTree = (data: ResList<Footprint.ResGetFootprintRecord>) => {
+	console.log("data callback", data);
+	// return {
+	// 	datalist: data.items,
+	// 	total: data.totalItems,
+	// 	pageNum: data.page,
+	// 	pageSize: data.perPage
+	// };
+	return data;
+};
+const dataCallbackTable = (data: ResList<Footprint.ResGetFootprintRecord>) => {
+	console.log("data callback", data);
 	return {
 		datalist: data.items,
 		total: data.totalItems,

@@ -14,8 +14,8 @@
 						type="danger"
 						:icon="Delete"
 						plain
-						:disabled="!scope.isSelected"
-						@click="batchDelete(scope.ids)"
+						:disabled="!scope.id"
+						@click="batchDeleteCategory([scope.id])"
 						v-if="BUTTONS.delete"
 					>
 					</el-button>
@@ -58,7 +58,7 @@
 					</template>
 				</ProTable>
 				<FootprintDrawer ref="drawerRef"></FootprintDrawer>
-				<!-- <FootprintCategoryDrawer ref="drawerCategoryRef"></FootprintCategoryDrawer> -->
+				<FootprintCategoryDrawer ref="drawerCategoryRef"></FootprintCategoryDrawer>
 			</div>
 		</el-col>
 	</el-row>
@@ -73,6 +73,7 @@ import { useAuthButtons } from "@/hooks/useAuthButtons";
 import ProTable from "@/components/ProTable/index.vue";
 import ProTree from "@/components/ProTree/index.vue";
 import FootprintDrawer from "@/views/footprints/components/FootprintDrawer.vue";
+import FootprintCategoryDrawer from "@/views/footprints/components/FootprintCategoryDrawer.vue";
 import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh, DCaret } from "@element-plus/icons-vue";
 import { ResList, Component, Footprint } from "@/api/interface";
 import {
@@ -81,14 +82,14 @@ import {
 	patchComponentUpdate,
 	deleteComponents,
 	getFootprintsEnum,
-	getComponentStorageLocationEnum,
-	getComponentCategoryEnum,
-	getComponentCategoryEnumTree,
 	getFootprintList,
-	getFootprintCategoryEnumTree,
 	postFootprintCreate,
 	patchFootprintUpdate,
-	deleteFootprints
+	deleteFootprints,
+	getFootprintCategoryEnumTree,
+	postFootprintCategoryCreate,
+	patchFootprintCategoryUpdate,
+	deleteFootprintCategories
 } from "@/api/modules/components";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
@@ -97,7 +98,7 @@ const proTree = ref();
 
 // If the table needs to initialize the request parameter, it will be directly defined to the propable (each request will automatically bring the parameter every time, and it will always be brought to
 const initParam = reactive({
-	filter: { category: "9CbWotNGuWNTK0E" },
+	filter: { category: "" },
 	expand: ""
 });
 
@@ -173,8 +174,14 @@ const columns: Partial<ColumnProps>[] = [
 
 // Batch delete footprints
 const batchDelete = async (ids: string[]) => {
-	await useHandleData(deleteFootprints, { ids }, "Delete the selected component(s)");
+	await useHandleData(deleteFootprints, { ids }, "Delete the selected footprints(s)");
 	proTable.value.refresh();
+};
+
+// Batch delete footprints
+const batchDeleteCategory = async (ids: string[]) => {
+	await useHandleData(deleteFootprintCategories, { ids }, "Delete the selected footprint categories(s)");
+	proTree.value.refresh();
 };
 
 // Open the drawer (new, view, edit)
@@ -199,9 +206,9 @@ const openFootprintCategoryDrawer = (title: string, rowData: Partial<Component.R
 		title,
 		rowData: { ...rowData },
 		isView: title === "View",
-		apiUrl: title === "New" ? postFootprintCreate : title === "Edit" ? patchComponentUpdate : "",
-		updateTable: proTable.value.refresh
+		apiUrl: title === "New" ? postFootprintCategoryCreate : title === "Edit" ? patchFootprintCategoryUpdate : "",
+		updateTable: proTree.value.refresh
 	};
-	drawerRef.value!.acceptParams(params);
+	drawerCategoryRef.value!.acceptParams(params);
 };
 </script>

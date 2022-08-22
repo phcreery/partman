@@ -112,11 +112,13 @@ export namespace FootprintCategory {
 	type FootprintCategoryColumns = {
 		name: string;
 		description: number;
-		category: string;
+		parent: string;
 	};
 	// Requests
 	export type ReqGetFootprintCategoryListParams = ReqList;
 	export type ReqCreateFootprintCategoryParams = FootprintCategoryColumns;
+	export interface ReqUpdateFootprintCategoryParams extends ReqRecord, FootprintCategoryColumns {}
+	export type ReqDeleteFootprintCategoriesParams = { ids: string[] };
 	// Responses
 	export interface ResGetFootprintCategoryRecord extends ResGetRecord, FootprintCategoryColumns {}
 }

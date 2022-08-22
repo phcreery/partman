@@ -149,8 +149,21 @@ export const getFootprintCategoryEnumTree = async () => {
 };
 
 export const postFootprintCategoryCreate = async (params: FootprintCategory.ReqCreateFootprintCategoryParams) => {
-	let record = await client.records.create("component_categories", params);
+	let record = await client.records.create("footprint_categories", params);
 	return { data: record } as unknown as APIdata<FootprintCategory.ResGetFootprintCategoryRecord>;
+};
+
+export const patchFootprintCategoryUpdate = async (params: FootprintCategory.ReqUpdateFootprintCategoryParams) => {
+	const record = await client.records.update("footprint_categories", params.id, params);
+	return { data: record } as unknown as APIdata<Footprint.ResGetFootprintRecord>;
+};
+
+export const deleteFootprintCategories = async (params: FootprintCategory.ReqDeleteFootprintCategoriesParams) => {
+	// TODO: speed this up??
+	for (const id of params.ids) {
+		await client.records.delete("footprint_categories", id);
+	}
+	return true;
 };
 
 // ---- STORAGE LOCATIONS ----

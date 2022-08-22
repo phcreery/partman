@@ -6,7 +6,7 @@
 		<!-- Header Operation button -->
 		<div class="table-header">
 			<div class="header-button-lf">
-				<slot name="treeHeader"></slot>
+				<slot name="treeHeader" :id="selectedFootprintID"></slot>
 			</div>
 			<div class="header-button-ri" v-if="toolButton">
 				<el-button-group>
@@ -16,7 +16,14 @@
 		</div>
 		<!-- Tabletop -->
 		<div>
-			<el-tree :data="treeData" :props="{ label: 'name', children: 'children' }" @node-click="handleNodeClick" />
+			<el-tree
+				ref="treeRef"
+				:data="treeData"
+				:props="{ label: 'name', children: 'children' }"
+				@node-click="handleNodeClick"
+				default-expand-all
+				highlight-current
+			/>
 		</div>
 	</div>
 </template>
@@ -30,7 +37,7 @@ import { ColumnProps } from "@/components/ProTable/interface";
 import { AnyKindOfDictionary } from "lodash";
 
 // Form DOM element
-const tableRef = ref();
+const treeRef = ref();
 
 // Whether to display the search module
 const isShowSearch = ref<boolean>(false);
@@ -156,7 +163,7 @@ watch(
 );
 
 const refresh = () => {
-	tableRef.value!.clearSelection();
+	// treeRef.value!.clearSelection();
 	getTreeList();
 };
 

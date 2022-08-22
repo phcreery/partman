@@ -20,15 +20,15 @@ export interface ResList<T> {
 }
 
 // * Request response parameter (excluding data)
-export interface Result {
-	code: string;
-	msg: string;
-}
+// export interface Result {
+// 	code: string;
+// 	msg: string;
+// }
 
 // * Request response parameter (containing data)
-export interface ResultData<T = any> extends Result {
-	data?: T;
-}
+// export interface ResultData<T = any> extends Result {
+// 	data?: T;
+// }
 
 // * Login module
 export namespace Login {
@@ -45,118 +45,89 @@ export namespace Login {
 	}
 }
 
-// // * User management module
-// export namespace User {
-// 	export interface ReqGetUserParams extends ReqList {
-// 		username: string;
-// 		gender: number;
-// 		idCard: string;
-// 		email: string;
-// 		address: string;
-// 		createTime: string[];
-// 		status: number;
-// 	}
-// 	export interface ResUserList {
-// 		id: string;
-// 		username: string;
-// 		gender: string;
-// 		age: number;
-// 		idCard: string;
-// 		email: string;
-// 		address: string;
-// 		createTime: string;
-// 		status: number;
-// 		avatar: string;
-// 		children?: ResUserList[];
-// 	}
-// 	export interface ResStatus {
-// 		userLabel: string;
-// 		userValue: number;
-// 	}
-// 	export interface ResGender {
-// 		genderLabel: string;
-// 		genderValue: number;
-// 	}
-// }
-
-// * File upload module
-// export namespace Upload {
-// 	export interface ResFileUrl {
-// 		fileUrl: string;
-// 	}
-// }
+export interface ReqRecord {
+	id: string;
+}
 
 export interface ResGetRecord {
+	id: string;
+	created: string;
+	updated: string;
 	"@collectionId": string;
 	"@collectionName": string;
 	"@expand": object;
 }
 
 export namespace Component {
+	type ComponentColumns = {
+		name: string;
+		description: number;
+		stock: number;
+		comment: string;
+		storage_location: string;
+		category: string;
+		footprint: string;
+		ipn: string;
+	};
+	// Requests
 	export type ReqGetComponentListParams = ReqList;
-	export interface ReqCreateComponentParams {
-		id: string;
-		name: string;
-		description: number;
-		stock: number;
-		comment: string;
-		storage_location: string;
-		category: string;
-		footprint: string;
-		ipn: string;
-	}
-	export type ReqUpdateComponentParams = ReqCreateComponentParams;
-	export type ReqDeleteComponentParams = { id: string };
+	export type ReqCreateComponentParams = ComponentColumns;
+	export interface ReqUpdateComponentParams extends ReqRecord, ComponentColumns {}
+	export type ReqDeleteComponentParams = ReqRecord;
 	export type ReqDeleteComponentsParams = { ids: string[] };
-	export interface ResGetComponentRecord extends ResGetRecord {
-		id: string;
-		created: string;
-		updated: string;
-		name: string;
-		description: number;
-		stock: number;
-		comment: string;
-		storage_location: string;
-		category: string;
-		footprint: string;
-		ipn: string;
-	}
+	// Responses
+	export interface ResGetComponentRecord extends ResGetRecord, ComponentColumns {}
 }
 
-export namespace Footprint {
-	// export interface ReqGetFootprintListParams extends ReqList {}
-	export type ReqGetFootprintListParams = ReqList;
-	export interface ResGetFootprintRecord extends ResGetRecord {
-		id: string;
-		created: string;
-		updated: string;
-		name: string;
-		description: number;
-	}
-}
-
-export namespace Category {
-	// export interface ReqGetFootprintListParams extends ReqList {}
-	export type ReqGetCategoryListParams = ReqList;
-	export interface ResGetCategoryRecord extends ResGetRecord {
-		id: string;
-		created: string;
-		updated: string;
+export namespace ComponentCategory {
+	type ComponentCategoryColumns = {
 		name: string;
 		parent: string;
 		description: number;
+	};
+	// Requests
+	export type ReqGetCategoryListParams = ReqList;
+	// Responses
+	export interface ResGetCategoryRecord extends ResGetRecord, ComponentCategoryColumns {
 		_fullName: string;
 	}
 }
 
-export namespace Storage {
-	// export interface ReqGetFootprintListParams extends ReqList {}
-	export type ReqGetStorageListParams = ReqList;
-	export interface ResGetStorageRecord extends ResGetRecord {
-		id: string;
-		created: string;
-		updated: string;
+export namespace Footprint {
+	type FootprintColumns = {
 		name: string;
 		description: number;
-	}
+		category: string;
+	};
+	// Requests
+	export type ReqGetFootprintListParams = ReqList;
+	export type ReqCreateFootprintParams = FootprintColumns;
+	export interface ReqUpdateFootprintParams extends ReqRecord, FootprintColumns {}
+	export type ReqDeleteFootprintsParams = { ids: string[] };
+	// Responses
+	export interface ResGetFootprintRecord extends ResGetRecord, FootprintColumns {}
+}
+
+export namespace FootprintCategory {
+	type FootprintCategoryColumns = {
+		name: string;
+		description: number;
+		category: string;
+	};
+	// Requests
+	export type ReqGetFootprintCategoryListParams = ReqList;
+	export type ReqCreateFootprintCategoryParams = FootprintCategoryColumns;
+	// Responses
+	export interface ResGetFootprintCategoryRecord extends ResGetRecord, FootprintCategoryColumns {}
+}
+
+export namespace Storage {
+	type StorageColumns = {
+		name: string;
+		description: number;
+	};
+	// Requests
+	export type ReqGetStorageListParams = ReqList;
+	// Responses
+	export interface ResGetStorageRecord extends ResGetRecord, StorageColumns {}
 }

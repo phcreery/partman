@@ -1,7 +1,7 @@
 import { arrayToTree } from "performant-array-to-tree";
 import client, { tryCatchAsync } from "@/api";
 
-import { ResList, Component, Footprint, Category, Storage } from "@/api/interface/index";
+import { ResList, Component, Footprint, ComponentCategory, Storage, FootprintCategory } from "@/api/interface/index";
 
 type APIdata<T> = { data: T };
 
@@ -58,20 +58,16 @@ export const deleteComponent = async (params: Component.ReqDeleteComponentParams
 
 export const postComponentCreate = async (params: Component.ReqCreateComponentParams) => {
 	let record = await client.records.create("components", params);
-	return record;
+	return { data: record } as unknown as APIdata<Component.ResGetComponentRecord>;
 };
 
 export const patchComponentUpdate = async (params: Component.ReqUpdateComponentParams) => {
-	console.log("edit", params);
 	const record = await client.records.update("components", params.id, params);
-	return record;
+	return { data: record } as unknown as APIdata<Component.ResGetComponentRecord>;
 };
 
 export const deleteComponents = async (params: Component.ReqDeleteComponentsParams) => {
-	console.log("deleting", params.ids);
-	// params.ids.forEach(async (id: string) => {
-	// 	await client.records.delete("components", id);
-	// });
+	// TODO: speed this up??
 	for (const id of params.ids) {
 		await client.records.delete("components", id);
 	}
@@ -86,11 +82,11 @@ export const getComponentCategoryEnum = async () => {
 		console.log("getCompCatEnum res err", res, err);
 		return false;
 	}
-	res.items.forEach((component: Category.ResGetCategoryRecord) => {
+	res.items.forEach((component: ComponentCategory.ResGetCategoryRecord) => {
 		component._fullName = getPathName(res.items, component.id);
 	});
 	console.log("categories with path", res.items);
-	return { data: res.items } as unknown as APIdata<Category.ResGetCategoryRecord[]>;
+	return { data: res.items } as unknown as APIdata<ComponentCategory.ResGetCategoryRecord[]>;
 };
 
 export const getComponentCategoryEnumTree = async () => {
@@ -121,17 +117,40 @@ export const getFootprintsEnum = async () => {
 	return { data: res.items } as unknown as APIdata<Footprint.ResGetFootprintRecord[]>;
 };
 
+export const postFootprintCreate = async (params: Footprint.ReqCreateFootprintParams) => {
+	let record = await client.records.create("footprints", params);
+	return { data: record } as unknown as APIdata<Footprint.ResGetFootprintRecord>;
+};
+
+export const patchFootprintUpdate = async (params: Footprint.ReqUpdateFootprintParams) => {
+	const record = await client.records.update("footprints", params.id, params);
+	return { data: record } as unknown as APIdata<Footprint.ResGetFootprintRecord>;
+};
+
+export const deleteFootprints = async (params: Component.ReqDeleteFootprintsParams) => {
+	// TODO: speed this up??
+	for (const id of params.ids) {
+		await client.records.delete("footprints", id);
+	}
+	return true;
+};
+
 // ---- FOOTPRINT CATEGORY ----
 
 export const getFootprintCategoryEnumTree = async () => {
 	let [res, err] = await tryCatchAsync(() => client.records.getList("footprint_categories", 1, 99999, {}));
 	if (err) {
-		console.log("getCompCatEnum res err", res, err);
+		console.log("error", res, err);
 		return false;
 	}
 	const tree = arrayToTree(res.items, { id: "id", parentId: "parent", dataField: null }); // nest(res.items)
 	console.log("tree", res.items, tree);
 	return { data: tree };
+};
+
+export const postFootprintCategoryCreate = async (params: FootprintCategory.ReqCreateFootprintCategoryParams) => {
+	let record = await client.records.create("component_categories", params);
+	return { data: record } as unknown as APIdata<FootprintCategory.ResGetFootprintCategoryRecord>;
 };
 
 // ---- STORAGE LOCATIONS ----

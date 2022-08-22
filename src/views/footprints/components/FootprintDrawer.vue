@@ -57,12 +57,13 @@
 <script setup lang="ts" name="UserDrawer">
 import { ref, reactive, onMounted, watch } from "vue";
 // import { genderType } from "@/utils/serviceDict";
-import { ResList, Component, Category, Footprint, Storage } from "@/api/interface";
+import { ResList, Component, ComponentCategory, Footprint, FootprintCategory, Storage } from "@/api/interface";
 import {
 	getFootprintsEnum,
 	getComponentStorageLocationEnum,
 	getComponentCategoryEnum,
-	getComponentCategoryEnumTree
+	getComponentCategoryEnumTree,
+	getFootprintCategoryEnumTree
 } from "@/api/modules/components";
 import { ElMessage, FormInstance } from "element-plus";
 import UploadImg from "@/components/UploadImg/index.vue";
@@ -73,7 +74,7 @@ const rules = reactive({
 	category: [{ required: true, message: "Please select category", trigger: "change" }]
 });
 
-const cascaderProps = { value: "id", label: "name", emitPath: false };
+// const cascaderProps = { value: "id", label: "name", emitPath: false };
 const treeSelectProps = { value: "id", label: "name", emitPath: false };
 
 interface DrawerProps {
@@ -118,12 +119,14 @@ const checkValidate = (val: string) => {
 	ruleFormRef.value!.validateField(val, () => {});
 };
 
-const footprintCategories = ref<Category.ResGetCategoryRecord[]>();
+const footprintCategories = ref();
 
 // When opening the drawer, fetch the necessary field values
 watch(drawerVisible, openValue => {
 	if (openValue) {
-		// getFootprintCategoryEnumTree().then(res => (footprintCategories.value = res.data));
+		getFootprintCategoryEnumTree().then(res => {
+			if (res) footprintCategories.value = res.data;
+		});
 	}
 });
 

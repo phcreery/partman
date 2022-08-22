@@ -198,10 +198,10 @@ const columns: Partial<ColumnProps>[] = [
 ];
 
 // Delete user information
-const deleteComponent = async (params: Component.ResGetComponentRecord) => {
-	await useHandleData(deleteComponents, { ids: [params.id] }, `Delete [${params.name}] component`);
-	proTable.value.refresh();
-};
+// const deleteComponent = async (params: Component.ResGetComponentRecord) => {
+// 	await useHandleData(deleteComponents, { ids: [params.id] }, `Delete [${params.name}] component`);
+// 	proTable.value.refresh();
+// };
 // Batch delete components
 const batchDelete = async (ids: string[]) => {
 	await useHandleData(deleteComponents, { ids }, "Delete the selected component(s)");

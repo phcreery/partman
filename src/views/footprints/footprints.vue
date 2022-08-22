@@ -9,7 +9,7 @@
 				@handle-node-click="handleCategorySelect"
 			>
 				<template #treeHeader="scope">
-					<el-button type="primary" :icon="CirclePlus" @click="openDrawer('New')" v-if="BUTTONS.add"></el-button>
+					<el-button type="primary" :icon="CirclePlus" @click="openFootprintCategoryDrawer('New')" v-if="BUTTONS.add"></el-button>
 					<el-button
 						type="danger"
 						:icon="Delete"
@@ -34,7 +34,9 @@
 				>
 					<!-- Table header button -->
 					<template #tableHeader="scope">
-						<el-button type="primary" :icon="CirclePlus" @click="openDrawer('New')" v-if="BUTTONS.add">New Footprint</el-button>
+						<el-button type="primary" :icon="CirclePlus" @click="openFootprintDrawer('New')" v-if="BUTTONS.add"
+							>New Footprint</el-button
+						>
 						<el-button
 							type="danger"
 							:icon="Delete"
@@ -52,10 +54,11 @@
 					</template>
 					<!-- Table operation -->
 					<template #action="scope">
-						<el-button type="primary" link :icon="EditPen" @click="openDrawer('Edit', scope.row)">Edit</el-button>
+						<el-button type="primary" link :icon="EditPen" @click="openFootprintDrawer('Edit', scope.row)">Edit</el-button>
 					</template>
 				</ProTable>
 				<FootprintDrawer ref="drawerRef"></FootprintDrawer>
+				<!-- <FootprintCategoryDrawer ref="drawerCategoryRef"></FootprintCategoryDrawer> -->
 			</div>
 		</el-col>
 	</el-row>
@@ -82,7 +85,10 @@ import {
 	getComponentCategoryEnum,
 	getComponentCategoryEnumTree,
 	getFootprintList,
-	getFootprintCategoryEnumTree
+	getFootprintCategoryEnumTree,
+	postFootprintCreate,
+	patchFootprintUpdate,
+	deleteFootprints
 } from "@/api/modules/components";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
@@ -98,18 +104,10 @@ const initParam = reactive({
 const initParamCategory = reactive({});
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
-const dataCallbackTree = (data: ResList<Footprint.ResGetFootprintRecord>) => {
-	console.log("data callback", data);
-	// return {
-	// 	datalist: data.items,
-	// 	total: data.totalItems,
-	// 	pageNum: data.page,
-	// 	pageSize: data.perPage
-	// };
+const dataCallbackTree = (data: any) => {
 	return data;
 };
 const dataCallbackTable = (data: ResList<Footprint.ResGetFootprintRecord>) => {
-	console.log("data callback", data);
 	return {
 		datalist: data.items,
 		total: data.totalItems,
@@ -118,6 +116,7 @@ const dataCallbackTable = (data: ResList<Footprint.ResGetFootprintRecord>) => {
 	};
 };
 
+// what binds the category tree to the table filter
 const handleCategorySelect = (data: any) => {
 	console.log(data);
 	initParam.filter.category = data.id;
@@ -172,11 +171,6 @@ const columns: Partial<ColumnProps>[] = [
 	}
 ];
 
-// Delete user information
-const deleteFootprint = async (params: Component.ResGetComponentRecord) => {
-	await useHandleData(deleteComponents, { ids: [params.id] }, `Delete [${params.name}] component`);
-	proTable.value.refresh();
-};
 // Batch delete footprints
 const batchDelete = async (ids: string[]) => {
 	await useHandleData(deleteFootprints, { ids }, "Delete the selected component(s)");
@@ -188,19 +182,24 @@ interface DrawerExpose {
 	acceptParams: (params: any) => void;
 }
 const drawerRef = ref<DrawerExpose>();
-const openDrawer = (title: string, rowData: Partial<Component.ResGetComponentRecord> = {}) => {
+const openFootprintDrawer = (title: string, rowData: Partial<Component.ResGetComponentRecord> = {}) => {
 	let params = {
 		title,
 		rowData: { ...rowData },
 		isView: title === "View",
-		apiUrl:
-			title === "New"
-				? postComponentCreate
-				: title === "Edit"
-				? patchComponentUpdate
-				: title === "Stock"
-				? patchComponentUpdate
-				: "",
+		apiUrl: title === "New" ? postFootprintCreate : title === "Edit" ? patchFootprintUpdate : "",
+		updateTable: proTable.value.refresh
+	};
+	drawerRef.value!.acceptParams(params);
+};
+
+const drawerCategoryRef = ref<DrawerExpose>();
+const openFootprintCategoryDrawer = (title: string, rowData: Partial<Component.ResGetComponentRecord> = {}) => {
+	let params = {
+		title,
+		rowData: { ...rowData },
+		isView: title === "View",
+		apiUrl: title === "New" ? postFootprintCreate : title === "Edit" ? patchComponentUpdate : "",
 		updateTable: proTable.value.refresh
 	};
 	drawerRef.value!.acceptParams(params);

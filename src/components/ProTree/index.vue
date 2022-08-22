@@ -6,7 +6,7 @@
 		<!-- Header Operation button -->
 		<div class="table-header">
 			<div class="header-button-lf">
-				<slot name="treeHeader" :id="selectedFootprintID"></slot>
+				<slot name="treeHeader" :row="selectedFootprint"></slot>
 			</div>
 			<div class="header-button-ri" v-if="toolButton">
 				<el-button-group>
@@ -167,14 +167,14 @@ const refresh = () => {
 	getTreeList();
 };
 
-const selectedFootprintID = ref();
+const selectedFootprint = ref();
 
 const handleNodeClick = (data: any) => {
 	// console.log(data);
-	selectedFootprintID.value = data.id;
+	selectedFootprint.value = data;
 	emit("handleNodeClick", data);
 };
 
 // Parameters and methods exposed to parent components
-defineExpose({ selectedFootprintID, refresh });
+defineExpose({ selectedFootprint, refresh });
 </script>

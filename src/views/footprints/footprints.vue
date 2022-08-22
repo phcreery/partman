@@ -10,12 +10,13 @@
 			>
 				<template #treeHeader="scope">
 					<el-button type="primary" :icon="CirclePlus" @click="openFootprintCategoryDrawer('New')" v-if="BUTTONS.add"></el-button>
+					<el-button :icon="EditPen" @click="openFootprintCategoryDrawer('Edit', scope.row)" v-if="BUTTONS.edit"></el-button>
 					<el-button
 						type="danger"
 						:icon="Delete"
 						plain
-						:disabled="!scope.id"
-						@click="batchDeleteCategory([scope.id])"
+						:disabled="!scope.row"
+						@click="batchDeleteCategory([scope.row.id])"
 						v-if="BUTTONS.delete"
 					>
 					</el-button>
@@ -75,7 +76,7 @@ import ProTree from "@/components/ProTree/index.vue";
 import FootprintDrawer from "@/views/footprints/components/FootprintDrawer.vue";
 import FootprintCategoryDrawer from "@/views/footprints/components/FootprintCategoryDrawer.vue";
 import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh, DCaret } from "@element-plus/icons-vue";
-import { ResList, Component, Footprint } from "@/api/interface";
+import { ResList, Component, Footprint, FootprintCategory } from "@/api/interface";
 import {
 	getComponentList,
 	postComponentCreate,
@@ -189,7 +190,7 @@ interface DrawerExpose {
 	acceptParams: (params: any) => void;
 }
 const drawerRef = ref<DrawerExpose>();
-const openFootprintDrawer = (title: string, rowData: Partial<Component.ResGetComponentRecord> = {}) => {
+const openFootprintDrawer = (title: string, rowData: Partial<Footprint.ResGetFootprintRecord> = {}) => {
 	let params = {
 		title,
 		rowData: { ...rowData },
@@ -201,7 +202,7 @@ const openFootprintDrawer = (title: string, rowData: Partial<Component.ResGetCom
 };
 
 const drawerCategoryRef = ref<DrawerExpose>();
-const openFootprintCategoryDrawer = (title: string, rowData: Partial<Component.ResGetComponentRecord> = {}) => {
+const openFootprintCategoryDrawer = (title: string, rowData: Partial<FootprintCategory.ResGetFootprintCategoryRecord> = {}) => {
 	let params = {
 		title,
 		rowData: { ...rowData },

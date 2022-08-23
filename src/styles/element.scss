@@ -8,6 +8,33 @@
 	z-index: 99999 !important;
 }
 
+// * el-tree style
+.tree-box {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	// sheet header style
+	.tree-header {
+		.header-button-lf {
+			float: left;
+			.el-button {
+				margin-bottom: 20px;
+			}
+		}
+		.header-button-ri {
+			float: right;
+			.el-button {
+				margin-bottom: 20px;
+			}
+		}
+	}
+}
+
+.el-row {
+	height: 100%;
+	flex-wrap: unset;
+}
+
 // * el-table style
 .table-box {
 	display: flex;

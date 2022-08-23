@@ -1,12 +1,9 @@
-<!-- 📚📚📚 Pro-Table Documentation: https://juejin.cn/post/7094890833064755208 -->
-<!-- 💢💢💢 In the later period, the Pro-Table component will be reconstructed. -->
-
 <template>
-	<div class="table-box">
+	<div class="tree-box">
 		<!-- Header Operation button -->
-		<div class="table-header">
+		<div class="tree-header">
 			<div class="header-button-lf">
-				<slot name="treeHeader" :row="selectedFootprint"></slot>
+				<slot name="treeHeader" :row="selectedItem"></slot>
 			</div>
 			<div class="header-button-ri" v-if="toolButton">
 				<el-button-group>
@@ -14,33 +11,26 @@
 				</el-button-group>
 			</div>
 		</div>
+		<el-input v-model="filterText" placeholder="Filter keyword" />
 		<!-- Tabletop -->
 		<div>
 			<el-tree
 				ref="treeRef"
 				:data="treeData"
-				:props="{ label: 'name', children: 'children' }"
+				:props="treeProps"
 				@node-click="handleNodeClick"
 				default-expand-all
+				:expand-on-click-node="false"
 				highlight-current
+				:filter-node-method="filterNode"
 			/>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts" name="component">
-import { ref, watch, toRefs, reactive, onMounted } from "vue";
-import { useTable } from "@/hooks/useTable";
-import { useSelection } from "@/hooks/useSelection";
+import { ref, watch, onMounted } from "vue";
 import { Refresh, Operation, Search, Filter } from "@element-plus/icons-vue";
-import { ColumnProps } from "@/components/ProTable/interface";
-import { AnyKindOfDictionary } from "lodash";
-
-// Form DOM element
-const treeRef = ref();
-
-// Whether to display the search module
-const isShowSearch = ref<boolean>(false);
 
 interface componentProps {
 	requestApi: (params: any) => Promise<any>; // API ==> must be passed on the request form data
@@ -48,7 +38,8 @@ interface componentProps {
 	initParam?: any; // Initialize request parameters ==> Non -Perminal (Faculty {})
 	border?: boolean; // Whether the table display is displayed ==> Non -pass (default)
 	toolButton?: boolean; // Whether the table function button is displayed ==> Non -pass (default TRUE)
-	// childrenName?: string; // When the data exists in children, specify the children key name ==> Non -component (default "children")
+	labelName?: string; // the name of the data
+	childrenName?: string; // When the data exists in children, specify the children key name ==> Non -component (default "children")
 }
 
 // Accept the parent component parameter, configure the default value
@@ -56,125 +47,71 @@ const props = withDefaults(defineProps<componentProps>(), {
 	pagination: true,
 	initParam: {},
 	border: true,
-	toolButton: true
-	// childrenName: "children"
+	toolButton: true,
+	labelName: "name",
+	childrenName: "children"
 });
 
 const emit = defineEmits<{
 	(e: "handleNodeClick", node: any): void;
 }>();
 
-const useTree = (api: (params: any) => Promise<any>, initParam: object = {}, dataCallBack?: (data: any) => any) => {
-	const state = reactive({
-		// Table data
-		treeData: [],
-		// Query parameters (including only query)
-		searchParam: {},
-		// Initialize the default query parameter
-		searchInitParam: {},
-		// Total parameters (including pagination and query parameters)
-		totalParam: {}
-	});
+// Form DOM element
+const treeRef = ref();
 
-	// What needs to be done when initialization is to set the form query default value && obtain form data (the role of the RESET function is exactly these two functions)
-	onMounted(async () => {
-		reset();
-	});
+const selectedItem = ref();
+const filterText = ref("");
+const treeData = ref({});
+const totalParam = ref({});
 
-	/**
-	 * @description Get the table data
-	 * @return void
-	 * */
-	const getTreeList = async () => {
-		try {
-			// First put the initialization parameter and pagination parameter in the total parameter
-			Object.assign(state.totalParam, initParam, {}); // isPageable ? pageParam.value : {}
-			let { data } = await api(state.totalParam);
-			dataCallBack && (data = dataCallBack(data));
-			state.treeData = data;
-			// Practical pagination data returned in the background (if there is a pagination update pagination information)
-			// const { pageNum, pageSize, total } = data;
-			// isPageable && updatePageable({ pageNum, pageSize, total });
-			console.log("useTree data", data);
-		} catch (error) {
-			console.log(error);
-		}
-	};
+const treeProps = { label: props.labelName, children: props.childrenName };
 
-	/**
-	 * @description Update query parameters
-	 * @return void
-	 * */
-	const updatedTotalParam = () => {
-		state.totalParam = {};
-		// Process query parameters, you can add a custom prefix operation to the query parameter
-		let nowSearchParam: { [propName: string]: any } = {};
-		// Prevent the parameter of the manual clearance input box (here you can customize query parameters prefix)
-		for (let key in state.searchParam) {
-			// * In some cases, parameters are false/0 You should also carry parameters
-			if (state.searchParam[key] || state.searchParam[key] === false || state.searchParam[key] === 0) {
-				nowSearchParam[key] = state.searchParam[key];
-			}
-		}
-		Object.assign(state.totalParam, { filter: nowSearchParam }, {}); // isPageable ? pageParam.value : {}
-	};
+// What needs to be done when initialization is to set the form query default value && obtain form data (the role of the RESET function is exactly these two functions)
+onMounted(async () => {
+	getTreeList();
+});
 
-	/**
-	 * @description Form data query
-	 * @return void
-	 * */
-	const search = () => {
-		// state.pageable.pageNum = 1;
-		updatedTotalParam();
-		getTreeList();
-	};
-
-	/**
-	 * @description Tree data reset
-	 * @return void
-	 * */
-	const reset = () => {
-		state.searchParam = {};
-		// When resetting the search form, if there is a default search parameter, reset the default search parameter
-		Object.keys(state.searchInitParam).forEach(key => {
-			state.searchParam[key] = state.searchInitParam[key];
-		});
-		updatedTotalParam();
-		getTreeList();
-	};
-
-	return {
-		...toRefs(state),
-		getTreeList,
-		search,
-		reset
-	};
+/**
+ * @description Get the table data
+ * @return void
+ * */
+const getTreeList = async () => {
+	try {
+		// First put the initialization parameter and pagination parameter in the total parameter
+		Object.assign(totalParam.value, props.initParam, {}); // isPageable ? pageParam.value : {}
+		let { data } = await props.requestApi(totalParam.value);
+		props.dataCallback && (data = props.dataCallback(data));
+		treeData.value = data;
+	} catch (error) {
+		console.log(error);
+	}
 };
-
-const { treeData, getTreeList, search, reset } = useTree(props.requestApi, props.initParam, props.dataCallback);
 
 // The monitoring page Initparam is modified, and the table data is re -obtained
 watch(
 	() => props.initParam,
-	() => {
-		getTreeList();
-	},
+	() => getTreeList(),
 	{ deep: true }
 );
 
 const refresh = () => {
-	// treeRef.value!.clearSelection();
 	getTreeList();
+	emit("handleNodeClick", { id: "" });
 };
 
-const selectedFootprint = ref();
-
 const handleNodeClick = (data: any) => {
-	// console.log(data);
-	selectedFootprint.value = data;
+	selectedItem.value = data;
 	emit("handleNodeClick", data);
 };
 
+watch(filterText, val => {
+	treeRef.value!.filter(val);
+});
+const filterNode = (value: string, data: any) => {
+	if (!value) return true;
+	return data[props.labelName].toLowerCase().includes(value.toLowerCase());
+};
+
 // Parameters and methods exposed to parent components
-defineExpose({ selectedFootprint, refresh });
+defineExpose({ selectedItem, refresh });
 </script>

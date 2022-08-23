@@ -1,68 +1,75 @@
 <template>
-	<el-row :gutter="20" style="height: 100%">
-		<el-col :span="6">
-			<ProTree
-				ref="proTree"
-				:requestApi="getFootprintCategoryEnumTree"
-				:initParam="initParamCategory"
-				:dataCallback="dataCallbackTree"
-				@handle-node-click="handleCategorySelect"
-			>
-				<template #treeHeader="scope">
-					<el-button type="primary" :icon="CirclePlus" @click="openFootprintCategoryDrawer('New')" v-if="BUTTONS.add"></el-button>
-					<el-button :icon="EditPen" @click="openFootprintCategoryDrawer('Edit', scope.row)" v-if="BUTTONS.edit"></el-button>
-					<el-button
-						type="danger"
-						:icon="Delete"
-						plain
-						:disabled="!scope.row"
-						@click="batchDeleteCategory([scope.row.id])"
-						v-if="BUTTONS.delete"
-					>
-					</el-button>
-				</template>
-			</ProTree>
-		</el-col>
-		<el-col :span="18">
-			<div class="table-box">
-				<ProTable
-					ref="proTable"
-					:columns="columns"
-					:requestApi="getFootprintList"
-					:initParam="initParam"
-					:isPageable="true"
-					:dataCallback="dataCallbackTable"
+	<div class="table-box">
+		<el-row :gutter="20">
+			<el-col :span="6">
+				<ProTree
+					ref="proTree"
+					:requestApi="getFootprintCategoryEnumTree"
+					:initParam="initParamCategory"
+					:dataCallback="dataCallbackTree"
+					@handle-node-click="handleCategorySelect"
 				>
-					<!-- Table header button -->
-					<template #tableHeader="scope">
-						<el-button type="primary" :icon="CirclePlus" @click="openFootprintDrawer('New')" v-if="BUTTONS.add"
-							>New Footprint</el-button
-						>
+					<template #treeHeader="scope">
+						<el-button
+							type="primary"
+							:icon="CirclePlus"
+							@click="openFootprintCategoryDrawer('New')"
+							v-if="BUTTONS.add"
+						></el-button>
+						<el-button :icon="EditPen" @click="openFootprintCategoryDrawer('Edit', scope.row)" v-if="BUTTONS.edit"></el-button>
 						<el-button
 							type="danger"
 							:icon="Delete"
 							plain
-							:disabled="!scope.isSelected"
-							@click="batchDelete(scope.ids)"
+							:disabled="!scope.row"
+							@click="batchDeleteCategory([scope.row.id])"
 							v-if="BUTTONS.delete"
 						>
-							Delete
 						</el-button>
 					</template>
-					<!-- Expand -->
-					<template #expand="scope">
-						{{ scope.row }}
-					</template>
-					<!-- Table operation -->
-					<template #action="scope">
-						<el-button type="primary" link :icon="EditPen" @click="openFootprintDrawer('Edit', scope.row)">Edit</el-button>
-					</template>
-				</ProTable>
-				<FootprintDrawer ref="drawerRef"></FootprintDrawer>
-				<FootprintCategoryDrawer ref="drawerCategoryRef"></FootprintCategoryDrawer>
-			</div>
-		</el-col>
-	</el-row>
+				</ProTree>
+			</el-col>
+			<el-col :span="18">
+				<div class="table-box">
+					<ProTable
+						ref="proTable"
+						:columns="columns"
+						:requestApi="getFootprintList"
+						:initParam="initParam"
+						:isPageable="true"
+						:dataCallback="dataCallbackTable"
+					>
+						<!-- Table header button -->
+						<template #tableHeader="scope">
+							<el-button type="primary" :icon="CirclePlus" @click="openFootprintDrawer('New')" v-if="BUTTONS.add"
+								>New Footprint</el-button
+							>
+							<el-button
+								type="danger"
+								:icon="Delete"
+								plain
+								:disabled="!scope.isSelected"
+								@click="batchDelete(scope.ids)"
+								v-if="BUTTONS.delete"
+							>
+								Delete
+							</el-button>
+						</template>
+						<!-- Expand -->
+						<template #expand="scope">
+							{{ scope.row }}
+						</template>
+						<!-- Table operation -->
+						<template #action="scope">
+							<el-button type="primary" link :icon="EditPen" @click="openFootprintDrawer('Edit', scope.row)">Edit</el-button>
+						</template>
+					</ProTable>
+					<FootprintDrawer ref="drawerRef"></FootprintDrawer>
+					<FootprintCategoryDrawer ref="drawerCategoryRef"></FootprintCategoryDrawer>
+				</div>
+			</el-col>
+		</el-row>
+	</div>
 </template>
 
 <script setup lang="tsx" name="useComponent">

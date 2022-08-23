@@ -85,11 +85,6 @@ import FootprintCategoryDrawer from "@/views/footprints/components/FootprintCate
 import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh, DCaret } from "@element-plus/icons-vue";
 import { ResList, Component, Footprint, FootprintCategory } from "@/api/interface";
 import {
-	getComponentList,
-	postComponentCreate,
-	patchComponentUpdate,
-	deleteComponents,
-	getFootprintsEnum,
 	getFootprintList,
 	postFootprintCreate,
 	patchFootprintUpdate,

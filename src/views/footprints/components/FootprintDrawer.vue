@@ -58,13 +58,7 @@
 import { ref, reactive, onMounted, watch } from "vue";
 // import { genderType } from "@/utils/serviceDict";
 import { ResList, Component, ComponentCategory, Footprint, FootprintCategory, Storage } from "@/api/interface";
-import {
-	getFootprintsEnum,
-	getComponentStorageLocationEnum,
-	getComponentCategoryEnum,
-	getComponentCategoryEnumTree,
-	getFootprintCategoryEnumTree
-} from "@/api/modules/components";
+import { getFootprintCategoryEnumTree } from "@/api/modules/components";
 import { ElMessage, FormInstance } from "element-plus";
 import UploadImg from "@/components/UploadImg/index.vue";
 

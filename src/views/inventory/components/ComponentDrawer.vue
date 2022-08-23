@@ -31,8 +31,8 @@
 					autosize
 				></el-input>
 			</el-form-item>
-			<el-form-item label="Footprint" prop="footprint">
-				<el-select v-model="drawerData.rowData!.footprint" placeholder="" clearable v-loading="componentFootprints === undefined">
+			<el-form-item label="Footprint" prop="footprint" v-loading="componentFootprints === undefined">
+				<el-select v-model="drawerData.rowData!.footprint" placeholder="" clearable filterable>
 					<el-option v-for="item in componentFootprints" :key="item.id" :label="item.name" :value="item.id" />
 				</el-select>
 			</el-form-item>
@@ -40,7 +40,7 @@
 				<el-input-number v-model="drawerData.rowData!.stock" />
 			</el-form-item>
 			<el-form-item label="Storage Location" prop="storage_location" v-loading="componentStorageLocations === undefined">
-				<el-select v-model="drawerData.rowData!.storage_location" placeholder="" clearable>
+				<el-select v-model="drawerData.rowData!.storage_location" placeholder="" clearable filterable>
 					<el-option v-for="item in componentStorageLocations" :key="item.id" :label="item.name" :value="item.id" />
 				</el-select>
 			</el-form-item>
@@ -57,6 +57,8 @@
 					clearable
 					:render-after-expand="false"
 					:checkStrictly="true"
+					filterable
+					:filter-node-method="filterNodeMethod"
 				/>
 			</el-form-item>
 			<el-form-item label="IPN" prop="ipn">
@@ -74,12 +76,7 @@
 import { ref, reactive, onMounted, watch } from "vue";
 // import { genderType } from "@/utils/serviceDict";
 import { ResList, Component, Category, Footprint, Storage } from "@/api/interface";
-import {
-	getFootprintsEnum,
-	getComponentStorageLocationEnum,
-	getComponentCategoryEnum,
-	getComponentCategoryEnumTree
-} from "@/api/modules/components";
+import { getFootprintsEnum, getComponentStorageLocationEnum, getComponentCategoryEnumTree } from "@/api/modules/components";
 import { ElMessage, FormInstance } from "element-plus";
 import UploadImg from "@/components/UploadImg/index.vue";
 
@@ -135,6 +132,10 @@ const handleSubmit = () => {
 // Public verification method (the picture upload successfully triggers re -verification)
 const checkValidate = (val: string) => {
 	ruleFormRef.value!.validateField(val, () => {});
+};
+
+const filterNodeMethod = (value: string, data: Category.ResGetCategoryRecord) => {
+	return data.name.includes(value);
 };
 
 const componentCategories = ref<Category.ResGetCategoryRecord[]>();

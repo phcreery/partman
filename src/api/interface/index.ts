@@ -91,6 +91,9 @@ export namespace ComponentCategory {
 	export interface ResGetCategoryRecord extends ResGetRecord, ComponentCategoryColumns {
 		_fullName: string;
 	}
+	export interface ResGetCategoryRecordTree extends ResGetCategoryRecord {
+		children: ResGetCategoryRecordTree;
+	}
 }
 
 export namespace Footprint {
@@ -121,6 +124,9 @@ export namespace FootprintCategory {
 	export type ReqDeleteFootprintCategoriesParams = { ids: string[] };
 	// Responses
 	export interface ResGetFootprintCategoryRecord extends ResGetRecord, FootprintCategoryColumns {}
+	export interface ResGetFootprintCategoryRecordTree extends ResGetFootprintCategoryRecord {
+		children: ResGetFootprintCategoryRecordTree;
+	}
 }
 
 export namespace Storage {

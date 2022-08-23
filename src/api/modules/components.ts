@@ -80,7 +80,7 @@ export const getComponentCategoryEnum = async () => {
 	let [res, err] = await tryCatchAsync(() => client.records.getList("component_categories", 1, 99999, {}));
 	if (err) {
 		console.log("getCompCatEnum res err", res, err);
-		return false;
+		// return false;
 	}
 	res.items.forEach((component: ComponentCategory.ResGetCategoryRecord) => {
 		component._fullName = getPathName(res.items, component.id);
@@ -93,11 +93,11 @@ export const getComponentCategoryEnumTree = async () => {
 	let [res, err] = await tryCatchAsync(() => client.records.getList("component_categories", 1, 99999, {}));
 	if (err) {
 		console.log("getCompCatEnum res err", res, err);
-		return false;
+		// return false;
 	}
 	const tree = arrayToTree(res.items, { id: "id", parentId: "parent", dataField: null }); // nest(res.items)
 	console.log("tree", res.items, tree);
-	return { data: tree };
+	return { data: tree } as unknown as APIdata<ComponentCategory.ResGetCategoryRecordTree[]>;
 };
 
 // ---- FOOTPRINTS ----
@@ -127,7 +127,7 @@ export const patchFootprintUpdate = async (params: Footprint.ReqUpdateFootprintP
 	return { data: record } as unknown as APIdata<Footprint.ResGetFootprintRecord>;
 };
 
-export const deleteFootprints = async (params: Component.ReqDeleteFootprintsParams) => {
+export const deleteFootprints = async (params: Footprint.ReqDeleteFootprintsParams) => {
 	// TODO: speed this up??
 	for (const id of params.ids) {
 		await client.records.delete("footprints", id);
@@ -136,17 +136,6 @@ export const deleteFootprints = async (params: Component.ReqDeleteFootprintsPara
 };
 
 // ---- FOOTPRINT CATEGORY ----
-
-export const getFootprintCategoryEnumTree = async () => {
-	let [res, err] = await tryCatchAsync(() => client.records.getList("footprint_categories", 1, 99999, {}));
-	if (err) {
-		console.log("error", res, err);
-		return false;
-	}
-	const tree = arrayToTree(res.items, { id: "id", parentId: "parent", dataField: null }); // nest(res.items)
-	console.log("tree", res.items, tree);
-	return { data: tree };
-};
 
 export const postFootprintCategoryCreate = async (params: FootprintCategory.ReqCreateFootprintCategoryParams) => {
 	let record = await client.records.create("footprint_categories", params);
@@ -164,6 +153,17 @@ export const deleteFootprintCategories = async (params: FootprintCategory.ReqDel
 		await client.records.delete("footprint_categories", id);
 	}
 	return true;
+};
+
+export const getFootprintCategoryEnumTree = async () => {
+	let [res, err] = await tryCatchAsync(() => client.records.getList("footprint_categories", 1, 99999, {}));
+	if (err) {
+		console.log("error", res, err);
+		return false;
+	}
+	const tree = arrayToTree(res.items, { id: "id", parentId: "parent", dataField: null }); // nest(res.items)
+	console.log("tree", res.items, tree);
+	return { data: tree } as unknown as APIdata<FootprintCategory.ResGetFootprintCategoryRecordTree[]>;
 };
 
 // ---- STORAGE LOCATIONS ----

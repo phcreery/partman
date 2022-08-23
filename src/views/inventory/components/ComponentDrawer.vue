@@ -135,7 +135,7 @@ const checkValidate = (val: string) => {
 };
 
 const filterNodeMethod = (value: string, data: Category.ResGetCategoryRecord) => {
-	return data.name.includes(value);
+	return data.name.toLowerCase().includes(value.toLowerCase());
 };
 
 const componentCategories = ref<Category.ResGetCategoryRecord[]>();

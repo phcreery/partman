@@ -32,34 +32,58 @@
 				></el-input>
 			</el-form-item>
 			<el-form-item label="Footprint" prop="footprint" v-loading="componentFootprints === undefined">
-				<el-select v-model="drawerData.rowData!.footprint" placeholder="" clearable filterable>
-					<el-option v-for="item in componentFootprints" :key="item.id" :label="item.name" :value="item.id" />
-				</el-select>
+				<div class="form-with-buttons">
+					<el-space>
+						<el-select v-model="drawerData.rowData!.footprint" placeholder="" clearable filterable style="width: max-content">
+							<el-option v-for="item in componentFootprints" :key="item.id" :label="item.name" :value="item.id" />
+						</el-select>
+						<el-button-group>
+							<el-button :icon="Refresh" />
+							<el-button :icon="Plus" />
+						</el-button-group>
+					</el-space>
+				</div>
 			</el-form-item>
 			<el-form-item label="Stock" prop="stock">
 				<el-input-number v-model="drawerData.rowData!.stock" />
 			</el-form-item>
 			<el-form-item label="Storage Location" prop="storage_location" v-loading="componentStorageLocations === undefined">
-				<el-select v-model="drawerData.rowData!.storage_location" placeholder="" clearable filterable>
-					<el-option v-for="item in componentStorageLocations" :key="item.id" :label="item.name" :value="item.id" />
-				</el-select>
+				<div class="form-with-buttons">
+					<el-space>
+						<el-select v-model="drawerData.rowData!.storage_location" placeholder="" clearable filterable>
+							<el-option v-for="item in componentStorageLocations" :key="item.id" :label="item.name" :value="item.id" />
+						</el-select>
+						<el-button-group>
+							<el-button :icon="Refresh" />
+							<el-button :icon="Plus" />
+						</el-button-group>
+					</el-space>
+				</div>
 			</el-form-item>
 			<el-form-item label="Category" prop="category" v-loading="componentCategories === undefined">
-				<!-- <el-select v-model="drawerData.rowData!.category" placeholder="" clearable>
+				<div class="form-with-buttons">
+					<el-space>
+						<!-- <el-select v-model="drawerData.rowData!.category" placeholder="" clearable>
 					<el-option v-for="item in componentCategories" :key="item.id" :label="item.name" :value="item.id" />
 				</el-select> -->
-				<!-- <el-cascader v-model="drawerData.rowData!.category" :options="componentCategories" :props="cascaderProps" /> -->
-				<el-tree-select
-					v-model="drawerData.rowData!.category"
-					:multiple="false"
-					:data="componentCategories"
-					:props="treeSelectProps"
-					clearable
-					:render-after-expand="false"
-					:checkStrictly="true"
-					filterable
-					:filter-node-method="filterNodeMethod"
-				/>
+						<!-- <el-cascader v-model="drawerData.rowData!.category" :options="componentCategories" :props="cascaderProps" /> -->
+						<el-tree-select
+							v-model="drawerData.rowData!.category"
+							:multiple="false"
+							:data="componentCategories"
+							:props="treeSelectProps"
+							clearable
+							:render-after-expand="false"
+							:checkStrictly="true"
+							filterable
+							:filter-node-method="filterNodeMethod"
+						/>
+						<el-button-group>
+							<el-button :icon="Refresh" />
+							<el-button :icon="Plus" />
+						</el-button-group>
+					</el-space>
+				</div>
 			</el-form-item>
 			<el-form-item label="IPN" prop="ipn">
 				<el-input v-model="drawerData.rowData!.ipn" placeholder="Internal Part Number" clearable></el-input>
@@ -79,6 +103,7 @@ import { ResList, Component, Category, Footprint, Storage } from "@/api/interfac
 import { getFootprintsEnum, getComponentStorageLocationEnum, getComponentCategoryEnumTree } from "@/api/modules/components";
 import { ElMessage, FormInstance } from "element-plus";
 import UploadImg from "@/components/UploadImg/index.vue";
+import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh, DCaret, Plus } from "@element-plus/icons-vue";
 
 const rules = reactive({
 	name: [{ required: true, message: "Please upload the component name", trigger: "change" }],
@@ -157,3 +182,23 @@ defineExpose({
 	acceptParams
 });
 </script>
+
+<style lang="scss">
+.form-with-buttons {
+	width: 100%;
+	.el-space {
+		width: 100%;
+		.el-space__item {
+			&:first-child {
+				width: 100%;
+			}
+			&:last-child {
+				margin-right: 0px !important;
+			}
+			& > .el-button-group {
+				width: max-content;
+			}
+		}
+	}
+}
+</style>

@@ -10,7 +10,6 @@ Technologies used:
 - Vue 3.2
 - Vite 2
 - TypeScript
-- Vite2
 - Pinia
 - Element-Plus
 - PocketBase

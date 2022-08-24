@@ -38,7 +38,7 @@
 							<el-option v-for="item in componentFootprints" :key="item.id" :label="item.name" :value="item.id" />
 						</el-select>
 						<el-button-group>
-							<el-button :icon="Refresh" />
+							<el-button :icon="Refresh" @click="refreshCategories" />
 							<el-button :icon="Plus" />
 						</el-button-group>
 					</el-space>
@@ -54,7 +54,7 @@
 							<el-option v-for="item in componentStorageLocations" :key="item.id" :label="item.name" :value="item.id" />
 						</el-select>
 						<el-button-group>
-							<el-button :icon="Refresh" />
+							<el-button :icon="Refresh" @click="refreshStorageLocations" />
 							<el-button :icon="Plus" />
 						</el-button-group>
 					</el-space>
@@ -79,7 +79,7 @@
 							:filter-node-method="filterNodeMethod"
 						/>
 						<el-button-group>
-							<el-button :icon="Refresh" />
+							<el-button :icon="Refresh" @click="refreshFootprints" />
 							<el-button :icon="Plus" />
 						</el-button-group>
 					</el-space>
@@ -167,15 +167,17 @@ const componentCategories = ref<Category.ResGetCategoryRecord[]>();
 const componentStorageLocations = ref<Storage.ResGetStorageRecord[]>();
 const componentFootprints = ref<Footprint.ResGetFootprintRecord[]>();
 
+const refreshCategories = () => getComponentCategoryEnumTree().then(res => (componentCategories.value = res.data));
+const refreshStorageLocations = () => getComponentStorageLocationEnum().then(res => (componentStorageLocations.value = res.data));
+const refreshFootprints = () => getFootprintsEnum().then(res => (componentFootprints.value = res.data));
+
 // When opening the drawer, fetch the necessary field values
 watch(drawerVisible, openValue => {
 	if (openValue) {
-		getComponentCategoryEnumTree().then(res => (componentCategories.value = res.data));
-		getComponentStorageLocationEnum().then(res => (componentStorageLocations.value = res.data));
-		getFootprintsEnum().then(res => (componentFootprints.value = res.data));
+		refreshCategories();
+		refreshStorageLocations();
+		refreshFootprints();
 	}
-
-	console.log("category", drawerData.value.rowData!.category, componentCategories.value);
 });
 
 defineExpose({

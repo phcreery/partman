@@ -1,15 +1,16 @@
 <template>
-	<el-drawer v-model="drawerVisible" :destroy-on-close="true" size="600px" :title="`${drawerData.title} Footprint`">
-		<el-form
-			ref="ruleFormRef"
-			:rules="rules"
-			:disabled="drawerData.isView"
-			:model="drawerData.rowData"
-			label-width="130px"
-			label-suffix=" :"
-			:append-to-body="true"
-		>
-			<!-- <el-form-item label="profile picture" prop="avatar">
+	<div>
+		<el-drawer v-model="drawerVisible" :destroy-on-close="true" size="600px" :title="`${drawerData.title} Footprint`">
+			<el-form
+				ref="ruleFormRef"
+				:rules="rules"
+				:disabled="drawerData.isView"
+				:model="drawerData.rowData"
+				label-width="130px"
+				label-suffix=" :"
+				:append-to-body="true"
+			>
+				<!-- <el-form-item label="profile picture" prop="avatar">
 				<UploadImg
 					v-model:imageUrl="drawerData.rowData!.avatar"
 					:disabled="drawerData.isView"
@@ -19,49 +20,71 @@
 					<template #tip> The size cannot exceed 3M </template>
 				</UploadImg>
 			</el-form-item> -->
-			<el-form-item label="Name" prop="name">
-				<el-input v-model="drawerData.rowData!.name" placeholder="Please fill in the footprint name" clearable></el-input>
-			</el-form-item>
-			<el-form-item label="Description" prop="description">
-				<el-input
-					v-model="drawerData.rowData!.description"
-					placeholder="Please fill in the footprint description"
-					clearable
-					:rows="4"
-					type="textarea"
-					autosize
-				></el-input>
-			</el-form-item>
-			<el-form-item label="Category" prop="category" v-loading="footprintCategories === undefined">
-				<!-- <el-select v-model="drawerData.rowData!.category" placeholder="" clearable>
+				<el-form-item label="Name" prop="name">
+					<el-input v-model="drawerData.rowData!.name" placeholder="Please fill in the footprint name" clearable></el-input>
+				</el-form-item>
+				<el-form-item label="Description" prop="description">
+					<el-input
+						v-model="drawerData.rowData!.description"
+						placeholder="Please fill in the footprint description"
+						clearable
+						:rows="4"
+						type="textarea"
+						autosize
+					></el-input>
+				</el-form-item>
+				<el-form-item label="Category" prop="category" v-loading="footprintCategories === undefined">
+					<!-- <el-select v-model="drawerData.rowData!.category" placeholder="" clearable>
 					<el-option v-for="item in footprintCategories" :key="item.id" :label="item.name" :value="item.id" />
 				</el-select> -->
-				<!-- <el-cascader v-model="drawerData.rowData!.category" :options="footprintCategories" :props="cascaderProps" /> -->
-				<el-tree-select
-					v-model="drawerData.rowData!.category"
-					:multiple="false"
-					:data="footprintCategories"
-					:props="treeSelectProps"
-					clearable
-					:render-after-expand="false"
-					:checkStrictly="true"
-				/>
-			</el-form-item>
-		</el-form>
-		<template #footer>
-			<el-button @click="drawerVisible = false">Cancel</el-button>
-			<el-button type="primary" v-show="!drawerData.isView" @click="handleSubmit">Save</el-button>
-		</template>
-	</el-drawer>
+					<!-- <el-cascader v-model="drawerData.rowData!.category" :options="footprintCategories" :props="cascaderProps" /> -->
+					<!-- <el-tree-select
+						v-model="drawerData.rowData!.category"
+						:multiple="false"
+						:data="footprintCategories"
+						:props="treeSelectProps"
+						clearable
+						:render-after-expand="false"
+						:checkStrictly="true"
+					/> -->
+					<div class="form-item-with-buttons">
+						<el-space>
+							<el-tree-select
+								v-model="drawerData.rowData!.category"
+								:multiple="false"
+								:data="footprintCategories"
+								:props="treeSelectProps"
+								clearable
+								:render-after-expand="false"
+								:checkStrictly="true"
+							/>
+							<el-button-group>
+								<el-button :icon="Refresh" @click="refreshFootprintCategories" />
+								<el-button :icon="Plus" @click="openFootprintCategoryDrawer('New')" />
+							</el-button-group>
+						</el-space>
+					</div>
+				</el-form-item>
+			</el-form>
+			<template #footer>
+				<el-button @click="drawerVisible = false">Cancel</el-button>
+				<el-button type="primary" v-show="!drawerData.isView" @click="handleSubmit">Save</el-button>
+			</template>
+		</el-drawer>
+
+		<FootprintCategoryDrawer ref="drawerRefFootprintCategory"></FootprintCategoryDrawer>
+	</div>
 </template>
 
 <script setup lang="ts" name="UserDrawer">
 import { ref, reactive, onMounted, watch } from "vue";
 // import { genderType } from "@/utils/serviceDict";
 import { ResList, Component, ComponentCategory, Footprint, FootprintCategory, Storage } from "@/api/interface";
-import { getFootprintCategoryEnumTree } from "@/api/modules/components";
+import { getFootprintCategoryEnumTree, postFootprintCategoryCreate } from "@/api/modules/components";
 import { ElMessage, FormInstance } from "element-plus";
 import UploadImg from "@/components/UploadImg/index.vue";
+import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh, DCaret, Plus } from "@element-plus/icons-vue";
+import FootprintCategoryDrawer from "@/views/footprints/components/FootprintCategoryDrawer.vue";
 
 const rules = reactive({
 	name: [{ required: true, message: "Please upload the footprint name", trigger: "change" }],
@@ -116,14 +139,34 @@ const checkValidate = (val: string) => {
 
 const footprintCategories = ref();
 
+const refreshFootprintCategories = () =>
+	getFootprintCategoryEnumTree().then(res => {
+		if (res) footprintCategories.value = res.data;
+	});
+
 // When opening the drawer, fetch the necessary field values
 watch(drawerVisible, openValue => {
 	if (openValue) {
-		getFootprintCategoryEnumTree().then(res => {
-			if (res) footprintCategories.value = res.data;
-		});
+		refreshFootprintCategories();
 	}
 });
+
+// Open the drawer (new, view, edit)
+interface DrawerExpose {
+	acceptParams: (params: any) => void;
+}
+
+const drawerRefFootprintCategory = ref<DrawerExpose>();
+const openFootprintCategoryDrawer = (title: string, rowData: Partial<FootprintCategory.ResGetFootprintCategoryRecord> = {}) => {
+	let params = {
+		title,
+		rowData: {}, // { ...rowData },
+		isView: title === "View",
+		apiUrl: title === "New" ? postFootprintCategoryCreate : "",
+		updateTable: refreshFootprintCategories() // proTree.value.refresh
+	};
+	drawerRefFootprintCategory.value!.acceptParams(params);
+};
 
 defineExpose({
 	acceptParams

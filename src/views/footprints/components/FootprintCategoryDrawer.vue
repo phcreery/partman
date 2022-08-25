@@ -61,6 +61,13 @@ interface DrawerProps {
 	updateTable?: () => Promise<any>;
 }
 
+// Parameters transmitted from the parent footprint
+const acceptParams = (params: DrawerProps): void => {
+	console.log("params", params);
+	drawerData.value = params;
+	drawerVisible.value = true;
+};
+
 const rules = reactive({
 	name: [{ required: true, message: "Please upload the footprint name", trigger: "change" }],
 	description: [{ required: false, message: "Please fill in the description", trigger: "change" }],
@@ -76,12 +83,6 @@ const drawerData = ref<DrawerProps>({
 	isView: false,
 	title: ""
 });
-
-// Parameters transmitted from the parent footprint
-const acceptParams = (params: DrawerProps): void => {
-	drawerData.value = params;
-	drawerVisible.value = true;
-};
 
 const ruleFormRef = ref<FormInstance>();
 // Submit data (new/edit)

@@ -196,6 +196,24 @@
 	}
 }
 
+.form-item-with-buttons {
+	width: 100%;
+	.el-space {
+		width: 100%;
+		.el-space__item {
+			&:first-child {
+				width: 100%;
+			}
+			&:last-child {
+				margin-right: 0px !important;
+			}
+			& > .el-button-group {
+				width: max-content;
+			}
+		}
+	}
+}
+
 // * El-Dialog style
 .el-dialog {
 	.el-dialog__header {

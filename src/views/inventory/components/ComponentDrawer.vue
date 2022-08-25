@@ -34,7 +34,7 @@
 					></el-input>
 				</el-form-item>
 				<el-form-item label="Footprint" prop="footprint" v-loading="componentFootprints === undefined">
-					<div class="form-with-buttons">
+					<div class="form-item-with-buttons">
 						<el-space>
 							<el-select v-model="drawerData.rowData!.footprint" placeholder="" clearable filterable style="width: max-content">
 								<el-option v-for="item in componentFootprints" :key="item.id" :label="item.name" :value="item.id" />
@@ -50,7 +50,7 @@
 					<el-input-number v-model="drawerData.rowData!.stock" />
 				</el-form-item>
 				<el-form-item label="Storage Location" prop="storage_location" v-loading="componentStorageLocations === undefined">
-					<div class="form-with-buttons">
+					<div class="form-item-with-buttons">
 						<el-space>
 							<el-select v-model="drawerData.rowData!.storage_location" placeholder="" clearable filterable>
 								<el-option v-for="item in componentStorageLocations" :key="item.id" :label="item.name" :value="item.id" />
@@ -63,7 +63,7 @@
 					</div>
 				</el-form-item>
 				<el-form-item label="Category" prop="category" v-loading="componentCategories === undefined">
-					<div class="form-with-buttons">
+					<div class="form-item-with-buttons">
 						<el-space>
 							<!-- <el-select v-model="drawerData.rowData!.category" placeholder="" clearable>
 					<el-option v-for="item in componentCategories" :key="item.id" :label="item.name" :value="item.id" />
@@ -212,22 +212,4 @@ defineExpose({
 });
 </script>
 
-<style lang="scss">
-.form-with-buttons {
-	width: 100%;
-	.el-space {
-		width: 100%;
-		.el-space__item {
-			&:first-child {
-				width: 100%;
-			}
-			&:last-child {
-				margin-right: 0px !important;
-			}
-			& > .el-button-group {
-				width: max-content;
-			}
-		}
-	}
-}
-</style>
+<style lang="scss"></style>

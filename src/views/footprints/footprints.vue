@@ -64,8 +64,8 @@
 							<el-button type="primary" link :icon="EditPen" @click="openFootprintDrawer('Edit', scope.row)">Edit</el-button>
 						</template>
 					</ProTable>
-					<FootprintDrawer ref="drawerRef"></FootprintDrawer>
-					<FootprintCategoryDrawer ref="drawerCategoryRef"></FootprintCategoryDrawer>
+					<FootprintDrawer ref="drawerRefFootprint"></FootprintDrawer>
+					<FootprintCategoryDrawer ref="drawerRefFootprintCategory"></FootprintCategoryDrawer>
 				</div>
 			</el-col>
 		</el-row>
@@ -191,7 +191,7 @@ const batchDeleteCategory = async (ids: string[]) => {
 interface DrawerExpose {
 	acceptParams: (params: any) => void;
 }
-const drawerRef = ref<DrawerExpose>();
+const drawerRefFootprint = ref<DrawerExpose>();
 const openFootprintDrawer = (title: string, rowData: Partial<Footprint.ResGetFootprintRecord> = {}) => {
 	let params = {
 		title,
@@ -200,10 +200,10 @@ const openFootprintDrawer = (title: string, rowData: Partial<Footprint.ResGetFoo
 		apiUrl: title === "New" ? postFootprintCreate : title === "Edit" ? patchFootprintUpdate : "",
 		updateTable: proTable.value.refresh
 	};
-	drawerRef.value!.acceptParams(params);
+	drawerRefFootprint.value!.acceptParams(params);
 };
 
-const drawerCategoryRef = ref<DrawerExpose>();
+const drawerRefFootprintCategory = ref<DrawerExpose>();
 const openFootprintCategoryDrawer = (title: string, rowData: Partial<FootprintCategory.ResGetFootprintCategoryRecord> = {}) => {
 	let params = {
 		title,
@@ -212,6 +212,6 @@ const openFootprintCategoryDrawer = (title: string, rowData: Partial<FootprintCa
 		apiUrl: title === "New" ? postFootprintCategoryCreate : title === "Edit" ? patchFootprintCategoryUpdate : "",
 		updateTable: proTree.value.refresh
 	};
-	drawerCategoryRef.value!.acceptParams(params);
+	drawerRefFootprintCategory.value!.acceptParams(params);
 };
 </script>

@@ -85,7 +85,6 @@ export const getComponentCategoryEnum = async () => {
 	res.items.forEach((component: ComponentCategory.ResGetCategoryRecord) => {
 		component._fullName = getPathName(res.items, component.id);
 	});
-	console.log("categories with path", res.items);
 	return { data: res.items } as unknown as APIdata<ComponentCategory.ResGetCategoryRecord[]>;
 };
 
@@ -96,7 +95,6 @@ export const getComponentCategoryEnumTree = async () => {
 		// return false;
 	}
 	const tree = arrayToTree(res.items, { id: "id", parentId: "parent", dataField: null }); // nest(res.items)
-	console.log("tree", res.items, tree);
 	return { data: tree } as unknown as APIdata<ComponentCategory.ResGetCategoryRecordTree[]>;
 };
 
@@ -162,7 +160,6 @@ export const getFootprintCategoryEnumTree = async () => {
 		return false;
 	}
 	const tree = arrayToTree(res.items, { id: "id", parentId: "parent", dataField: null }); // nest(res.items)
-	console.log("tree", res.items, tree);
 	return { data: tree } as unknown as APIdata<FootprintCategory.ResGetFootprintCategoryRecordTree[]>;
 };
 

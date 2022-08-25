@@ -20,7 +20,7 @@ const endLoading = () => {
 // Call TryhideFullScreenLoading() method，needLoadingRequestCount - 1.When NeedloadingRequestCount is 0, Loading is over.
 let needLoadingRequestCount = 0;
 export const showFullScreenLoading = () => {
-	console.log("show full screen (loading...)");
+	// console.log("show full screen (loading...)");
 	if (needLoadingRequestCount === 0) {
 		startLoading();
 	}
@@ -28,7 +28,7 @@ export const showFullScreenLoading = () => {
 };
 
 export const tryHideFullScreenLoading = () => {
-	console.log("hide screen hide (done)");
+	// console.log("hide screen hide (done)");
 	if (needLoadingRequestCount <= 0) return;
 	needLoadingRequestCount--;
 	if (needLoadingRequestCount === 0) {

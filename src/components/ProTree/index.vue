@@ -115,3 +115,7 @@ const filterNode = (value: string, data: any) => {
 // Parameters and methods exposed to parent components
 defineExpose({ selectedItem, refresh });
 </script>
+
+<style scoped lang="scss">
+@import "./index.scss";
+</style>

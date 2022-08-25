@@ -7,6 +7,7 @@
 			:model="drawerData.rowData"
 			label-width="130px"
 			label-suffix=" :"
+			:append-to-body="true"
 		>
 			<!-- <el-form-item label="profile picture" prop="avatar">
 				<UploadImg

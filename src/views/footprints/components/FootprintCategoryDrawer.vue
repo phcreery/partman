@@ -7,6 +7,7 @@
 			:model="drawerData.rowData"
 			label-width="130px"
 			label-suffix=" :"
+			:append-to-body="true"
 		>
 			<el-form-item label="Name" prop="name">
 				<el-input v-model="drawerData.rowData!.name" placeholder="Please fill in the footprint name" clearable></el-input>

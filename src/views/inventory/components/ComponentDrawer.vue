@@ -1,14 +1,16 @@
 <template>
-	<el-drawer v-model="drawerVisible" :destroy-on-close="true" size="600px" :title="`${drawerData.title} Component`">
-		<el-form
-			ref="ruleFormRef"
-			:rules="rules"
-			:disabled="drawerData.isView"
-			:model="drawerData.rowData"
-			label-width="130px"
-			label-suffix=" :"
-		>
-			<!-- <el-form-item label="profile picture" prop="avatar">
+	<div>
+		<el-drawer v-model="drawerVisible" :destroy-on-close="true" size="600px" :title="`${drawerData.title} Component`">
+			<el-form
+				ref="ruleFormRef"
+				:rules="rules"
+				:disabled="drawerData.isView"
+				:model="drawerData.rowData"
+				label-width="130px"
+				label-suffix=" :"
+				:append-to-body="true"
+			>
+				<!-- <el-form-item label="profile picture" prop="avatar">
 				<UploadImg
 					v-model:imageUrl="drawerData.rowData!.avatar"
 					:disabled="drawerData.isView"
@@ -18,92 +20,101 @@
 					<template #tip> The size cannot exceed 3M </template>
 				</UploadImg>
 			</el-form-item> -->
-			<el-form-item label="Name" prop="name">
-				<el-input v-model="drawerData.rowData!.name" placeholder="Please fill in the component name" clearable></el-input>
-			</el-form-item>
-			<el-form-item label="Description" prop="description">
-				<el-input
-					v-model="drawerData.rowData!.description"
-					placeholder="Please fill in the component description"
-					clearable
-					:rows="4"
-					type="textarea"
-					autosize
-				></el-input>
-			</el-form-item>
-			<el-form-item label="Footprint" prop="footprint" v-loading="componentFootprints === undefined">
-				<div class="form-with-buttons">
-					<el-space>
-						<el-select v-model="drawerData.rowData!.footprint" placeholder="" clearable filterable style="width: max-content">
-							<el-option v-for="item in componentFootprints" :key="item.id" :label="item.name" :value="item.id" />
-						</el-select>
-						<el-button-group>
-							<el-button :icon="Refresh" @click="refreshCategories" />
-							<el-button :icon="Plus" />
-						</el-button-group>
-					</el-space>
-				</div>
-			</el-form-item>
-			<el-form-item label="Stock" prop="stock">
-				<el-input-number v-model="drawerData.rowData!.stock" />
-			</el-form-item>
-			<el-form-item label="Storage Location" prop="storage_location" v-loading="componentStorageLocations === undefined">
-				<div class="form-with-buttons">
-					<el-space>
-						<el-select v-model="drawerData.rowData!.storage_location" placeholder="" clearable filterable>
-							<el-option v-for="item in componentStorageLocations" :key="item.id" :label="item.name" :value="item.id" />
-						</el-select>
-						<el-button-group>
-							<el-button :icon="Refresh" @click="refreshStorageLocations" />
-							<el-button :icon="Plus" />
-						</el-button-group>
-					</el-space>
-				</div>
-			</el-form-item>
-			<el-form-item label="Category" prop="category" v-loading="componentCategories === undefined">
-				<div class="form-with-buttons">
-					<el-space>
-						<!-- <el-select v-model="drawerData.rowData!.category" placeholder="" clearable>
+				<el-form-item label="Name" prop="name">
+					<el-input v-model="drawerData.rowData!.name" placeholder="Please fill in the component name" clearable></el-input>
+				</el-form-item>
+				<el-form-item label="Description" prop="description">
+					<el-input
+						v-model="drawerData.rowData!.description"
+						placeholder="Please fill in the component description"
+						clearable
+						:rows="4"
+						type="textarea"
+						autosize
+					></el-input>
+				</el-form-item>
+				<el-form-item label="Footprint" prop="footprint" v-loading="componentFootprints === undefined">
+					<div class="form-with-buttons">
+						<el-space>
+							<el-select v-model="drawerData.rowData!.footprint" placeholder="" clearable filterable style="width: max-content">
+								<el-option v-for="item in componentFootprints" :key="item.id" :label="item.name" :value="item.id" />
+							</el-select>
+							<el-button-group>
+								<el-button :icon="Refresh" @click="refreshCategories" />
+								<el-button :icon="Plus" @click="openFootprintDrawer('New')" />
+							</el-button-group>
+						</el-space>
+					</div>
+				</el-form-item>
+				<el-form-item label="Stock" prop="stock">
+					<el-input-number v-model="drawerData.rowData!.stock" />
+				</el-form-item>
+				<el-form-item label="Storage Location" prop="storage_location" v-loading="componentStorageLocations === undefined">
+					<div class="form-with-buttons">
+						<el-space>
+							<el-select v-model="drawerData.rowData!.storage_location" placeholder="" clearable filterable>
+								<el-option v-for="item in componentStorageLocations" :key="item.id" :label="item.name" :value="item.id" />
+							</el-select>
+							<el-button-group>
+								<el-button :icon="Refresh" @click="refreshStorageLocations" />
+								<el-button :icon="Plus" />
+							</el-button-group>
+						</el-space>
+					</div>
+				</el-form-item>
+				<el-form-item label="Category" prop="category" v-loading="componentCategories === undefined">
+					<div class="form-with-buttons">
+						<el-space>
+							<!-- <el-select v-model="drawerData.rowData!.category" placeholder="" clearable>
 					<el-option v-for="item in componentCategories" :key="item.id" :label="item.name" :value="item.id" />
 				</el-select> -->
-						<!-- <el-cascader v-model="drawerData.rowData!.category" :options="componentCategories" :props="cascaderProps" /> -->
-						<el-tree-select
-							v-model="drawerData.rowData!.category"
-							:multiple="false"
-							:data="componentCategories"
-							:props="treeSelectProps"
-							clearable
-							:render-after-expand="false"
-							:checkStrictly="true"
-							filterable
-							:filter-node-method="filterNodeMethod"
-						/>
-						<el-button-group>
-							<el-button :icon="Refresh" @click="refreshFootprints" />
-							<el-button :icon="Plus" />
-						</el-button-group>
-					</el-space>
-				</div>
-			</el-form-item>
-			<el-form-item label="IPN" prop="ipn">
-				<el-input v-model="drawerData.rowData!.ipn" placeholder="Internal Part Number" clearable></el-input>
-			</el-form-item>
-		</el-form>
-		<template #footer>
-			<el-button @click="drawerVisible = false">Cancel</el-button>
-			<el-button type="primary" v-show="!drawerData.isView" @click="handleSubmit">Save</el-button>
-		</template>
-	</el-drawer>
+							<!-- <el-cascader v-model="drawerData.rowData!.category" :options="componentCategories" :props="cascaderProps" /> -->
+							<el-tree-select
+								v-model="drawerData.rowData!.category"
+								:multiple="false"
+								:data="componentCategories"
+								:props="treeSelectProps"
+								clearable
+								:render-after-expand="false"
+								:checkStrictly="true"
+								filterable
+								:filter-node-method="filterNodeMethod"
+							/>
+							<el-button-group>
+								<el-button :icon="Refresh" @click="refreshFootprints" />
+								<el-button :icon="Plus" />
+							</el-button-group>
+						</el-space>
+					</div>
+				</el-form-item>
+				<el-form-item label="IPN" prop="ipn">
+					<el-input v-model="drawerData.rowData!.ipn" placeholder="Internal Part Number" clearable></el-input>
+				</el-form-item>
+			</el-form>
+			<template #footer>
+				<el-button @click="drawerVisible = false">Cancel</el-button>
+				<el-button type="primary" v-show="!drawerData.isView" @click="handleSubmit">Save</el-button>
+			</template>
+		</el-drawer>
+
+		<FootprintDrawer ref="drawerRefNestedFootprint"></FootprintDrawer>
+	</div>
 </template>
 
 <script setup lang="ts" name="UserDrawer">
 import { ref, reactive, onMounted, watch } from "vue";
 // import { genderType } from "@/utils/serviceDict";
 import { ResList, Component, Category, Footprint, Storage } from "@/api/interface";
-import { getFootprintsEnum, getComponentStorageLocationEnum, getComponentCategoryEnumTree } from "@/api/modules/components";
+import {
+	getFootprintsEnum,
+	getComponentStorageLocationEnum,
+	getComponentCategoryEnumTree,
+	postFootprintCreate
+} from "@/api/modules/components";
 import { ElMessage, FormInstance } from "element-plus";
 import UploadImg from "@/components/UploadImg/index.vue";
 import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh, DCaret, Plus } from "@element-plus/icons-vue";
+import FootprintDrawer from "@/views/footprints/components/FootprintDrawer.vue";
 
 const rules = reactive({
 	name: [{ required: true, message: "Please upload the component name", trigger: "change" }],
@@ -179,6 +190,22 @@ watch(drawerVisible, openValue => {
 		refreshFootprints();
 	}
 });
+
+// Open the drawer (new, view, edit)
+interface DrawerExpose {
+	acceptParams: (params: any) => void;
+}
+const drawerRefNestedFootprint = ref<DrawerExpose>();
+const openFootprintDrawer = (title: string, rowData: Partial<Footprint.ResGetFootprintRecord> = {}) => {
+	let params = {
+		title,
+		rowData: { ...rowData },
+		isView: title === "View",
+		apiUrl: title === "New" ? postFootprintCreate : "",
+		updateTable: refreshFootprints // proTable.value.refresh
+	};
+	drawerRefNestedFootprint.value!.acceptParams(params);
+};
 
 defineExpose({
 	acceptParams

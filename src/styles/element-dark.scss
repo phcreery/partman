@@ -140,12 +140,6 @@ html.dark {
 		}
 	}
 
-	.tree-box {
-		.el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
-			background-color: var(--el-bg-color-page) !important;
-		}
-	}
-
 	// el-drawer
 	.el-drawer {
 		.el-drawer__header {

@@ -163,7 +163,7 @@ const openFootprintCategoryDrawer = (title: string, rowData: Partial<FootprintCa
 		rowData: {}, // { ...rowData },
 		isView: title === "View",
 		apiUrl: title === "New" ? postFootprintCategoryCreate : "",
-		updateTable: refreshFootprintCategories() // proTree.value.refresh
+		updateTable: refreshFootprintCategories // proTree.value.refresh
 	};
 	drawerRefFootprintCategory.value!.acceptParams(params);
 };

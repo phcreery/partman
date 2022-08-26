@@ -23,6 +23,8 @@
 				:expand-on-click-node="false"
 				highlight-current
 				:filter-node-method="filterNode"
+				:node-key="id"
+				:current-node-key="''"
 			/>
 		</el-scrollbar>
 	</div>
@@ -38,6 +40,7 @@ interface componentProps {
 	initParam?: any; // Initialize request parameters ==> Non -Perminal (Faculty {})
 	border?: boolean; // Whether the table display is displayed ==> Non -pass (default)
 	toolButton?: boolean; // Whether the table function button is displayed ==> Non -pass (default TRUE)
+	id?: string; // 选择的id ==> 非必传，默认为 “id”
 	labelName?: string; // the name of the data
 	childrenName?: string; // When the data exists in children, specify the children key name ==> Non -component (default "children")
 }
@@ -48,6 +51,7 @@ const props = withDefaults(defineProps<componentProps>(), {
 	initParam: {},
 	border: true,
 	toolButton: true,
+	id: "id",
 	labelName: "name",
 	childrenName: "children"
 });
@@ -59,7 +63,7 @@ const emit = defineEmits<{
 // Form DOM element
 const treeRef = ref();
 
-const selectedItem = ref();
+const selectedItem = ref({ id: "", [props.labelName]: "All" });
 const filterText = ref("");
 const treeData = ref({});
 const totalParam = ref({});
@@ -81,7 +85,8 @@ const getTreeList = async () => {
 		Object.assign(totalParam.value, props.initParam, {}); // isPageable ? pageParam.value : {}
 		let { data } = await props.requestApi(totalParam.value);
 		props.dataCallback && (data = props.dataCallback(data));
-		treeData.value = data;
+		// treeData.value = data;
+		treeData.value = [{ id: "", [props.labelName]: "All" }, ...data];
 	} catch (error) {
 		console.log(error);
 	}
@@ -95,9 +100,9 @@ watch(
 );
 
 const refresh = () => {
-	selectedItem.value = undefined;
+	selectedItem.value = { id: "", [props.labelName]: "All" };
 	getTreeList();
-	emit("handleNodeClick", { id: "" });
+	emit("handleNodeClick", { id: "", [props.labelName]: "All" });
 };
 
 const handleNodeClick = (data: any) => {

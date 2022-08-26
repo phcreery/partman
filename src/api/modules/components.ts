@@ -153,6 +153,18 @@ export const deleteFootprintCategories = async (params: FootprintCategory.ReqDel
 	return true;
 };
 
+export const getFootprintCategoryEnum = async () => {
+	let [res, err] = await tryCatchAsync(() => client.records.getList("footprint_categories", 1, 99999, {}));
+	if (err) {
+		console.log("getFootprintCatEnum res err", res, err);
+		return false;
+	}
+	res.items.forEach((footprint: FootprintCategory.ResGetFootprintCategoryRecord) => {
+		footprint._fullName = getPathName(res.items, footprint.id);
+	});
+	return { data: res.items } as unknown as APIdata<FootprintCategory.ResGetFootprintCategoryRecord[]>;
+};
+
 export const getFootprintCategoryEnumTree = async () => {
 	let [res, err] = await tryCatchAsync(() => client.records.getList("footprint_categories", 1, 99999, {}));
 	if (err) {

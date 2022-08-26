@@ -123,7 +123,9 @@ export namespace FootprintCategory {
 	export interface ReqUpdateFootprintCategoryParams extends ReqRecord, FootprintCategoryColumns {}
 	export type ReqDeleteFootprintCategoriesParams = { ids: string[] };
 	// Responses
-	export interface ResGetFootprintCategoryRecord extends ResGetRecord, FootprintCategoryColumns {}
+	export interface ResGetFootprintCategoryRecord extends ResGetRecord, FootprintCategoryColumns {
+		_fullName: string;
+	}
 	export interface ResGetFootprintCategoryRecordTree extends ResGetFootprintCategoryRecord {
 		children: ResGetFootprintCategoryRecordTree;
 	}

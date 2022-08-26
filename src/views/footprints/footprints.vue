@@ -18,7 +18,7 @@
 						></el-button>
 						<el-button
 							:icon="EditPen"
-							:disabled="!scope.row"
+							:disabled="scope.row.id === ''"
 							@click="openFootprintCategoryDrawer('Edit', scope.row)"
 							v-if="BUTTONS.edit"
 						></el-button>
@@ -26,7 +26,7 @@
 							type="danger"
 							:icon="Delete"
 							plain
-							:disabled="!scope.row"
+							:disabled="scope.row.id === ''"
 							@click="batchDeleteCategory([scope.row.id])"
 							v-if="BUTTONS.delete"
 						>
@@ -94,6 +94,7 @@ import {
 	postFootprintCreate,
 	patchFootprintUpdate,
 	deleteFootprints,
+	getFootprintCategoryEnum,
 	getFootprintCategoryEnumTree,
 	postFootprintCategoryCreate,
 	patchFootprintCategoryUpdate,
@@ -165,6 +166,15 @@ const columns: Partial<ColumnProps>[] = [
 		// searchProps: { disabled: true }
 		// renderHeader
 	},
+	// {
+	// 	prop: "category",
+	// 	label: "Category",
+	// 	width: 120,
+	// 	// search: true,
+	// 	searchType: "text"
+	// 	// enumFunction: async () => await getFootprintCategoryEnum()
+	// 	// searchProps: { value: "id", label: "name" }
+	// },
 	{
 		prop: "description",
 		label: "Description",

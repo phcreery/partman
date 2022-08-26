@@ -16,7 +16,12 @@
 							@click="openFootprintCategoryDrawer('New')"
 							v-if="BUTTONS.add"
 						></el-button>
-						<el-button :icon="EditPen" @click="openFootprintCategoryDrawer('Edit', scope.row)" v-if="BUTTONS.edit"></el-button>
+						<el-button
+							:icon="EditPen"
+							:disabled="!scope.row"
+							@click="openFootprintCategoryDrawer('Edit', scope.row)"
+							v-if="BUTTONS.edit"
+						></el-button>
 						<el-button
 							type="danger"
 							:icon="Delete"

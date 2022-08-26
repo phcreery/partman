@@ -1,5 +1,5 @@
 .el-container {
-	display: flex;
+	// display: flex;
 	width: 100%;
 	min-width: 970px;
 	height: 100%;
@@ -14,7 +14,7 @@
 	}
 	.el-main {
 		box-sizing: border-box;
-		padding: 10px 13px;
+		padding: 10px 12px;
 
 		/* 防止切换出现横向滚动条 */
 		overflow-x: hidden;

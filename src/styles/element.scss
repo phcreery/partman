@@ -18,13 +18,13 @@
 		.header-button-lf {
 			float: left;
 			.el-button {
-				margin-bottom: 20px;
+				margin-bottom: 15px;
 			}
 		}
 		.header-button-ri {
 			float: right;
 			.el-button {
-				margin-bottom: 20px;
+				margin-bottom: 15px;
 			}
 		}
 	}
@@ -91,13 +91,13 @@
 		.header-button-lf {
 			float: left;
 			.el-button {
-				margin-bottom: 20px;
+				margin-bottom: 15px;
 			}
 		}
 		.header-button-ri {
 			float: right;
 			.el-button {
-				margin-bottom: 20px;
+				margin-bottom: 15px;
 			}
 		}
 	}
@@ -111,7 +111,7 @@
 			// text-align: center;
 		}
 		.el-table__header th {
-			height: 50px;
+			height: 45px;
 			font-size: 15px;
 			font-weight: bold;
 			color: #252525;
@@ -139,26 +139,40 @@
 			top: 50%;
 			left: 50%;
 			transform: translate(-50%, -50%);
-		}
-		.table-empty {
-			line-height: 30px;
+			.table-empty {
+				line-height: 30px;
+			}
 		}
 
-		// solve keep-alive || Browser window size changes lead to el-table Motivation of style (2.1.4 There will be problems, and the problem has been solved after the upgrade)
-		// .el-table__body-wrapper {
-		// 	height: calc(100% - 50px) !important;
-		// }
-		// .el-table__inner-wrapper,
-		// .el-scrollbar__wrap {
-		// 	height: 100% !important;
-		// }
+		// table 中 image 图片样式
+		.table-image {
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+		}
 	}
 
 	// Form Paggment style
 	.el-pagination {
 		display: flex;
 		justify-content: flex-end;
-		margin: 23px 0 10px;
+		margin-top: 20px;
+	}
+}
+
+// * el-table 组件大小特殊样式
+.el-table--large {
+	.el-table__row,
+	.el-table__header th {
+		height: 52px !important;
+		// font-size: 16px !important;
+	}
+}
+.el-table--small {
+	.el-table__row,
+	.el-table__header th {
+		height: 38px !important;
+		// font-size: 14px !important;
 	}
 }
 

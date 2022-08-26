@@ -13,7 +13,7 @@
 		</div>
 		<el-input v-model="filterText" placeholder="Filter keyword" />
 		<!-- Tabletop -->
-		<div>
+		<el-scrollbar>
 			<el-tree
 				ref="treeRef"
 				:data="treeData"
@@ -24,7 +24,7 @@
 				highlight-current
 				:filter-node-method="filterNode"
 			/>
-		</div>
+		</el-scrollbar>
 	</div>
 </template>
 
@@ -95,6 +95,7 @@ watch(
 );
 
 const refresh = () => {
+	selectedItem.value = undefined;
 	getTreeList();
 	emit("handleNodeClick", { id: "" });
 };

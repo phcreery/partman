@@ -10,6 +10,7 @@ function that converts JSON object of parameters to a consumable PocketBase 'fil
 ex. filter: { id: 'asdf', footprint: {0: '0806', 1: '0604'}} -> "id='asdf' && (footprint='0806' || footprint='0604')"
 */
 const filterToPBString = (filter: { [propName: string]: any }) => {
+	console.log("filter", filter);
 	let filterParams = Object.keys(filter);
 	let sarr: string[] = []; // string array
 	for (const param of filterParams) {
@@ -154,7 +155,7 @@ export const deleteFootprintCategories = async (params: FootprintCategory.ReqDel
 };
 
 export const getFootprintCategoryEnum = async () => {
-	let [res, err] = await tryCatchAsync(() => client.records.getList("footprint_categories", 1, 99999, {}));
+	let [res, err] = await tryCatchAsync(() => client.records.getList("footprint_categories", 1, 99999, { $autoCancel: false }));
 	if (err) {
 		console.log("getFootprintCatEnum res err", res, err);
 		return false;
@@ -166,7 +167,7 @@ export const getFootprintCategoryEnum = async () => {
 };
 
 export const getFootprintCategoryEnumTree = async () => {
-	let [res, err] = await tryCatchAsync(() => client.records.getList("footprint_categories", 1, 99999, {}));
+	let [res, err] = await tryCatchAsync(() => client.records.getList("footprint_categories", 1, 99999, { $autoCancel: false }));
 	if (err) {
 		console.log("error", res, err);
 		return false;

@@ -120,6 +120,7 @@ const columns: Partial<ColumnProps>[] = [
 			props: { value: "id", label: "name", emitPath: false },
 			checkStrictly: true
 		},
+		// searchInitParam: {category}
 		sortable: true,
 		search: true,
 		// searchType: "select",

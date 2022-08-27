@@ -78,8 +78,7 @@
 </template>
 
 <script setup lang="tsx" name="useComponent">
-import { ref, reactive, watch } from "vue";
-import { ElMessage } from "element-plus";
+import { ref, reactive, watch, nextTick } from "vue";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
@@ -87,8 +86,8 @@ import ProTable from "@/components/ProTable/index.vue";
 import ProTree from "@/components/ProTree/index.vue";
 import FootprintDrawer from "@/views/footprints/components/FootprintDrawer.vue";
 import FootprintCategoryDrawer from "@/views/footprints/components/FootprintCategoryDrawer.vue";
-import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh, DCaret } from "@element-plus/icons-vue";
-import { ResList, Component, Footprint, FootprintCategory } from "@/api/interface";
+import { CirclePlus, Delete, EditPen } from "@element-plus/icons-vue";
+import { ResList, Footprint, FootprintCategory } from "@/api/interface";
 import {
 	getFootprintList,
 	postFootprintCreate,
@@ -106,9 +105,9 @@ const proTable = ref();
 const proTree = ref();
 
 // If the table needs to initialize the request parameter, it will be directly defined to the propable (each request will automatically bring the parameter every time, and it will always be brought to
-const initParam = reactive({
-	filter: { category: "" },
-	expand: ""
+const initParam = reactive<Partial<{ expand: string; filter: { name: string; category: string; description: string } }>>({
+	expand: "category"
+	// filter: { name: undefined, category: undefined, description: undefined }
 });
 
 const initParamCategory = reactive({});
@@ -128,8 +127,7 @@ const dataCallbackTable = (data: ResList<Footprint.ResGetFootprintRecord>) => {
 
 // what binds the category tree to the table filter
 const handleCategorySelect = (data: any) => {
-	console.log(data);
-	initParam.filter.category = data.id;
+	Object.assign(initParam.filter!.category, data.id);
 };
 
 // Page button permission
@@ -139,23 +137,6 @@ const { BUTTONS } = useAuthButtons();
 const columns: Partial<ColumnProps>[] = [
 	{ type: "selection", width: 40, fixed: "left" },
 	// { type: "expand", label: "" },
-	// {
-	// 	prop: "category",
-	// 	label: "Category",
-	// 	align: "left",
-	// 	// values that go into the treeSelect props
-	// 	searchProps: {
-	// 		value: "id",
-	// 		label: "_fullName",
-	// 		props: { value: "id", label: "name", emitPath: false },
-	// 		checkStrictly: true
-	// 	},
-	// 	sortable: true,
-	// 	search: true,
-	// 	searchType: "treeSelect",
-	// 	enumFunction: getComponentCategoryEnum,
-	// 	enumTreeFunction: getComponentCategoryEnumTree
-	// },
 	{
 		prop: "name",
 		label: "Name",
@@ -163,18 +144,30 @@ const columns: Partial<ColumnProps>[] = [
 		sortable: true,
 		search: true,
 		searchType: "text"
-		// searchProps: { disabled: true }
-		// renderHeader
 	},
-	// {
-	// 	prop: "category",
-	// 	label: "Category",
-	// 	width: 120,
-	// 	// search: true,
-	// 	searchType: "text"
-	// 	// enumFunction: async () => await getFootprintCategoryEnum()
-	// 	// searchProps: { value: "id", label: "name" }
-	// },
+	{
+		prop: "category",
+		label: "Category",
+		width: 120,
+		sortable: true,
+		// search: true,
+		// searchType: "text",
+		searchProps: {
+			value: "id",
+			label: "_fullName",
+			props: { value: "id", label: "name", emitPath: false },
+			checkStrictly: true
+		},
+		enumFunction: async () => {
+			// nextTick to prevent calling api multiple times and per instant and race condition on loading screen tracker
+			await nextTick();
+			return await getFootprintCategoryEnum();
+		},
+		enumTreeFunction: async () => {
+			await nextTick();
+			return await getFootprintCategoryEnumTree();
+		}
+	},
 	{
 		prop: "description",
 		label: "Description",

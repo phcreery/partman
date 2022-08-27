@@ -120,6 +120,7 @@ export const useTable = (
 		// When resetting the search form, if there is a default search parameter, reset the default search parameter
 		Object.keys(state.searchInitParam).forEach(key => {
 			state.searchParam[key] = state.searchInitParam[key];
+			// Object.assign(state.searchParam[key], state.searchInitParam[key]);
 		});
 		updatedTotalParam();
 		getTableList();

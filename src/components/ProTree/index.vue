@@ -1,6 +1,6 @@
 <template>
 	<div class="tree-box">
-		<!-- Header Operation button -->
+		<!-- Header buttons -->
 		<div class="tree-header">
 			<div class="header-button-lf">
 				<slot name="treeHeader" :row="selectedItem"></slot>
@@ -12,7 +12,7 @@
 			</div>
 		</div>
 		<el-input v-model="filterText" placeholder="Filter keyword" />
-		<!-- Tabletop -->
+		<!-- Tree -->
 		<el-scrollbar>
 			<el-tree
 				ref="treeRef"
@@ -32,16 +32,15 @@
 
 <script setup lang="ts" name="component">
 import { ref, watch, onMounted } from "vue";
-import { Refresh, Operation, Search, Filter } from "@element-plus/icons-vue";
+import { Refresh } from "@element-plus/icons-vue";
 
 interface componentProps {
 	requestApi: (params: any) => Promise<any>; // API ==> must be passed on the request form data
 	dataCallback?: (data: any) => any; // The callback function of the data can be processed on the data
 	initParam?: any; // Initialize request parameters ==> Non -Perminal (Faculty {})
-	border?: boolean; // Whether the table display is displayed ==> Non -pass (default)
 	toolButton?: boolean; // Whether the table function button is displayed ==> Non -pass (default TRUE)
 	id?: string; // 选择的id ==> 非必传，默认为 “id”
-	labelName?: string; // the name of the data
+	label?: string; // the name of the data
 	childrenName?: string; // When the data exists in children, specify the children key name ==> Non -component (default "children")
 }
 
@@ -49,10 +48,9 @@ interface componentProps {
 const props = withDefaults(defineProps<componentProps>(), {
 	pagination: true,
 	initParam: {},
-	border: true,
 	toolButton: true,
 	id: "id",
-	labelName: "name",
+	label: "name",
 	childrenName: "children"
 });
 
@@ -63,12 +61,12 @@ const emit = defineEmits<{
 // Form DOM element
 const treeRef = ref();
 
-const selectedItem = ref({ id: "", [props.labelName]: "All" });
+const selectedItem = ref({ id: "", [props.label]: "All" });
 const filterText = ref("");
 const treeData = ref({});
 const totalParam = ref({});
 
-const treeProps = { label: props.labelName, children: props.childrenName };
+const treeProps = { label: props.label, children: props.childrenName };
 
 // What needs to be done when initialization is to set the form query default value && obtain form data (the role of the RESET function is exactly these two functions)
 onMounted(async () => {
@@ -86,7 +84,7 @@ const getTreeList = async () => {
 		let { data } = await props.requestApi(totalParam.value);
 		props.dataCallback && (data = props.dataCallback(data));
 		// treeData.value = data;
-		treeData.value = [{ id: "", [props.labelName]: "All" }, ...data];
+		treeData.value = [{ id: "", [props.label]: "All" }, ...data];
 	} catch (error) {
 		console.log(error);
 	}
@@ -100,9 +98,9 @@ watch(
 );
 
 const refresh = () => {
-	selectedItem.value = { id: "", [props.labelName]: "All" };
+	selectedItem.value = { id: "", [props.label]: "All" };
 	getTreeList();
-	emit("handleNodeClick", { id: "", [props.labelName]: "All" });
+	emit("handleNodeClick", { id: "", [props.label]: "All" });
 };
 
 const handleNodeClick = (data: any) => {
@@ -115,7 +113,7 @@ watch(filterText, val => {
 });
 const filterNode = (value: string, data: any) => {
 	if (!value) return true;
-	return data[props.labelName].toLowerCase().includes(value.toLowerCase());
+	return data[props.label].toLowerCase().includes(value.toLowerCase());
 };
 
 // Parameters and methods exposed to parent components

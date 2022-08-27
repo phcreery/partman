@@ -47,9 +47,9 @@
 </template>
 
 <script setup lang="ts" name="UserDrawer">
-import { ref, reactive, onMounted, watch } from "vue";
+import { ref, reactive, watch } from "vue";
 // import { genderType } from "@/utils/serviceDict";
-import { ResList, Component, ComponentCategory, Footprint, FootprintCategory, Storage } from "@/api/interface";
+import { FootprintCategory } from "@/api/interface";
 import { getFootprintCategoryEnumTree } from "@/api/modules/components";
 import { ElMessage, FormInstance } from "element-plus";
 
@@ -102,9 +102,9 @@ const handleSubmit = () => {
 };
 
 // Public verification method (the picture upload successfully triggers re -verification)
-const checkValidate = (val: string) => {
-	ruleFormRef.value!.validateField(val, () => {});
-};
+// const checkValidate = (val: string) => {
+// 	ruleFormRef.value!.validateField(val, () => {});
+// };
 
 const footprintCategories = ref();
 

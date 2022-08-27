@@ -142,7 +142,7 @@
 import { ref, watch } from "vue";
 import { useTable } from "@/hooks/useTable";
 import { useSelection } from "@/hooks/useSelection";
-import { Refresh, Operation, Search, Filter } from "@element-plus/icons-vue";
+import { Refresh, Operation, Filter } from "@element-plus/icons-vue";
 import { ColumnProps } from "@/components/ProTable/interface";
 import { filterEnum, formatValue } from "@/utils/util";
 import SearchForm from "@/components/SearchForm/index.vue";

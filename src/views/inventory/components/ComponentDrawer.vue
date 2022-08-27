@@ -102,9 +102,9 @@
 </template>
 
 <script setup lang="ts" name="UserDrawer">
-import { ref, reactive, onMounted, watch } from "vue";
+import { ref, reactive, watch } from "vue";
 // import { genderType } from "@/utils/serviceDict";
-import { ResList, Component, Category, Footprint, Storage } from "@/api/interface";
+import { Component, ComponentCategory, Footprint, Storage } from "@/api/interface";
 import {
 	getFootprintsEnum,
 	getComponentStorageLocationEnum,
@@ -112,8 +112,8 @@ import {
 	postFootprintCreate
 } from "@/api/modules/components";
 import { ElMessage, FormInstance } from "element-plus";
-import UploadImg from "@/components/UploadImg/index.vue";
-import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh, DCaret, Plus } from "@element-plus/icons-vue";
+// import UploadImg from "@/components/UploadImg/index.vue";
+import { Refresh, Plus } from "@element-plus/icons-vue";
 import FootprintDrawer from "@/views/footprints/components/FootprintDrawer.vue";
 
 const rules = reactive({
@@ -125,7 +125,7 @@ const rules = reactive({
 	ipn: [{ required: false, message: "Please fill in IPN", trigger: "change" }]
 });
 
-const cascaderProps = { value: "id", label: "name", emitPath: false };
+// const cascaderProps = { value: "id", label: "name", emitPath: false };
 const treeSelectProps = { value: "id", label: "name", emitPath: false };
 
 interface DrawerProps {
@@ -166,15 +166,15 @@ const handleSubmit = () => {
 };
 
 // Public verification method (the picture upload successfully triggers re -verification)
-const checkValidate = (val: string) => {
-	ruleFormRef.value!.validateField(val, () => {});
-};
+// const checkValidate = (val: string) => {
+// 	ruleFormRef.value!.validateField(val, () => {});
+// };
 
-const filterNodeMethod = (value: string, data: Category.ResGetCategoryRecord) => {
+const filterNodeMethod = (value: string, data: ComponentCategory.ResGetCategoryRecord) => {
 	return data.name.toLowerCase().includes(value.toLowerCase());
 };
 
-const componentCategories = ref<Category.ResGetCategoryRecord[]>();
+const componentCategories = ref<ComponentCategory.ResGetCategoryRecord[]>();
 const componentStorageLocations = ref<Storage.ResGetStorageRecord[]>();
 const componentFootprints = ref<Footprint.ResGetFootprintRecord[]>();
 

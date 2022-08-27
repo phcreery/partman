@@ -60,7 +60,7 @@
 							/>
 							<el-button-group>
 								<el-button :icon="Refresh" @click="refreshFootprintCategories" />
-								<el-button :icon="Plus" @click="openFootprintCategoryDrawer('New')" />
+								<el-button :icon="Plus" @click="openNestedFootprintCategoryDrawer('New')" />
 							</el-button-group>
 						</el-space>
 					</div>
@@ -77,13 +77,13 @@
 </template>
 
 <script setup lang="ts" name="UserDrawer">
-import { ref, reactive, onMounted, watch } from "vue";
+import { ref, reactive, watch } from "vue";
 // import { genderType } from "@/utils/serviceDict";
-import { ResList, Component, ComponentCategory, Footprint, FootprintCategory, Storage } from "@/api/interface";
+import { Footprint, FootprintCategory } from "@/api/interface";
 import { getFootprintCategoryEnumTree, postFootprintCategoryCreate } from "@/api/modules/components";
 import { ElMessage, FormInstance } from "element-plus";
-import UploadImg from "@/components/UploadImg/index.vue";
-import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh, DCaret, Plus } from "@element-plus/icons-vue";
+// import UploadImg from "@/components/UploadImg/index.vue";
+import { Refresh, Plus } from "@element-plus/icons-vue";
 import FootprintCategoryDrawer from "@/views/footprints/components/FootprintCategoryDrawer.vue";
 
 const rules = reactive({
@@ -133,9 +133,9 @@ const handleSubmit = () => {
 };
 
 // Public verification method (the picture upload successfully triggers re -verification)
-const checkValidate = (val: string) => {
-	ruleFormRef.value!.validateField(val, () => {});
-};
+// const checkValidate = (val: string) => {
+// 	ruleFormRef.value!.validateField(val, () => {});
+// };
 
 const footprintCategories = ref();
 
@@ -157,14 +157,18 @@ interface DrawerExpose {
 }
 
 const drawerRefFootprintCategory = ref<DrawerExpose>();
-const openFootprintCategoryDrawer = (title: string, rowData: Partial<FootprintCategory.ResGetFootprintCategoryRecord> = {}) => {
+const openNestedFootprintCategoryDrawer = (
+	title: string,
+	rowData: Partial<FootprintCategory.ResGetFootprintCategoryRecord> = {}
+) => {
 	let params = {
 		title,
-		rowData: {}, // { ...rowData },
+		rowData: { ...rowData },
 		isView: title === "View",
 		apiUrl: title === "New" ? postFootprintCategoryCreate : "",
-		updateTable: refreshFootprintCategories // proTree.value.refresh
+		updateTable: refreshFootprintCategories
 	};
+	// actually open drawer
 	drawerRefFootprintCategory.value!.acceptParams(params);
 };
 

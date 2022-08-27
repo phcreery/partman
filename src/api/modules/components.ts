@@ -95,7 +95,7 @@ export const getComponentCategoryEnumTree = async () => {
 		console.log("getCompCatEnum res err", res, err);
 		// return false;
 	}
-	const tree = arrayToTree(res.items, { id: "id", parentId: "parent", dataField: null }); // nest(res.items)
+	const tree = arrayToTree(res.items, { id: "id", parentId: "parent", dataField: null });
 	return { data: tree } as unknown as APIdata<ComponentCategory.ResGetCategoryRecordTree[]>;
 };
 
@@ -172,7 +172,7 @@ export const getFootprintCategoryEnumTree = async () => {
 		console.log("error", res, err);
 		return false;
 	}
-	const tree = arrayToTree(res.items, { id: "id", parentId: "parent", dataField: null }); // nest(res.items)
+	const tree = arrayToTree(res.items, { id: "id", parentId: "parent", dataField: null });
 	return { data: tree } as unknown as APIdata<FootprintCategory.ResGetFootprintCategoryRecordTree[]>;
 };
 

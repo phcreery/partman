@@ -46,9 +46,9 @@
 					>
 						<!-- Table header button -->
 						<template #tableHeader="scope">
-							<el-button type="primary" :icon="CirclePlus" @click="openFootprintDrawer('New')" v-if="BUTTONS.add"
-								>New Footprint</el-button
-							>
+							<el-button type="primary" :icon="CirclePlus" @click="openFootprintDrawer('New')" v-if="BUTTONS.add">
+								New Footprint
+							</el-button>
 							<el-button
 								type="danger"
 								:icon="Delete"
@@ -78,7 +78,7 @@
 </template>
 
 <script setup lang="tsx" name="useComponent">
-import { ref, reactive, watch, nextTick } from "vue";
+import { ref, reactive, nextTick } from "vue";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";

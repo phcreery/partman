@@ -35,10 +35,7 @@
 
 			<!-- Table operation -->
 			<template #action="scope">
-				<!-- <el-button type="primary" link :icon="View" @click="openDrawer('View', scope.row)">View</el-button> -->
 				<el-button type="primary" link :icon="EditPen" @click="openDrawer('Edit', scope.row)">Edit</el-button>
-				<!-- <el-button type="primary" link :icon="Refresh" @click="resetPass(scope.row)">reset Password</el-button> -->
-				<!-- <el-button type="primary" link :icon="Delete" @click="deleteComponent(scope.row)">Delete</el-button> -->
 			</template>
 		</ProTable>
 		<ComponentDrawer ref="drawerRef"></ComponentDrawer>
@@ -48,8 +45,6 @@
 
 <script setup lang="tsx" name="useComponent">
 import { ref, reactive } from "vue";
-import { ElMessage } from "element-plus";
-// import { User } from "@/api/interface";
 import { ResList, Component } from "@/api/interface";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
@@ -58,7 +53,7 @@ import { useAuthButtons } from "@/hooks/useAuthButtons";
 import ProTable from "@/components/ProTable/index.vue";
 import ImportExcel from "@/components/ImportExcel/index.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
-import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh, DCaret } from "@element-plus/icons-vue";
+import { CirclePlus, Delete, EditPen, Download, Upload, DCaret } from "@element-plus/icons-vue";
 import {
 	getComponentList,
 	postComponentCreate,
@@ -74,8 +69,6 @@ import {
 const proTable = ref();
 // If the table needs to initialize the request parameter, it will be directly defined to the propable (each request will automatically bring the parameter every time, and it will always be brought to
 const initParam = reactive({
-	// type: 1
-	// page: 1
 	expand: "footprint, category, storage_location"
 });
 
@@ -90,20 +83,6 @@ const dataCallback = (data: ResList<Component.ResGetComponentRecord>) => {
 };
 // Page button permission
 const { BUTTONS } = useAuthButtons();
-
-// Custom rendering head (using TSX syntax)
-const renderHeader = (scope: any) => {
-	return (
-		<el-button
-			type="primary"
-			onClick={() => {
-				ElMessage.success("I am a custom header");
-			}}
-		>
-			{scope.row.label}
-		</el-button>
-	);
-};
 
 // Table configuration item
 const columns: Partial<ColumnProps>[] = [
@@ -137,7 +116,6 @@ const columns: Partial<ColumnProps>[] = [
 		search: true,
 		searchType: "text"
 		// searchProps: { disabled: true }
-		// renderHeader
 	},
 	// enum: It can be directly an array object, or it can be the request method.
 	// enum: When the request method is required, the number of array objects returned in the background is not the case of Label and Value. You can specify the KEY value of label and value in SearchProps

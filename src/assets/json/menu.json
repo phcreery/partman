@@ -27,6 +27,11 @@
 			"path": "/storage/index"
 		},
 		{
+			"icon": "odometer",
+			"title": "Projects",
+			"path": "/projects"
+		},
+		{
 			"icon": "promotion",
 			"title": "Builds",
 			"path": "/builds"

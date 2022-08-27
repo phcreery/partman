@@ -1,7 +1,15 @@
 import { arrayToTree } from "performant-array-to-tree";
 import client, { tryCatchAsync } from "@/api";
 
-import { ResList, Component, Footprint, ComponentCategory, Storage, FootprintCategory } from "@/api/interface/index";
+import {
+	ResList,
+	Component,
+	ComponentCategory,
+	Footprint,
+	FootprintCategory,
+	Storage,
+	StorageCategory
+} from "@/api/interface/index";
 
 type APIdata<T> = { data: T };
 
@@ -181,4 +189,79 @@ export const getFootprintCategoryEnumTree = async () => {
 export const getComponentStorageLocationEnum = async () => {
 	let res = await client.records.getList("storage_locations", 1, 99999, {});
 	return { data: res.items } as unknown as APIdata<Storage.ResGetStorageRecord[]>;
+};
+
+export const getStorageList = async (params: Storage.ReqGetStorageListParams) => {
+	let res = await client.records.getList("storage_locations", params.page, params.perPage, {
+		// filter: params.filter ?? "",
+		filter: filterToPBString(params.filter),
+		sort: params.sort ?? "",
+		expand: params.expand ?? ""
+	});
+	return { data: res } as unknown as APIdata<ResList<Storage.ResGetStorageRecord>>;
+};
+
+export const getStoragesEnum = async () => {
+	let res = await client.records.getList("storage_locations", 1, 99999, {});
+	return { data: res.items } as unknown as APIdata<Storage.ResGetStorageRecord[]>;
+};
+
+export const postStorageCreate = async (params: Storage.ReqCreateStorageParams) => {
+	let record = await client.records.create("storage_locations", params);
+	return { data: record } as unknown as APIdata<Storage.ResGetStorageRecord>;
+};
+
+export const patchStorageUpdate = async (params: Storage.ReqUpdateStorageParams) => {
+	const record = await client.records.update("storage_locations", params.id, params);
+	return { data: record } as unknown as APIdata<Storage.ResGetStorageRecord>;
+};
+
+export const deleteStorages = async (params: Storage.ReqDeleteStoragesParams) => {
+	// TODO: speed this up??
+	for (const id of params.ids) {
+		await client.records.delete("storage_locations", id);
+	}
+	return true;
+};
+
+// ---- FOOTPRINT CATEGORY ----
+
+export const postStorageCategoryCreate = async (params: StorageCategory.ReqCreateStorageCategoryParams) => {
+	let record = await client.records.create("storage_categories", params);
+	return { data: record } as unknown as APIdata<StorageCategory.ResGetStorageCategoryRecord>;
+};
+
+export const patchStorageCategoryUpdate = async (params: StorageCategory.ReqUpdateStorageCategoryParams) => {
+	const record = await client.records.update("storage_categories", params.id, params);
+	return { data: record } as unknown as APIdata<Storage.ResGetStorageRecord>;
+};
+
+export const deleteStorageCategories = async (params: StorageCategory.ReqDeleteStorageCategoriesParams) => {
+	// TODO: speed this up??
+	for (const id of params.ids) {
+		await client.records.delete("storage_categories", id);
+	}
+	return true;
+};
+
+export const getStorageCategoryEnum = async () => {
+	let [res, err] = await tryCatchAsync(() => client.records.getList("storage_categories", 1, 99999, { $autoCancel: false }));
+	if (err) {
+		console.log("getStorageCatEnum res err", res, err);
+		return false;
+	}
+	res.items.forEach((footprint: StorageCategory.ResGetStorageCategoryRecord) => {
+		footprint._fullName = getPathName(res.items, footprint.id);
+	});
+	return { data: res.items } as unknown as APIdata<StorageCategory.ResGetStorageCategoryRecord[]>;
+};
+
+export const getStorageCategoryEnumTree = async () => {
+	let [res, err] = await tryCatchAsync(() => client.records.getList("storage_categories", 1, 99999, { $autoCancel: false }));
+	if (err) {
+		console.log("error", res, err);
+		return false;
+	}
+	const tree = arrayToTree(res.items, { id: "id", parentId: "parent", dataField: null });
+	return { data: tree } as unknown as APIdata<StorageCategory.ResGetStorageCategoryRecordTree[]>;
 };

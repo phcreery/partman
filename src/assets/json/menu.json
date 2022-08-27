@@ -24,7 +24,7 @@
 		{
 			"icon": "TakeawayBox",
 			"title": "Storage",
-			"path": "/storage"
+			"path": "/storage/index"
 		},
 		{
 			"icon": "promotion",

@@ -135,9 +135,33 @@ export namespace Storage {
 	type StorageColumns = {
 		name: string;
 		description: number;
+		category: string;
 	};
 	// Requests
 	export type ReqGetStorageListParams = ReqList;
+	export type ReqCreateStorageParams = StorageColumns;
+	export interface ReqUpdateStorageParams extends ReqRecord, StorageColumns {}
+	export type ReqDeleteStoragesParams = { ids: string[] };
 	// Responses
 	export interface ResGetStorageRecord extends ResGetRecord, StorageColumns {}
+}
+
+export namespace StorageCategory {
+	type StorageCategoryColumns = {
+		name: string;
+		description: number;
+		parent: string;
+	};
+	// Requests
+	export type ReqGetStorageCategoryListParams = ReqList;
+	export type ReqCreateStorageCategoryParams = StorageCategoryColumns;
+	export interface ReqUpdateStorageCategoryParams extends ReqRecord, StorageCategoryColumns {}
+	export type ReqDeleteStorageCategoriesParams = { ids: string[] };
+	// Responses
+	export interface ResGetStorageCategoryRecord extends ResGetRecord, StorageCategoryColumns {
+		_fullName: string;
+	}
+	export interface ResGetStorageCategoryRecordTree extends ResGetStorageCategoryRecord {
+		children: ResGetStorageCategoryRecordTree;
+	}
 }

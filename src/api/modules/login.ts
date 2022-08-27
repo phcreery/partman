@@ -41,6 +41,13 @@ export const getAuthButtons = () => {
 				delete: true,
 				view: true,
 				edit: true
+			},
+
+			storage: {
+				add: true,
+				delete: true,
+				view: true,
+				edit: true
 			}
 		},
 		msg: "success"

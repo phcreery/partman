@@ -28,7 +28,7 @@ const assemblySizeListCh = reactive<{ [propName: string]: any }>({
 	small: "Small"
 });
 
-const assemblySizeList = reactive<string[]>(["default", "large", "small"]);
+const assemblySizeList = reactive<string[]>(["large", "default", "small"]);
 
 const setAssemblySize = (item: "default" | "large" | "small") => {
 	if (assemblySize.value === item) return;

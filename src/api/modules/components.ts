@@ -10,7 +10,7 @@ function that converts JSON object of parameters to a consumable PocketBase 'fil
 ex. filter: { id: 'asdf', footprint: {0: '0806', 1: '0604'}} -> "id='asdf' && (footprint='0806' || footprint='0604')"
 */
 const filterToPBString = (filter: { [propName: string]: any }) => {
-	console.log("filter", filter);
+	// console.log("filter", filter);
 	let filterParams = Object.keys(filter);
 	let sarr: string[] = []; // string array
 	for (const param of filterParams) {

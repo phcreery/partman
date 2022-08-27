@@ -89,7 +89,7 @@ import FootprintCategoryDrawer from "@/views/footprints/components/FootprintCate
 const rules = reactive({
 	name: [{ required: true, message: "Please upload the footprint name", trigger: "change" }],
 	description: [{ required: false, message: "Please fill in the description", trigger: "change" }],
-	category: [{ required: true, message: "Please select category", trigger: "change" }]
+	category: [{ required: false, message: "Please select category", trigger: "change" }]
 });
 
 // const cascaderProps = { value: "id", label: "name", emitPath: false };

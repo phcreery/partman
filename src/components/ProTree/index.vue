@@ -33,6 +33,7 @@
 <script setup lang="ts" name="component">
 import { ref, watch, onMounted } from "vue";
 import { Refresh } from "@element-plus/icons-vue";
+// import { nestedObjectAssign } from "@/utils/util";
 
 interface componentProps {
 	requestApi: (params: any) => Promise<any>; // API ==> must be passed on the request form data
@@ -80,10 +81,11 @@ onMounted(async () => {
 const getTreeList = async () => {
 	try {
 		// First put the initialization parameter and pagination parameter in the total parameter
+		// use nestedObjectAssign instead??
 		Object.assign(totalParam.value, props.initParam, {}); // isPageable ? pageParam.value : {}
 		let { data } = await props.requestApi(totalParam.value);
 		props.dataCallback && (data = props.dataCallback(data));
-		// treeData.value = data;
+		// Add default top-level selection item
 		treeData.value = [{ id: "", [props.label]: "All" }, ...data];
 	} catch (error) {
 		console.log(error);

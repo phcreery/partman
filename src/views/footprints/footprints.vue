@@ -105,7 +105,7 @@ const proTable = ref();
 const proTree = ref();
 
 // If the table needs to initialize the request parameter, it will be directly defined to the propable (each request will automatically bring the parameter every time, and it will always be brought to
-const initParam = reactive<Partial<{ expand: string; filter: { name: string; category: string; description: string } }>>({
+const initParam = reactive<Partial<Footprint.ReqGetFootprintListParams>>({
 	expand: "category"
 	// filter: { name: undefined, category: undefined, description: undefined }
 });
@@ -127,7 +127,10 @@ const dataCallbackTable = (data: ResList<Footprint.ResGetFootprintRecord>) => {
 
 // what binds the category tree to the table filter
 const handleCategorySelect = (data: any) => {
-	Object.assign(initParam.filter!.category, data.id);
+	if (typeof initParam.filter === "undefined") {
+		Object.assign(initParam, { filter: { category: "" } });
+	}
+	Object.assign(initParam.filter!, { category: data.id });
 };
 
 // Page button permission

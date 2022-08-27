@@ -1,6 +1,6 @@
 import { Table } from "./interface";
 import { reactive, computed, onMounted, toRefs } from "vue";
-
+import { nestedObjectAssign } from "@/utils/util";
 /**
  * @description table Page operation method packaging
  * @param {Function} api Get the table data API method (must be passed)
@@ -61,7 +61,7 @@ export const useTable = (
 	const getTableList = async () => {
 		try {
 			// First put the initialization parameter and pagination parameter in the total parameter
-			Object.assign(state.totalParam, initParam, isPageable ? pageParam.value : {});
+			nestedObjectAssign(state.totalParam, initParam, isPageable ? pageParam.value : {});
 			let { data } = await api(state.totalParam);
 			dataCallBack && (data = dataCallBack(data));
 			state.tableData = isPageable ? data.datalist : data;

@@ -42,8 +42,13 @@ export const getAuthButtons = () => {
 				view: true,
 				edit: true
 			},
-
 			storage: {
+				add: true,
+				delete: true,
+				view: true,
+				edit: true
+			},
+			categories: {
 				add: true,
 				delete: true,
 				view: true,

@@ -14,7 +14,7 @@
 		{
 			"title": "Categories",
 			"icon": "folder",
-			"path": "/categories"
+			"path": "/categories/index"
 		},
 		{
 			"title": "Footprints",

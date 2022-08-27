@@ -85,26 +85,44 @@ export const deleteComponents = async (params: Component.ReqDeleteComponentsPara
 
 // ---- COMPONENT CATEGORIES ----
 
+export const postComponentCategoryCreate = async (params: ComponentCategory.ReqCreateComponentCategoryParams) => {
+	let record = await client.records.create("component_categories", params);
+	return { data: record } as unknown as APIdata<ComponentCategory.ResGetComponentCategoryRecord>;
+};
+
+export const patchComponentCategoryUpdate = async (params: ComponentCategory.ReqUpdateComponentCategoryParams) => {
+	const record = await client.records.update("component_categories", params.id, params);
+	return { data: record } as unknown as APIdata<Component.ResGetComponentRecord>;
+};
+
+export const deleteComponentCategories = async (params: ComponentCategory.ReqDeleteComponentCategoriesParams) => {
+	// TODO: speed this up??
+	for (const id of params.ids) {
+		await client.records.delete("component_categories", id);
+	}
+	return true;
+};
+
 export const getComponentCategoryEnum = async () => {
-	let [res, err] = await tryCatchAsync(() => client.records.getList("component_categories", 1, 99999, {}));
+	let [res, err] = await tryCatchAsync(() => client.records.getList("component_categories", 1, 99999, { $autoCancel: false }));
 	if (err) {
 		console.log("getCompCatEnum res err", res, err);
 		// return false;
 	}
-	res.items.forEach((component: ComponentCategory.ResGetCategoryRecord) => {
+	res.items.forEach((component: ComponentCategory.ResGetComponentCategoryRecord) => {
 		component._fullName = getPathName(res.items, component.id);
 	});
-	return { data: res.items } as unknown as APIdata<ComponentCategory.ResGetCategoryRecord[]>;
+	return { data: res.items } as unknown as APIdata<ComponentCategory.ResGetComponentCategoryRecord[]>;
 };
 
 export const getComponentCategoryEnumTree = async () => {
-	let [res, err] = await tryCatchAsync(() => client.records.getList("component_categories", 1, 99999, {}));
+	let [res, err] = await tryCatchAsync(() => client.records.getList("component_categories", 1, 99999, { $autoCancel: false }));
 	if (err) {
 		console.log("getCompCatEnum res err", res, err);
 		// return false;
 	}
 	const tree = arrayToTree(res.items, { id: "id", parentId: "parent", dataField: null });
-	return { data: tree } as unknown as APIdata<ComponentCategory.ResGetCategoryRecordTree[]>;
+	return { data: tree } as unknown as APIdata<ComponentCategory.ResGetComponentCategoryRecordTree[]>;
 };
 
 // ---- FOOTPRINTS ----
@@ -224,7 +242,7 @@ export const deleteStorages = async (params: Storage.ReqDeleteStoragesParams) =>
 	return true;
 };
 
-// ---- FOOTPRINT CATEGORY ----
+// ---- STORAGE CATEGORY ----
 
 export const postStorageCategoryCreate = async (params: StorageCategory.ReqCreateStorageCategoryParams) => {
 	let record = await client.records.create("storage_categories", params);

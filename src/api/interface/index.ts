@@ -87,12 +87,15 @@ export namespace ComponentCategory {
 	};
 	// Requests
 	export type ReqGetCategoryListParams = ReqList;
+	export type ReqCreateComponentCategoryParams = ComponentCategoryColumns;
+	export interface ReqUpdateComponentCategoryParams extends ReqRecord, ComponentCategoryColumns {}
+	export type ReqDeleteComponentCategoriesParams = { ids: string[] };
 	// Responses
-	export interface ResGetCategoryRecord extends ResGetRecord, ComponentCategoryColumns {
+	export interface ResGetComponentCategoryRecord extends ResGetRecord, ComponentCategoryColumns {
 		_fullName: string;
 	}
-	export interface ResGetCategoryRecordTree extends ResGetCategoryRecord {
-		children: ResGetCategoryRecordTree;
+	export interface ResGetComponentCategoryRecordTree extends ResGetComponentCategoryRecord {
+		children: ResGetComponentCategoryRecordTree;
 	}
 }
 

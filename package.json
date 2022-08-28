@@ -87,5 +87,10 @@
 		"commitizen": {
 			"path": "node_modules/cz-git"
 		}
+	},
+	"standard-version": {
+		"scripts": {
+			"prerelease": "vite build --mode production && git add ."
+		}
 	}
 }

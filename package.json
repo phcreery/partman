@@ -11,13 +11,13 @@
 		"build:test": "vue-tsc --noEmit && vite build --mode test",
 		"build:pro": "vue-tsc --noEmit && vite build --mode production",
 		"preview": "vite preview",
-		"zip": "zip-build dist release",
 		"lint:eslint": "eslint --fix --ext .js,.ts,.vue ./src",
 		"lint:prettier": "prettier --write --loglevel warn \"src/**/*.{js,ts,json,tsx,css,less,scss,vue,html,md}\"",
 		"lint:stylelint": "stylelint --cache --fix \"**/*.{vue,less,postcss,css,scss}\" --cache --cache-location node_modules/.cache/stylelint/",
 		"lint:lint-staged": "lint-staged",
 		"release": "standard-version",
-		"commit": "git pull && git add -A && git-cz && git push"
+		"zip": "zip-build dist release",
+		"commit": "git pull && git add -A && git-cz && git push --follow-tags"
 	},
 	"dependencies": {
 		"@element-plus/icons-vue": "^1.1.4",

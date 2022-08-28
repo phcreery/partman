@@ -48,7 +48,7 @@ import { ref, reactive } from "vue";
 import { ResList, Component } from "@/api/interface";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
-import { useDownload } from "@/hooks/useDownload";
+// import { useDownload } from "@/hooks/useDownload";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import ProTable from "@/components/ProTable/index.vue";
 import ImportExcel from "@/components/ImportExcel/index.vue";
@@ -188,7 +188,7 @@ const batchDelete = async (ids: string[]) => {
 };
 // Export user list
 const downloadFile = async () => {
-	useDownload(exportUserInfo, "user list", proTable.value.searchParam);
+	// useDownload(exportUserInfo, "user list", proTable.value.searchParam);
 };
 // Add users in batches
 interface DialogExpose {

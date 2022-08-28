@@ -170,11 +170,11 @@ const handleSubmit = () => {
 // 	ruleFormRef.value!.validateField(val, () => {});
 // };
 
-const filterNodeMethod = (value: string, data: ComponentCategory.ResGetCategoryRecord) => {
+const filterNodeMethod = (value: string, data: ComponentCategory.ResGetComponentCategoryRecord) => {
 	return data.name.toLowerCase().includes(value.toLowerCase());
 };
 
-const componentCategories = ref<ComponentCategory.ResGetCategoryRecord[]>();
+const componentCategories = ref<ComponentCategory.ResGetComponentCategoryRecord[]>();
 const componentStorageLocations = ref<Storage.ResGetStorageRecord[]>();
 const componentFootprints = ref<Footprint.ResGetFootprintRecord[]>();
 

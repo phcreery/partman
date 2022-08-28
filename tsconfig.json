@@ -20,14 +20,14 @@
 		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"lib": ["esnext", "dom"],
-		// 解析非相对模块名的基准目录
+		// Analyze the benchmark directory of non -relative module name
 		"baseUrl": "./",
-		// 模块名到基于 baseUrl的路径映射的列表。
+		// The module is to a list of path mapping based on Baseurl.
 		"paths": {
 			"@": ["src"],
 			"@/*": ["src/*"]
 		},
-		// 跳过库检查，解决打包失败
+		// Skip the library inspection and solve the packaging failure
 		"skipLibCheck": true
 	},
 	"include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "vite.config.ts"],

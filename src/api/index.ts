@@ -1,14 +1,14 @@
 // import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { showFullScreenLoading, tryHideFullScreenLoading } from "@/config/serviceLoading";
 // import { AxiosCanceler } from "./helper/axiosCancel";
-import { ResultData } from "@/api/interface";
+// import { ResultData } from "@/api/interface";
 import { ResultEnum } from "@/enums/httpEnum";
-import { checkStatus } from "./helper/checkStatus";
+// import { checkStatus } from "./helper/checkStatus";
 import { ElMessage } from "element-plus";
 import { GlobalStore } from "@/store";
 import router from "@/routers";
 
-import PocketBase, { BaseAuthStore } from "pocketbase";
+import PocketBase from "pocketbase";
 
 /**
  * pinia Example of wrong use instructions
@@ -18,7 +18,7 @@ import PocketBase, { BaseAuthStore } from "pocketbase";
  */
 // const globalStore = GlobalStore();
 
-console.log("import.meta.env.VITE_API_URL", import.meta.env.VITE_API_URL);
+// console.log("import.meta.env.VITE_API_URL", import.meta.env.VITE_API_URL);
 
 const config = {
 	// The default address request address can be modified in the file of the beginning of .env

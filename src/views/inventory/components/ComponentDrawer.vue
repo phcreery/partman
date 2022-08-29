@@ -57,7 +57,7 @@
 							</el-select>
 							<el-button-group>
 								<el-button :icon="Refresh" @click="refreshStorageLocations" />
-								<el-button :icon="Plus" />
+								<el-button :icon="Plus" @click="openStorageDrawer('New')" />
 							</el-button-group>
 						</el-space>
 					</div>
@@ -81,8 +81,8 @@
 								:filter-node-method="filterNodeMethod"
 							/>
 							<el-button-group>
-								<el-button :icon="Refresh" @click="refreshFootprints" />
-								<el-button :icon="Plus" />
+								<el-button :icon="Refresh" @click="refreshCategories" />
+								<el-button :icon="Plus" @click="openComponentCategoryDrawer('New')" />
 							</el-button-group>
 						</el-space>
 					</div>
@@ -98,6 +98,8 @@
 		</el-drawer>
 
 		<FootprintDrawer ref="drawerRefNestedFootprint"></FootprintDrawer>
+		<StorageDrawer ref="drawerRefNestedStorage"></StorageDrawer>
+		<ComponentCategoryDrawer ref="drawerRefNestedComponentCategory"></ComponentCategoryDrawer>
 	</div>
 </template>
 
@@ -115,6 +117,8 @@ import { ElMessage, FormInstance } from "element-plus";
 // import UploadImg from "@/components/UploadImg/index.vue";
 import { Refresh, Plus } from "@element-plus/icons-vue";
 import FootprintDrawer from "@/views/footprints/components/FootprintDrawer.vue";
+import StorageDrawer from "@/views/storage/components/StorageDrawer.vue";
+import ComponentCategoryDrawer from "@/views/categories/components/ComponentCategoryDrawer.vue";
 
 const rules = reactive({
 	name: [{ required: true, message: "Please upload the component name", trigger: "change" }],
@@ -205,6 +209,28 @@ const openFootprintDrawer = (title: string, rowData: Partial<Footprint.ResGetFoo
 		updateTable: refreshFootprints // proTable.value.refresh
 	};
 	drawerRefNestedFootprint.value!.acceptParams(params);
+};
+const drawerRefNestedStorage = ref<DrawerExpose>();
+const openStorageDrawer = (title: string, rowData: Partial<Storage.ResGetStorageRecord> = {}) => {
+	let params = {
+		title,
+		rowData: { ...rowData },
+		isView: title === "View",
+		apiUrl: title === "New" ? postFootprintCreate : "",
+		updateTable: refreshFootprints // proTable.value.refresh
+	};
+	drawerRefNestedStorage.value!.acceptParams(params);
+};
+const drawerRefNestedComponentCategory = ref<DrawerExpose>();
+const openComponentCategoryDrawer = (title: string, rowData: Partial<ComponentCategory.ResGetComponentCategoryRecord> = {}) => {
+	let params = {
+		title,
+		rowData: { ...rowData },
+		isView: title === "View",
+		apiUrl: title === "New" ? postFootprintCreate : "",
+		updateTable: refreshFootprints // proTable.value.refresh
+	};
+	drawerRefNestedComponentCategory.value!.acceptParams(params);
 };
 
 defineExpose({

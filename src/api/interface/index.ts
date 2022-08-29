@@ -9,10 +9,6 @@ export interface ReqList {
 
 // * Paging response parameter
 export interface ResList<T> {
-	// datalist: T[];
-	// pageNum: number;
-	// pageSize: number;
-	// total: number;
 	items: T[];
 	page: number;
 	perPage: number;

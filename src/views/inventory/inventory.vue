@@ -129,7 +129,7 @@ const columns: Partial<ColumnProps>[] = [
 	{
 		prop: "footprint",
 		label: "Footprint",
-		width: 110,
+		width: 120,
 		sortable: true,
 		search: true,
 		searchType: "multipleSelect",
@@ -137,7 +137,7 @@ const columns: Partial<ColumnProps>[] = [
 		enumFunction: getFootprintsEnum,
 		searchProps: { value: "id", label: "name" }
 	},
-	{ prop: "stock", label: "Stock", width: 60, search: false },
+	{ prop: "stock", label: "Stock", width: 80, search: false },
 	{
 		prop: "ipn",
 		label: "IPN",

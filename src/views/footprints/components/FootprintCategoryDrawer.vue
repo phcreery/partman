@@ -71,7 +71,7 @@ const acceptParams = (params: DrawerProps): void => {
 const rules = reactive({
 	name: [{ required: true, message: "Please upload the footprint name", trigger: "change" }],
 	description: [{ required: false, message: "Please fill in the description", trigger: "change" }],
-	parent: [{ required: true, message: "Please select parent", trigger: "change" }]
+	parent: [{ required: false, message: "Please select parent", trigger: "change" }]
 });
 
 // const cascaderProps = { value: "id", label: "name", emitPath: false };

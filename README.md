@@ -126,3 +126,80 @@ _Coming soon_
 - Pinia
 - Element-Plus
 - PocketBase
+
+
+## Dev
+
+#### Windows Powershell
+```
+go get github.com/pocketbase/pocketbase
+$Env:CGO_ENABLED = 0
+go run . serve --http="0.0.0.0:8090"
+```
+
+```
+go build
+```
+
+admin@mail.com:partmanpass
+partman@mail.com:partmanpass
+
+```
+
+// declaring a struct
+type AccessTokenRes struct {
+	// defining struct variables
+	Access_Token string      `json:"access_token"`
+	Expires_In   json.Number `json:"expires_in"`
+	Token_Type   string      `json:"token_type"`
+	Scope        string      `json:"scope"`
+}
+
+func getOctopartToken() string {
+
+	HOST := "https://identity.nexar.com/connect/token"
+	// Adding key:values into application/x-www-form-urlencoded type req
+	form := url.Values{}
+	form.Add("grant_type", "client_credentials")
+	form.Add("client_id", "eb0a594d-7823-4900-8a4d-cde87bf025d2")
+	form.Add("client_secret", "8643e669-5ab5-46bc-b554-88761a248ceb")
+
+	// Preparing HTTP Request
+	req, err := http.NewRequest("POST", HOST, strings.NewReader(form.Encode()))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Setting Content Type
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	// Sending HTTP request
+	res, err := http.DefaultClient.Do(req)
+	// _ = res
+	fmt.Println(res, res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+
+	resBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		fmt.Printf("client: could not read response body: %s\n", err)
+		os.Exit(1)
+	}
+	fmt.Println(string(resBody))
+
+	var tokenRes AccessTokenRes
+	// tokenRes := new(AccessTokenRes)
+	// err = json.NewDecoder(res.Body).Decode(tokenRes)
+	err = json.Unmarshal(resBody, &tokenRes)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// fmt.Println("Struct is:", tokenRes)
+	fmt.Println("Token is:", tokenRes.Access_Token)
+
+	return tokenRes.Access_Token
+
+}
+```

@@ -6,7 +6,8 @@
 	"author": "phcreery <phcreery@gmail.com>",
 	"scripts": {
 		"dev": "vite",
-		"serve": "vite",
+		"server": "cross-env CGO_ENABLED=0 go run . serve --http=\"0.0.0.0:8090\"",
+		"server:build": "cross-env CGO_ENABLED=0 go build",
 		"build:dev": "vue-tsc --noEmit && vite build --mode development",
 		"build:test": "vue-tsc --noEmit && vite build --mode test",
 		"build:pro": "vue-tsc --noEmit && vite build --mode production",
@@ -52,6 +53,7 @@
 		"@vitejs/plugin-vue-jsx": "^1.3.10",
 		"autoprefixer": "^10.4.7",
 		"commitizen": "^4.2.4",
+		"cross-env": "^7.0.3",
 		"cz-git": "^1.3.2",
 		"driver.js": "^0.9.8",
 		"eslint": "^8.14.0",

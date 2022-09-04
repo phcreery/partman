@@ -26,3 +26,7 @@ stats.html
 *.njsproj
 *.sln
 *.sw?
+
+# Golang and PocketBase
+pb_data
+pb_public

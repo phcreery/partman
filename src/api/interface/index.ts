@@ -26,6 +26,8 @@ export interface ResList<T> {
 // 	data?: T;
 // }
 
+export type APIdata<T> = { data: T };
+
 // * Login module
 export namespace Login {
 	export interface ReqLoginParams {
@@ -162,5 +164,24 @@ export namespace StorageCategory {
 	}
 	export interface ResGetStorageCategoryRecordTree extends ResGetStorageCategoryRecord {
 		children: ResGetStorageCategoryRecordTree;
+	}
+}
+
+export namespace OctopartConfig {
+	type OctopartConfigColumns = {
+		octopart_id: string;
+		octopart_secret: string;
+	};
+	// Requests
+	export type ReqGetOctopartConfigListParams = ReqList;
+	export type ReqCreateOctopartConfigParams = OctopartConfigColumns;
+	export interface ReqUpdateOctopartConfigParams extends ReqRecord, OctopartConfigColumns {}
+	export type ReqDeleteOctopartConfigParams = { ids: string[] };
+	// Responses
+	export interface ResGetOctopartConfigRecord extends ResGetRecord, OctopartConfigColumns {
+		_fullName: string;
+	}
+	export interface ResGetOctopartConfigRecordTree extends ResGetOctopartConfigRecord {
+		children: ResGetOctopartConfigRecordTree;
 	}
 }

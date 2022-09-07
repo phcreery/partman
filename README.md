@@ -14,7 +14,52 @@ I like to build small circuits and development boards. This requires me to desig
 
 ![](doc/Screenshot%202022-08-30%20201625.png)
 
-## Setup
+## Installation
+
+### Service
+
+_Coming soon_
+
+### Docker
+
+_Coming soon_
+
+## Developing
+
+🚀 Technologies used:
+
+- Geeker Admin (from latest commit on 7/31/22)
+- Vue 3.2
+- Vite 2
+- TypeScript
+- Pinia
+- Element-Plus
+- PocketBase
+
+## Dev
+
+```
+npm run server
+```
+
+In another terminal
+
+```
+npm run dev
+```
+
+### Build
+
+```
+go build
+```
+
+### Config
+
+- Database Admin: admin@mail.com : partmanpass
+- Default User: partman@mail.com : partmanpass
+
+## Installation (OLD)
 
 Basic setup follows these steps:
 
@@ -23,7 +68,7 @@ Basic setup follows these steps:
 3. Copy partman static web files to `pb_public`
 4. Start PocketBase
 
-### Linux
+### Install on Linux
 
 1. Create Linux account called partman
 
@@ -106,46 +151,27 @@ sudo systemctl restart pocketbase
 sudo systemctl status pocketbase
 ```
 
-### Docker
+admin@mail.com:partmanpass
+partman@mail.com:partmanpass
 
-_Coming soon_
+## Server Code Development (Manual)
 
-### Config
+_using Windows Powershell_
 
-- Database Admin: admin@mail.com : partmanpass
-- Default User: partman@mail.com : partmanpass
+Install prerequisites
 
-## Developing
-
-🚀 Technologies used:
-
-- Geeker Admin (from latest commit on 7/31/22)
-- Vue 3.2
-- Vite 2
-- TypeScript
-- Pinia
-- Element-Plus
-- PocketBase
-
-
-## Dev
-
-#### Windows Powershell
 ```
 go get github.com/pocketbase/pocketbase
+```
+
+```
 $Env:CGO_ENABLED = 0
 go run . serve --http="0.0.0.0:8090"
 ```
 
-```
-go build
-```
-
-admin@mail.com:partmanpass
-partman@mail.com:partmanpass
+## Notes
 
 ```
-
 // declaring a struct
 type AccessTokenRes struct {
 	// defining struct variables

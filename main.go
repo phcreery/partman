@@ -38,6 +38,9 @@ func NewProxy(targetHost string) (*httputil.ReverseProxy, *url.URL, error) {
 
 func modifyRequest(req *http.Request) {
 	// req.Header.Set("X-Proxy", "Simple-Reverse-Proxy")
+	// 	"sec-fetch-dest":"empty",
+	// "sec-fetch-mode":"cors",
+	req.Header.Set("Sec-Fetch-Site", "cross-site")
 	reqDump, err := httputil.DumpRequestOut(req, true)
 	if err != nil {
 		log.Fatal(err)

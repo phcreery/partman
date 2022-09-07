@@ -2,6 +2,7 @@ import { arrayToTree } from "performant-array-to-tree";
 import client, { tryCatchAsync } from "@/api";
 
 import {
+	APIdata,
 	ResList,
 	Component,
 	ComponentCategory,
@@ -10,8 +11,6 @@ import {
 	Storage,
 	StorageCategory
 } from "@/api/interface/index";
-
-type APIdata<T> = { data: T };
 
 /* 
 function that converts JSON object of parameters to a consumable PocketBase 'filter' string.

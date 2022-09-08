@@ -2,7 +2,7 @@ import client from "@/api";
 import { ElMessage } from "element-plus";
 
 import { ResList, OctopartConfig } from "@/api/interface/index";
-
+import { Query } from "@/api/interface/octopart";
 type OctopartTokenRes =
 	| {
 			access_token: string;
@@ -44,5 +44,45 @@ export const graphql = async (body: object) => {
 		headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
 	});
 	console.log("graphql res", res);
+	return res.data;
+};
+
+export const getPartListByMPN = async (mpn: string) => {
+	let res = (await graphql({
+		query: `query Search($mpn: String!) {
+							supSearchMpn(q: $mpn, limit: 2) {
+								results {
+									part {
+										mpn
+										shortDescription
+										descriptions {
+											text
+											creditString
+											creditUrl
+										}
+										manufacturer {
+											name
+										}
+										category {
+											name
+											path
+										}
+										specs {
+											attribute {
+												name
+												shortname
+											}
+											value
+											displayValue
+										}
+									}
+								}
+							}
+						}`,
+		variables: {
+			mpn: mpn //"erjp06f7503v"
+		}
+	})) as Query;
+	if (res.supSearchMpn.results && res.supSearchMpn.results.length > 0) console.log(res.supSearchMpn.results[0].part);
 	return res;
 };

@@ -6,15 +6,45 @@
 </template>
 
 <script setup lang="ts" name="home">
-import { getNewToken, graphql } from "@/api/modules/octopart";
+import { getNewToken, graphql, getPartListByMPN } from "@/api/modules/octopart";
+
+getPartListByMPN("erjp06f7503v");
 // getNewToken();
-graphql({
-	query:
-		"query Search($mpn: String!) {\n    supSearchMpn(q: $mpn, limit: 2) {\n      results {\n        part {\n          mpn\n          shortDescription\n          manufacturer {\n            name\n          }\n          specs {\n            attribute {\n                shortname\n            }\n            value\n          }\n        }\n      }\n    }\n  }",
-	variables: {
-		mpn: "erjp06f7503v"
-	}
-});
+// graphql({
+// 	query: `query Search($mpn: String!) {
+// 				    supSearchMpn(q: $mpn, limit: 2) {
+// 			  	    results {
+// 					      part {
+// 					        mpn
+// 						      shortDescription
+// 									descriptions {
+// 										text
+// 										creditString
+// 										creditUrl
+// 									}
+// 						      manufacturer {
+// 						        name
+// 						      }
+// 									category {
+// 										name
+// 										path
+// 									}
+// 									specs {
+// 										attribute {
+// 											name
+// 											shortname
+// 										}
+// 										value
+// 										displayValue
+// 									}
+// 								}
+// 							}
+// 						}
+// 				  }`,
+// 	variables: {
+// 		mpn: "erjp06f7503v"
+// 	}
+// });
 </script>
 
 <style scoped lang="scss">

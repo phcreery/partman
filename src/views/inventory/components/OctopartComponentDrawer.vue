@@ -41,7 +41,42 @@
 				<el-button @click="drawerVisible = false">Cancel</el-button>
 				<el-button type="primary" v-show="!drawerData.isView" @click="handleSubmit">Save</el-button>
 			</template>
-			{{ searchResults }}
+			<el-table :data="searchResults" :border="true" style="width: 100%">
+				<el-table-column type="expand">
+					<template #default="props">
+						<div style="margin: 4%">
+							<!-- <p m="t-0 b-2">Category: {{ props.row.part.category.path }}</p> -->
+
+							<el-descriptions title="Summary" :column="1" border direction="vertical">
+								<!-- <template #extra>
+									<el-button type="primary">Operation</el-button>
+								</template> -->
+								<el-descriptions-item>
+									<template #label>
+										<div>Description</div>
+									</template>
+									{{ props.row.part.shortDescription }}
+								</el-descriptions-item>
+								<el-descriptions-item>
+									<template #label>
+										<div>Category</div>
+									</template>
+									{{ props.row.part.category.name }} ({{ props.row.part.category.path }})
+								</el-descriptions-item>
+							</el-descriptions>
+
+							<h3>Attributes</h3>
+							<el-table :data="props.row.part.specs" :border="true">
+								<el-table-column label="Attribute" prop="attribute.name" />
+								<el-table-column label="Value" prop="displayValue" />
+							</el-table>
+						</div>
+					</template>
+				</el-table-column>
+				<el-table-column label="MPN" prop="part.mpn" />
+				<el-table-column label="Description" prop="part.shortDescription" />
+			</el-table>
+			<!-- {{ searchResults }} -->
 		</el-drawer>
 	</div>
 </template>
@@ -54,7 +89,7 @@ import { getFootprintsEnum, getComponentStorageLocationEnum, getComponentCategor
 import { ElMessage, FormInstance } from "element-plus";
 // import UploadImg from "@/components/UploadImg/index.vue";
 import { Refresh, Plus, Search } from "@element-plus/icons-vue";
-
+import { Query, supSearchMpn } from "@/api/interface/octopart";
 import { getNewToken, graphql, getPartListByMPN } from "@/api/modules/octopart";
 
 const rules = reactive({
@@ -85,6 +120,7 @@ const drawerData = ref<DrawerProps>({
 const acceptParams = (params: DrawerProps): void => {
 	drawerData.value = params;
 	drawerVisible.value = true;
+	searchResults.value = [];
 };
 
 const ruleFormRef = ref<FormInstance>();
@@ -103,9 +139,9 @@ const handleSubmit = () => {
 	});
 };
 
-const searchResults = ref();
+const searchResults: supSearchMpn.searchResults = ref([]);
 const searchOctopart = async () => {
-	searchResults.value = await getPartListByMPN(drawerData.value.rowData?.name || "");
+	searchResults.value = (await getPartListByMPN(drawerData.value.rowData?.name || "")).results;
 };
 
 // Public verification method (the picture upload successfully triggers re -verification)

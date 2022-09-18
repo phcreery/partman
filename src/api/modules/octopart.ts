@@ -47,7 +47,7 @@ export const graphql = async (body: object) => {
 	return res.data;
 };
 
-export const getPartListByMPN = async (mpn: string) => {
+export const getPartListByMPN = async (mpn: string): Promise<Query["supSearchMpn"]> => {
 	let res = (await graphql({
 		query: `query Search($mpn: String!) {
 							supSearchMpn(q: $mpn, limit: 2) {
@@ -84,5 +84,5 @@ export const getPartListByMPN = async (mpn: string) => {
 		}
 	})) as Query;
 	if (res.supSearchMpn.results && res.supSearchMpn.results.length > 0) console.log(res.supSearchMpn.results[0].part);
-	return res;
+	return res.supSearchMpn;
 };

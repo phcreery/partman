@@ -21,7 +21,12 @@
 				</UploadImg>
 			</el-form-item> -->
 				<el-form-item label="Name" prop="name">
-					<el-input v-model="drawerData.rowData!.name" placeholder="Please fill in the component name" clearable></el-input>
+					<div class="form-item-with-buttons">
+						<el-space>
+							<el-input v-model="drawerData.rowData!.name" placeholder="Please fill in the component name" clearable></el-input>
+							<el-button :icon="Search" @click="openOctopartComponentDrawer('New', drawerData.rowData)" />
+						</el-space>
+					</div>
 				</el-form-item>
 				<el-form-item label="Description" prop="description">
 					<el-input
@@ -31,7 +36,8 @@
 						:rows="4"
 						type="textarea"
 						autosize
-					></el-input>
+					>
+					</el-input>
 				</el-form-item>
 				<el-form-item label="Footprint" prop="footprint" v-loading="componentFootprints === undefined">
 					<div class="form-item-with-buttons">
@@ -100,6 +106,7 @@
 		<FootprintDrawer ref="drawerRefNestedFootprint"></FootprintDrawer>
 		<StorageDrawer ref="drawerRefNestedStorage"></StorageDrawer>
 		<ComponentCategoryDrawer ref="drawerRefNestedComponentCategory"></ComponentCategoryDrawer>
+		<OctopartComponentDrawer ref="drawerRefNestedOctopartComponent"></OctopartComponentDrawer>
 	</div>
 </template>
 
@@ -111,14 +118,17 @@ import {
 	getFootprintsEnum,
 	getComponentStorageLocationEnum,
 	getComponentCategoryEnumTree,
-	postFootprintCreate
+	postFootprintCreate,
+	postStorageCreate,
+	postComponentCategoryCreate
 } from "@/api/modules/components";
 import { ElMessage, FormInstance } from "element-plus";
 // import UploadImg from "@/components/UploadImg/index.vue";
-import { Refresh, Plus } from "@element-plus/icons-vue";
+import { Refresh, Plus, Search } from "@element-plus/icons-vue";
 import FootprintDrawer from "@/views/footprints/components/FootprintDrawer.vue";
 import StorageDrawer from "@/views/storage/components/StorageDrawer.vue";
 import ComponentCategoryDrawer from "@/views/categories/components/ComponentCategoryDrawer.vue";
+import OctopartComponentDrawer from "@/views/inventory/components/OctopartComponentDrawer.vue";
 
 const rules = reactive({
 	name: [{ required: true, message: "Please upload the component name", trigger: "change" }],
@@ -199,6 +209,7 @@ watch(drawerVisible, openValue => {
 interface DrawerExpose {
 	acceptParams: (params: any) => void;
 }
+// New Footprint Drawer
 const drawerRefNestedFootprint = ref<DrawerExpose>();
 const openFootprintDrawer = (title: string, rowData: Partial<Footprint.ResGetFootprintRecord> = {}) => {
 	let params = {
@@ -210,27 +221,44 @@ const openFootprintDrawer = (title: string, rowData: Partial<Footprint.ResGetFoo
 	};
 	drawerRefNestedFootprint.value!.acceptParams(params);
 };
+
+// New Storage Drawer
 const drawerRefNestedStorage = ref<DrawerExpose>();
 const openStorageDrawer = (title: string, rowData: Partial<Storage.ResGetStorageRecord> = {}) => {
 	let params = {
 		title,
 		rowData: { ...rowData },
 		isView: title === "View",
-		apiUrl: title === "New" ? postFootprintCreate : "",
-		updateTable: refreshFootprints // proTable.value.refresh
+		apiUrl: title === "New" ? postStorageCreate : "",
+		updateTable: refreshStorageLocations
 	};
 	drawerRefNestedStorage.value!.acceptParams(params);
 };
+
+// New Component Category Drawer
 const drawerRefNestedComponentCategory = ref<DrawerExpose>();
 const openComponentCategoryDrawer = (title: string, rowData: Partial<ComponentCategory.ResGetComponentCategoryRecord> = {}) => {
 	let params = {
 		title,
 		rowData: { ...rowData },
 		isView: title === "View",
-		apiUrl: title === "New" ? postFootprintCreate : "",
-		updateTable: refreshFootprints // proTable.value.refresh
+		apiUrl: title === "New" ? postComponentCategoryCreate : "",
+		updateTable: refreshCategories
 	};
 	drawerRefNestedComponentCategory.value!.acceptParams(params);
+};
+
+// Search Octopart Drawer
+const drawerRefNestedOctopartComponent = ref<DrawerExpose>();
+const openOctopartComponentDrawer = (title: string, rowData: Partial<Component.ResGetComponentRecord> = {}) => {
+	let params = {
+		title,
+		rowData: { ...rowData },
+		isView: title === "View",
+		apiUrl: title === "New" ? postFootprintCreate : "",
+		updateTable: refreshFootprints
+	};
+	drawerRefNestedOctopartComponent.value!.acceptParams(params);
 };
 
 defineExpose({

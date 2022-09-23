@@ -57,7 +57,7 @@
 									</template>
 									{{ props.row.part.shortDescription }}
 								</el-descriptions-item>
-								<el-descriptions-item>
+								<el-descriptions-item v-if="props.row.part.category">
 									<template #label>
 										<div>Category</div>
 									</template>

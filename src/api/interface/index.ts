@@ -58,7 +58,7 @@ export interface ResGetRecord {
 
 export namespace Component {
 	type ComponentColumns = {
-		name: string;
+		mpn: string;
 		description: number;
 		stock: number;
 		comment: string;
@@ -66,6 +66,8 @@ export namespace Component {
 		category: string;
 		footprint: string;
 		ipn: string;
+		manufacturer: string;
+		specs: object;
 	};
 	// Requests
 	export type ReqGetComponentListParams = ReqList;

@@ -112,6 +112,25 @@ const columns: Partial<ColumnProps>[] = [
 		prop: "name",
 		label: "Name",
 		width: 130,
+		// sortable: true,
+		// search: true,
+		// searchType: "text"
+		// searchProps: { disabled: true }
+		renderText: (data: Component.ResGetComponentRecord) => `${data.manufacturer} - ${data.mpn}`
+	},
+	{
+		prop: "manufacturer",
+		label: "Mfr.",
+		width: 130,
+		sortable: true,
+		search: true,
+		searchType: "text"
+		// searchProps: { disabled: true }
+	},
+	{
+		prop: "mpn",
+		label: "MPN",
+		width: 130,
 		sortable: true,
 		search: true,
 		searchType: "text"

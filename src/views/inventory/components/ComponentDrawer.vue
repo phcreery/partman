@@ -20,13 +20,24 @@
 					<template #tip> The size cannot exceed 3M </template>
 				</UploadImg>
 			</el-form-item> -->
-				<el-form-item label="Name" prop="name">
+				<el-form-item label="MPN" prop="mpn">
 					<div class="form-item-with-buttons">
 						<el-space>
-							<el-input v-model="drawerData.rowData!.name" placeholder="Please fill in the component name" clearable></el-input>
+							<el-input v-model="drawerData.rowData!.mpn" placeholder="Please fill in the component name" clearable></el-input>
 							<el-button :icon="Search" @click="openOctopartComponentDrawer('New', drawerData.rowData)" />
 						</el-space>
 					</div>
+				</el-form-item>
+				<el-form-item label="Manufacturer" prop="manufacturer">
+					<el-input
+						v-model="drawerData.rowData!.manufacturer"
+						placeholder="Please fill in the component manufacturer"
+						clearable
+						:rows="4"
+						type="textarea"
+						autosize
+					>
+					</el-input>
 				</el-form-item>
 				<el-form-item label="Description" prop="description">
 					<el-input
@@ -131,7 +142,9 @@ import ComponentCategoryDrawer from "@/views/categories/components/ComponentCate
 import OctopartComponentDrawer from "@/views/inventory/components/OctopartComponentDrawer.vue";
 
 const rules = reactive({
-	name: [{ required: true, message: "Please upload the component name", trigger: "change" }],
+	mpn: [{ required: true, message: "Please upload the component name", trigger: "change" }],
+	description: [{ required: false, message: "Please enter component description", trigger: "change" }],
+	manufacturer: [{ required: false, message: "Please enter component manufacturer", trigger: "change" }],
 	footprint: [{ required: false, message: "Please fill in the footprint", trigger: "change" }],
 	stock: [{ required: true, message: "Please fill in the stock qty", trigger: "change" }],
 	storage_location: [{ required: false, message: "Please select location", trigger: "change" }],

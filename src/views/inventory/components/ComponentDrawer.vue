@@ -107,6 +107,21 @@
 				<el-form-item label="IPN" prop="ipn">
 					<el-input v-model="drawerData.rowData!.ipn" placeholder="Internal Part Number" clearable></el-input>
 				</el-form-item>
+				<!-- Specs {{ drawerData.rowData!.specs }} -->
+				<el-form-item
+					v-for="(domain, index) in drawerData.rowData!.specs"
+					:key="domain.attribute.name"
+					:label="'Spec: ' + domain.attribute.name"
+					:prop="index + '.value'"
+				>
+					<el-input v-model="domain.attribute.name" placeholder="Attribute" />
+					<el-input v-model="domain.value" placeholder="Value" />
+					<el-input v-model="domain.units" placeholder="Units" />
+					<el-button class="mt-2" @click.prevent="() => {}">Delete</el-button>
+				</el-form-item>
+				<el-form-item>
+					<el-button @click="addDomain">New spec</el-button>
+				</el-form-item>
 			</el-form>
 			<template #footer>
 				<el-button @click="drawerVisible = false">Cancel</el-button>

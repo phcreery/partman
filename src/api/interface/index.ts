@@ -56,6 +56,16 @@ export interface ResGetRecord {
 	"@expand": object;
 }
 
+type spec = {
+	attribute: {
+		name: string;
+		shortname: string;
+		group: string;
+	};
+	value: string;
+	units: string;
+};
+
 export namespace Component {
 	type ComponentColumns = {
 		mpn: string;
@@ -67,7 +77,7 @@ export namespace Component {
 		footprint: string;
 		ipn: string;
 		manufacturer: string;
-		specs: object;
+		specs: spec[];
 	};
 	// Requests
 	export type ReqGetComponentListParams = ReqList;

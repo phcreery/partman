@@ -77,8 +77,6 @@ export const getPartListByMPN = async (mpn: string): Promise<Query["supSearchMpn
 											unitsSymbol
 											displayValue
 										}
-										bestDatasheet
-										cad
 									}
 								}
 							}

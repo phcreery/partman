@@ -110,17 +110,26 @@
 				<!-- Specs {{ drawerData.rowData!.specs }} -->
 				<el-form-item
 					v-for="(domain, index) in drawerData.rowData!.specs"
-					:key="domain.attribute.name"
-					:label="'Spec: ' + domain.attribute.name"
+					:key="index"
+					:label="'Spec: '"
 					:prop="index + '.value'"
 				>
-					<el-input v-model="domain.attribute.name" placeholder="Attribute" />
-					<el-input v-model="domain.value" placeholder="Value" />
-					<el-input v-model="domain.units" placeholder="Units" />
-					<el-button class="mt-2" @click.prevent="() => {}">Delete</el-button>
+					<el-input style="margin-bottom: 6px" v-model="domain.attribute.name" placeholder="Attribute" />
+					<div class="form-item-with-buttons">
+						<el-space>
+							<el-input v-model="domain.value" placeholder="Value" />
+							<el-input v-model="domain.units" placeholder="Units" />
+							<!-- <el-button-group>
+								<el-button :icon="Refresh" @click="refreshCategories" />
+								<el-button :icon="Plus" @click="openFootprintDrawer('New')" />
+							</el-button-group> -->
+
+							<el-button :icon="Delete" @click.prevent="deleteSpecIndex(index)"></el-button>
+						</el-space>
+					</div>
 				</el-form-item>
 				<el-form-item>
-					<el-button @click="addDomain">New spec</el-button>
+					<el-button @click="addSpec">New spec</el-button>
 				</el-form-item>
 			</el-form>
 			<template #footer>
@@ -150,7 +159,7 @@ import {
 } from "@/api/modules/components";
 import { ElMessage, FormInstance } from "element-plus";
 // import UploadImg from "@/components/UploadImg/index.vue";
-import { Refresh, Plus, Search } from "@element-plus/icons-vue";
+import { Refresh, Plus, Search, Delete } from "@element-plus/icons-vue";
 import FootprintDrawer from "@/views/footprints/components/FootprintDrawer.vue";
 import StorageDrawer from "@/views/storage/components/StorageDrawer.vue";
 import ComponentCategoryDrawer from "@/views/categories/components/ComponentCategoryDrawer.vue";
@@ -214,6 +223,18 @@ const handleSubmit = () => {
 
 const filterNodeMethod = (value: string, data: ComponentCategory.ResGetComponentCategoryRecord) => {
 	return data.name.toLowerCase().includes(value.toLowerCase());
+};
+
+const addSpec = () => {
+	// check to see if there are any specs, if not, initialize spec parameter
+	if (drawerData.value.rowData && typeof drawerData.value.rowData?.specs !== "object") {
+		drawerData.value.rowData.specs = [];
+	}
+	drawerData.value.rowData?.specs.push({ attribute: { name: "", shortname: "", group: "" }, value: "", units: "" });
+};
+
+const deleteSpecIndex = (index: number) => {
+	drawerData.value.rowData?.specs.splice(index, 1);
 };
 
 const componentCategories = ref<ComponentCategory.ResGetComponentCategoryRecord[]>();

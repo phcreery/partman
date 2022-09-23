@@ -6,36 +6,18 @@
 				:rules="rules"
 				:disabled="drawerData.isView"
 				:model="drawerData.rowData"
-				label-width="130px"
+				label-width="80px"
 				label-suffix=" :"
 				:append-to-body="true"
 			>
 				<el-form-item label="Name" prop="name">
 					<div class="form-item-with-buttons">
 						<el-space>
-							<el-input v-model="drawerData.rowData!.name" placeholder="Please fill in the component name" clearable></el-input>
+							<el-input v-model="drawerData.rowData!.mpn" placeholder="Please fill in the component name" clearable></el-input>
 							<el-button :icon="Search" @click="searchOctopart" />
 						</el-space>
 					</div>
 				</el-form-item>
-				<!-- <el-form-item label="Description" prop="description">
-					<el-input
-						v-model="drawerData.rowData!.description"
-						placeholder="Please fill in the component description"
-						clearable
-						:rows="4"
-						type="textarea"
-						autosize
-					></el-input>
-				</el-form-item> -->
-				<!-- <el-form-item label="Footprint" prop="footprint" v-loading="componentFootprints === undefined">
-					<el-select v-model="drawerData.rowData!.footprint" placeholder="" clearable filterable style="width: max-content">
-						<el-option v-for="item in componentFootprints" :key="item.id" :label="item.name" :value="item.id" />
-					</el-select>
-				</el-form-item> -->
-				<!-- <el-form-item label="IPN" prop="ipn">
-					<el-input v-model="drawerData.rowData!.ipn" placeholder="Internal Part Number" clearable></el-input>
-				</el-form-item> -->
 			</el-form>
 			<template #footer>
 				<el-button @click="drawerVisible = false">Cancel</el-button>
@@ -45,12 +27,10 @@
 				<el-table-column type="expand">
 					<template #default="props">
 						<div style="margin: 4%">
-							<!-- <p m="t-0 b-2">Category: {{ props.row.part.category.path }}</p> -->
-
 							<el-descriptions title="Summary" :column="1" border direction="vertical">
-								<!-- <template #extra>
-									<el-button type="primary">Operation</el-button>
-								</template> -->
+								<template #extra>
+									<el-button type="primary">Import</el-button>
+								</template>
 								<el-descriptions-item>
 									<template #label>
 										<div>Description</div>
@@ -73,8 +53,13 @@
 						</div>
 					</template>
 				</el-table-column>
-				<el-table-column label="MPN" prop="part.mpn" />
+				<el-table-column label="MPN" prop="part.mpn" width="140" />
 				<el-table-column label="Description" prop="part.shortDescription" />
+				<!-- <el-table-column fixed="right" label="" width="80">
+					<template #default>
+						<el-button link type="primary" size="small">Import</el-button>
+					</template>
+				</el-table-column> -->
 			</el-table>
 			<!-- {{ searchResults }} -->
 		</el-drawer>
@@ -88,9 +73,9 @@ import { Component, ComponentCategory, Footprint, Storage } from "@/api/interfac
 import { getFootprintsEnum, getComponentStorageLocationEnum, getComponentCategoryEnumTree } from "@/api/modules/components";
 import { ElMessage, FormInstance } from "element-plus";
 // import UploadImg from "@/components/UploadImg/index.vue";
-import { Refresh, Plus, Search } from "@element-plus/icons-vue";
+import { Search } from "@element-plus/icons-vue";
 import { Query, supSearchMpn } from "@/api/interface/octopart";
-import { getNewToken, graphql, getPartListByMPN } from "@/api/modules/octopart";
+import { getPartListByMPN } from "@/api/modules/octopart";
 
 const rules = reactive({
 	name: [{ required: true, message: "Please upload the component name", trigger: "change" }],
@@ -121,6 +106,8 @@ const acceptParams = (params: DrawerProps): void => {
 	drawerData.value = params;
 	drawerVisible.value = true;
 	searchResults.value = [];
+	// Don't search if initial MPN form item is empty
+	if (params.rowData?.mpn && params.rowData?.mpn !== "") searchOctopart();
 };
 
 const ruleFormRef = ref<FormInstance>();
@@ -141,7 +128,7 @@ const handleSubmit = () => {
 
 const searchResults: supSearchMpn.searchResults = ref([]);
 const searchOctopart = async () => {
-	searchResults.value = (await getPartListByMPN(drawerData.value.rowData?.name || "")).results;
+	searchResults.value = (await getPartListByMPN(drawerData.value.rowData?.mpn || "")).results;
 };
 
 // Public verification method (the picture upload successfully triggers re -verification)

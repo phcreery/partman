@@ -69,7 +69,7 @@ type spec = {
 export namespace Component {
 	type ComponentColumns = {
 		mpn: string;
-		description: number;
+		description: string;
 		stock: number;
 		comment: string;
 		storage_location: string;

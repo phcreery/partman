@@ -10,7 +10,7 @@
 				label-suffix=" :"
 				:append-to-body="true"
 			>
-				<el-form-item label="Name" prop="name">
+				<el-form-item label="MPN" prop="mpn">
 					<div class="form-item-with-buttons">
 						<el-space>
 							<el-input v-model="drawerData.rowData!.mpn" placeholder="Please fill in the component name" clearable></el-input>
@@ -21,7 +21,7 @@
 			</el-form>
 			<template #footer>
 				<el-button @click="drawerVisible = false">Cancel</el-button>
-				<el-button type="primary" v-show="!drawerData.isView" @click="handleSubmit">Save</el-button>
+				<!-- <el-button type="primary" v-show="!drawerData.isView" @click="handleSubmit">Save</el-button> -->
 			</template>
 			<el-table :data="searchResults" :border="true" style="width: 100%">
 				<el-table-column type="expand">
@@ -29,7 +29,7 @@
 						<div style="margin: 4%">
 							<el-descriptions title="Summary" :column="1" border direction="vertical">
 								<template #extra>
-									<el-button type="primary">Import</el-button>
+									<el-button type="primary" @click="handleSubmit(props.row.part)">Import</el-button>
 								</template>
 								<el-descriptions-item>
 									<template #label>
@@ -67,23 +67,18 @@
 </template>
 
 <script setup lang="ts" name="UserDrawer">
-import { ref, reactive, watch } from "vue";
+import { ref, Ref, reactive, watch } from "vue";
 // import { genderType } from "@/utils/serviceDict";
-import { Component, ComponentCategory, Footprint, Storage } from "@/api/interface";
-import { getFootprintsEnum, getComponentStorageLocationEnum, getComponentCategoryEnumTree } from "@/api/modules/components";
+import { Component } from "@/api/interface";
+// import { getFootprintsEnum, getComponentStorageLocationEnum, getComponentCategoryEnumTree } from "@/api/modules/components";
 import { ElMessage, FormInstance } from "element-plus";
 // import UploadImg from "@/components/UploadImg/index.vue";
 import { Search } from "@element-plus/icons-vue";
-import { Query, supSearchMpn } from "@/api/interface/octopart";
 import { getPartListByMPN } from "@/api/modules/octopart";
+import { SupPartResultSet, SupPart } from "@/api/interface/octopart";
 
 const rules = reactive({
-	name: [{ required: true, message: "Please upload the component name", trigger: "change" }],
-	footprint: [{ required: false, message: "Please fill in the footprint", trigger: "change" }],
-	stock: [{ required: true, message: "Please fill in the stock qty", trigger: "change" }],
-	storage_location: [{ required: false, message: "Please select location", trigger: "change" }],
-	category: [{ required: true, message: "Please select category", trigger: "change" }],
-	ipn: [{ required: false, message: "Please fill in IPN", trigger: "change" }]
+	mpn: [{ required: true, message: "Please input the MPN", trigger: "change" }]
 });
 
 interface DrawerProps {
@@ -91,7 +86,7 @@ interface DrawerProps {
 	isView: boolean;
 	rowData?: Component.ResGetComponentRecord;
 	apiUrl?: (params: any) => Promise<any>;
-	updateTable?: () => Promise<any>;
+	updateTable?: (component: Partial<Component.ResGetComponentRecord>) => Promise<any>;
 }
 
 // drawer frame status
@@ -107,26 +102,39 @@ const acceptParams = (params: DrawerProps): void => {
 	drawerVisible.value = true;
 	searchResults.value = [];
 	// Don't search if initial MPN form item is empty
-	if (params.rowData?.mpn && params.rowData?.mpn !== "") searchOctopart();
+	// if (params.rowData?.mpn && params.rowData?.mpn !== "")
+	searchOctopart();
 };
 
 const ruleFormRef = ref<FormInstance>();
 // Submit data (new/edit)
-const handleSubmit = () => {
+const handleSubmit = (part: SupPart) => {
+	console.log("submitting", part, drawerData.value.rowData);
 	ruleFormRef.value!.validate(async valid => {
 		if (!valid) return;
 		try {
-			await drawerData.value.apiUrl!(drawerData.value.rowData);
-			ElMessage.success({ message: `${drawerData.value.title} component success!` });
-			drawerData.value.updateTable!();
+			// await drawerData.value.apiUrl!(drawerData.value.rowData);
+			// ElMessage.success({ message: `${drawerData.value.title} component success!` });
+			let component: Partial<Component.ResGetComponentRecord> = {
+				mpn: part.mpn,
+				manufacturer: part.manufacturer.name,
+				specs: part.specs,
+				description: part.shortDescription
+			};
+			// component.ipn = part.value.mpn;
+			// component.manufacturer = part.value.manufacturer.name;
+			// component.specs = part.value.specs;
+			// component.description = part.value.shortDescription;
+			drawerData.value.updateTable!(component);
 			drawerVisible.value = false;
 		} catch (error) {
 			console.log(error);
+			ElMessage.error(String(error));
 		}
 	});
 };
 
-const searchResults: supSearchMpn.searchResults = ref([]);
+const searchResults: Ref<SupPartResultSet["results"]> = ref([]);
 const searchOctopart = async () => {
 	searchResults.value = (await getPartListByMPN(drawerData.value.rowData?.mpn || "")).results;
 };

@@ -147,6 +147,8 @@
 
 <script setup lang="ts" name="UserDrawer">
 import { ref, reactive, watch } from "vue";
+import { Refresh, Plus, Search, Delete } from "@element-plus/icons-vue";
+import { ElMessage, FormInstance } from "element-plus";
 // import { genderType } from "@/utils/serviceDict";
 import { Component, ComponentCategory, Footprint, Storage } from "@/api/interface";
 import {
@@ -157,9 +159,8 @@ import {
 	postStorageCreate,
 	postComponentCategoryCreate
 } from "@/api/modules/components";
-import { ElMessage, FormInstance } from "element-plus";
+import { nestedObjectAssign } from "@/utils/util";
 // import UploadImg from "@/components/UploadImg/index.vue";
-import { Refresh, Plus, Search, Delete } from "@element-plus/icons-vue";
 import FootprintDrawer from "@/views/footprints/components/FootprintDrawer.vue";
 import StorageDrawer from "@/views/storage/components/StorageDrawer.vue";
 import ComponentCategoryDrawer from "@/views/categories/components/ComponentCategoryDrawer.vue";
@@ -198,6 +199,11 @@ const drawerData = ref<DrawerProps>({
 const acceptParams = (params: DrawerProps): void => {
 	drawerData.value = params;
 	drawerVisible.value = true;
+};
+
+const importRowData = (rowData: Component.ResGetComponentRecord) => {
+	nestedObjectAssign(drawerData.value.rowData, rowData);
+	// drawerData.value.rowData = rowData;
 };
 
 const ruleFormRef = ref<FormInstance>();
@@ -305,7 +311,7 @@ const openOctopartComponentDrawer = (title: string, rowData: Partial<Component.R
 		rowData: { ...rowData },
 		isView: title === "View",
 		apiUrl: title === "New" ? postFootprintCreate : "",
-		updateTable: refreshFootprints
+		updateTable: importRowData
 	};
 	drawerRefNestedOctopartComponent.value!.acceptParams(params);
 };

@@ -29,7 +29,7 @@
 		{
 			"icon": "odometer",
 			"title": "Projects",
-			"path": "/projects"
+			"path": "/projects/index"
 		},
 		{
 			"icon": "promotion",

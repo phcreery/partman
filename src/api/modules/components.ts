@@ -9,7 +9,8 @@ import {
 	Footprint,
 	FootprintCategory,
 	Storage,
-	StorageCategory
+	StorageCategory,
+	Project
 } from "@/api/interface/index";
 
 /* 
@@ -281,4 +282,44 @@ export const getStorageCategoryEnumTree = async () => {
 	}
 	const tree = arrayToTree(res.items, { id: "id", parentId: "parent", dataField: null });
 	return { data: tree } as unknown as APIdata<StorageCategory.ResGetStorageCategoryRecordTree[]>;
+};
+
+// ---- PROJECTS ----
+
+export const getComponentProjectLocationEnum = async () => {
+	let res = await client.records.getList("projects", 1, 99999, {});
+	return { data: res.items } as unknown as APIdata<Project.ResGetProjectRecord[]>;
+};
+
+export const getProjectList = async (params: Project.ReqGetProjectListParams) => {
+	let res = await client.records.getList("projects", params.page, params.perPage, {
+		// filter: params.filter ?? "",
+		filter: filterToPBString(params.filter),
+		sort: params.sort ?? "",
+		expand: params.expand ?? ""
+	});
+	return { data: res } as unknown as APIdata<ResList<Project.ResGetProjectRecord>>;
+};
+
+export const getProjectsEnum = async () => {
+	let res = await client.records.getList("projects", 1, 99999, {});
+	return { data: res.items } as unknown as APIdata<Project.ResGetProjectRecord[]>;
+};
+
+export const postProjectCreate = async (params: Project.ReqCreateProjectParams) => {
+	let record = await client.records.create("projects", params);
+	return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
+};
+
+export const patchProjectUpdate = async (params: Project.ReqUpdateProjectParams) => {
+	const record = await client.records.update("projects", params.id, params);
+	return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
+};
+
+export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) => {
+	// TODO: speed this up??
+	for (const id of params.ids) {
+		await client.records.delete("projects", id);
+	}
+	return true;
 };

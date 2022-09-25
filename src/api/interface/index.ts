@@ -197,3 +197,18 @@ export namespace OctopartConfig {
 		children: ResGetOctopartConfigRecordTree;
 	}
 }
+
+export namespace Project {
+	type ProjectColumns = {
+		name: string;
+		description: number;
+		components: object;
+	};
+	// Requests
+	export type ReqGetProjectListParams = ReqList;
+	export type ReqCreateProjectParams = ProjectColumns;
+	export interface ReqUpdateProjectParams extends ReqRecord, ProjectColumns {}
+	export type ReqDeleteProjectsParams = { ids: string[] };
+	// Responses
+	export interface ResGetProjectRecord extends ResGetRecord, ProjectColumns {}
+}

@@ -53,6 +53,12 @@ export const getAuthButtons = () => {
 				delete: true,
 				view: true,
 				edit: true
+			},
+			projects: {
+				add: true,
+				delete: true,
+				view: true,
+				edit: true
 			}
 		},
 		msg: "success"

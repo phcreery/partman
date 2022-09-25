@@ -50,7 +50,7 @@ import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useDownload } from "@/hooks/useDownload";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
-import { useJSON2CSV } from "@/hooks/useDataTransform";
+import { JSON2CSV } from "@/hooks/useDataTransform";
 import ProTable from "@/components/ProTable/index.vue";
 import ImportExcel from "@/components/ImportExcel/index.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
@@ -212,7 +212,7 @@ const downloadFile = async () => {
 	let res = await getComponentList({ page: 1, perPage: 500, filter: proTable.value.searchParam, expand: "", sort: "" });
 	let json = res.data.items;
 	// console.log(proTable.value.searchParam, json);
-	let JSON = useJSON2CSV(json, ["mpn", "stock"]); // TODO: use visible columns
+	let JSON = JSON2CSV(json, ["mpn", "stock"]); // TODO: use visible columns
 	useDownload(() => JSON, "partman_component_list", {}, true, ".csv");
 };
 // Add users in batches

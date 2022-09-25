@@ -26,7 +26,6 @@
 		</div>
 		<!-- Tabletop -->
 		<el-table
-			height="575"
 			ref="tableRef"
 			:data="tableData"
 			:border="border"

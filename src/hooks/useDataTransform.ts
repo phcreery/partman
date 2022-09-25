@@ -6,7 +6,7 @@ import * as json2csv from "json2csv/dist/json2csv.umd";
  * @param {Array<String>} fields Export parameter (default)
  * @return void
  * */
-export const useJSON2CSV = async (json: any = {}, fields: Array<String>) => {
+export const JSON2CSV = async (json: any = {}, fields: Array<String>) => {
 	try {
 		const opts = { fields };
 		const parser = new json2csv.Parser(opts);

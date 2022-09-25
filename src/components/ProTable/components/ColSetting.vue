@@ -2,7 +2,7 @@
 	<!-- Column display settings -->
 	<el-drawer title="Column settings" v-model="drawerVisible" size="400px">
 		<div class="table-box">
-			<el-table height="575" :data="colSetting" :border="true">
+			<el-table :data="colSetting" :border="true">
 				<el-table-column prop="label" label="Column" :align="'center'" />
 				<el-table-column prop="name" label="Visibility" v-slot="scope" :align="'center'">
 					<el-switch v-model="scope.row.isShow" @click="switchShow"></el-switch>

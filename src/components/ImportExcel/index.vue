@@ -1,5 +1,5 @@
 <template>
-	<el-dialog v-model="dialogVisible" :title="`Batch add${parameter.title}`" :destroy-on-close="true" width="580px" draggable>
+	<el-dialog v-model="dialogVisible" :title="`Batch add ${parameter.title}`" :destroy-on-close="true" width="580px" draggable>
 		<el-form class="drawer-multiColumn-form" label-width="150px">
 			<el-form-item label="Template :">
 				<el-button type="primary" :icon="Download" @click="downloadTemp">Click to download</el-button>

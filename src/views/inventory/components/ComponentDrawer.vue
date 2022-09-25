@@ -124,7 +124,7 @@
 								<el-button :icon="Plus" @click="openFootprintDrawer('New')" />
 							</el-button-group> -->
 
-							<el-button :icon="Delete" @click.prevent="deleteSpecIndex(index)"></el-button>
+							<el-button type="danger" :icon="Delete" @click.prevent="deleteSpecIndex(index)"></el-button>
 						</el-space>
 					</div>
 				</el-form-item>

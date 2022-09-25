@@ -48,8 +48,9 @@ import { ref, reactive } from "vue";
 import { ResList, Component } from "@/api/interface";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
-// import { useDownload } from "@/hooks/useDownload";
+import { useDownload } from "@/hooks/useDownload";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
+import { useJSON2CSV } from "@/hooks/useDataTransform";
 import ProTable from "@/components/ProTable/index.vue";
 import ImportExcel from "@/components/ImportExcel/index.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
@@ -208,6 +209,10 @@ const batchDelete = async (ids: string[]) => {
 // Export user list
 const downloadFile = async () => {
 	// useDownload(exportUserInfo, "user list", proTable.value.searchParam);
+	let res = await getComponentList({ page: 1, perPage: 500, filter: "", expand: "", sort: "" });
+
+	let JSON = useJSON2CSV(res.data.items, ["mpn", "stock"]);
+	useDownload(() => JSON, "component_list", {}, true, ".csv");
 };
 // Add users in batches
 interface DialogExpose {
@@ -216,7 +221,7 @@ interface DialogExpose {
 const dialogRef = ref<DialogExpose>();
 const batchAdd = () => {
 	let params = {
-		title: "user",
+		title: "component",
 		// tempApi: exportUserInfo,
 		// importApi: BatchAddUser,
 		getTableList: proTable.value.refresh

@@ -32,6 +32,7 @@
 		"echarts-liquidfill": "^3.1.0",
 		"element-plus": "^2.2.6",
 		"js-md5": "^0.7.3",
+		"json2csv": "^5.0.7",
 		"nprogress": "^0.2.0",
 		"performant-array-to-tree": "^1.11.0",
 		"pinia": "^2.0.12",

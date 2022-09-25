@@ -209,10 +209,11 @@ const batchDelete = async (ids: string[]) => {
 // Export user list
 const downloadFile = async () => {
 	// useDownload(exportUserInfo, "user list", proTable.value.searchParam);
-	let res = await getComponentList({ page: 1, perPage: 500, filter: "", expand: "", sort: "" });
-
-	let JSON = useJSON2CSV(res.data.items, ["mpn", "stock"]);
-	useDownload(() => JSON, "component_list", {}, true, ".csv");
+	let res = await getComponentList({ page: 1, perPage: 500, filter: proTable.value.searchParam, expand: "", sort: "" });
+	let json = res.data.items;
+	// console.log(proTable.value.searchParam, json);
+	let JSON = useJSON2CSV(json, ["mpn", "stock"]); // TODO: use visible columns
+	useDownload(() => JSON, "partman_component_list", {}, true, ".csv");
 };
 // Add users in batches
 interface DialogExpose {

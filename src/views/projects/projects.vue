@@ -25,7 +25,7 @@
 			<!-- Expand -->
 			<template #expand="scope">
 				<!-- {{ scope.row }} -->
-				<ProjectDescription ref="descriptions" :components="scope.row['@expand'].components" />
+				<ProjectDescription ref="descriptions" title="" :components="scope.row['@expand'].components" />
 			</template>
 			<template #stock="scope">
 				{{ scope.row.stock }}

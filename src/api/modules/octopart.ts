@@ -70,12 +70,9 @@ export const getPartListByMPN = async (mpn: string): Promise<Query["supSearchMpn
 										specs {
 											attribute {
 												name
-												shortname
 											}
 											value
 											units
-											unitsSymbol
-											displayValue
 										}
 									}
 								}

@@ -48,7 +48,8 @@
 							<h3>Attributes</h3>
 							<el-table :data="props.row.part.specs" :border="true">
 								<el-table-column label="Attribute" prop="attribute.name" />
-								<el-table-column label="Value" prop="displayValue" />
+								<el-table-column label="Value" prop="value" />
+								<el-table-column label="Value" prop="units" />
 							</el-table>
 						</div>
 					</template>

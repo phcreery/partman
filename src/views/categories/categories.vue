@@ -141,8 +141,8 @@ const columns: Partial<ColumnProps>[] = [
 	{ type: "selection", width: 40, fixed: "left" },
 	// { type: "expand", label: "" },
 	{
-		prop: "name",
-		label: "Name",
+		prop: "mpn",
+		label: "MPN",
 		width: 130,
 		sortable: true,
 		search: true,

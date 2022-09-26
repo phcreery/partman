@@ -62,7 +62,7 @@ const closeSearch = () => {
 	isShowSearch.value = false;
 };
 
-// 筛选菜单
+// Screening menu
 const filterNodeMethod = (queryString: string) => {
 	return (restaurant: Menu.MenuOptions) => {
 		return (

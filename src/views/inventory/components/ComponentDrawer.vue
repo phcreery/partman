@@ -227,6 +227,7 @@ const handleSubmit = () => {
 // 	ruleFormRef.value!.validateField(val, () => {});
 // };
 
+// TreeSelect search function
 const filterNodeMethod = (value: string, data: ComponentCategory.ResGetComponentCategoryRecord) => {
 	return data.name.toLowerCase().includes(value.toLowerCase());
 };

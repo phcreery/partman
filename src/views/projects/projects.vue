@@ -24,7 +24,8 @@
 			</template>
 			<!-- Expand -->
 			<template #expand="scope">
-				{{ scope.row }}
+				<!-- {{ scope.row }} -->
+				<ProjectDescription ref="descriptions" :components="scope.row['@expand'].components" />
 			</template>
 			<template #stock="scope">
 				{{ scope.row.stock }}
@@ -59,11 +60,13 @@ import {
 	// getFootprintsEnum
 } from "@/api/modules/components";
 
+import ProjectDescription from "@/views/projects/components/ProjectDescription.vue";
+
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
 const proTable = ref();
 // If the table needs to initialize the request parameter, it will be directly defined to the protable (each request will automatically bring the parameter every time, and it will always be brought to
 const initParam = reactive({
-	expand: "footprint, category, storage_location"
+	expand: "components"
 });
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
@@ -118,13 +121,13 @@ const columns: Partial<ColumnProps>[] = [
 		search: true,
 		searchType: "text"
 	},
-	{
-		prop: "components",
-		label: "Components",
-		// width: 220,
-		search: true,
-		searchType: "text"
-	},
+	// {
+	// 	prop: "components",
+	// 	label: "Components",
+	// 	// width: 220,
+	// 	search: true,
+	// 	searchType: "text"
+	// },
 	{
 		prop: "action",
 		label: "Action",

@@ -23,7 +23,7 @@
 
 				<el-form-item label="Name" prop="name">
 					<el-input
-						v-model="drawerData.rowData!.description"
+						v-model="drawerData.rowData!.name"
 						placeholder="Please fill in the project"
 						clearable
 						:rows="4"
@@ -61,8 +61,8 @@ import { Project } from "@/api/interface";
 // import UploadImg from "@/components/UploadImg/index.vue";
 
 const rules = reactive({
-	name: [{ required: true, message: "Please upload the component name", trigger: "change" }],
-	description: [{ required: false, message: "Please enter component description", trigger: "change" }]
+	name: [{ required: true, message: "Please enter the project name", trigger: "change" }],
+	description: [{ required: false, message: "Please enter project description", trigger: "change" }]
 });
 
 // const cascaderProps = { value: "id", label: "name", emitPath: false };
@@ -110,6 +110,7 @@ const handleSubmit = () => {
 // 	ruleFormRef.value!.validateField(val, () => {});
 // };
 
+// TreeSelect search function
 const filterNodeMethod = (value: string, data: ProjectCategory.ResGetProjectCategoryRecord) => {
 	return data.name.toLowerCase().includes(value.toLowerCase());
 };

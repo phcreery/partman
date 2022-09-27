@@ -101,22 +101,23 @@ import {
 const proTable = ref();
 const proTree = ref();
 
-// If the table needs to initialize the request parameter, it will be directly defined to the propable (each request will automatically bring the parameter every time, and it will always be brought to
-const initParam = reactive<Partial<Component.ReqGetComponentListParams>>({
+// If the table needs to initialize the request parameter, it will be directly defined to the prop table (each request will automatically bring the parameter every time, and it will always be brought to
+const initParam = reactive<Partial<Project.ReqGetProjectComponentListParams>>({
 	expand: "components",
-	projectid: ""
+	projectID: ""
 	// filter: { name: undefined, category: undefined, description: undefined }
 });
 
 const initParamProject = reactive({});
-
+const projectData = ref();
 // const projectComponents = ref([]);
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
 const dataCallbackTree = (data: any) => {
+	projectData.value = data;
 	return data;
 };
-const dataCallbackTable = (data: ResList<Component.ResGetComponentRecord>) => {
+const dataCallbackTable = (data: ResList<Project.ReqGetProjectComponentListParams>) => {
 	return {
 		datalist: data.items,
 		total: data.totalItems,
@@ -127,7 +128,7 @@ const dataCallbackTable = (data: ResList<Component.ResGetComponentRecord>) => {
 
 // what binds the category tree to the table filter
 const handleProjectSelect = (data: any) => {
-	initParam.projectid = data.id;
+	initParam.projectID = data.id;
 };
 
 // Page button permission
@@ -155,9 +156,13 @@ const columns: Partial<ColumnProps>[] = [
 	{
 		prop: "quantity",
 		label: "Qty.",
-		width: 80
+		width: 80,
 		// search: true,
 		// searchType: "text"
+		renderText: (data: Component.ResGetComponentRecord) => {
+			console.log(projectData.value.find(item => item.id === initParam.projectID).quantity[data.id]);
+			return `${projectData.value.find(item => item.id === initParam.projectID).quantity[data.id]}`;
+		}
 	},
 	{
 		prop: "action",

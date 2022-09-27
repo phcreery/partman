@@ -347,9 +347,9 @@ export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) =>
 	return true;
 };
 
-export const getProjectComponentsList = async (params: Project.ReqGetProjectListParams) => {
+export const getProjectComponentsList = async (params: Project.ReqGetProjectComponentListParams) => {
 	// params.projectid
-	let res = (await client.records.getOne("projects", params.projectid, {
+	let res = (await client.records.getOne("projects", params.projectID, {
 		// filter: params.filter ?? "", // TODO:
 		filter: filterToPBString(params.filter),
 		sort: params.sort ?? "",

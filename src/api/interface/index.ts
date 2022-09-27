@@ -206,6 +206,9 @@ export namespace Project {
 	};
 	// Requests
 	export type ReqGetProjectListParams = ReqList;
+	export interface ReqGetProjectComponentListParams extends ReqList {
+		projectID: string;
+	}
 	export type ReqCreateProjectParams = ProjectColumns;
 	export interface ReqUpdateProjectParams extends ReqRecord, ProjectColumns {}
 	export type ReqDeleteProjectsParams = { ids: string[] };

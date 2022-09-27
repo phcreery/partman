@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts" name="component">
-import { ref, watch, onMounted } from "vue";
+import { ref, Ref, watch, onMounted } from "vue";
 import { Refresh } from "@element-plus/icons-vue";
 // import { nestedObjectAssign } from "@/utils/util";
 
@@ -43,6 +43,7 @@ interface componentProps {
 	id?: string; // 选择的id ==> 非必传，默认为 “id”
 	label?: string; // the name of the data
 	childrenName?: string; // When the data exists in children, specify the children key name ==> Non -component (default "children")
+	showAll?: boolean;
 }
 
 // Accept the parent component parameter, configure the default value
@@ -52,7 +53,8 @@ const props = withDefaults(defineProps<componentProps>(), {
 	toolButton: true,
 	id: "id",
 	label: "name",
-	childrenName: "children"
+	childrenName: "children",
+	showAll: true
 });
 
 const emit = defineEmits<{
@@ -64,7 +66,7 @@ const treeRef = ref();
 
 const selectedItem = ref({ id: "", [props.label]: "All" });
 const filterText = ref("");
-const treeData = ref({});
+const treeData: Ref<{ id: string; [x: string]: string }[]> = ref([{ id: "", [props.label]: "All" }]);
 const totalParam = ref({});
 
 const treeProps = { label: props.label, children: props.childrenName };
@@ -86,7 +88,7 @@ const getTreeList = async () => {
 		let { data } = await props.requestApi(totalParam.value);
 		props.dataCallback && (data = props.dataCallback(data));
 		// Add default top-level selection item
-		treeData.value = [{ id: "", [props.label]: "All" }, ...data];
+		treeData.value = props.showAll ? [{ id: "", [props.label]: "All" }, ...data] : data;
 	} catch (error) {
 		console.log(error);
 	}

@@ -1,76 +1,122 @@
 <template>
 	<div class="table-box">
-		<ProTable
-			ref="proTable"
-			:columns="columns"
-			:requestApi="getProjectList"
-			:initParam="initParam"
-			:isPageable="true"
-			:dataCallback="dataCallback"
-		>
-			<!-- Table header button -->
-			<template #tableHeader="scope">
-				<el-button type="primary" :icon="CirclePlus" @click="openDrawer('New')" v-if="BUTTONS.add">New Project</el-button>
-				<el-button
-					type="danger"
-					:icon="Delete"
-					plain
-					:disabled="!scope.isSelected"
-					@click="batchDelete(scope.ids)"
-					v-if="BUTTONS.batchDelete"
+		<el-row :gutter="20">
+			<el-col :span="6">
+				<ProTree
+					ref="proTree"
+					:requestApi="getProjectsEnum"
+					:initParam="initParamProject"
+					:dataCallback="dataCallbackTree"
+					@handle-node-click="handleProjectSelect"
+					:showAll="false"
 				>
-					Delete
-				</el-button>
-			</template>
-			<!-- Expand -->
-			<template #expand="scope">
-				<!-- {{ scope.row }} -->
-				<ProjectDescription ref="descriptions" title="" :components="scope.row['@expand'].components" />
-			</template>
-			<template #stock="scope">
-				{{ scope.row.stock }}
-				<el-button type="primary" link :icon="DCaret" @click="openDrawer('Stock', scope.row)"></el-button>
-			</template>
-
-			<!-- Table operation -->
-			<template #action="scope">
-				<el-button type="primary" link :icon="EditPen" @click="openDrawer('Edit', scope.row)">Edit</el-button>
-			</template>
-		</ProTable>
-		<ProjectDrawer ref="drawerRef"></ProjectDrawer>
-		<ImportExcel ref="dialogRef"></ImportExcel>
+					<template #treeHeader="scope">
+						<el-button type="primary" :icon="CirclePlus" @click="openProjectDrawer('New')" v-if="BUTTONS.add"></el-button>
+						<el-button
+							:icon="EditPen"
+							:disabled="scope.row.id === ''"
+							@click="openProjectDrawer('Edit', scope.row)"
+							v-if="BUTTONS.edit"
+						></el-button>
+						<el-button
+							type="danger"
+							:icon="Delete"
+							plain
+							:disabled="scope.row.id === ''"
+							@click="batchDeleteProject([scope.row.id])"
+							v-if="BUTTONS.delete"
+						>
+						</el-button>
+					</template>
+				</ProTree>
+			</el-col>
+			<el-col :span="18">
+				<div class="table-box">
+					<ProTable
+						ref="proTable"
+						:columns="columns"
+						:requestApi="getProjectComponentsList"
+						:initParam="initParam"
+						:isPageable="true"
+						:dataCallback="dataCallbackTable"
+					>
+						<!-- Table header button -->
+						<template #tableHeader="scope">
+							<el-button type="primary" :icon="CirclePlus" @click="openComponentDrawer('New')" v-if="BUTTONS.add">
+								Add Component
+							</el-button>
+							<!-- <el-button
+								type="danger"
+								:icon="Delete"
+								plain
+								:disabled="!scope.isSelected"
+								@click="batchDelete(scope.ids)"
+								v-if="BUTTONS.delete"
+							>
+								Delete
+							</el-button> -->
+						</template>
+						<!-- Expand -->
+						<template #expand="scope">
+							{{ scope.row }}
+						</template>
+						<!-- Table operation -->
+						<template #action="scope">
+							<el-button type="primary" link :icon="EditPen" @click="openComponentDrawer('Edit', scope.row)">Edit</el-button>
+						</template>
+					</ProTable>
+					<ComponentDrawer ref="drawerRefComponent"></ComponentDrawer>
+					<ProjectDrawer ref="drawerRefProject"></ProjectDrawer>
+				</div>
+			</el-col>
+		</el-row>
 	</div>
 </template>
 
-<script setup lang="tsx" name="useProject">
-import { ref, reactive } from "vue";
-import { ResList, Project } from "@/api/interface";
+<script setup lang="tsx" name="useComponent">
+import { ref, reactive, nextTick } from "vue";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import ProTable from "@/components/ProTable/index.vue";
-import ImportExcel from "@/components/ImportExcel/index.vue";
+import ProTree from "@/components/ProTree/index.vue";
+import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 import ProjectDrawer from "@/views/projects/components/ProjectDrawer.vue";
-import { CirclePlus, Delete, EditPen, DCaret } from "@element-plus/icons-vue";
+import { CirclePlus, Delete, EditPen } from "@element-plus/icons-vue";
+import { ResList, Component, Project } from "@/api/interface";
 import {
-	getProjectList,
+	getComponentList,
+	postComponentCreate,
+	patchComponentUpdate,
+	deleteComponents,
+	getProjectsEnum,
+	// getProjectEnumTree,
+	getProjectComponentsList,
 	postProjectCreate,
 	patchProjectUpdate,
-	deleteProjects
-	// getFootprintsEnum
+	deleteComponentCategories
 } from "@/api/modules/components";
-
-import ProjectDescription from "@/views/projects/components/ProjectDescription.vue";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
 const proTable = ref();
-// If the table needs to initialize the request parameter, it will be directly defined to the protable (each request will automatically bring the parameter every time, and it will always be brought to
-const initParam = reactive({
-	expand: "components"
+const proTree = ref();
+
+// If the table needs to initialize the request parameter, it will be directly defined to the propable (each request will automatically bring the parameter every time, and it will always be brought to
+const initParam = reactive<Partial<Component.ReqGetComponentListParams>>({
+	expand: "components",
+	projectid: ""
+	// filter: { name: undefined, category: undefined, description: undefined }
 });
 
+const initParamProject = reactive({});
+
+// const projectComponents = ref([]);
+
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
-const dataCallback = (data: ResList<Project.ResGetProjectRecord>) => {
+const dataCallbackTree = (data: any) => {
+	return data;
+};
+const dataCallbackTable = (data: ResList<Component.ResGetComponentRecord>) => {
 	return {
 		datalist: data.items,
 		total: data.totalItems,
@@ -78,41 +124,26 @@ const dataCallback = (data: ResList<Project.ResGetProjectRecord>) => {
 		pageSize: data.perPage
 	};
 };
+
+// what binds the category tree to the table filter
+const handleProjectSelect = (data: any) => {
+	initParam.projectid = data.id;
+};
+
 // Page button permission
 const { BUTTONS } = useAuthButtons();
 
 // Table configuration item
 const columns: Partial<ColumnProps>[] = [
 	{ type: "selection", width: 40, fixed: "left" },
-	{ type: "expand", label: "" },
-	// {
-	// 	prop: "category",
-	// 	label: "Category",
-	// 	align: "left",
-	// 	// values that go into the treeSelect props
-	// 	searchProps: {
-	// 		value: "id",
-	// 		label: "_fullName",
-	// 		props: { value: "id", label: "name", emitPath: false },
-	// 		checkStrictly: true
-	// 	},
-	// 	// searchInitParam: {category}
-	// 	sortable: true,
-	// 	search: true,
-	// 	// searchType: "select",
-	// 	searchType: "treeSelect",
-	// 	// renderText: (data: Project.ResGetProjectRecord) => data["@expand"].category.name,
-	// 	enumFunction: getProjectCategoryEnum,
-	// 	enumTreeFunction: getProjectCategoryEnumTree
-	// },
+	// { type: "expand", label: "" },
 	{
-		prop: "name",
-		label: "Name",
+		prop: "mpn",
+		label: "MPN",
 		width: 130,
 		sortable: true,
 		search: true,
 		searchType: "text"
-		// searchProps: { disabled: true }
 	},
 	{
 		prop: "description",
@@ -121,13 +152,13 @@ const columns: Partial<ColumnProps>[] = [
 		search: true,
 		searchType: "text"
 	},
-	// {
-	// 	prop: "components",
-	// 	label: "Components",
-	// 	// width: 220,
-	// 	search: true,
-	// 	searchType: "text"
-	// },
+	{
+		prop: "quantity",
+		label: "Qty.",
+		width: 80
+		// search: true,
+		// searchType: "text"
+	},
 	{
 		prop: "action",
 		label: "Action",
@@ -136,37 +167,43 @@ const columns: Partial<ColumnProps>[] = [
 	}
 ];
 
-// Delete user information
-// const deleteProject = async (params: Project.ResGetProjectRecord) => {
-// 	await useHandleData(deleteProjects, { ids: [params.id] }, `Delete [${params.name}] component`);
-// 	proTable.value.refresh();
-// };
-// Batch delete components
+// Batch delete footprints
 const batchDelete = async (ids: string[]) => {
-	await useHandleData(deleteProjects, { ids }, "Delete the selected component(s)");
+	await useHandleData(deleteComponents, { ids }, "Delete the selected footprints(s)");
 	proTable.value.refresh();
 };
 
-// Add users in batches
-interface DialogExpose {
-	acceptParams: (params: any) => void;
-}
-const dialogRef = ref<DialogExpose>();
+// Batch delete footprints
+const batchDeleteProject = async (ids: string[]) => {
+	await useHandleData(deleteComponentCategories, { ids }, "Delete the selected footprint projects(s)");
+	proTree.value.refresh();
+};
 
 // Open the drawer (new, view, edit)
 interface DrawerExpose {
 	acceptParams: (params: any) => void;
 }
-const drawerRef = ref<DrawerExpose>();
-const openDrawer = (title: string, rowData: Partial<Project.ResGetProjectRecord> = {}) => {
+const drawerRefComponent = ref<DrawerExpose>();
+const openComponentDrawer = (title: string, rowData: Partial<Component.ResGetComponentRecord> = {}) => {
 	let params = {
 		title,
 		rowData: { ...rowData },
 		isView: title === "View",
-		apiUrl:
-			title === "New" ? postProjectCreate : title === "Edit" ? patchProjectUpdate : title === "Stock" ? patchProjectUpdate : "",
+		apiUrl: title === "New" ? postComponentCreate : title === "Edit" ? patchComponentUpdate : "",
 		updateTable: proTable.value.refresh
 	};
-	drawerRef.value!.acceptParams(params);
+	drawerRefComponent.value!.acceptParams(params);
+};
+
+const drawerRefProject = ref<DrawerExpose>();
+const openProjectDrawer = (title: string, rowData: Partial<Project.ResGetProjectRecord> = {}) => {
+	let params = {
+		title,
+		rowData: { ...rowData },
+		isView: title === "View",
+		apiUrl: title === "New" ? postProjectCreate : title === "Edit" ? patchProjectUpdate : "",
+		updateTable: proTree.value.refresh
+	};
+	drawerRefProject.value!.acceptParams(params);
 };
 </script>

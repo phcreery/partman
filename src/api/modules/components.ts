@@ -1,5 +1,6 @@
 import { arrayToTree } from "performant-array-to-tree";
 import client, { tryCatchAsync } from "@/api";
+import { nestedObjectAssign } from "@/utils/util";
 
 import {
 	APIdata,
@@ -286,10 +287,27 @@ export const getStorageCategoryEnumTree = async () => {
 
 // ---- PROJECTS ----
 
-export const getComponentProjectLocationEnum = async () => {
-	let res = await client.records.getList("projects", 1, 99999, {});
-	return { data: res.items } as unknown as APIdata<Project.ResGetProjectRecord[]>;
-};
+// export const getComponentCategoryEnum = async () => {
+// 	let [res, err] = await tryCatchAsync(() => client.records.getList("component_categories", 1, 99999, { $autoCancel: false }));
+// 	if (err) {
+// 		console.log("getCompCatEnum res err", res, err);
+// 		// return false;
+// 	}
+// 	res.items.forEach((component: ComponentCategory.ResGetComponentCategoryRecord) => {
+// 		component._fullName = getPathName(res.items, component.id);
+// 	});
+// 	return { data: res.items } as unknown as APIdata<ComponentCategory.ResGetComponentCategoryRecord[]>;
+// };
+
+// export const getComponentCategoryEnumTree = async () => {
+// 	let [res, err] = await tryCatchAsync(() => client.records.getList("component_categories", 1, 99999, { $autoCancel: false }));
+// 	if (err) {
+// 		console.log("getCompCatEnum res err", res, err);
+// 		// return false;
+// 	}
+// 	const tree = arrayToTree(res.items, { id: "id", parentId: "parent", dataField: null });
+// 	return { data: tree } as unknown as APIdata<ComponentCategory.ResGetComponentCategoryRecordTree[]>;
+// };
 
 export const getProjectList = async (params: Project.ReqGetProjectListParams) => {
 	let res = await client.records.getList("projects", params.page, params.perPage, {
@@ -299,6 +317,11 @@ export const getProjectList = async (params: Project.ReqGetProjectListParams) =>
 		expand: params.expand ?? ""
 	});
 	return { data: res } as unknown as APIdata<ResList<Project.ResGetProjectRecord>>;
+};
+
+export const getComponentProjectLocationEnum = async () => {
+	let res = await client.records.getList("projects", 1, 99999, {});
+	return { data: res.items } as unknown as APIdata<Project.ResGetProjectRecord[]>;
 };
 
 export const getProjectsEnum = async () => {
@@ -322,4 +345,25 @@ export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) =>
 		await client.records.delete("projects", id);
 	}
 	return true;
+};
+
+export const getProjectComponentsList = async (params: Project.ReqGetProjectListParams) => {
+	// params.projectid
+	let res = (await client.records.getOne("projects", params.projectid, {
+		// filter: params.filter ?? "", // TODO:
+		filter: filterToPBString(params.filter),
+		sort: params.sort ?? "",
+		expand: params.expand ?? "" // TODO: use expand=components
+	})) as unknown as Project.ResGetProjectRecord;
+	let componentsFilter = { id: { ...res.components } }; // convert array to { 0: comp1, 1: comp2, ... }
+	let filter = params.filter;
+	nestedObjectAssign(filter, componentsFilter);
+	console.log("getProjectComponentsList filter", componentsFilter, filterToPBString(componentsFilter));
+	let res2 = await client.records.getList("components", 1, 99999, {
+		// filter: params.filter ?? "",
+		filter: filterToPBString(componentsFilter),
+		sort: params.sort ?? ""
+		// expand: params.expand ?? "" // TODO: use params expand
+	});
+	return { data: res2 } as unknown as APIdata<ResList<Component.ResGetComponentRecord>>; // APIdata<ResList<Project.ResGetProjectRecord>>;
 };

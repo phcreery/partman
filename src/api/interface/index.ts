@@ -202,7 +202,8 @@ export namespace Project {
 	type ProjectColumns = {
 		name: string;
 		description: number;
-		components: object;
+		components: string[];
+		quantity: { [key: string]: number };
 	};
 	// Requests
 	export type ReqGetProjectListParams = ReqList;

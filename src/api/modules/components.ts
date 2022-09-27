@@ -348,22 +348,24 @@ export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) =>
 };
 
 export const getProjectComponentsList = async (params: Project.ReqGetProjectComponentListParams) => {
-	// params.projectid
-	let res = (await client.records.getOne("projects", params.projectID, {
-		// filter: params.filter ?? "", // TODO:
-		filter: filterToPBString(params.filter),
-		sort: params.sort ?? "",
-		expand: params.expand ?? "" // TODO: use expand=components
+	console.log(params.projectID);
+	if (params.projectID === "") return { data: {} };
+	let res_project = (await client.records.getOne("projects", params.projectID, {
+		expand: "components"
 	})) as unknown as Project.ResGetProjectRecord;
-	let componentsFilter = { id: { ...res.components } }; // convert array to { 0: comp1, 1: comp2, ... }
+	let componentsFilter = { id: { ...res_project.components } }; // convert array of ids to { 0: id1, 1: id2, ... }
 	let filter = params.filter;
+	// filter out entire component list by those found in specified project
 	nestedObjectAssign(filter, componentsFilter);
-	console.log("getProjectComponentsList filter", componentsFilter, filterToPBString(componentsFilter));
-	let res2 = await client.records.getList("components", 1, 99999, {
+	let res_components = await client.records.getList("components", 1, 99999, {
 		// filter: params.filter ?? "",
 		filter: filterToPBString(componentsFilter),
 		sort: params.sort ?? ""
 		// expand: params.expand ?? "" // TODO: use params expand
 	});
-	return { data: res2 } as unknown as APIdata<ResList<Component.ResGetComponentRecord>>; // APIdata<ResList<Project.ResGetProjectRecord>>;
+	// go through and add quantity used in project to each component
+	res_components.items.forEach(function (part, index, theArray) {
+		theArray[index]._quantity_used = res_project.quantity[part.id];
+	});
+	return { data: res_components } as unknown as APIdata<ResList<Component.ResGetComponentRecord>>;
 };

@@ -154,15 +154,10 @@ const columns: Partial<ColumnProps>[] = [
 		searchType: "text"
 	},
 	{
-		prop: "quantity",
+		prop: "_quantity_used",
 		label: "Qty.",
-		width: 80,
+		width: 80
 		// search: true,
-		// searchType: "text"
-		renderText: (data: Component.ResGetComponentRecord) => {
-			console.log(projectData.value.find(item => item.id === initParam.projectID).quantity[data.id]);
-			return `${projectData.value.find(item => item.id === initParam.projectID).quantity[data.id]}`;
-		}
 	},
 	{
 		prop: "action",

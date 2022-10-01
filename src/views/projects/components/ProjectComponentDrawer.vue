@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<el-drawer v-model="drawerVisible" :destroy-on-close="true" size="600px" :title="`${drawerData.title} Project`">
+		<el-drawer v-model="drawerVisible" :destroy-on-close="true" size="600px" :title="`${drawerData.title} Project Component`">
+			<!-- Drawer Data: {{ drawerData.rowData }} -->
 			<el-form
 				ref="ruleFormRef"
 				:rules="rules"
@@ -10,8 +11,8 @@
 				label-suffix=" :"
 				:append-to-body="true"
 			>
-				<el-form-item label="MPN" prop="mpn">
-					<el-input
+				<el-form-item label="MPN" prop="id" v-loading="components === undefined">
+					<!-- <el-input
 						v-model="drawerData.rowData!.mpn"
 						placeholder="Please fill in the component"
 						clearable
@@ -19,7 +20,23 @@
 						type="textarea"
 						autosize
 					>
-					</el-input>
+					</el-input> -->
+					<div class="form-item-with-buttons">
+						<el-space>
+							<el-select v-model="drawerData.rowData!.id" placeholder="" clearable filterable style="width: max-content">
+								<el-option v-for="item in components" :key="item.id" :label="item.mpn" :value="item.id">
+									<span style="float: left">{{ item.mpn }}</span>
+									<span style="float: right; color: var(--el-text-color-secondary); font-size: 13px">{{
+										trimEllip(item.description, 25)
+									}}</span>
+								</el-option>
+							</el-select>
+							<el-button-group>
+								<el-button :icon="Refresh" @click="refreshComponents" />
+								<!-- <el-button :icon="Plus" @click="openFootprintDrawer('New')" /> -->
+							</el-button-group>
+						</el-space>
+					</div>
 				</el-form-item>
 				<el-form-item label="Quantity" prop="_quantity_used">
 					<el-input-number v-model="drawerData.rowData!._quantity_used" />
@@ -40,6 +57,7 @@ import { ElMessage, FormInstance } from "element-plus";
 // import { genderType } from "@/utils/serviceDict";
 import { Project } from "@/api/interface";
 // import UploadImg from "@/components/UploadImg/index.vue";
+import { getComponentEnum } from "@/api/modules/components";
 
 const rules = reactive({
 	name: [{ required: true, message: "Please enter the project name", trigger: "change" }],
@@ -47,7 +65,7 @@ const rules = reactive({
 });
 
 // const cascaderProps = { value: "id", label: "name", emitPath: false };
-const treeSelectProps = { value: "id", label: "name", emitPath: false };
+// const treeSelectProps = { value: "id", label: "name", emitPath: false };
 
 interface DrawerProps {
 	title: string;
@@ -96,9 +114,18 @@ const filterNodeMethod = (value: string, data: Project.ResGetProjectComponentRec
 	return data.name.toLowerCase().includes(value.toLowerCase());
 };
 
+const components = ref<Component.ResGetComponentRecord[]>();
+
+const refreshComponents = () => getComponentEnum().then(res => (components.value = res.data));
+
+const trimEllip = (string: string, length: number) => {
+	return string.length > length ? string.substring(0, length) + "..." : this;
+};
+
 // When opening the drawer, fetch the necessary field values
 watch(drawerVisible, openValue => {
 	if (openValue) {
+		refreshComponents();
 	}
 });
 

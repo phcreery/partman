@@ -219,7 +219,10 @@ export namespace Project {
 	export interface ReqGetProjectComponentListParams extends ReqList {
 		projectID: string;
 	}
-	export interface ReqAddProjectComponentParams extends ReqRecord, component {}
+	export interface ReqAddProjectComponentParams extends ReqRecord, component {
+		_quantity_used: number;
+		_of_project_id: string;
+	}
 	export interface ReqUpdateProjectComponentParams extends ReqRecord, component {
 		_quantity_used: number;
 		_of_project_id: string;
@@ -228,5 +231,6 @@ export namespace Project {
 	// Responses
 	export interface ResGetProjectComponentRecord extends ResGetRecord, Component.ComponentColumns {
 		_quantity_used: number;
+		_of_project_id: string;
 	}
 }

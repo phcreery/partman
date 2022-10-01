@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<el-drawer v-model="drawerVisible" :destroy-on-close="true" size="600px" :title="`${drawerData.title} Component`">
+			<!-- Drawer Data: {{ drawerData.rowData }} -->
 			<el-form
 				ref="ruleFormRef"
 				:rules="rules"

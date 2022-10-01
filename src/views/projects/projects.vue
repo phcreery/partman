@@ -88,7 +88,7 @@ import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 import ProjectComponentDrawer from "@/views/projects/components/ProjectComponentDrawer.vue";
 import ProjectDrawer from "@/views/projects/components/ProjectDrawer.vue";
 import { CirclePlus, Delete, EditPen, Upload, Download } from "@element-plus/icons-vue";
-import { ResList, Component, Project } from "@/api/interface";
+import { ResList, Component, Project, ProjectComponents } from "@/api/interface";
 import {
 	postComponentCreate,
 	patchComponentUpdate,
@@ -207,10 +207,10 @@ interface DrawerExpose {
 	acceptParams: (params: any) => void;
 }
 const drawerRefComponent = ref<DrawerExpose>();
-const openComponentDrawer = (title: string, rowData: Partial<Project.ResGetProjectRecord> = {}) => {
+const openComponentDrawer = (title: string, rowData: Partial<ProjectComponents.ResGetProjectComponentRecord> = {}) => {
 	let params = {
 		title,
-		rowData: { ...rowData },
+		rowData: { _of_project_id: initParam.projectID, id: rowData.id, _quantity_used: rowData._quantity_used }, // { ...rowData },
 		isView: title === "View",
 		apiUrl: title === "New" ? postProjectComponentAdd : title === "Edit" ? postProjectComponentUpdate : "",
 		updateTable: proTable.value.refresh

@@ -206,7 +206,7 @@ const batchDelete = async (ids: string[]) => {
 	await useHandleData(deleteComponents, { ids }, "Delete the selected component(s)");
 	proTable.value.refresh();
 };
-// Export user list
+// Export component list
 const downloadFile = async () => {
 	// useDownload(exportUserInfo, "user list", proTable.value.searchParam);
 	let res = await getComponentList({ page: 1, perPage: 500, filter: proTable.value.searchParam, expand: "", sort: "" });

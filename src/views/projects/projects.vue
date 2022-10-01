@@ -45,7 +45,7 @@
 							<el-button type="primary" :icon="CirclePlus" @click="openComponentDrawer('New')" v-if="BUTTONS.add">
 								Add Component
 							</el-button>
-							<!-- <el-button
+							<el-button
 								type="danger"
 								:icon="Delete"
 								plain
@@ -54,7 +54,9 @@
 								v-if="BUTTONS.delete"
 							>
 								Delete
-							</el-button> -->
+							</el-button>
+							<el-button type="primary" :icon="Upload" plain @click="batchAdd" v-if="BUTTONS.batchAdd">Import BOM</el-button>
+							<el-button type="primary" :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button>
 						</template>
 						<!-- Expand -->
 						<template #expand="scope">
@@ -77,13 +79,15 @@
 import { ref, reactive } from "vue";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
+import { useDownload } from "@/hooks/useDownload";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
+import { JSON2CSV } from "@/hooks/useDataTransform";
 import ProTable from "@/components/ProTable/index.vue";
 import ProTree from "@/components/ProTree/index.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 import ProjectComponentDrawer from "@/views/projects/components/ProjectComponentDrawer.vue";
 import ProjectDrawer from "@/views/projects/components/ProjectDrawer.vue";
-import { CirclePlus, Delete, EditPen } from "@element-plus/icons-vue";
+import { CirclePlus, Delete, EditPen, Upload, Download } from "@element-plus/icons-vue";
 import { ResList, Component, Project } from "@/api/interface";
 import {
 	postComponentCreate,
@@ -179,6 +183,23 @@ const batchDelete = async (ids: string[]) => {
 const batchDeleteProject = async (ids: string[]) => {
 	await useHandleData(deleteComponentCategories, { ids }, "Delete the selected footprint projects(s)");
 	proTree.value.refresh();
+};
+
+// Export component list
+const downloadFile = async () => {
+	// useDownload(exportUserInfo, "user list", proTable.value.searchParam);
+	let res = await getProjectComponentsList({
+		page: 1,
+		perPage: 500,
+		filter: proTable.value.searchParam,
+		expand: "",
+		sort: "",
+		projectID: initParam.projectID ?? ""
+	});
+	let json = res.data.items;
+	console.log(json);
+	let JSON = JSON2CSV(json, ["mpn", "_quantity_used"]); // TODO: use visible columns
+	useDownload(() => JSON, "partman_component_list", {}, true, ".csv");
 };
 
 // Open the drawer (new, view, edit)

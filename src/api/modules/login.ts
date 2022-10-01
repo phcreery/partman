@@ -58,7 +58,9 @@ export const getAuthButtons = () => {
 				add: true,
 				delete: true,
 				view: true,
-				edit: true
+				edit: true,
+				batchAdd: true,
+				export: true
 			}
 		},
 		msg: "success"

@@ -10,10 +10,10 @@
 				label-suffix=" :"
 				:append-to-body="true"
 			>
-				<el-form-item label="Name" prop="name">
+				<el-form-item label="MPN" prop="mpn">
 					<el-input
-						v-model="drawerData.rowData!.name"
-						placeholder="Please fill in the project"
+						v-model="drawerData.rowData!.mpn"
+						placeholder="Please fill in the component"
 						clearable
 						:rows="4"
 						type="textarea"
@@ -21,16 +21,8 @@
 					>
 					</el-input>
 				</el-form-item>
-				<el-form-item label="Description" prop="description">
-					<el-input
-						v-model="drawerData.rowData!.description"
-						placeholder="Please fill in the project description"
-						clearable
-						:rows="4"
-						type="textarea"
-						autosize
-					>
-					</el-input>
+				<el-form-item label="Quantity" prop="_quantity_used">
+					<el-input-number v-model="drawerData.rowData!._quantity_used" />
 				</el-form-item>
 			</el-form>
 			<template #footer>
@@ -60,7 +52,7 @@ const treeSelectProps = { value: "id", label: "name", emitPath: false };
 interface DrawerProps {
 	title: string;
 	isView: boolean;
-	rowData?: Project.ResGetProjectRecord;
+	rowData?: Project.ResGetProjectComponentRecord;
 	apiUrl?: (params: any) => Promise<any>;
 	updateTable?: () => Promise<any>;
 }
@@ -100,7 +92,7 @@ const handleSubmit = () => {
 // };
 
 // TreeSelect search function
-const filterNodeMethod = (value: string, data: ProjectCategory.ResGetProjectCategoryRecord) => {
+const filterNodeMethod = (value: string, data: Project.ResGetProjectComponentRecord) => {
 	return data.name.toLowerCase().includes(value.toLowerCase());
 };
 

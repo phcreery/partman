@@ -65,7 +65,7 @@
 							<el-button type="primary" link :icon="EditPen" @click="openComponentDrawer('Edit', scope.row)">Edit</el-button>
 						</template>
 					</ProTable>
-					<ComponentDrawer ref="drawerRefComponent"></ComponentDrawer>
+					<ProjectComponentDrawer ref="drawerRefComponent"></ProjectComponentDrawer>
 					<ProjectDrawer ref="drawerRefProject"></ProjectDrawer>
 				</div>
 			</el-col>
@@ -74,24 +74,26 @@
 </template>
 
 <script setup lang="tsx" name="useComponent">
-import { ref, reactive, nextTick } from "vue";
+import { ref, reactive } from "vue";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import ProTable from "@/components/ProTable/index.vue";
 import ProTree from "@/components/ProTree/index.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
+import ProjectComponentDrawer from "@/views/projects/components/ProjectComponentDrawer.vue";
 import ProjectDrawer from "@/views/projects/components/ProjectDrawer.vue";
 import { CirclePlus, Delete, EditPen } from "@element-plus/icons-vue";
 import { ResList, Component, Project } from "@/api/interface";
 import {
-	getComponentList,
 	postComponentCreate,
 	patchComponentUpdate,
 	deleteComponents,
 	getProjectsEnum,
 	// getProjectEnumTree,
 	getProjectComponentsList,
+	postProjectComponentAdd,
+	postProjectComponentUpdate,
 	postProjectCreate,
 	patchProjectUpdate,
 	deleteComponentCategories
@@ -184,12 +186,12 @@ interface DrawerExpose {
 	acceptParams: (params: any) => void;
 }
 const drawerRefComponent = ref<DrawerExpose>();
-const openComponentDrawer = (title: string, rowData: Partial<Component.ResGetComponentRecord> = {}) => {
+const openComponentDrawer = (title: string, rowData: Partial<Project.ResGetProjectRecord> = {}) => {
 	let params = {
 		title,
 		rowData: { ...rowData },
 		isView: title === "View",
-		apiUrl: title === "New" ? postComponentCreate : title === "Edit" ? patchComponentUpdate : "",
+		apiUrl: title === "New" ? postProjectComponentAdd : title === "Edit" ? postProjectComponentUpdate : "",
 		updateTable: proTable.value.refresh
 	};
 	drawerRefComponent.value!.acceptParams(params);

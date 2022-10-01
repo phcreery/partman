@@ -319,11 +319,6 @@ export const getProjectList = async (params: Project.ReqGetProjectListParams) =>
 	return { data: res } as unknown as APIdata<ResList<Project.ResGetProjectRecord>>;
 };
 
-export const getComponentProjectLocationEnum = async () => {
-	let res = await client.records.getList("projects", 1, 99999, {});
-	return { data: res.items } as unknown as APIdata<Project.ResGetProjectRecord[]>;
-};
-
 export const getProjectsEnum = async () => {
 	let res = await client.records.getList("projects", 1, 99999, {});
 	return { data: res.items } as unknown as APIdata<Project.ResGetProjectRecord[]>;
@@ -347,25 +342,54 @@ export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) =>
 	return true;
 };
 
+// PROJECT COMPONENTS
+
+// Type 1: [{"id": "a4bJqkHVdneg5As", "quantity": 2}, ...]
+// Type 2: { "a4bJqkHVdneg5As": 2, ... }
+
 export const getProjectComponentsList = async (params: Project.ReqGetProjectComponentListParams) => {
-	console.log(params.projectID);
 	if (params.projectID === "") return { data: {} };
 	let res_project = (await client.records.getOne("projects", params.projectID, {
 		expand: "components"
 	})) as unknown as Project.ResGetProjectRecord;
-	let componentsFilter = { id: { ...res_project.components } }; // convert array of ids to { 0: id1, 1: id2, ... }
+	// let componentsFilter = { id: { ...res_project.components } }; // convert array of ids to { 0: id1, 1: id2, ... } // depreciated
+	// let componentsFilter = { id: { ...Object.keys(res_project.quantity) } }; // convert array of { [id]: qty } to { 0: id1, 1: id2, ... } to { 0: id1, 1: id2, ... } // Type 1
+	let componentsFilter = { id: { ...res_project.quantity.map(c => c.id) } }; // convert array of objects with [{ id: "", qty: # }, ...] to [ id1, id1, ... ] to { 0: id1, 1: id2, ... } // Type 2
 	let filter = params.filter;
 	// filter out entire component list by those found in specified project
 	nestedObjectAssign(filter, componentsFilter);
 	let res_components = await client.records.getList("components", 1, 99999, {
-		// filter: params.filter ?? "",
 		filter: filterToPBString(componentsFilter),
-		sort: params.sort ?? ""
-		// expand: params.expand ?? "" // TODO: use params expand
+		sort: params.sort ?? "",
+		expand: params.expand ?? "" // TODO: use params expand
 	});
+	console.log("res_components", res_components);
 	// go through and add quantity used in project to each component
-	res_components.items.forEach(function (part, index, theArray) {
-		theArray[index]._quantity_used = res_project.quantity[part.id];
+	res_components.items.forEach(function (cInProj, index, theArray) {
+		// theArray[index]._quantity_used = res_project.quantity[cInProj.id]; // Type 1
+		theArray[index]._quantity_used = res_project.quantity.find(c => c.id === cInProj.id)?.quantity; // Type 2
+		theArray[index]._of_project_id = res_project.id; // or params.projectID
 	});
-	return { data: res_components } as unknown as APIdata<ResList<Component.ResGetComponentRecord>>;
+	console.log("res_components", res_components);
+	return { data: res_components } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
+};
+
+export const postProjectComponentAdd = async (params: Project.ReqAddProjectComponentsParams) => {};
+
+export const postProjectComponentUpdate = async (params: Project.ReqUpdateProjectComponentsParams) => {
+	console.log("params", params);
+	let res_project = (await client.records.getOne("projects", params._of_project_id, {
+		// expand: "components"
+	})) as unknown as Project.ResGetProjectRecord;
+	console.log("before", res_project, params._quantity_used);
+	// nestedObjectAssign(res_project.quantity, { [params.id]: params._quantity_used });
+	// nestedObjectAssign(res_project, { quantity: { [params.id]: params._quantity_used } }); // Type 1
+	res_project.quantity[res_project.quantity.findIndex(x => x.id == params.id)] = {
+		// Type 2
+		id: params.id,
+		quantity: params._quantity_used
+	};
+	console.log("after", res_project);
+	const record = await client.records.update("projects", params._of_project_id, res_project);
+	return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
 };

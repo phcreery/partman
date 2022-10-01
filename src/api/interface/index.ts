@@ -67,7 +67,7 @@ type spec = {
 };
 
 export namespace Component {
-	type ComponentColumns = {
+	export type ComponentColumns = {
 		mpn: string;
 		description: string;
 		stock: number;
@@ -199,20 +199,34 @@ export namespace OctopartConfig {
 }
 
 export namespace Project {
+	type component = { id: string; quantity: number }; //{ [key: string]: number | string };
 	type ProjectColumns = {
 		name: string;
 		description: number;
-		components: string[];
-		quantity: { [key: string]: number };
+		// components: string[]; // depreciated
+		quantity: component[];
 	};
 	// Requests
 	export type ReqGetProjectListParams = ReqList;
-	export interface ReqGetProjectComponentListParams extends ReqList {
-		projectID: string;
-	}
 	export type ReqCreateProjectParams = ProjectColumns;
 	export interface ReqUpdateProjectParams extends ReqRecord, ProjectColumns {}
 	export type ReqDeleteProjectsParams = { ids: string[] };
 	// Responses
 	export interface ResGetProjectRecord extends ResGetRecord, ProjectColumns {}
+
+	// Project Components
+	// Requests
+	export interface ReqGetProjectComponentListParams extends ReqList {
+		projectID: string;
+	}
+	export interface ReqAddProjectComponentsParams extends ReqRecord, component {}
+	export interface ReqUpdateProjectComponentsParams extends ReqRecord, component {
+		_quantity_used: number;
+		_of_project_id: string;
+	}
+	export type ReqRemoveProjectComponentsParams = { ids: string[] };
+	// Responses
+	export interface ResGetProjectComponentRecord extends ResGetRecord, Component.ComponentColumns {
+		_quantity_used: number;
+	}
 }

@@ -44,7 +44,7 @@
 
 <script setup lang="ts" name="UserDrawer">
 import { ref, reactive, watch } from "vue";
-import { Refresh, Plus, Search, Delete } from "@element-plus/icons-vue";
+// import { Refresh, Plus, Search, Delete } from "@element-plus/icons-vue";
 import { ElMessage, FormInstance } from "element-plus";
 // import { genderType } from "@/utils/serviceDict";
 import { Project } from "@/api/interface";
@@ -56,7 +56,7 @@ const rules = reactive({
 });
 
 // const cascaderProps = { value: "id", label: "name", emitPath: false };
-const treeSelectProps = { value: "id", label: "name", emitPath: false };
+// const treeSelectProps = { value: "id", label: "name", emitPath: false };
 
 interface DrawerProps {
 	title: string;
@@ -101,9 +101,9 @@ const handleSubmit = () => {
 // };
 
 // TreeSelect search function
-const filterNodeMethod = (value: string, data: ProjectCategory.ResGetProjectCategoryRecord) => {
-	return data.name.toLowerCase().includes(value.toLowerCase());
-};
+// const filterNodeMethod = (value: string, data: ProjectCategory.ResGetProjectCategoryRecord) => {
+// 	return data.name.toLowerCase().includes(value.toLowerCase());
+// };
 
 // When opening the drawer, fetch the necessary field values
 watch(drawerVisible, openValue => {

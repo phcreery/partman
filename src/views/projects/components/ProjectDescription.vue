@@ -14,8 +14,8 @@
 
 <script setup lang="ts" name="ProjectDescription">
 import { ref, reactive, watch } from "vue";
-import { Refresh, Plus, Search, Delete } from "@element-plus/icons-vue";
-import { ElMessage, FormInstance } from "element-plus";
+// import { Refresh, Plus, Search, Delete } from "@element-plus/icons-vue";
+// import { ElMessage, FormInstance } from "element-plus";
 import { Project, Component } from "@/api/interface";
 
 interface DescriptionProps {

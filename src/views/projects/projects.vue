@@ -67,8 +67,8 @@
 							<el-button type="primary" link :icon="EditPen" @click="openComponentDrawer('Edit', scope.row)">Edit</el-button>
 						</template>
 					</ProTable>
-					<ProjectComponentDrawer ref="drawerRefComponent"></ProjectComponentDrawer>
 					<ProjectDrawer ref="drawerRefProject"></ProjectDrawer>
+					<ProjectComponentDrawer ref="drawerRefComponent"></ProjectComponentDrawer>
 				</div>
 			</el-col>
 		</el-row>
@@ -84,24 +84,18 @@ import { useAuthButtons } from "@/hooks/useAuthButtons";
 import { JSON2CSV } from "@/hooks/useDataTransform";
 import ProTable from "@/components/ProTable/index.vue";
 import ProTree from "@/components/ProTree/index.vue";
-import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 import ProjectComponentDrawer from "@/views/projects/components/ProjectComponentDrawer.vue";
 import ProjectDrawer from "@/views/projects/components/ProjectDrawer.vue";
 import { CirclePlus, Delete, EditPen, Upload, Download } from "@element-plus/icons-vue";
-import { ResList, Component, Project, ProjectComponents } from "@/api/interface";
+import { ResList, Project } from "@/api/interface";
 import {
-	postComponentCreate,
-	patchComponentUpdate,
-	deleteComponents,
 	getProjectsEnum,
-	// getProjectEnumTree,
 	getProjectComponentsList,
 	postProjectComponentAdd,
 	postProjectComponentUpdate,
 	deleteProjectComponents,
 	postProjectCreate,
 	patchProjectUpdate,
-	deleteComponentCategories,
 	deleteProjects
 } from "@/api/modules/components";
 
@@ -213,7 +207,7 @@ interface DrawerExpose {
 	acceptParams: (params: any) => void;
 }
 const drawerRefComponent = ref<DrawerExpose>();
-const openComponentDrawer = (title: string, rowData: Partial<ProjectComponents.ResGetProjectComponentRecord> = {}) => {
+const openComponentDrawer = (title: string, rowData: Partial<Project.ResGetProjectComponentRecord> = {}) => {
 	let params = {
 		title,
 		rowData: { _of_project_id: initParam.projectID, id: rowData.id, _quantity_used: rowData._quantity_used }, // { ...rowData },

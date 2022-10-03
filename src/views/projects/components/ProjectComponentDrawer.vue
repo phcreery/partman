@@ -33,7 +33,7 @@
 							</el-select>
 							<el-button-group>
 								<el-button :icon="Refresh" @click="refreshComponents" />
-								<!-- <el-button :icon="Plus" @click="openFootprintDrawer('New')" /> -->
+								<el-button :icon="Plus" @click="openCreateComponentDrawer('New')" />
 							</el-button-group>
 						</el-space>
 					</div>
@@ -47,17 +47,20 @@
 				<el-button type="primary" v-show="!drawerData.isView" @click="handleSubmit">Save</el-button>
 			</template>
 		</el-drawer>
+
+		<ComponentDrawer ref="drawerRefCreateComponent"></ComponentDrawer>
 	</div>
 </template>
 
 <script setup lang="ts" name="UserDrawer">
 import { ref, reactive, watch } from "vue";
-import { Refresh, Plus, Search, Delete } from "@element-plus/icons-vue";
+import { Refresh, Plus } from "@element-plus/icons-vue";
 import { ElMessage, FormInstance } from "element-plus";
 // import { genderType } from "@/utils/serviceDict";
-import { Project } from "@/api/interface";
+import { Project, Component } from "@/api/interface";
 // import UploadImg from "@/components/UploadImg/index.vue";
-import { getComponentEnum } from "@/api/modules/components";
+import { getComponentEnum, postComponentCreate, patchComponentUpdate } from "@/api/modules/components";
+import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 
 const rules = reactive({
 	name: [{ required: true, message: "Please enter the project name", trigger: "change" }],
@@ -110,17 +113,17 @@ const handleSubmit = () => {
 // };
 
 // TreeSelect search function
-const filterNodeMethod = (value: string, data: Project.ResGetProjectComponentRecord) => {
-	return data.name.toLowerCase().includes(value.toLowerCase());
+// const filterNodeMethod = (value: string, data: Project.ResGetProjectComponentRecord) => {
+// 	return data.name.toLowerCase().includes(value.toLowerCase());
+// };
+
+const trimEllip = (string: string, length: number) => {
+	return string.length > length ? string.substring(0, length) + "..." : this;
 };
 
 const components = ref<Component.ResGetComponentRecord[]>();
 
 const refreshComponents = () => getComponentEnum().then(res => (components.value = res.data));
-
-const trimEllip = (string: string, length: number) => {
-	return string.length > length ? string.substring(0, length) + "..." : this;
-};
 
 // When opening the drawer, fetch the necessary field values
 watch(drawerVisible, openValue => {
@@ -128,6 +131,29 @@ watch(drawerVisible, openValue => {
 		refreshComponents();
 	}
 });
+
+// Open the drawer (new, view, edit)
+interface DrawerExpose {
+	acceptParams: (params: any) => void;
+}
+const drawerRefCreateComponent = ref<DrawerExpose>();
+const openCreateComponentDrawer = (title: string, rowData: Partial<Component.ResGetComponentRecord> = {}) => {
+	let params = {
+		title,
+		rowData: { ...rowData },
+		isView: title === "View",
+		apiUrl:
+			title === "New"
+				? postComponentCreate
+				: title === "Edit"
+				? patchComponentUpdate
+				: title === "Stock"
+				? patchComponentUpdate
+				: "",
+		updateTable: refreshComponents
+	};
+	drawerRefCreateComponent.value!.acceptParams(params);
+};
 
 defineExpose({
 	acceptParams

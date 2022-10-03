@@ -245,5 +245,5 @@ const refresh = () => {
 };
 
 // Parameters and methods exposed to parent components
-defineExpose({ searchParam, refresh });
+defineExpose({ searchParam, refresh, tableColumns });
 </script>

@@ -197,8 +197,10 @@ const downloadFile = async () => {
 		projectID: initParam.projectID ?? ""
 	});
 	let json = res.data.items;
-	console.log(json);
-	let JSON = JSON2CSV(json, ["mpn", "_quantity_used"]); // TODO: use visible columns
+	console.log("export data", json);
+	let columns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "");
+	console.log("columns", columns);
+	let JSON = JSON2CSV(json, columns);
 	useDownload(() => JSON, "partman_component_list", {}, true, ".csv");
 };
 

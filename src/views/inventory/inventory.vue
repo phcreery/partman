@@ -211,8 +211,10 @@ const downloadFile = async () => {
 	// useDownload(exportUserInfo, "user list", proTable.value.searchParam);
 	let res = await getComponentList({ page: 1, perPage: 500, filter: proTable.value.searchParam, expand: "", sort: "" });
 	let json = res.data.items;
-	// console.log(proTable.value.searchParam, json);
-	let JSON = JSON2CSV(json, ["mpn", "stock"]); // TODO: use visible columns
+	console.log("export data", json);
+	let columns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "");
+	console.log("columns", columns);
+	let JSON = JSON2CSV(json, columns);
 	useDownload(() => JSON, "partman_component_list", {}, true, ".csv");
 };
 // Add users in batches

@@ -98,9 +98,11 @@ import {
 	getProjectComponentsList,
 	postProjectComponentAdd,
 	postProjectComponentUpdate,
+	deleteProjectComponents,
 	postProjectCreate,
 	patchProjectUpdate,
-	deleteComponentCategories
+	deleteComponentCategories,
+	deleteProjects
 } from "@/api/modules/components";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
@@ -175,13 +177,17 @@ const columns: Partial<ColumnProps>[] = [
 
 // Batch delete footprints
 const batchDelete = async (ids: string[]) => {
-	await useHandleData(deleteComponents, { ids }, "Delete the selected footprints(s)");
+	await useHandleData(
+		deleteProjectComponents,
+		{ projectID: String(initParam.projectID), ids },
+		"Remove the selected components(s) from project"
+	);
 	proTable.value.refresh();
 };
 
 // Batch delete footprints
 const batchDeleteProject = async (ids: string[]) => {
-	await useHandleData(deleteComponentCategories, { ids }, "Delete the selected footprint projects(s)");
+	await useHandleData(deleteProjects, { ids }, "Delete the selected projects(s)");
 	proTree.value.refresh();
 };
 

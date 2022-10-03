@@ -362,9 +362,12 @@ export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) =>
 export const getProjectComponentsList = async (params: Project.ReqGetProjectComponentListParams) => {
 	// if no project ID specified, return empty data set
 	if (params.projectID === "") return { data: {} } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
+
 	let res_project = (await client.records.getOne("projects", params.projectID, {
 		// expand: "components" // depreciated
 	})) as unknown as Project.ResGetProjectRecord;
+	if (typeof res_project.quantity !== "object" || res_project.quantity === null || res_project.quantity.length === 0)
+		return { data: {} } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
 	// let componentsFilter = { id: { ...res_project.components } }; // convert array of ids to { 0: id1, 1: id2, ... } // depreciated
 	// let componentsFilter = { id: { ...Object.keys(res_project.quantity) } }; // convert array of { [id]: qty } to { 0: id1, 1: id2, ... } to { 0: id1, 1: id2, ... } // Type 1
 	let componentsFilter = { id: { ...res_project.quantity.map(c => c.id) } }; // convert array of objects with [{ id: "", qty: # }, ...] to [ id1, id1, ... ] to { 0: id1, 1: id2, ... } // Type 2
@@ -389,10 +392,17 @@ export const postProjectComponentAdd = async (params: Project.ReqAddProjectCompo
 	let res_project = (await client.records.getOne("projects", params._of_project_id, {
 		// expand: "components" // depreciated
 	})) as unknown as Project.ResGetProjectRecord;
-	let index = res_project.quantity.findIndex(x => x.id == params.id);
-	if (index === -1) {
-		// nestedObjectAssign(res_project, { quantity: { id: params.id, quantity: params._quantity_used } });
-		res_project.quantity.push({ id: params.id, quantity: params._quantity_used });
+
+	// check if the quantity column is not empty (new project)
+	if (typeof res_project.quantity === "object" && res_project.quantity !== null && Array.isArray(res_project.quantity)) {
+		// check if the part is already added
+		let index = res_project.quantity?.findIndex(x => x.id == params.id);
+		if (index === -1) {
+			// nestedObjectAssign(res_project, { quantity: { id: params.id, quantity: params._quantity_used } });
+			res_project.quantity.push({ id: params.id, quantity: params._quantity_used });
+		}
+	} else {
+		res_project.quantity = [{ id: params.id, quantity: params._quantity_used }];
 	}
 	const record = await client.records.update("projects", params._of_project_id, res_project);
 	return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
@@ -410,5 +420,23 @@ export const postProjectComponentUpdate = async (params: Project.ReqUpdateProjec
 		quantity: params._quantity_used
 	};
 	const record = await client.records.update("projects", params._of_project_id, res_project);
+	return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
+};
+
+export const deleteProjectComponents = async (params: Project.ReqRemoveProjectComponentsParams) => {
+	console.log("params", params);
+	let res_project = (await client.records.getOne("projects", params.projectID, {
+		// expand: "components" // depreciated
+	})) as unknown as Project.ResGetProjectRecord;
+
+	for (const id of params.ids) {
+		let index = res_project.quantity.findIndex(x => x.id == id);
+		if (index !== -1) {
+			res_project.quantity.splice(index, 1);
+		}
+	}
+	console.log("updating with", res_project);
+	const record = await client.records.update("projects", params.projectID, res_project);
+	// return true;
 	return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
 };

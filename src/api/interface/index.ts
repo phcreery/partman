@@ -227,7 +227,7 @@ export namespace Project {
 		_quantity_used: number;
 		_of_project_id: string;
 	}
-	export type ReqRemoveProjectComponentsParams = { ids: string[] };
+	export type ReqRemoveProjectComponentsParams = { projectID: string; ids: string[] };
 	// Responses
 	export interface ResGetProjectComponentRecord extends ResGetRecord, Component.ComponentColumns {
 		_quantity_used: number;

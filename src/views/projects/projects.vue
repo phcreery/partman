@@ -67,11 +67,12 @@
 							<el-button type="primary" link :icon="EditPen" @click="openComponentDrawer('Edit', scope.row)">Edit</el-button>
 						</template>
 					</ProTable>
-					<ProjectDrawer ref="drawerRefProject"></ProjectDrawer>
-					<ProjectComponentDrawer ref="drawerRefComponent"></ProjectComponentDrawer>
 				</div>
 			</el-col>
 		</el-row>
+		<ProjectDrawer ref="drawerRefProject"></ProjectDrawer>
+		<ProjectComponentDrawer ref="drawerRefComponent"></ProjectComponentDrawer>
+		<ImportExcel ref="dialogRef"></ImportExcel>
 	</div>
 </template>
 
@@ -84,6 +85,7 @@ import { useAuthButtons } from "@/hooks/useAuthButtons";
 import { JSON2CSV } from "@/hooks/useDataTransform";
 import ProTable from "@/components/ProTable/index.vue";
 import ProTree from "@/components/ProTree/index.vue";
+import ImportExcel from "@/components/ImportExcel/index.vue";
 import ProjectComponentDrawer from "@/views/projects/components/ProjectComponentDrawer.vue";
 import ProjectDrawer from "@/views/projects/components/ProjectDrawer.vue";
 import { CirclePlus, Delete, EditPen, Upload, Download } from "@element-plus/icons-vue";
@@ -140,6 +142,14 @@ const { BUTTONS } = useAuthButtons();
 const columns: Partial<ColumnProps>[] = [
 	{ type: "selection", width: 40, fixed: "left" },
 	// { type: "expand", label: "" },
+
+	{
+		prop: "_quantity_used",
+		label: "Qty.",
+		width: 80,
+		sortable: true
+		// search: true,
+	},
 	{
 		prop: "mpn",
 		label: "MPN",
@@ -154,12 +164,6 @@ const columns: Partial<ColumnProps>[] = [
 		// width: 220,
 		search: true,
 		searchType: "text"
-	},
-	{
-		prop: "_quantity_used",
-		label: "Qty.",
-		width: 80
-		// search: true,
 	},
 	{
 		prop: "action",
@@ -202,6 +206,21 @@ const downloadFile = async () => {
 	console.log("columns", columns);
 	let JSON = JSON2CSV(json, columns);
 	useDownload(() => JSON, "partman_component_list", {}, true, ".csv");
+};
+
+// Add users in batches
+interface DialogExpose {
+	acceptParams: (params: any) => void;
+}
+const dialogRef = ref<DialogExpose>();
+const batchAdd = () => {
+	let params = {
+		title: "component",
+		// tempApi: exportUserInfo,
+		// importApi: BatchAddUser,
+		getTableList: proTable.value.refresh
+	};
+	dialogRef.value!.acceptParams(params);
 };
 
 // Open the drawer (new, view, edit)

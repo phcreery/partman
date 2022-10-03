@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-drawer v-model="drawerVisible" :destroy-on-close="true" size="600px" :title="`${drawerData.title} Project Component`">
-			<!-- Drawer Data: {{ drawerData.rowData }} -->
+			Drawer Data: {{ drawerData.rowData }}
 			<el-form
 				ref="ruleFormRef"
 				:rules="rules"
@@ -33,6 +33,15 @@
 							</el-select>
 							<el-button-group>
 								<el-button :icon="Refresh" @click="refreshComponents" />
+								<el-button
+									:icon="EditPen"
+									@click="
+										openCreateComponentDrawer(
+											'Edit',
+											components?.find(c => c.id === drawerData.rowData!.id)
+										)
+									"
+								/>
 								<el-button :icon="Plus" @click="openCreateComponentDrawer('New')" />
 							</el-button-group>
 						</el-space>
@@ -54,11 +63,9 @@
 
 <script setup lang="ts" name="UserDrawer">
 import { ref, reactive, watch } from "vue";
-import { Refresh, Plus } from "@element-plus/icons-vue";
+import { Refresh, Plus, EditPen } from "@element-plus/icons-vue";
 import { ElMessage, FormInstance } from "element-plus";
-// import { genderType } from "@/utils/serviceDict";
 import { Project, Component } from "@/api/interface";
-// import UploadImg from "@/components/UploadImg/index.vue";
 import { getComponentEnum, postComponentCreate, patchComponentUpdate } from "@/api/modules/components";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 
@@ -142,14 +149,7 @@ const openCreateComponentDrawer = (title: string, rowData: Partial<Component.Res
 		title,
 		rowData: { ...rowData },
 		isView: title === "View",
-		apiUrl:
-			title === "New"
-				? postComponentCreate
-				: title === "Edit"
-				? patchComponentUpdate
-				: title === "Stock"
-				? patchComponentUpdate
-				: "",
+		apiUrl: title === "New" ? postComponentCreate : title === "Edit" ? patchComponentUpdate : "",
 		updateTable: refreshComponents
 	};
 	drawerRefCreateComponent.value!.acceptParams(params);

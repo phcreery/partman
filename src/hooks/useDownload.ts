@@ -18,10 +18,10 @@ export const useDownload = async (
 ) => {
 	if (isNotify) {
 		ElNotification({
-			title: "Kind tips",
-			message: "If the huge data will cause downloading slowly, please wait patiently!",
+			title: "Info",
+			message: "If the dataset is large, that download may take some time.",
 			type: "info",
-			duration: 3000
+			duration: 2000
 		});
 	}
 	try {

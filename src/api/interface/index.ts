@@ -81,6 +81,7 @@ export namespace Component {
 	};
 	// Requests
 	export type ReqGetComponentListParams = ReqList;
+	export type ReqGetComponentListForExportParams = { filter: ReqList["filter"] };
 	export type ReqCreateComponentParams = ComponentColumns;
 	export interface ReqUpdateComponentParams extends ReqRecord, ComponentColumns {}
 	export type ReqDeleteComponentParams = ReqRecord;
@@ -219,18 +220,19 @@ export namespace Project {
 	export interface ReqGetProjectComponentListParams extends ReqList {
 		projectID: string;
 	}
+	export type ReqGetProjectComponentListForExportParams = { filter: ReqList["filter"]; projectID: string };
 	export interface ReqAddProjectComponentParams extends ReqRecord, component {
-		_quantity_used: number;
-		_of_project_id: string;
+		_quantityUsed: number;
+		_ofProjectID: string;
 	}
 	export interface ReqUpdateProjectComponentParams extends ReqRecord, component {
-		_quantity_used: number;
-		_of_project_id: string;
+		_quantityUsed: number;
+		_ofProjectID: string;
 	}
 	export type ReqRemoveProjectComponentsParams = { projectID: string; ids: string[] };
 	// Responses
 	export interface ResGetProjectComponentRecord extends ResGetRecord, Component.ComponentColumns {
-		_quantity_used: number;
-		_of_project_id: string;
+		_quantityUsed: number;
+		_ofProjectID: string;
 	}
 }

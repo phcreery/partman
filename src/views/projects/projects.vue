@@ -93,6 +93,7 @@ import { ResList, Project } from "@/api/interface";
 import {
 	getProjectsEnum,
 	getProjectComponentsList,
+	getProjectComponentsListForExport,
 	postProjectComponentAdd,
 	postProjectComponentUpdate,
 	deleteProjectComponents,
@@ -109,12 +110,10 @@ const proTree = ref();
 const initParam = reactive<Partial<Project.ReqGetProjectComponentListParams>>({
 	expand: "components",
 	projectID: ""
-	// filter: { name: undefined, category: undefined, description: undefined }
 });
 
 const initParamProject = reactive({});
 const projectData = ref();
-// const projectComponents = ref([]);
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
 const dataCallbackTree = (data: any) => {
@@ -142,13 +141,11 @@ const { BUTTONS } = useAuthButtons();
 const columns: Partial<ColumnProps>[] = [
 	{ type: "selection", width: 40, fixed: "left" },
 	// { type: "expand", label: "" },
-
 	{
-		prop: "_quantity_used",
+		prop: "_quantityUsed",
 		label: "Qty.",
 		width: 80,
 		sortable: true
-		// search: true,
 	},
 	{
 		prop: "mpn",
@@ -161,7 +158,6 @@ const columns: Partial<ColumnProps>[] = [
 	{
 		prop: "description",
 		label: "Description",
-		// width: 220,
 		search: true,
 		searchType: "text"
 	},
@@ -192,20 +188,14 @@ const batchDeleteProject = async (ids: string[]) => {
 // Export component list
 const downloadFile = async () => {
 	// useDownload(exportUserInfo, "user list", proTable.value.searchParam);
-	let res = await getProjectComponentsList({
-		page: 1,
-		perPage: 500,
+	let name = initParam.projectID;
+	let json = await getProjectComponentsListForExport({
 		filter: proTable.value.searchParam,
-		expand: "",
-		sort: "",
 		projectID: initParam.projectID ?? ""
 	});
-	let json = res.data.items;
-	console.log("export data", json);
 	let columns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "");
-	console.log("columns", columns);
-	let JSON = JSON2CSV(json, columns);
-	useDownload(() => JSON, "partman_component_list", {}, true, ".csv");
+	let csv = JSON2CSV(json, columns);
+	useDownload(() => csv, `${name}_project_component_list`, {}, true, ".csv");
 };
 
 // Add users in batches
@@ -231,7 +221,7 @@ const drawerRefComponent = ref<DrawerExpose>();
 const openComponentDrawer = (title: string, rowData: Partial<Project.ResGetProjectComponentRecord> = {}) => {
 	let params = {
 		title,
-		rowData: { _of_project_id: initParam.projectID, id: rowData.id, _quantity_used: rowData._quantity_used }, // { ...rowData },
+		rowData: { _ofProjectID: initParam.projectID, id: rowData.id, _quantityUsed: rowData._quantityUsed }, // { ...rowData },
 		isView: title === "View",
 		apiUrl: title === "New" ? postProjectComponentAdd : title === "Edit" ? postProjectComponentUpdate : "",
 		updateTable: proTable.value.refresh

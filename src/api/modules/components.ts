@@ -62,6 +62,17 @@ export const getComponentList = async (params: Component.ReqGetComponentListPara
 	return { data: res } as unknown as APIdata<ResList<Component.ResGetComponentRecord>>;
 };
 
+export const getComponentsListForExport = async (params: Component.ReqGetComponentListForExportParams) => {
+	let res = await getComponentList({
+		page: 1,
+		perPage: 999,
+		filter: params.filter,
+		expand: "",
+		sort: ""
+	});
+	return res.data.items as unknown as Component.ResGetComponentRecord[];
+};
+
 export const deleteComponent = async (params: Component.ReqDeleteComponentParams) => {
 	await client.records.delete("components", params.id);
 };
@@ -299,28 +310,6 @@ export const getStorageCategoryEnumTree = async () => {
 
 // ---- PROJECTS ----
 
-// export const getComponentCategoryEnum = async () => {
-// 	let [res, err] = await tryCatchAsync(() => client.records.getList("component_categories", 1, 99999, { $autoCancel: false }));
-// 	if (err) {
-// 		console.log("getCompCatEnum res err", res, err);
-// 		// return false;
-// 	}
-// 	res.items.forEach((component: ComponentCategory.ResGetComponentCategoryRecord) => {
-// 		component._fullName = getPathName(res.items, component.id);
-// 	});
-// 	return { data: res.items } as unknown as APIdata<ComponentCategory.ResGetComponentCategoryRecord[]>;
-// };
-
-// export const getComponentCategoryEnumTree = async () => {
-// 	let [res, err] = await tryCatchAsync(() => client.records.getList("component_categories", 1, 99999, { $autoCancel: false }));
-// 	if (err) {
-// 		console.log("getCompCatEnum res err", res, err);
-// 		// return false;
-// 	}
-// 	const tree = arrayToTree(res.items, { id: "id", parentId: "parent", dataField: null });
-// 	return { data: tree } as unknown as APIdata<ComponentCategory.ResGetComponentCategoryRecordTree[]>;
-// };
-
 export const getProjectList = async (params: Project.ReqGetProjectListParams) => {
 	let res = await client.records.getList("projects", params.page, params.perPage, {
 		// filter: params.filter ?? "",
@@ -381,15 +370,27 @@ export const getProjectComponentsList = async (params: Project.ReqGetProjectComp
 	})) as unknown as ResList<Project.ResGetProjectComponentRecord>;
 	// go through and add quantity used in project to each component
 	await res_components.items.forEach(function (cInProj, index, theArray) {
-		// theArray[index]._quantity_used = res_project.quantity[cInProj.id]; // Type 1
-		theArray[index]._quantity_used = Number(res_project.quantity.find(c => c.id === cInProj.id)?.quantity); // Type 2
-		theArray[index]._of_project_id = res_project.id; // or params.projectID
+		// theArray[index]._quantityUsed = res_project.quantity[cInProj.id]; // Type 1
+		theArray[index]._quantityUsed = Number(res_project.quantity.find(c => c.id === cInProj.id)?.quantity); // Type 2
+		theArray[index]._ofProjectID = res_project.id; // or params.projectID
 	});
 	return { data: res_components } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
 };
 
+export const getProjectComponentsListForExport = async (params: Project.ReqGetProjectComponentListForExportParams) => {
+	let res = await getProjectComponentsList({
+		page: 1,
+		perPage: 999,
+		filter: params.filter,
+		expand: "",
+		sort: "",
+		projectID: params.projectID ?? ""
+	});
+	return res.data.items as unknown as Project.ResGetProjectComponentRecord[];
+};
+
 export const postProjectComponentAdd = async (params: Project.ReqAddProjectComponentParams) => {
-	let res_project = (await client.records.getOne("projects", params._of_project_id, {
+	let res_project = (await client.records.getOne("projects", params._ofProjectID, {
 		// expand: "components" // depreciated
 	})) as unknown as Project.ResGetProjectRecord;
 
@@ -398,28 +399,28 @@ export const postProjectComponentAdd = async (params: Project.ReqAddProjectCompo
 		// check if the part is already added
 		let index = res_project.quantity?.findIndex(x => x.id == params.id);
 		if (index === -1) {
-			// nestedObjectAssign(res_project, { quantity: { id: params.id, quantity: params._quantity_used } });
-			res_project.quantity.push({ id: params.id, quantity: params._quantity_used });
+			// nestedObjectAssign(res_project, { quantity: { id: params.id, quantity: params._quantityUsed } });
+			res_project.quantity.push({ id: params.id, quantity: params._quantityUsed });
 		}
 	} else {
-		res_project.quantity = [{ id: params.id, quantity: params._quantity_used }];
+		res_project.quantity = [{ id: params.id, quantity: params._quantityUsed }];
 	}
-	const record = await client.records.update("projects", params._of_project_id, res_project);
+	const record = await client.records.update("projects", params._ofProjectID, res_project);
 	return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
 };
 
 export const postProjectComponentUpdate = async (params: Project.ReqUpdateProjectComponentParams) => {
-	let res_project = (await client.records.getOne("projects", params._of_project_id, {
+	let res_project = (await client.records.getOne("projects", params._ofProjectID, {
 		// expand: "components" // depreciated
 	})) as unknown as Project.ResGetProjectRecord;
-	// nestedObjectAssign(res_project.quantity, { [params.id]: params._quantity_used });
-	// nestedObjectAssign(res_project, { quantity: { [params.id]: params._quantity_used } }); // Type 1
+	// nestedObjectAssign(res_project.quantity, { [params.id]: params._quantityUsed });
+	// nestedObjectAssign(res_project, { quantity: { [params.id]: params._quantityUsed } }); // Type 1
 	res_project.quantity[res_project.quantity.findIndex(x => x.id == params.id)] = {
 		// Type 2
 		id: params.id,
-		quantity: params._quantity_used
+		quantity: params._quantityUsed
 	};
-	const record = await client.records.update("projects", params._of_project_id, res_project);
+	const record = await client.records.update("projects", params._ofProjectID, res_project);
 	return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
 };
 

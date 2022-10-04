@@ -57,6 +57,7 @@ import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 import { CirclePlus, Delete, EditPen, Download, Upload, DCaret } from "@element-plus/icons-vue";
 import {
 	getComponentList,
+	getComponentsListForExport,
 	postComponentCreate,
 	patchComponentUpdate,
 	deleteComponents,
@@ -209,15 +210,15 @@ const batchDelete = async (ids: string[]) => {
 // Export component list
 const downloadFile = async () => {
 	// useDownload(exportUserInfo, "user list", proTable.value.searchParam);
-	let res = await getComponentList({ page: 1, perPage: 500, filter: proTable.value.searchParam, expand: "", sort: "" });
-	let json = res.data.items;
-	console.log("export data", json);
+	let name = "all";
+	let json = await getComponentsListForExport({
+		filter: proTable.value.searchParam
+	});
 	let columns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "");
-	console.log("columns", columns);
-	let JSON = JSON2CSV(json, columns);
-	useDownload(() => JSON, "partman_component_list", {}, true, ".csv");
+	let csv = JSON2CSV(json, columns);
+	useDownload(() => csv, `${name}_component_list`, {}, true, ".csv");
 };
-// Add users in batches
+// Add components in batches
 interface DialogExpose {
 	acceptParams: (params: any) => void;
 }

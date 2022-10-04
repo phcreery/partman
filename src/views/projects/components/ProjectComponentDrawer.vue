@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-drawer v-model="drawerVisible" :destroy-on-close="true" size="600px" :title="`${drawerData.title} Project Component`">
-			Drawer Data: {{ drawerData.rowData }}
+			<!-- Drawer Data: {{ drawerData.rowData }} -->
 			<el-form
 				ref="ruleFormRef"
 				:rules="rules"
@@ -35,6 +35,7 @@
 								<el-button :icon="Refresh" @click="refreshComponents" />
 								<el-button
 									:icon="EditPen"
+									:disabled="!drawerData.rowData!.id || drawerData.rowData!.id === ''"
 									@click="
 										openCreateComponentDrawer(
 											'Edit',
@@ -47,8 +48,8 @@
 						</el-space>
 					</div>
 				</el-form-item>
-				<el-form-item label="Quantity" prop="_quantity_used">
-					<el-input-number v-model="drawerData.rowData!._quantity_used" />
+				<el-form-item label="Quantity" prop="_quantityUsed">
+					<el-input-number v-model="drawerData.rowData!._quantityUsed" />
 				</el-form-item>
 			</el-form>
 			<template #footer>

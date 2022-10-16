@@ -15,11 +15,11 @@
 				<el-color-picker v-model="themeConfig.primary" :predefine="colorList" @change="changePrimary"> </el-color-picker>
 			</div> -->
 			<div class="theme-item">
-				<span>Dark mode</span>
+				<span>Dark theme</span>
 				<SwitchDark></SwitchDark>
 			</div>
 			<div class="theme-item">
-				<span>Gray mode</span>
+				<span>Grayscale</span>
 				<el-switch v-model="themeConfig.isGrey" @change="changeGreyOrWeak($event, 'grey')" />
 			</div>
 			<div class="theme-item">

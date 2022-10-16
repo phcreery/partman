@@ -12,15 +12,15 @@
         :append-to-body="true"
       >
         <!-- <el-form-item label="profile picture" prop="avatar">
-                <UploadImg
-                    v-model:imageUrl="drawerData.rowData!.avatar"
-                    :disabled="drawerData.isView"
-                    :upload-style="{ width: '120px', height: '120px' }"
-                    @check-validate="checkValidate('avatar')"
-                >
-                    <template #tip> The size cannot exceed 3M </template>
-                </UploadImg>
-            </el-form-item> -->
+        <UploadImg
+          v-model:imageUrl="drawerData.rowData!.avatar"
+          :disabled="drawerData.isView"
+          :upload-style="{ width: '120px', height: '120px' }"
+          @check-validate="checkValidate('avatar')"
+        >
+          <template #tip> The size cannot exceed 3M </template>
+        </UploadImg>
+      </el-form-item> -->
         <el-form-item label="MPN" prop="mpn">
           <div class="form-item-with-buttons">
             <el-space>
@@ -71,8 +71,8 @@
           <div class="form-item-with-buttons">
             <el-space>
               <!-- <el-select v-model="drawerData.rowData!.category" placeholder="" clearable>
-                    <el-option v-for="item in componentCategories" :key="item.id" :label="item.name" :value="item.id" />
-                </el-select> -->
+          <el-option v-for="item in componentCategories" :key="item.id" :label="item.name" :value="item.id" />
+        </el-select> -->
               <!-- <el-cascader v-model="drawerData.rowData!.category" :options="componentCategories" :props="cascaderProps" /> -->
               <el-tree-select
                 v-model="drawerData.rowData!.category"
@@ -116,9 +116,9 @@
               <el-input v-model="domain.value" placeholder="Value" />
               <el-input v-model="domain.units" placeholder="Units" />
               <!-- <el-button-group>
-                                <el-button :icon="Refresh" @click="refreshCategories" />
-                                <el-button :icon="Plus" @click="openFootprintDrawer('New')" />
-                            </el-button-group> -->
+                <el-button :icon="Refresh" @click="refreshCategories" />
+                <el-button :icon="Plus" @click="openFootprintDrawer('New')" />
+              </el-button-group> -->
 
               <el-button type="danger" :icon="Delete" @click.prevent="deleteSpecIndex(index)"></el-button>
             </el-space>

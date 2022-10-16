@@ -36,7 +36,8 @@ export const useDownload = async (
 		const blobUrl = window.URL.createObjectURL(blob);
 		const exportFile = document.createElement("a");
 		exportFile.style.display = "none";
-		exportFile.download = `${new Date().toISOString().split("T")[0]}_${tempName}${fileType}`;
+		let currentDateTime = new Date().toISOString().split("T")[0];
+		exportFile.download = `${currentDateTime}_${tempName}${fileType}`;
 		exportFile.href = blobUrl;
 		document.body.appendChild(exportFile);
 		exportFile.click();

@@ -467,29 +467,29 @@ export const getUsersListForExport = async (params: User.ReqGetUserListForExport
 };
 
 export const deleteUser = async (params: User.ReqDeleteUserParams) => {
-  await client.users.delete(params.id);
+  await client.records.delete("profiles", params.id);
 };
 
 export const postUserCreate = async (params: User.ReqCreateUserParams) => {
-  let record = await client.users.create(params);
+  let record = await client.records.create("profiles", params);
   return { data: record } as unknown as APIdata<User.ResGetUserRecord>;
 };
 
 export const patchUserUpdate = async (params: User.ReqUpdateUserParams) => {
-  const record = await client.users.update(params.id, params);
+  const record = await client.records.update("profiles", params.id, params);
   return { data: record } as unknown as APIdata<User.ResGetUserRecord>;
 };
 
 export const deleteUsers = async (params: User.ReqDeleteUsersParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.users.delete(id);
+    await client.records.delete("profiles", id);
   }
   return true;
 };
 
 export const getUserEnum = async () => {
-  let [res, err] = await tryCatchAsync(() => client.users.getList(1, 99999, { $autoCancel: false }));
+  let [res, err] = await tryCatchAsync(() => client.records.getList("profiles", 1, 99999, { $autoCancel: false }));
   if (err) {
     console.log("getCompEnum res err", res, err);
     // return false;

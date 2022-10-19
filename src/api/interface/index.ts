@@ -239,16 +239,9 @@ export namespace Project {
 
 export namespace User {
   export type UserColumns = {
-    mpn: string;
-    description: string;
-    stock: number;
-    comment: string;
-    storage_location: string;
-    category: string;
-    footprint: string;
-    ipn: string;
-    manufacturer: string;
-    specs: spec[];
+    name: string;
+    avatar: string;
+    userId: string;
   };
   // Requests
   export type ReqGetUserListParams = ReqList;

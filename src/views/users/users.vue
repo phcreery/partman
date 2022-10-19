@@ -10,7 +10,7 @@
     >
       <!-- Table header button -->
       <template #tableHeader="scope">
-        <el-button type="primary" :icon="CirclePlus" @click="openDrawer('New')" v-if="BUTTONS.add">New Component</el-button>
+        <el-button type="primary" :icon="CirclePlus" @click="openDrawer('New')" v-if="BUTTONS.add">New User</el-button>
         <el-button
           type="danger"
           :icon="Delete"
@@ -31,18 +31,18 @@
         <el-button type="primary" link :icon="EditPen" @click="openDrawer('Edit', scope.row)">Edit</el-button>
       </template>
     </ProTable>
-    <!-- <UserDrawer ref="drawerRef"></UserDrawer> -->
+    <UserDrawer ref="drawerRef"></UserDrawer>
   </div>
 </template>
 
 <script setup lang="tsx" name="useComponent">
 import { ref, reactive } from "vue";
-import { ResList, Component } from "@/api/interface";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import ProTable from "@/components/ProTable/index.vue";
-// import UserDrawer from "@/views/inventory/users/UserDrawer.vue";
+import UserDrawer from "@/views/users/components/UserDrawer.vue";
+import { ResList, User } from "@/api/interface";
 import { CirclePlus, Delete, EditPen, Download, Upload, DCaret } from "@element-plus/icons-vue";
 import { getUserList, postUserCreate, patchUserUpdate, deleteUsers, getUserEnum } from "@/api/modules/components";
 
@@ -52,7 +52,7 @@ const proTable = ref();
 const initParam = reactive({});
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
-const dataCallback = (data: ResList<Component.ResGetComponentRecord>) => {
+const dataCallback = (data: ResList<User.ResGetUserRecord>) => {
   return {
     datalist: data.items,
     total: data.totalItems,
@@ -67,6 +67,15 @@ const { BUTTONS } = useAuthButtons();
 const columns: Partial<ColumnProps>[] = [
   { type: "selection", width: 40, fixed: "left" },
   { type: "expand", label: "" },
+  {
+    prop: "name",
+    label: "Name",
+    // width: 130,
+    sortable: true,
+    search: true,
+    searchType: "text"
+    // searchProps: { disabled: true }
+  },
   {
     prop: "email",
     label: "Email",
@@ -125,7 +134,7 @@ interface DrawerExpose {
   acceptParams: (params: any) => void;
 }
 const drawerRef = ref<DrawerExpose>();
-const openDrawer = (title: string, rowData: Partial<Component.ResGetComponentRecord> = {}) => {
+const openDrawer = (title: string, rowData: Partial<User.ResGetUserRecord> = {}) => {
   let params = {
     title,
     rowData: { ...rowData },

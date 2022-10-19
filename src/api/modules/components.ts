@@ -12,7 +12,8 @@ import {
   Storage,
   StorageCategory,
   Project,
-  User
+  User,
+  Config
 } from "@/api/interface/index";
 
 /* 
@@ -498,4 +499,16 @@ export const getUserEnum = async () => {
   // 	component._fullName = getPathName(res.items, component.id);
   // });
   return { data: res.items } as unknown as APIdata<User.ResGetUserRecord[]>;
+};
+
+// SETTINGS/CONFIG
+
+export const getConfigList = async () => {
+  let res = await client.records.getList("config");
+  return { data: res } as unknown as APIdata<ResList<Config.ResGetConfigRecord>>;
+};
+
+export const patchConfigUpdate = async (params: Config.ReqUpdateConfigParams) => {
+  const record = await client.records.update("config", params.id, params);
+  return { data: record } as unknown as APIdata<Config.ResGetConfigRecord>;
 };

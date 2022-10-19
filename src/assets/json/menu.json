@@ -52,6 +52,11 @@
           "icon": "user"
         },
         {
+          "path": "/settings/index",
+          "title": "General",
+          "icon": "setting"
+        },
+        {
           "path": "/404",
           "title": "Export",
           "icon": "Download"

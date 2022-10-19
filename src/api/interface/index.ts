@@ -253,3 +253,20 @@ export namespace User {
   // Responses
   export interface ResGetUserRecord extends ResGetRecord, UserColumns {}
 }
+
+export namespace Config {
+  export type ConfigColumns = {
+    name: string;
+    value: string;
+    // userId: string;
+  };
+  // Requests
+  export type ReqGetConfigListParams = ReqList;
+  // export type ReqGetUserListForExportParams = { filter: ReqList["filter"] };
+  // export type ReqCreateUserParams = UserColumns;
+  export interface ReqUpdateConfigParams extends ReqRecord, ConfigColumns {}
+  // export type ReqDeleteUserParams = ReqRecord;
+  // export type ReqDeleteUsersParams = { ids: string[] };
+  // Responses
+  export interface ResGetConfigRecord extends ResGetRecord, ConfigColumns {}
+}

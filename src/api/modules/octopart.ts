@@ -12,18 +12,19 @@ type OctopartTokenRes =
     }
   | { error: string };
 
-const getConfig = async () => {
+const getOctopartConfig = async () => {
   let res = (await client.records.getList("config")) as unknown as ResList<Config.ResGetConfigRecord>;
-  const octopart_id = res.items.find(record => record.name === "octopart_id");
-  const octopart_secret = res.items.find(record => record.name === "octopart_secret");
-  return { octopart_id, octopart_secret };
+  let configRecord = res.items.find(record => record.category === "octopart");
+  const id = configRecord?.value.id;
+  const secret = configRecord?.value.secret;
+  return { id, secret };
 };
 
 export const getNewToken = async () => {
-  let config = await getConfig();
+  let octopartConfig = await getOctopartConfig();
   let res = (await client.send("/api/octopart/connect/token", {
     method: "POST",
-    body: `grant_type=client_credentials&client_id=${config.octopart_id}&client_secret=${config.octopart_secret}`,
+    body: `grant_type=client_credentials&client_id=${octopartConfig.id}&client_secret=${octopartConfig.secret}`,
     headers: { "Content-Type": "application/x-www-form-urlencoded" }
   })) as unknown as OctopartTokenRes;
   console.log("token info", res);

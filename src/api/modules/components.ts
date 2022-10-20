@@ -345,7 +345,7 @@ export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) =>
   return true;
 };
 
-// PROJECT COMPONENTS
+// ---- PROJECT COMPONENTS ----
 
 // Type 1: [{"id": "a4bJqkHVdneg5As", "quantity": 2}, ...]
 // Type 2: { "a4bJqkHVdneg5As": 2, ... }
@@ -444,7 +444,7 @@ export const deleteProjectComponents = async (params: Project.ReqRemoveProjectCo
   return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
 };
 
-// USERS
+// ---- USERS ----
 
 export const getUserList = async (params: User.ReqGetUserListParams) => {
   let res = await client.records.getList("profiles", params.page, params.perPage, {
@@ -501,14 +501,18 @@ export const getUserEnum = async () => {
   return { data: res.items } as unknown as APIdata<User.ResGetUserRecord[]>;
 };
 
-// SETTINGS/CONFIG
+// ---- SETTINGS/CONFIG ----
 
-export const getConfigList = async () => {
-  let res = await client.records.getList("config");
-  return { data: res } as unknown as APIdata<ResList<Config.ResGetConfigRecord>>;
+export const getConfig = async (params: Config.ReqGetConfigParams) => {
+  let res = (await client.records.getList("config")) as unknown as ResList<Config.ResGetConfigRecord>;
+  let configRecord = res.items.find(record => record.category === params.category);
+  return { data: configRecord?.value } as unknown as APIdata<ResList<Config.ResGetConfigRecord>>;
 };
 
 export const patchConfigUpdate = async (params: Config.ReqUpdateConfigParams) => {
-  const record = await client.records.update("config", params.id, params);
+  let res = (await client.records.getList("config")) as unknown as ResList<Config.ResGetConfigRecord>;
+  let configRecord = res.items.find(record => record.category === params.category);
+  if (!configRecord) return;
+  const record = await client.records.update("config", configRecord?.id, params);
   return { data: record } as unknown as APIdata<Config.ResGetConfigRecord>;
 };

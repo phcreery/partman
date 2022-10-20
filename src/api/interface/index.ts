@@ -256,17 +256,12 @@ export namespace User {
 
 export namespace Config {
   export type ConfigColumns = {
-    name: string;
-    value: string;
-    // userId: string;
+    category: string;
+    value: any;
   };
   // Requests
-  export type ReqGetConfigListParams = ReqList;
-  // export type ReqGetUserListForExportParams = { filter: ReqList["filter"] };
-  // export type ReqCreateUserParams = UserColumns;
-  export interface ReqUpdateConfigParams extends ReqRecord, ConfigColumns {}
-  // export type ReqDeleteUserParams = ReqRecord;
-  // export type ReqDeleteUsersParams = { ids: string[] };
+  export type ReqGetConfigParams = { category: string };
+  export type ReqUpdateConfigParams = ConfigColumns;
   // Responses
   export interface ResGetConfigRecord extends ResGetRecord, ConfigColumns {}
 }

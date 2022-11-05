@@ -151,9 +151,6 @@ sudo systemctl restart pocketbase
 sudo systemctl status pocketbase
 ```
 
-admin@mail.com:partmanpass
-partman@mail.com:partmanpass
-
 ## Server Code Development (Manual)
 
 _using Windows Powershell_

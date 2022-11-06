@@ -220,7 +220,7 @@ const downloadFile = async () => {
 
   let columns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "");
   // remove specific columns from array
-  let badColumns = ["action", "expand", "selection", "category", "footprint"];
+  let badColumns = ["action", "expand", "selection", "footprint", "name"];
   columns = columns.filter((c: string) => !badColumns.includes(c));
 
   let csv = JSON2CSV(json, columns);
@@ -234,7 +234,7 @@ const dialogRef = ref<DialogExpose>();
 const batchAdd = () => {
   let columns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "");
   // remove specific columns from array
-  let badColumns = ["action", "expand", "selection", "category", "footprint"];
+  let badColumns = ["action", "expand", "selection", "footprint", "name"];
   columns = columns.filter((c: string) => !badColumns.includes(c));
   let csv = JSON2CSV({}, columns);
   let params = {

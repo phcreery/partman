@@ -94,7 +94,7 @@ export namespace ComponentCategory {
   type ComponentCategoryColumns = {
     name: string;
     parent: string;
-    description: number;
+    description: string;
   };
   // Requests
   export type ReqGetCategoryListParams = ReqList;

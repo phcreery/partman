@@ -89,6 +89,7 @@ export const patchComponentUpdate = async (params: Component.ReqUpdateComponentP
   return { data: record } as unknown as APIdata<Component.ResGetComponentRecord>;
 };
 
+// TODO: convert this to a backend function
 export const deleteComponents = async (params: Component.ReqDeleteComponentsParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
@@ -121,18 +122,21 @@ export const postComponentCreateBatch_Client = async (fd: FormData) => {
       let lines = text.split("\n");
       for (let i = 1; i < lines.length; i++) {
         let line = lines[i];
-        let values = line.split(",");
+        // let values = line.split(",");
+        let values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+        // let values = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+        values = values || [];
+        console.log("values", values);
         let component: Component.ComponentColumns = {
-          // name: values[0],
+          category: "", // values[0],
+          manufacturer: values[1],
           mpn: values[2],
           description: values[3],
           stock: Number(values[4]),
-          comment: "",
+          ipn: "", // values[5],
           storage_location: "", // values[6],
-          category: "", // values[5],
-          footprint: "", // values[1],
-          ipn: "", // values[8],
-          manufacturer: values[1],
+          comment: "",
+          footprint: "",
           specs: []
         };
         // exit if no mpn
@@ -148,6 +152,15 @@ export const postComponentCreateBatch_Client = async (fd: FormData) => {
         component.storage_location = storageLocation
           ? storageLocation.id
           : (await postStorageCreate({ name: values[6], description: "", category: "" })).data.id;
+
+        // do the same for category
+        let categoryEnum = await getComponentCategoryEnum();
+        let category = categoryEnum.data.find((category: ComponentCategory.ResGetComponentCategoryRecord) => {
+          return category.name === values[0];
+        });
+        component.category = category
+          ? category.id
+          : (await postComponentCategoryCreate({ name: values[0], description: "", parent: "" })).data.id;
 
         console.log("doing component", component);
         await postComponentCreate(component);

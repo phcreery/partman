@@ -111,7 +111,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     },
     // build configure
     build: {
-      outDir: "dist",
+      outDir: "dist-ui",
       // ESBUILD package is faster, but it cannot be removed
       minify: "esbuild",
       // minify: "terser",

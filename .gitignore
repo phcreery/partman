@@ -8,7 +8,8 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
+# dist
+# dist-ui
 dist-ssr
 release
 *.local
@@ -30,3 +31,4 @@ stats.html
 # Golang and PocketBase
 pb_data
 pb_public
+partman.exe

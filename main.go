@@ -81,8 +81,7 @@ func ProxyRequestHandler(proxy *httputil.ReverseProxy) func(http.ResponseWriter,
 	}
 }
 
-//go:embed all:dist
-//go:embed dist/*
+//go:embed dist-ui/*
 var distDir embed.FS
 
 // DistDirFS contains the embedded dist directory files (without the "dist" prefix)

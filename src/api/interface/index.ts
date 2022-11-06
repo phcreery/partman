@@ -148,7 +148,7 @@ export namespace FootprintCategory {
 export namespace Storage {
   type StorageColumns = {
     name: string;
-    description: number;
+    description: string;
     category: string;
   };
   // Requests

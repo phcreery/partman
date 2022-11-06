@@ -109,6 +109,7 @@ export const getComponentEnum = async () => {
   return { data: res.items } as unknown as APIdata<Component.ResGetComponentRecord[]>;
 };
 
+// TODO: convert this to a backend function
 export const postComponentCreateBatch_Client = async (fd: FormData) => {
   // iterate over the parameter FormData file entries and create a new component using postComponentCreate for each entry
   for (let newfile of fd.getAll("file")) {
@@ -136,6 +137,18 @@ export const postComponentCreateBatch_Client = async (fd: FormData) => {
         };
         // exit if no mpn
         if (!component.mpn) continue;
+
+        // find storage location id with getComponentStorageLocationEnum
+        let storageLocationEnum = await getComponentStorageLocationEnum();
+        let storageLocation = storageLocationEnum.data.find((storageLocation: Storage.ResGetStorageRecord) => {
+          return storageLocation.name === values[6];
+        });
+        // if storage location found, set component storage location to id
+        // if not found, create new storage location and set component storage location to id
+        component.storage_location = storageLocation
+          ? storageLocation.id
+          : (await postStorageCreate({ name: values[6], description: "", category: "" })).data.id;
+
         console.log("doing component", component);
         await postComponentCreate(component);
       }
@@ -277,11 +290,6 @@ export const getStorageList = async (params: Storage.ReqGetStorageListParams) =>
     expand: params.expand ?? ""
   });
   return { data: res } as unknown as APIdata<ResList<Storage.ResGetStorageRecord>>;
-};
-
-export const getStoragesEnum = async () => {
-  let res = await client.records.getList("storage_locations", 1, 99999, {});
-  return { data: res.items } as unknown as APIdata<Storage.ResGetStorageRecord[]>;
 };
 
 export const postStorageCreate = async (params: Storage.ReqCreateStorageParams) => {

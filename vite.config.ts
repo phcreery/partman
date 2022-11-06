@@ -95,7 +95,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         ]
       }),
       // * Whether to generate a preview
-      viteEnv.VITE_REPORT && visualizer(),
+      // viteEnv.VITE_REPORT && visualizer(),
       // * gzip compress
       viteEnv.VITE_BUILD_GZIP &&
         viteCompression({

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,8 +11,7 @@ import (
 
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
-
-	// "github.com/pocketbase/pocketbase/apis"
+	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 )
 
@@ -81,6 +81,39 @@ func ProxyRequestHandler(proxy *httputil.ReverseProxy) func(http.ResponseWriter,
 	}
 }
 
+//go:embed all:dist
+//go:embed dist/*
+var distDir embed.FS
+
+// DistDirFS contains the embedded dist directory files (without the "dist" prefix)
+var DistDirFS = echo.MustSubFS(distDir, "dist")
+// var DistDirFS = os.DirFS(publicDirFlag)
+
+const uiPath = "/" // trailedAdminPath
+
+// bindStaticAdminUI registers the endpoints that serves the static admin UI.
+func bindStaticAdminUI(app core.App, e *core.ServeEvent) error {
+	fmt.Printf("REQUEST:\n%s\n\n", string(uiPath))
+
+	// redirect to trailing slash to ensure that relative urls will still work properly
+	// e.Router.GET(
+	// 	strings.TrimRight(uiPath, "/"),
+	// 	func(c echo.Context) error {
+	// 		return c.Redirect(http.StatusTemporaryRedirect, uiPath)
+	// 	},
+	// )
+
+	// serves static files from the /dist directory
+	// (similar to echo.StaticFS but with gzip middleware enabled)
+	e.Router.GET(
+		uiPath+"*",
+		apis.StaticDirectoryHandler(DistDirFS, false),
+		// middleware.Gzip(),
+	)
+
+	return nil
+}
+
 func main() {
 	app := pocketbase.New()
 
@@ -131,6 +164,15 @@ func main() {
 				// apis.RequireAdminOrUserAuth(),
 			},
 		})
+
+		// e.Router.AddRoute(echo.Route{
+		// 	Method: http.MethodGet,
+		// 	Path:   "/",
+		// 	Handler: http.FileServer(rice.mustFindBox("dist").HTTPBox()),
+		// })
+		// e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS(publicDirFlag), false))
+
+		bindStaticAdminUI(app, e)
 
 		return nil
 	})

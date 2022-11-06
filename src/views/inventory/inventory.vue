@@ -102,24 +102,22 @@ const columns: Partial<ColumnProps>[] = [
       props: { value: "id", label: "name", emitPath: false },
       checkStrictly: true
     },
-    // searchInitParam: {category}
     sortable: true,
     search: true,
     // searchType: "select",
     searchType: "treeSelect",
     // renderText: (data: Component.ResGetComponentRecord) => data["@expand"].category.name,
     enumFunction: getComponentCategoryEnum,
-    enumTreeFunction: getComponentCategoryEnumTree
+    enumTreeFunction: getComponentCategoryEnumTree,
+    isShow: false
   },
   {
     prop: "name",
     label: "Name",
-    width: 130,
-    // sortable: true,
-    // search: true,
-    // searchType: "text"
-    // searchProps: { disabled: true }
+    width: 160,
+    sortable: true,
     renderText: (data: Component.ResGetComponentRecord) => `${data.manufacturer} - ${data.mpn}`
+    // isShow: false
   },
   {
     prop: "manufacturer",
@@ -127,8 +125,9 @@ const columns: Partial<ColumnProps>[] = [
     width: 130,
     sortable: true,
     search: true,
-    searchType: "text"
-    // searchProps: { disabled: true }
+    searchType: "text",
+    // searchProps: { disabled: true },
+    isShow: false
   },
   {
     prop: "mpn",
@@ -136,11 +135,10 @@ const columns: Partial<ColumnProps>[] = [
     width: 130,
     sortable: true,
     search: true,
-    searchType: "text"
-    // searchProps: { disabled: true }
+    searchType: "text",
+    // searchProps: { disabled: true },
+    isShow: false
   },
-  // enum: It can be directly an array object, or it can be the request method.
-  // enum: When the request method is required, the number of array objects returned in the background is not the case of Label and Value. You can specify the KEY value of label and value in SearchProps
   {
     prop: "description",
     label: "Description",
@@ -148,6 +146,8 @@ const columns: Partial<ColumnProps>[] = [
     search: true,
     searchType: "text"
   },
+  // enum: It can be directly an array object, or it can be the request method.
+  // enum: When the request method is required, the number of array objects returned in the background is not the case of Label and Value. You can specify the KEY value of label and value in SearchProps
   {
     prop: "footprint",
     label: "Footprint",
@@ -155,9 +155,9 @@ const columns: Partial<ColumnProps>[] = [
     sortable: true,
     search: true,
     searchType: "multipleSelect",
-    // renderText: (data: Component.ResGetComponentRecord) => data["@expand"].footprint.name,
     enumFunction: getFootprintsEnum,
-    searchProps: { value: "id", label: "name" }
+    searchProps: { value: "id", label: "name" },
+    isShow: false
   },
   { prop: "stock", label: "Stock", width: 80, search: false },
   {
@@ -165,8 +165,9 @@ const columns: Partial<ColumnProps>[] = [
     label: "IPN",
     width: 60,
     search: true,
-    searchType: "text"
-    // searchProps: { disabled: true }
+    searchType: "text",
+    // searchProps: { disabled: true },
+    isShow: false
   },
   {
     prop: "storage_location",
@@ -176,7 +177,8 @@ const columns: Partial<ColumnProps>[] = [
     searchType: "select",
     // renderText: (data: Component.ResGetComponentRecord) => data["@expand"].storage_location.name
     enumFunction: getComponentStorageLocationEnum,
-    searchProps: { value: "id", label: "name" }
+    searchProps: { value: "id", label: "name" },
+    isShow: false
   },
   // {
   // 	prop: "createTime",

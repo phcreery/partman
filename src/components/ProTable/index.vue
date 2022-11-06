@@ -231,8 +231,8 @@ const colSetting = tableColumns.value.filter((item: Partial<ColumnProps>) => {
     item.type !== "selection" &&
     item.type !== "index" &&
     item.type !== "expand" &&
-    item.prop !== "operation" &&
-    item.isShow !== false
+    item.prop !== "operation" // &&
+    // item.isShow !== false
   );
 });
 const openColSetting = () => {

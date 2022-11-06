@@ -71,15 +71,15 @@ export const getAuthButtons = () => {
         edit: true,
         batchAdd: true,
         export: true
-      },
-      users: {
-        add: true,
-        delete: true,
-        view: true,
-        edit: true,
-        batchAdd: true,
-        export: true
       }
+      // users: {
+      //   add: true,
+      //   delete: true,
+      //   view: true,
+      //   edit: true,
+      //   batchAdd: true,
+      //   export: true
+      // }
     }
   };
 };

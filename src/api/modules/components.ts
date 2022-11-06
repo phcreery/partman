@@ -109,6 +109,40 @@ export const getComponentEnum = async () => {
   return { data: res.items } as unknown as APIdata<Component.ResGetComponentRecord[]>;
 };
 
+export const postComponentCreateBatch_Client = async (fd: FormData) => {
+  // iterate over the parameter FormData file entries and create a new component using postComponentCreate for each entry
+  for (let newfile of fd.getAll("file")) {
+    let file = newfile as File;
+    // read file if csv
+    if (file.type === "text/csv") {
+      // iterate over csv lines
+      let text = await file.text();
+      let lines = text.split("\n");
+      for (let i = 1; i < lines.length; i++) {
+        let line = lines[i];
+        let values = line.split(",");
+        let component: Component.ComponentColumns = {
+          // name: values[0],
+          mpn: values[2],
+          description: values[3],
+          stock: Number(values[4]),
+          comment: "",
+          storage_location: "", // values[6],
+          category: "", // values[5],
+          footprint: "", // values[1],
+          ipn: "", // values[8],
+          manufacturer: values[1],
+          specs: []
+        };
+        // exit if no mpn
+        if (!component.mpn) continue;
+        console.log("doing component", component);
+        await postComponentCreate(component);
+      }
+    }
+  }
+};
+
 // ---- COMPONENT CATEGORIES ----
 
 export const postComponentCategoryCreate = async (params: ComponentCategory.ReqCreateComponentCategoryParams) => {

@@ -64,7 +64,8 @@ import {
   getFootprintsEnum,
   getComponentStorageLocationEnum,
   getComponentCategoryEnum,
-  getComponentCategoryEnumTree
+  getComponentCategoryEnumTree,
+  postComponentCreateBatch_Client
 } from "@/api/modules/components";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
@@ -214,7 +215,12 @@ const downloadFile = async () => {
   let json = await getComponentsListForExport({
     filter: proTable.value.searchParam
   });
+
   let columns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "");
+  // remove specific columns from array
+  let badColumns = ["action", "expand", "selection", "category", "footprint", "storage_location"];
+  columns = columns.filter((c: string) => !badColumns.includes(c));
+
   let csv = JSON2CSV(json, columns);
   useDownload(() => csv, `${name}_component_list`, {}, true, ".csv");
 };
@@ -224,10 +230,15 @@ interface DialogExpose {
 }
 const dialogRef = ref<DialogExpose>();
 const batchAdd = () => {
+  let columns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "");
+  // remove specific columns from array
+  let badColumns = ["action", "expand", "selection", "category", "footprint", "storage_location"];
+  columns = columns.filter((c: string) => !badColumns.includes(c));
+  let csv = JSON2CSV({}, columns);
   let params = {
     title: "component",
-    // tempApi: exportUserInfo,
-    // importApi: BatchAddUser,
+    tempApi: () => csv,
+    importApi: postComponentCreateBatch_Client,
     getTableList: proTable.value.refresh
   };
   dialogRef.value!.acceptParams(params);

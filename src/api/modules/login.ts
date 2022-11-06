@@ -146,17 +146,17 @@ export const getMenuList = () => {
             title: "General",
             path: "/settings/index",
             icon: "setting"
-          },
-          {
-            title: "Export",
-            path: "/404",
-            icon: "Download"
-          },
-          {
-            title: "Import",
-            path: "/404",
-            icon: "Upload"
           }
+          // {
+          //   title: "Export",
+          //   path: "/404",
+          //   icon: "Download"
+          // },
+          // {
+          //   title: "Import",
+          //   path: "/404",
+          //   icon: "Upload"
+          // }
         ]
       }
     ]

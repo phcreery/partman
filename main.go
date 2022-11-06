@@ -93,7 +93,6 @@ const uiPath = "/" // trailedAdminPath
 
 // bindStaticAdminUI registers the endpoints that serves the static admin UI.
 func bindStaticAdminUI(app core.App, e *core.ServeEvent) error {
-	fmt.Printf("REQUEST:\n%s\n\n", string(uiPath))
 
 	// redirect to trailing slash to ensure that relative urls will still work properly
 	// e.Router.GET(

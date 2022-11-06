@@ -169,7 +169,7 @@ const rules = reactive({
   footprint: [{ required: false, message: "Please fill in the footprint", trigger: "change" }],
   stock: [{ required: true, message: "Please fill in the stock qty", trigger: "change" }],
   storage_location: [{ required: false, message: "Please select location", trigger: "change" }],
-  category: [{ required: true, message: "Please select category", trigger: "change" }],
+  category: [{ required: false, message: "Please select category", trigger: "change" }],
   ipn: [{ required: false, message: "Please fill in IPN", trigger: "change" }]
 });
 

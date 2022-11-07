@@ -1,4 +1,4 @@
-project_name: pocketbase
+project_name: partman
 
 dist: .builds
 

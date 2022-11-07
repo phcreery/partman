@@ -25,6 +25,7 @@
     "curveness",
     "daterange",
     "datetimerange",
+    "distui",
     "doclock",
     "easymock",
     "esbuild",

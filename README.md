@@ -16,10 +16,6 @@ I like to build small circuits and development boards. This requires me to desig
 
 ## Installation
 
-### Service
-
-_Coming soon_
-
 ### Docker
 
 _Coming soon_
@@ -37,6 +33,13 @@ _Coming soon_
 - PocketBase
 
 ## Dev
+
+Install prerequisites
+
+```
+go get github.com/pocketbase/pocketbase
+npm ci
+```
 
 ```
 npm run server
@@ -59,29 +62,21 @@ go build
 - Database Admin: admin@mail.com : partmanpass
 - Default User: partman@mail.com : partmanpass
 
-## Installation (OLD)
+### Manually Install on Linux
 
-Basic setup follows these steps:
-
-1. Download latest version of PocketBase
-2. Download latest release of partman
-3. Copy partman static web files to `pb_public`
-4. Start PocketBase
-
-### Install on Linux
-
-1. Create Linux account called partman
+1. (optional) Create Linux account called partman
 
 ```
 useradd -m partman
 passwd partman
 su partman
+cd ~
 ```
 
-2. Download latest version of PocketBase
+2. Download latest version of partman
 
 ```
-wget https://github.com/pocketbase/pocketbase/releases/download/v${POCKETBASE_VERSION}/pocketbase_${POCKETBASE_VERSION}_linux_amd64.zip /tmp/pocketbase.zip
+wget
 unzip /tmp/pocketbase.zip -d /home/partman/
 chmod +x /home/partman/pocketbase
 ```
@@ -122,12 +117,12 @@ pocketbase serve --http="0.0.0.0:8090"
 8. (optional) Create systemd service
 
 ```
-sudo nano /lib/systemd/system/pocketbase.service
+sudo nano /lib/systemd/system/partman.service
 ```
 
 ```
 [Unit]
-Description = pocketbase
+Description = partman
 
 [Service]
 Type           = simple
@@ -139,7 +134,7 @@ RestartSec     = 5s
 StandardOutput = append:/home/partman/errors.log
 StandardError  = append:/home/partman/errors.log
 WorkingDirectory=/home/partman/
-ExecStart      = /home/partman/pocketbase serve --http="0.0.0.0:8080"
+ExecStart      = /home/partman/partman serve --http="0.0.0.0:8080"
 
 [Install]
 WantedBy = multi-user.target
@@ -147,16 +142,6 @@ WantedBy = multi-user.target
 
 ```
 sudo systemctl daemon-reload
-sudo systemctl restart pocketbase
-sudo systemctl status pocketbase
-```
-
-## Server Code Development (Manual)
-
-_using Windows Powershell_
-
-Install prerequisites
-
-```
-go get github.com/pocketbase/pocketbase
+sudo systemctl restart partman
+sudo systemctl status partman
 ```

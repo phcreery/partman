@@ -38,7 +38,7 @@ func NewProxy(targetHost string) (*httputil.ReverseProxy, *url.URL, error) {
 
 func modifyRequest(req *http.Request) {
 	// req.Header.Set("X-Proxy", "Simple-Reverse-Proxy")
-	// 	"sec-fetch-dest":"empty",
+	// "sec-fetch-dest":"empty",
 	// "sec-fetch-mode":"cors",
 	req.Header.Set("Sec-Fetch-Site", "cross-site")
 	reqDump, err := httputil.DumpRequestOut(req, true)
@@ -81,11 +81,12 @@ func ProxyRequestHandler(proxy *httputil.ReverseProxy) func(http.ResponseWriter,
 	}
 }
 
+//go:embed all:dist-ui
 //go:embed dist-ui/*
 var distDir embed.FS
 
 // DistDirFS contains the embedded dist directory files (without the "dist" prefix)
-var DistDirFS = echo.MustSubFS(distDir, "dist")
+var DistDirFS = echo.MustSubFS(distDir, "dist-ui")
 // var DistDirFS = os.DirFS(publicDirFlag)
 
 const uiPath = "/" // trailedAdminPath
@@ -162,13 +163,6 @@ func main() {
 				// apis.RequireAdminOrUserAuth(),
 			},
 		})
-
-		// e.Router.AddRoute(echo.Route{
-		// 	Method: http.MethodGet,
-		// 	Path:   "/",
-		// 	Handler: http.FileServer(rice.mustFindBox("dist").HTTPBox()),
-		// })
-		// e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS(publicDirFlag), false))
 
 		bindStaticAdminUI(app, e)
 

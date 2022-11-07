@@ -1,7 +1,7 @@
 {
   "name": "partman",
   "private": true,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Electronic Component management system",
   "author": "phcreery <phcreery@gmail.com>",
   "scripts": {
@@ -96,7 +96,8 @@
   },
   "standard-version": {
     "scripts": {
-      "prerelease": "vite build --mode production && git add ."
+      "prerelease": "vite build --mode production && git add .",
+      "release": "standard-version -a"
     }
   }
 }

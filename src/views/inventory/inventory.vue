@@ -196,7 +196,7 @@ const columns: Partial<ColumnProps>[] = [
     searchProps: {
       value: "id",
       label: "_fullName",
-      props: { value: "id", label: "name", emitPath: false },
+      props: { value: "id", label: "name", disabled: "disabled", emitPath: false },
       checkStrictly: true
     },
     searchType: "treeSelect",

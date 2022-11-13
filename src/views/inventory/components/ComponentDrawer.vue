@@ -186,7 +186,7 @@ const rules = reactive({
 });
 
 // const cascaderProps = { value: "id", label: "name", emitPath: false };
-const treeSelectProps = { value: "id", label: "name", emitPath: false };
+const treeSelectProps = { value: "id", label: "name", disabled: "disabled", emitPath: false };
 
 interface DrawerProps {
   title: string;
@@ -257,7 +257,11 @@ const componentStorageLocations = ref<Storage.ResGetStorageRecordTree[]>();
 const componentFootprints = ref<Footprint.ResGetFootprintRecord[]>();
 
 const refreshCategories = () => getComponentCategoryEnumTree().then(res => (componentCategories.value = res.data));
-const refreshStorageLocations = () => getStorageLocationPathEnumTree().then(res => (componentStorageLocations.value = res.data));
+const refreshStorageLocations = () =>
+  getStorageLocationPathEnumTree().then(res => {
+    componentStorageLocations.value = res.data;
+    console.log(res.data);
+  });
 const refreshFootprints = () => getFootprintsEnum().then(res => (componentFootprints.value = res.data));
 
 // When opening the drawer, fetch the necessary field values

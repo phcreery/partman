@@ -348,13 +348,19 @@ export const getStorageLocationPathEnum = async () => {
 export const getStorageLocationPathEnumTree = async () => {
   // The EnumTree is used primarily for tree-selects
   let storage_locations = (await getComponentStorageLocationEnum()) as APIdata<
-    (Storage.ResGetStorageRecord & { parent: string; _fullName: string })[]
+    (Storage.ResGetStorageRecord & { parent: string; _fullName: string; disabled: boolean })[]
   >;
-  let storage_categories = await getStorageCategoryEnum();
+  let storage_categories = (await getStorageCategoryEnum()) as APIdata<
+    (StorageCategory.ResGetStorageCategoryRecord & { disabled: boolean })[]
+  >;
   // Since the storage locations are separate from storage categories, we need to merge them into a single array/tree
   // change category key of each storage_locations to parent
-  storage_locations.data.forEach((storage_location: Storage.ResGetStorageRecord & { parent: string }) => {
+  storage_locations.data.forEach((storage_location: Storage.ResGetStorageRecord & { parent: string; disabled: boolean }) => {
     storage_location.parent = storage_location.category;
+    storage_location.disabled = false;
+  });
+  storage_categories.data.forEach((storage_category: StorageCategory.ResGetStorageCategoryRecord & { disabled: boolean }) => {
+    storage_category.disabled = true;
   });
   storage_categories.data.push(...storage_locations.data);
   const tree = arrayToTree(storage_categories.data, { id: "id", parentId: "parent", dataField: null });

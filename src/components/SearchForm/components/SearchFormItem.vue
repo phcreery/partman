@@ -79,7 +79,7 @@
       v-model="searchParam[item.prop!]"
       v-bind="item.searchProps"
       type="datetimerange"
-      value-format="YYYY-MM-DD HH:mm:ss"
+      value-format="YYYY-MM-DD HH:mm:ss:SSS"
       range-separator="to"
       start-placeholder="Starting time"
       end-placeholder="End Time"

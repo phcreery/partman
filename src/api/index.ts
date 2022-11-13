@@ -32,6 +32,7 @@ const config = {
 const client = new PocketBase(config.baseURL, "en-US");
 
 client.beforeSend = function (url, reqConfig) {
+  console.log("before send", url, reqConfig);
   // * If the current request does not need to display loading, in the API service: { headers: { noLoading: true } } Let's control not to display loading, see login api
   reqConfig.headers!.noLoading || showFullScreenLoading();
   // const globalStore = GlobalStore();

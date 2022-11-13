@@ -96,32 +96,6 @@ const columns: Partial<ColumnProps>[] = [
   { type: "selection", width: 40, fixed: "left" },
   { type: "expand", label: "" },
   {
-    prop: "created",
-    label: "Created",
-    width: 200,
-    sortable: true,
-    // search: true,
-    // searchType: "datetimerange",
-    // searchProps: {
-    //   disabledDate: (time: Date) => time.getTime() < Date.now() - 8.64e7
-    // },
-    // searchInitParam: ["2000-09-30 00:00:00", "2042-09-20 23:59:59"],
-    isShow: false
-  },
-  {
-    prop: "updated",
-    label: "Updated",
-    width: 200,
-    sortable: true,
-    // search: true,
-    // searchType: "datetimerange",
-    // searchProps: {
-    //   disabledDate: (time: Date) => time.getTime() < Date.now() - 8.64e7
-    // },
-    // searchInitParam: ["2000-09-30 00:00:00", "2042-09-20 23:59:59"],
-    isShow: false
-  },
-  {
     prop: "category",
     label: "Category",
     align: "left",
@@ -230,6 +204,32 @@ const columns: Partial<ColumnProps>[] = [
     enumFunction: getStorageLocationPathEnum,
     enumTreeFunction: getStorageLocationPathEnumTree,
     isShow: true
+  },
+  {
+    prop: "created",
+    label: "Created",
+    width: 200,
+    sortable: true,
+    search: true,
+    searchType: "datetimerange",
+    searchProps: {
+      // disabledDate: (time: Date) => time.getTime() < Date.now() - 8.64e7
+    },
+    // searchInitParam: ["2000-09-30 00:00:00", "2042-09-20 23:59:59"],
+    isShow: false
+  },
+  {
+    prop: "updated",
+    label: "Updated",
+    width: 200,
+    sortable: true,
+    search: true,
+    searchType: "datetimerange",
+    searchProps: {
+      //   disabledDate: (time: Date) => time.getTime() < Date.now() - 8.64e7
+    },
+    // searchInitParam: ["2000-09-30 00:00:00", "2042-09-20 23:59:59"],
+    isShow: false
   },
   // {
   // 	prop: "createTime",

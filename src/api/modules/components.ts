@@ -25,7 +25,10 @@ const filterToPBString = (filter: { [propName: string]: any }) => {
   let filterParams = Object.keys(filter);
   let sarr: string[] = []; // string array
   for (const param of filterParams) {
-    if (typeof filter[param] === "object") {
+    if (param === "created" || "updated") {
+      sarr.push(`${param}>='${filter[param][0]}' && ${param}<='${filter[param][1]}'`);
+      // console.log(param, filter[param], sarr);
+    } else if (typeof filter[param] === "object") {
       let lsarr: string[] = []; // local string array
       Object.keys(filter[param]).forEach(key => {
         lsarr.push(`${param}~'${filter[param][key]}'`);

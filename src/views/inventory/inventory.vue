@@ -81,7 +81,6 @@ const initParam = reactive({
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
 const dataCallback = (data: ResList<Component.ResGetComponentRecord>) => {
-  console.error("dataCallback", data.items);
   return {
     datalist: data.items,
     total: data.totalItems,
@@ -96,6 +95,32 @@ const { BUTTONS } = useAuthButtons();
 const columns: Partial<ColumnProps>[] = [
   { type: "selection", width: 40, fixed: "left" },
   { type: "expand", label: "" },
+  {
+    prop: "created",
+    label: "Created",
+    width: 200,
+    sortable: true,
+    // search: true,
+    // searchType: "datetimerange",
+    // searchProps: {
+    //   disabledDate: (time: Date) => time.getTime() < Date.now() - 8.64e7
+    // },
+    // searchInitParam: ["2000-09-30 00:00:00", "2042-09-20 23:59:59"],
+    isShow: false
+  },
+  {
+    prop: "updated",
+    label: "Updated",
+    width: 200,
+    sortable: true,
+    // search: true,
+    // searchType: "datetimerange",
+    // searchProps: {
+    //   disabledDate: (time: Date) => time.getTime() < Date.now() - 8.64e7
+    // },
+    // searchInitParam: ["2000-09-30 00:00:00", "2042-09-20 23:59:59"],
+    isShow: false
+  },
   {
     prop: "category",
     label: "Category",
@@ -119,7 +144,7 @@ const columns: Partial<ColumnProps>[] = [
   {
     prop: "name",
     label: "Name",
-    width: 160,
+    width: 260,
     sortable: true,
     renderText: (data: Component.ResGetComponentRecord) => `${data.manufacturer} - ${data.mpn}`
     // isShow: false
@@ -174,21 +199,23 @@ const columns: Partial<ColumnProps>[] = [
     // searchProps: { disabled: true },
     isShow: false
   },
-  // {
-  //   prop: "storage_location",
-  //   label: "Location",
-  //   sortable: true,
-  //   search: true,
-  //   searchType: "select",
-  //   // renderText: (data: Component.ResGetComponentRecord) => data["@expand"].storage_location.name
-  //   enumFunction: getComponentStorageLocationEnum,
-  //   searchProps: { value: "id", label: "name" },
-  //   isShow: true
-  // },
+  {
+    prop: "storage_location",
+    label: "Short Location",
+    width: 160,
+    sortable: true,
+    // search: true,
+    // searchType: "select",
+    // renderText: (data: Component.ResGetComponentRecord) => data["@expand"].storage_location.name
+    enumFunction: getComponentStorageLocationEnum,
+    searchProps: { value: "id", label: "name" },
+    isShow: false
+  },
 
   {
     prop: "storage_location",
     label: "Location",
+    width: 160,
     sortable: true,
     search: true,
     // values that go into the treeSelect props

@@ -47,7 +47,7 @@ const getPathName = (data: any[], id: string, identifier = "id", parentIdentifie
   path.push(found.name);
   const parent = data.find(element => element[identifier] === found[parentIdentifier]);
   if (!parent) {
-    return path.reverse().join(" > ");
+    return path.reverse().join(" ▸ "); // / > ‣ → ▻ ▸ ▶ ▷
   }
   return getPathName(data, parent[identifier], identifier, parentIdentifier, path);
 };

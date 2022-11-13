@@ -208,6 +208,7 @@ export const getComponentCategoryEnumTree = async () => {
     // return false;
   }
   const tree = arrayToTree(res.items, { id: "id", parentId: "parent", dataField: null });
+  // console.log("tree", res.items, tree);
   return { data: tree } as unknown as APIdata<ComponentCategory.ResGetComponentCategoryRecordTree[]>;
 };
 
@@ -291,7 +292,7 @@ export const getFootprintCategoryEnumTree = async () => {
 // ---- STORAGE LOCATIONS ----
 
 export const getComponentStorageLocationEnum = async () => {
-  let res = await client.records.getList("storage_locations", 1, 99999, {});
+  let res = await client.records.getList("storage_locations", 1, 99999, { $autoCancel: false });
   return { data: res.items } as unknown as APIdata<Storage.ResGetStorageRecord[]>;
 };
 
@@ -323,6 +324,40 @@ export const deleteStorages = async (params: Storage.ReqDeleteStoragesParams) =>
   return true;
 };
 
+// Special case for storage locations, we need to get the full path name
+export const getStorageLocationPathEnum = async () => {
+  let storage_locations = (await getComponentStorageLocationEnum()) as APIdata<
+    (Storage.ResGetStorageRecord & { parent: string; _fullName: string })[]
+  >;
+  let storage_categories = await getStorageCategoryEnum();
+  // Since the storage locations are separate from storage categories, we need to merge them into a single array/tree
+  // change category key of each storage_locations to parent
+  storage_locations.data.forEach((storage_location: Storage.ResGetStorageRecord & { parent: string }) => {
+    storage_location.parent = storage_location.category;
+  });
+  storage_categories.data.push(...storage_locations.data);
+  storage_categories.data.forEach((storage_location: StorageCategory.ResGetStorageCategoryRecord) => {
+    storage_location._fullName = getPathName(storage_categories.data, storage_location.id);
+  });
+  return { data: storage_categories.data } as unknown as APIdata<Storage.ResGetStorageRecord[]>;
+};
+
+export const getStorageLocationPathEnumTree = async () => {
+  // The EnumTree is used primarily for tree-selects
+  let storage_locations = (await getComponentStorageLocationEnum()) as APIdata<
+    (Storage.ResGetStorageRecord & { parent: string; _fullName: string })[]
+  >;
+  let storage_categories = await getStorageCategoryEnum();
+  // Since the storage locations are separate from storage categories, we need to merge them into a single array/tree
+  // change category key of each storage_locations to parent
+  storage_locations.data.forEach((storage_location: Storage.ResGetStorageRecord & { parent: string }) => {
+    storage_location.parent = storage_location.category;
+  });
+  storage_categories.data.push(...storage_locations.data);
+  const tree = arrayToTree(storage_categories.data, { id: "id", parentId: "parent", dataField: null });
+  return { data: tree } as unknown as APIdata<Storage.ResGetStorageRecordTree[]>;
+};
+
 // ---- STORAGE CATEGORY ----
 
 export const postStorageCategoryCreate = async (params: StorageCategory.ReqCreateStorageCategoryParams) => {
@@ -347,10 +382,10 @@ export const getStorageCategoryEnum = async () => {
   let [res, err] = await tryCatchAsync(() => client.records.getList("storage_categories", 1, 99999, { $autoCancel: false }));
   if (err) {
     console.log("getStorageCatEnum res err", res, err);
-    return false;
+    // return false;
   }
-  res.items.forEach((footprint: StorageCategory.ResGetStorageCategoryRecord) => {
-    footprint._fullName = getPathName(res.items, footprint.id);
+  res.items.forEach((storage_location: StorageCategory.ResGetStorageCategoryRecord) => {
+    storage_location._fullName = getPathName(res.items, storage_location.id);
   });
   return { data: res.items } as unknown as APIdata<StorageCategory.ResGetStorageCategoryRecord[]>;
 };

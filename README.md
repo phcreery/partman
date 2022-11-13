@@ -20,48 +20,6 @@ I like to build small circuits and development boards. This requires me to desig
 
 _Coming soon_
 
-## Developing
-
-🚀 Technologies used:
-
-- Geeker Admin (from latest commit on 7/31/22)
-- Vue 3.2
-- Vite 2
-- TypeScript
-- Pinia
-- Element-Plus
-- PocketBase
-
-## Dev
-
-Install prerequisites
-
-```
-go get github.com/pocketbase/pocketbase
-npm ci
-```
-
-```
-npm run server
-```
-
-In another terminal
-
-```
-npm run dev
-```
-
-### Build
-
-```
-go build
-```
-
-### Config
-
-- Database Admin: admin@mail.com : partmanpass
-- Default User: partman@mail.com : partmanpass
-
 ### Manually Install on Linux
 
 1. (optional) Create Linux account called partman
@@ -73,15 +31,7 @@ su partman
 cd ~
 ```
 
-2. Download latest version of partman
-
-```
-wget
-unzip /tmp/pocketbase.zip -d /home/partman/
-chmod +x /home/partman/pocketbase
-```
-
-3. Download latest release of partman
+2. Download latest release of partman
 
 ```
 PARTMAN_PUBLIC_DOWNLOAD_URL=$(curl -s https://api.github.com/repos/phcreery/partman/releases/latest \
@@ -90,7 +40,7 @@ PARTMAN_PUBLIC_DOWNLOAD_URL=$(curl -s https://api.github.com/repos/phcreery/part
     echo "$PARTMAN_PUBLIC_DOWNLOAD_URL" | wget -qi - -O /tmp/partman.zip
 ```
 
-4. Download template database
+3. Download template database
 
 ```
 DB_PUBLIC_DOWNLOAD_URL=$(curl -s https://api.github.com/repos/phcreery/partman/releases/latest \
@@ -99,22 +49,22 @@ DB_PUBLIC_DOWNLOAD_URL=$(curl -s https://api.github.com/repos/phcreery/partman/r
     echo "$DB_PUBLIC_DOWNLOAD_URL" | wget -qi - -O /tmp/data.db
 ```
 
-5. Copy database template to `pb_data`
-6. Copy release to `pb_public`
+4. Copy binary and db to home directory
 
 ```
 unzip /tmp/partman.zip -d /tmp/partman
-cp -r /tmp/partman/* /home/partman/pb_public
-cp /tmp/data.db /home/partman/pb_data
+mv /tmp/partman/partman /home/partman/partman
+mv /tmp/data.db /home/partman/pb_data/data.db
+chmod +x /home/partman/partman
 ```
 
-7. Start PocketBase
+5. Start partman
 
 ```
 pocketbase serve --http="0.0.0.0:8090"
 ```
 
-8. (optional) Create systemd service
+6. (optional) Create systemd service
 
 ```
 sudo nano /lib/systemd/system/partman.service
@@ -145,3 +95,45 @@ sudo systemctl daemon-reload
 sudo systemctl restart partman
 sudo systemctl status partman
 ```
+
+## Developing
+
+🚀 Technologies used:
+
+- Geeker Admin (from latest commit on 7/31/22)
+- Vue 3.2
+- Vite 2
+- TypeScript
+- Pinia
+- Element-Plus
+- PocketBase
+
+### Dev Setup
+
+Install prerequisites
+
+```
+go get github.com/pocketbase/pocketbase
+npm ci
+```
+
+```
+npm run server
+```
+
+In another terminal
+
+```
+npm run dev
+```
+
+### Build
+
+```
+go build
+```
+
+### Config
+
+- Database Admin: admin@mail.com : partmanpass
+- Default User: partman@mail.com : partmanpass

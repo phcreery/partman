@@ -157,13 +157,18 @@ export namespace Storage {
   export interface ReqUpdateStorageParams extends ReqRecord, StorageColumns {}
   export type ReqDeleteStoragesParams = { ids: string[] };
   // Responses
-  export interface ResGetStorageRecord extends ResGetRecord, StorageColumns {}
+  export interface ResGetStorageRecord extends ResGetRecord, StorageColumns {
+    _fullName: string;
+  }
+  export interface ResGetStorageRecordTree extends ResGetStorageRecord {
+    children: ResGetStorageRecordTree;
+  }
 }
 
 export namespace StorageCategory {
   type StorageCategoryColumns = {
     name: string;
-    description: number;
+    description: string;
     parent: string;
   };
   // Requests

@@ -65,6 +65,10 @@ import {
   getComponentStorageLocationEnum,
   getComponentCategoryEnum,
   getComponentCategoryEnumTree,
+  getStorageLocationPathEnum,
+  getStorageLocationPathEnumTree,
+  getStorageCategoryEnum,
+  getStorageCategoryEnumTree,
   postComponentCreateBatch_Client
 } from "@/api/modules/components";
 
@@ -72,11 +76,12 @@ import {
 const proTable = ref();
 // If the table needs to initialize the request parameter, it will be directly defined to the propable (each request will automatically bring the parameter every time, and it will always be brought to
 const initParam = reactive({
-  expand: "footprint, category, storage_location"
+  expand: "footprint, category, storage_location, storage_categories"
 });
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
 const dataCallback = (data: ResList<Component.ResGetComponentRecord>) => {
+  console.error("dataCallback", data.items);
   return {
     datalist: data.items,
     total: data.totalItems,
@@ -169,16 +174,35 @@ const columns: Partial<ColumnProps>[] = [
     // searchProps: { disabled: true },
     isShow: false
   },
+  // {
+  //   prop: "storage_location",
+  //   label: "Location",
+  //   sortable: true,
+  //   search: true,
+  //   searchType: "select",
+  //   // renderText: (data: Component.ResGetComponentRecord) => data["@expand"].storage_location.name
+  //   enumFunction: getComponentStorageLocationEnum,
+  //   searchProps: { value: "id", label: "name" },
+  //   isShow: true
+  // },
+
   {
     prop: "storage_location",
     label: "Location",
     sortable: true,
     search: true,
-    searchType: "select",
-    // renderText: (data: Component.ResGetComponentRecord) => data["@expand"].storage_location.name
-    enumFunction: getComponentStorageLocationEnum,
-    searchProps: { value: "id", label: "name" },
-    isShow: false
+    // values that go into the treeSelect props
+    searchProps: {
+      value: "id",
+      label: "_fullName",
+      props: { value: "id", label: "name", emitPath: false },
+      checkStrictly: true
+    },
+    searchType: "treeSelect",
+    // renderText: (data: Component.ResGetComponentRecord) => data["@expand"].category.name,
+    enumFunction: getStorageLocationPathEnum,
+    enumTreeFunction: getStorageLocationPathEnumTree,
+    isShow: true
   },
   // {
   // 	prop: "createTime",

@@ -95,9 +95,20 @@
         <el-form-item label="Storage Location" prop="storage_location" v-loading="componentStorageLocations === undefined">
           <div class="form-item-with-buttons">
             <el-space>
-              <el-select v-model="drawerData.rowData!.storage_location" placeholder="" clearable filterable>
+              <!-- <el-select v-model="drawerData.rowData!.storage_location" placeholder="" clearable filterable>
                 <el-option v-for="item in componentStorageLocations" :key="item.id" :label="item.name" :value="item.id" />
-              </el-select>
+              </el-select> -->
+              <el-tree-select
+                v-model="drawerData.rowData!.storage_location"
+                :multiple="false"
+                :data="componentStorageLocations"
+                :props="treeSelectProps"
+                clearable
+                :render-after-expand="false"
+                :checkStrictly="true"
+                filterable
+                :filter-node-method="filterNodeMethod"
+              />
               <el-button-group>
                 <el-button :icon="Refresh" @click="refreshStorageLocations" />
                 <el-button :icon="Plus" @click="openStorageDrawer('New')" />
@@ -146,10 +157,11 @@ import { ref, reactive, watch } from "vue";
 import { Refresh, Plus, Search, Delete } from "@element-plus/icons-vue";
 import { ElMessage, FormInstance } from "element-plus";
 // import { genderType } from "@/utils/serviceDict";
-import { Component, ComponentCategory, Footprint, Storage } from "@/api/interface";
+import { Component, ComponentCategory, Footprint, Storage, StorageCategory } from "@/api/interface";
 import {
   getFootprintsEnum,
   getComponentStorageLocationEnum,
+  getStorageLocationPathEnumTree,
   getComponentCategoryEnumTree,
   postFootprintCreate,
   postStorageCreate,
@@ -241,11 +253,11 @@ const deleteSpecIndex = (index: number) => {
 };
 
 const componentCategories = ref<ComponentCategory.ResGetComponentCategoryRecord[]>();
-const componentStorageLocations = ref<Storage.ResGetStorageRecord[]>();
+const componentStorageLocations = ref<Storage.ResGetStorageRecordTree[]>();
 const componentFootprints = ref<Footprint.ResGetFootprintRecord[]>();
 
 const refreshCategories = () => getComponentCategoryEnumTree().then(res => (componentCategories.value = res.data));
-const refreshStorageLocations = () => getComponentStorageLocationEnum().then(res => (componentStorageLocations.value = res.data));
+const refreshStorageLocations = () => getStorageLocationPathEnumTree().then(res => (componentStorageLocations.value = res.data));
 const refreshFootprints = () => getFootprintsEnum().then(res => (componentFootprints.value = res.data));
 
 // When opening the drawer, fetch the necessary field values

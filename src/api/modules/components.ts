@@ -615,3 +615,57 @@ export const patchConfigUpdate = async (params: Config.ReqUpdateConfigParams) =>
   const record = await client.records.update("config", configRecord?.id, params);
   return { data: record } as unknown as APIdata<Config.ResGetConfigRecord>;
 };
+
+// ---- DASHBOARD ----
+
+export const getDashboardQty = async () => {
+  // TODO: make this server side
+  type ComponentQty = {
+    unique_components: number;
+    total_components: number;
+    total_projects: number;
+    total_categories: number;
+    total_storage_locations: number;
+  };
+
+  let components = await getComponentEnum();
+  let projects = await getProjectsEnum();
+  let categories = await getComponentCategoryEnum();
+  let storage_locations = await getComponentStorageLocationEnum();
+
+  let qty: ComponentQty = {
+    unique_components: components.data.length,
+    total_components: 0,
+    total_projects: projects.data.length,
+    total_categories: categories.data.length,
+    total_storage_locations: storage_locations.data.length
+  };
+  components.data.forEach((component: Component.ResGetComponentRecord) => {
+    qty.total_components += component.stock;
+  });
+  return { data: qty } as unknown as APIdata<ComponentQty>;
+};
+
+// export const getDashboardComponentSupplyDemandRatio = async () => {
+//   let components = await getComponentEnum();
+//   let data = components.data.map((component: Component.ResGetComponentRecord) => {
+//     let qty = 0;
+//     component.projects.forEach((project: Project.ResGetProjectRecord) => {
+//       let projectQty = project.quantity.find(x => x.id == component.id);
+//       if (projectQty) {
+//         qty += projectQty.quantity;
+//       }
+//     });
+//     return { name: component.name, quantity: qty };
+//   });
+//   return { data: data } as unknown as APIdata<{ name: string; quantity: number }[]>;
+// }
+
+export const getDashboardStorageLocationTree = async () => {
+  let storageLocations = await getStorageLocationPathEnumTree();
+  let data = storageLocations.data;
+  // .map((storageLocation: Storage.ResGetStorageRecord) => {
+  //   return { name: storageLocation.name, value: storageLocation.stock };
+  // });
+  return { data: data } as unknown as APIdata<{ name: string; value: number }[]>;
+};

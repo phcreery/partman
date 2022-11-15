@@ -2,9 +2,9 @@
 export interface ReqList {
   page: number;
   perPage: number;
-  sort: String;
-  filter: String;
-  expand: String;
+  sort?: string;
+  filter?: object; // string;
+  expand?: string;
 }
 
 // * Paging response parameter

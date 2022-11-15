@@ -11,18 +11,18 @@
       </el-col>
       <el-col :span="6">
         <el-card shadow="hover">
-          Unique Components: <b>{{ qty.unique_components }}</b></el-card
-        >
+          Unique Components: <b>{{ qty.unique_components }}</b>
+        </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="hover">
-          Storage Locations: <b>{{ qty.total_storage_locations }}</b></el-card
-        >
+          Storage Locations: <b>{{ qty.total_storage_locations }}</b>
+        </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="hover">
-          Categories: <b>{{ qty.total_categories }}</b></el-card
-        >
+          Categories: <b>{{ qty.total_categories }}</b>
+        </el-card>
       </el-col>
     </el-row>
     <el-row :gutter="12">
@@ -32,10 +32,17 @@
         >
       </el-col>
     </el-row>
+
+    <el-row :gutter="12">
+      <el-col :span="12">
+        <el-card shadow="never">
+          <div ref="componentStorageTree" style="width: 100%; height: 400px"></div>
+        </el-card>
+      </el-col>
+    </el-row>
     <!-- <div ref="componentQtyOverTime" style="width: 100%; height: 400px"></div> -->
     <!-- <div ref="componentStorageLocationTree" style="width: 600px; height: 400px"></div> -->
     <!-- <div ref="componentCategoryOverTime" style="width: 600px; height: 400px"></div> -->
-    <div ref="componentStorageTree" style="width: 600px; height: 400px"></div>
   </div>
 </template>
 
@@ -74,9 +81,21 @@ const qty = ref({
   total_categories: 0,
   total_storage_locations: 0
 });
-const storageLocationTreeData = ref([]);
+const storageLocationTreeData = ref([{}]);
 
 const treeOption = {
+  title: {
+    text: "STORAGE LOCATION DISTRIBUTION",
+    subtext: "",
+    textStyle: {
+      fontSize: 14,
+      align: "center"
+    },
+    subtextStyle: {
+      align: "center"
+    },
+    sublink: "https://worldcoffeeresearch.org/work/sensory-lexicon/"
+  },
   series: {
     type: "sunburst",
     // emphasis: {
@@ -85,7 +104,13 @@ const treeOption = {
     data: storageLocationTreeData.value,
     sort: undefined,
     // radius: [0, "90%"],
-    radius: ["15%", "80%"],
+    // radius: ["15%", "80%"],
+    radius: [60, "90%"],
+
+    itemStyle: {
+      borderRadius: 7,
+      borderWidth: 2
+    },
     label: {
       rotate: "radial"
     }
@@ -100,15 +125,6 @@ const getQty = async () => {
   console.log(qty);
 
   const storageLocationTree = await getDashboardStorageLocationTree();
-  // iterate recursively and find each elements where child = [] and set value: 1
-  function iter(o: any) {
-    if (o.children && o.children.length !== 0) {
-      o.children.forEach((c: any) => iter(c));
-    } else {
-      o.value = 1;
-    }
-  }
-  storageLocationTree.data.forEach((c: any) => iter(c));
   storageLocationTreeData.value = storageLocationTree.data;
   console.log(storageLocationTreeData);
 };
@@ -125,7 +141,7 @@ onMounted(async () => {
   // console.log(qty);
   await getQty();
 
-  console.log(storageLocationTreeData.toString());
+  // console.log(JSON.stringify(storageLocationTreeData));
   let storageLocationTreeChart = echarts.init(componentStorageTree.value, "wonderland");
   treeOption.series.data = storageLocationTreeData.value;
   storageLocationTreeChart.setOption(treeOption);

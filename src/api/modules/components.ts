@@ -60,9 +60,10 @@ const getPathName = (data: any[], id: string, identifier = "id", parentIdentifie
 export const getComponentList = async (params: Component.ReqGetComponentListParams) => {
   let res = await client.records.getList("components", params.page, params.perPage, {
     // filter: Object.keys(params.filter).length !== 0 ? params.filter : "",
-    filter: filterToPBString(params.filter),
+    filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
-    expand: params.expand ?? "" // Default expand all???
+    expand: params.expand ?? "", // Default expand all???
+    $autoCancel: false
   });
   return { data: res } as unknown as APIdata<ResList<Component.ResGetComponentRecord>>;
 };
@@ -219,8 +220,7 @@ export const getComponentCategoryEnumTree = async () => {
 
 export const getFootprintList = async (params: Footprint.ReqGetFootprintListParams) => {
   let res = await client.records.getList("footprints", params.page, params.perPage, {
-    // filter: params.filter ?? "",
-    filter: filterToPBString(params.filter),
+    filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
   });
@@ -301,8 +301,7 @@ export const getComponentStorageLocationEnum = async () => {
 
 export const getStorageList = async (params: Storage.ReqGetStorageListParams) => {
   let res = await client.records.getList("storage_locations", params.page, params.perPage, {
-    // filter: params.filter ?? "",
-    filter: filterToPBString(params.filter),
+    filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
   });
@@ -413,8 +412,7 @@ export const getStorageCategoryEnumTree = async () => {
 
 export const getProjectList = async (params: Project.ReqGetProjectListParams) => {
   let res = await client.records.getList("projects", params.page, params.perPage, {
-    // filter: params.filter ?? "",
-    filter: filterToPBString(params.filter),
+    filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
   });
@@ -547,8 +545,7 @@ export const deleteProjectComponents = async (params: Project.ReqRemoveProjectCo
 
 export const getUserList = async (params: User.ReqGetUserListParams) => {
   let res = await client.records.getList("profiles", params.page, params.perPage, {
-    // filter: Object.keys(params.filter).length !== 0 ? params.filter : "",
-    filter: filterToPBString(params.filter),
+    filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? "" // Default expand all???
   });
@@ -662,10 +659,28 @@ export const getDashboardQty = async () => {
 // }
 
 export const getDashboardStorageLocationTree = async () => {
-  let storageLocations = await getStorageLocationPathEnumTree();
-  let data = storageLocations.data;
-  // .map((storageLocation: Storage.ResGetStorageRecord) => {
-  //   return { name: storageLocation.name, value: storageLocation.stock };
-  // });
+  // TODO: make this server side
+  let storageLocations = await getStorageLocationPathEnum();
+  let storageLocationsTree = await getStorageLocationPathEnumTree();
+  let data = storageLocationsTree.data;
+
+  // iterate recursively and find each elements where child = [] and set value: 1
+  async function iter(o: any) {
+    if (o.children && o.children.length !== 0) {
+      o.children.forEach((c: any) => iter(c));
+    } else {
+      // set value to component qty
+      await getComponentList({ page: 1, perPage: 999, filter: { storage_location: o.id } }).then(res => {
+        o.value = res.data.items.length;
+        console.log("o.value", o.value);
+      });
+      // o.value = 1;
+    }
+  }
+  for (const storageLocation of storageLocationsTree.data) {
+    await iter(storageLocation);
+  }
+  // storageLocationsTree.data.forEach(async (c: any) => await iter(c));
+
   return { data: data } as unknown as APIdata<{ name: string; value: number }[]>;
 };

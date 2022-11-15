@@ -660,6 +660,7 @@ export const getDashboardQty = async () => {
 
 export const getDashboardStorageLocationTree = async () => {
   // TODO: make this server side
+  const components = await getComponentEnum();
   let storageLocations = await getStorageLocationPathEnum();
   let storageLocationsTree = await getStorageLocationPathEnumTree();
   let data = storageLocationsTree.data;
@@ -670,10 +671,16 @@ export const getDashboardStorageLocationTree = async () => {
       o.children.forEach((c: any) => iter(c));
     } else {
       // set value to component qty
-      await getComponentList({ page: 1, perPage: 999, filter: { storage_location: o.id } }).then(res => {
-        o.value = res.data.items.length;
-        console.log("o.value", o.value);
-      });
+
+      // await getComponentList({ page: 1, perPage: 999, filter: { storage_location: o.id } }).then(res => {
+      //   o.value = res.data.items.length;
+      //   console.log("o.value", o.value);
+      // });
+
+      o.value = components.data.filter(
+        (component: Component.ResGetComponentRecord) => component.storage_location === o.id
+      ).length;
+
       // o.value = 1;
     }
   }

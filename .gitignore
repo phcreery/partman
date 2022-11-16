@@ -33,4 +33,5 @@ pb_data
 pb_public
 
 # goreleaser builds folder
-/.builds/
+.builds
+.builds/*

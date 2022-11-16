@@ -615,7 +615,7 @@ export const patchConfigUpdate = async (params: Config.ReqUpdateConfigParams) =>
 
 // ---- DASHBOARD ----
 
-export const getDashboardQty = async () => {
+export const getDashboardInfo = async () => {
   // TODO: make this server side
   type ComponentQty = {
     unique_components: number;
@@ -623,6 +623,10 @@ export const getDashboardQty = async () => {
     total_projects: number;
     total_categories: number;
     total_storage_locations: number;
+  };
+  type DashboardInfo = {
+    component_qty: ComponentQty;
+    storage_location_tree: Storage.ResGetStorageRecordTree[];
   };
 
   let components = await getComponentEnum();
@@ -640,7 +644,30 @@ export const getDashboardQty = async () => {
   components.data.forEach((component: Component.ResGetComponentRecord) => {
     qty.total_components += component.stock;
   });
-  return { data: qty } as unknown as APIdata<ComponentQty>;
+
+  let storageLocationsTree = await getStorageLocationPathEnumTree();
+
+  // iterate recursively and find each elements where child = [] and set value: 1
+  async function iter(o: any) {
+    if (o.children && o.children.length !== 0) {
+      o.children.forEach((c: any) => iter(c));
+    } else {
+      // set value to component qty
+      o.value = components.data.filter(
+        (component: Component.ResGetComponentRecord) => component.storage_location === o.id
+      ).length;
+    }
+  }
+  for (const storageLocation of storageLocationsTree.data) {
+    await iter(storageLocation);
+  }
+
+  let dashboardInfo: DashboardInfo = {
+    component_qty: qty,
+    storage_location_tree: storageLocationsTree.data
+  };
+
+  return { data: dashboardInfo } as unknown as APIdata<DashboardInfo>;
 };
 
 // export const getDashboardComponentSupplyDemandRatio = async () => {
@@ -657,37 +684,3 @@ export const getDashboardQty = async () => {
 //   });
 //   return { data: data } as unknown as APIdata<{ name: string; quantity: number }[]>;
 // }
-
-export const getDashboardStorageLocationTree = async () => {
-  // TODO: make this server side
-  const components = await getComponentEnum();
-  let storageLocations = await getStorageLocationPathEnum();
-  let storageLocationsTree = await getStorageLocationPathEnumTree();
-  let data = storageLocationsTree.data;
-
-  // iterate recursively and find each elements where child = [] and set value: 1
-  async function iter(o: any) {
-    if (o.children && o.children.length !== 0) {
-      o.children.forEach((c: any) => iter(c));
-    } else {
-      // set value to component qty
-
-      // await getComponentList({ page: 1, perPage: 999, filter: { storage_location: o.id } }).then(res => {
-      //   o.value = res.data.items.length;
-      //   console.log("o.value", o.value);
-      // });
-
-      o.value = components.data.filter(
-        (component: Component.ResGetComponentRecord) => component.storage_location === o.id
-      ).length;
-
-      // o.value = 1;
-    }
-  }
-  for (const storageLocation of storageLocationsTree.data) {
-    await iter(storageLocation);
-  }
-  // storageLocationsTree.data.forEach(async (c: any) => await iter(c));
-
-  return { data: data } as unknown as APIdata<{ name: string; value: number }[]>;
-};

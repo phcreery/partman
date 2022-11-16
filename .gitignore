@@ -31,4 +31,6 @@ stats.html
 # Golang and PocketBase
 pb_data
 pb_public
-partman.exe
+
+# goreleaser builds folder
+/.builds/

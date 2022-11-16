@@ -40,9 +40,6 @@
         </el-card>
       </el-col>
     </el-row>
-    <!-- <div ref="componentQtyOverTime" style="width: 100%; height: 400px"></div> -->
-    <!-- <div ref="componentStorageLocationTree" style="width: 600px; height: 400px"></div> -->
-    <!-- <div ref="componentCategoryOverTime" style="width: 600px; height: 400px"></div> -->
   </div>
 </template>
 
@@ -51,28 +48,9 @@ import { ref, reactive, onMounted } from "vue";
 import * as echarts from "echarts";
 import echartsThemeWonderland from "./echarts-theme-wonderland.json";
 // import { Component, ComponentCategory, Footprint, Storage, StorageCategory } from "@/api/interface";
-import { getDashboardQty, getDashboardStorageLocationTree } from "@/api/modules/components";
+import { getDashboardInfo, getDashboardStorageLocationTree } from "@/api/modules/components";
 
-// const componentQtyOverTime = ref(null);
-// const componentStorageLocationTree = ref(null);
-// const componentCategoryOverTime = ref(null);
 const componentStorageTree = ref(null);
-
-// const componentQtyOverTimeOption = {
-//   xAxis: {
-//     type: "category",
-//     data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-//   },
-//   yAxis: {
-//     type: "value"
-//   },
-//   series: [
-//     {
-//       data: [150, 230, 224, 218, 135, 147, 260],
-//       type: "line"
-//     }
-//   ]
-// };
 
 const qty = ref({
   unique_components: 0,
@@ -83,7 +61,7 @@ const qty = ref({
 });
 const storageLocationTreeData = ref([{}]);
 
-const treeOption = {
+const storageLocationTreeOption = {
   title: {
     text: "STORAGE LOCATION DISTRIBUTION",
     subtext: "",
@@ -120,31 +98,19 @@ const treeOption = {
 echarts.registerTheme("wonderland", echartsThemeWonderland);
 
 const getQty = async () => {
-  const res = await getDashboardQty();
-  qty.value = res.data;
-  console.log(qty);
-
-  const storageLocationTree = await getDashboardStorageLocationTree();
-  storageLocationTreeData.value = storageLocationTree.data;
-  console.log(storageLocationTreeData);
+  const res = await getDashboardInfo();
+  qty.value = res.data.component_qty;
+  // console.log(qty);
+  storageLocationTreeData.value = res.data.storage_location_tree;
+  // console.log(storageLocationTreeData);
 };
 
 onMounted(async () => {
-  // let componentQtyOverTimeChart = echarts.init(componentQtyOverTime.value);
-  // componentQtyOverTimeChart.setOption(componentQtyOverTimeOption);
-  // let componentStorageLocationTreeChart = echarts.init(componentStorageLocationTree.value);
-  // componentStorageLocationTreeChart.setOption(componentQtyOverTimeOption);
-  // let componentCategoryOverTimeChart = echarts.init(componentCategoryOverTime.value);
-  // componentCategoryOverTimeChart.setOption(componentQtyOverTimeOption);
-
-  // qty = await (await getDashboardQty()).data;
-  // console.log(qty);
   await getQty();
 
-  // console.log(JSON.stringify(storageLocationTreeData));
-  let storageLocationTreeChart = echarts.init(componentStorageTree.value, "wonderland");
-  treeOption.series.data = storageLocationTreeData.value;
-  storageLocationTreeChart.setOption(treeOption);
+  let storageLocationTreeChart = echarts.init(componentStorageTree.value as unknown as HTMLElement, "wonderland");
+  storageLocationTreeOption.series.data = storageLocationTreeData.value;
+  storageLocationTreeChart.setOption(storageLocationTreeOption);
 });
 </script>
 

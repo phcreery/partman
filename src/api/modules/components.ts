@@ -621,7 +621,7 @@ export const getDashboardInfo = async () => {
     unique_components: number;
     total_components: number;
     total_projects: number;
-    total_categories: number;
+    // total_categories: number;
     total_storage_locations: number;
   };
   type DashboardInfo = {
@@ -631,21 +631,20 @@ export const getDashboardInfo = async () => {
 
   let components = await getComponentEnum();
   let projects = await getProjectsEnum();
-  let categories = await getComponentCategoryEnum();
+  // let categories = await getComponentCategoryEnum();
   let storage_locations = await getComponentStorageLocationEnum();
+  let storageLocationsTree = await getStorageLocationPathEnumTree();
 
   let qty: ComponentQty = {
     unique_components: components.data.length,
     total_components: 0,
     total_projects: projects.data.length,
-    total_categories: categories.data.length,
+    // total_categories: categories.data.length,
     total_storage_locations: storage_locations.data.length
   };
   components.data.forEach((component: Component.ResGetComponentRecord) => {
     qty.total_components += component.stock;
   });
-
-  let storageLocationsTree = await getStorageLocationPathEnumTree();
 
   // iterate recursively and find each elements where child = [] and set value: 1
   async function iter(o: any) {

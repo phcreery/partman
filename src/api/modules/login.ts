@@ -15,14 +15,14 @@ export const loginApi = async (params: Login.ReqLoginParams): Promise<Login.ResL
   // return http.post<Login.ResLogin>(PORT1 + `/login`, {}, { params }); // post Request to carry Query parameter  ==>  ?username=admin&password=123456
   // return http.post<Login.ResLogin>(PORT1 + `/login`, qs.stringify(params)); // post Request to carry form parameters  ==>  application/x-www-form-urlencoded
   // return http.post<Login.ResLogin>(PORT1 + `/login`, params, { headers: { noLoading: true } }); // Control the current request does not display loading
-  const authData = await client.users.authViaEmail(params.username, params.password);
-
+  const authData = await client.collection("users").authWithPassword(params.username, params.password);
+  // authData.user = await client.collection("users").getOne(authData.record.id);
   console.log("authData", authData);
   return authData;
 };
 
 export const loginApiAsAdmin = async (params: Login.ReqLoginParams): Promise<Login.ResLogin> => {
-  const adminAuthData = (await client.admins.authViaEmail(params.username, params.password)) as any;
+  const adminAuthData = (await client.admins.authWithPassword(params.username, params.password)) as any;
   adminAuthData.user = adminAuthData.admin;
   console.log("adminAuthData", adminAuthData);
   return adminAuthData;

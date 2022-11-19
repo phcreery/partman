@@ -98,7 +98,6 @@ echarts.registerTheme("wonderland", echartsThemeWonderland);
 
 const getQty = async () => {
   const res = await getDashboardInfoV2();
-  console.log(res, JSON.stringify(res));
   // qty.value = res.data.component_qty;
   qty.value.total_components = Number(res.data.totalComponents);
   qty.value.unique_components = res.data.uniqueComponents;

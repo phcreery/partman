@@ -58,7 +58,7 @@ const getPathName = (data: any[], id: string, identifier = "id", parentIdentifie
 // ---- COMPONENTS ----
 
 export const getComponentList = async (params: Component.ReqGetComponentListParams) => {
-  let res = await client.records.getList("components", params.page, params.perPage, {
+  let res = await client.collection("components").getList(params.page, params.perPage, {
     // filter: Object.keys(params.filter).length !== 0 ? params.filter : "",
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
@@ -80,16 +80,16 @@ export const getComponentsListForExport = async (params: Component.ReqGetCompone
 };
 
 export const deleteComponent = async (params: Component.ReqDeleteComponentParams) => {
-  await client.records.delete("components", params.id);
+  await client.collection("components").delete(params.id);
 };
 
 export const postComponentCreate = async (params: Component.ReqCreateComponentParams) => {
-  let record = await client.records.create("components", params);
+  let record = await client.collection("components").create(params);
   return { data: record } as unknown as APIdata<Component.ResGetComponentRecord>;
 };
 
 export const patchComponentUpdate = async (params: Component.ReqUpdateComponentParams) => {
-  const record = await client.records.update("components", params.id, params);
+  const record = await client.collection("components").update(params.id, params);
   return { data: record } as unknown as APIdata<Component.ResGetComponentRecord>;
 };
 
@@ -97,13 +97,13 @@ export const patchComponentUpdate = async (params: Component.ReqUpdateComponentP
 export const deleteComponents = async (params: Component.ReqDeleteComponentsParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.records.delete("components", id);
+    await client.collection("components").delete(id);
   }
   return true;
 };
 
 export const getComponentEnum = async () => {
-  let [res, err] = await tryCatchAsync(() => client.records.getList("components", 1, 99999, { $autoCancel: false }));
+  let [res, err] = await tryCatchAsync(() => client.collection("components").getList(1, 99999, { $autoCancel: false }));
   if (err) {
     console.log("getCompEnum res err", res, err);
     // return false;
@@ -176,25 +176,25 @@ export const postComponentCreateBatch_Client = async (fd: FormData) => {
 // ---- COMPONENT CATEGORIES ----
 
 export const postComponentCategoryCreate = async (params: ComponentCategory.ReqCreateComponentCategoryParams) => {
-  let record = await client.records.create("component_categories", params);
+  let record = await client.collection("component_categories").create(params);
   return { data: record } as unknown as APIdata<ComponentCategory.ResGetComponentCategoryRecord>;
 };
 
 export const patchComponentCategoryUpdate = async (params: ComponentCategory.ReqUpdateComponentCategoryParams) => {
-  const record = await client.records.update("component_categories", params.id, params);
+  const record = await client.collection("component_categories").update(params.id, params);
   return { data: record } as unknown as APIdata<Component.ResGetComponentRecord>;
 };
 
 export const deleteComponentCategories = async (params: ComponentCategory.ReqDeleteComponentCategoriesParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.records.delete("component_categories", id);
+    await client.collection("component_categories").delete(id);
   }
   return true;
 };
 
 export const getComponentCategoryEnum = async () => {
-  let [res, err] = await tryCatchAsync(() => client.records.getList("component_categories", 1, 99999, { $autoCancel: false }));
+  let [res, err] = await tryCatchAsync(() => client.collection("component_categories").getList(1, 99999, { $autoCancel: false }));
   if (err) {
     console.log("getCompCatEnum res err", res, err);
     // return false;
@@ -206,7 +206,7 @@ export const getComponentCategoryEnum = async () => {
 };
 
 export const getComponentCategoryEnumTree = async () => {
-  let [res, err] = await tryCatchAsync(() => client.records.getList("component_categories", 1, 99999, { $autoCancel: false }));
+  let [res, err] = await tryCatchAsync(() => client.collection("component_categories").getList(1, 99999, { $autoCancel: false }));
   if (err) {
     console.log("getCompCatEnum res err", res, err);
     // return false;
@@ -219,7 +219,7 @@ export const getComponentCategoryEnumTree = async () => {
 // ---- FOOTPRINTS ----
 
 export const getFootprintList = async (params: Footprint.ReqGetFootprintListParams) => {
-  let res = await client.records.getList("footprints", params.page, params.perPage, {
+  let res = await client.collection("footprints").getList(params.page, params.perPage, {
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
@@ -228,24 +228,24 @@ export const getFootprintList = async (params: Footprint.ReqGetFootprintListPara
 };
 
 export const getFootprintsEnum = async () => {
-  let res = await client.records.getList("footprints", 1, 99999, {});
+  let res = await client.collection("footprints").getList(1, 99999, {});
   return { data: res.items } as unknown as APIdata<Footprint.ResGetFootprintRecord[]>;
 };
 
 export const postFootprintCreate = async (params: Footprint.ReqCreateFootprintParams) => {
-  let record = await client.records.create("footprints", params);
+  let record = await client.collection("footprints").create(params);
   return { data: record } as unknown as APIdata<Footprint.ResGetFootprintRecord>;
 };
 
 export const patchFootprintUpdate = async (params: Footprint.ReqUpdateFootprintParams) => {
-  const record = await client.records.update("footprints", params.id, params);
+  const record = await client.collection("footprints").update(params.id, params);
   return { data: record } as unknown as APIdata<Footprint.ResGetFootprintRecord>;
 };
 
 export const deleteFootprints = async (params: Footprint.ReqDeleteFootprintsParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.records.delete("footprints", id);
+    await client.collection("footprints").delete(id);
   }
   return true;
 };
@@ -253,25 +253,25 @@ export const deleteFootprints = async (params: Footprint.ReqDeleteFootprintsPara
 // ---- FOOTPRINT CATEGORY ----
 
 export const postFootprintCategoryCreate = async (params: FootprintCategory.ReqCreateFootprintCategoryParams) => {
-  let record = await client.records.create("footprint_categories", params);
+  let record = await client.collection("footprint_categories").create(params);
   return { data: record } as unknown as APIdata<FootprintCategory.ResGetFootprintCategoryRecord>;
 };
 
 export const patchFootprintCategoryUpdate = async (params: FootprintCategory.ReqUpdateFootprintCategoryParams) => {
-  const record = await client.records.update("footprint_categories", params.id, params);
+  const record = await client.collection("footprint_categories").update(params.id, params);
   return { data: record } as unknown as APIdata<Footprint.ResGetFootprintRecord>;
 };
 
 export const deleteFootprintCategories = async (params: FootprintCategory.ReqDeleteFootprintCategoriesParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.records.delete("footprint_categories", id);
+    await client.collection("footprint_categories").delete(id);
   }
   return true;
 };
 
 export const getFootprintCategoryEnum = async () => {
-  let [res, err] = await tryCatchAsync(() => client.records.getList("footprint_categories", 1, 99999, { $autoCancel: false }));
+  let [res, err] = await tryCatchAsync(() => client.collection("footprint_categories").getList(1, 99999, { $autoCancel: false }));
   if (err) {
     console.log("getFootprintCatEnum res err", res, err);
     return false;
@@ -283,7 +283,7 @@ export const getFootprintCategoryEnum = async () => {
 };
 
 export const getFootprintCategoryEnumTree = async () => {
-  let [res, err] = await tryCatchAsync(() => client.records.getList("footprint_categories", 1, 99999, { $autoCancel: false }));
+  let [res, err] = await tryCatchAsync(() => client.collection("footprint_categories").getList(1, 99999, { $autoCancel: false }));
   if (err) {
     console.log("error", res, err);
     return false;
@@ -295,12 +295,12 @@ export const getFootprintCategoryEnumTree = async () => {
 // ---- STORAGE LOCATIONS ----
 
 export const getComponentStorageLocationEnum = async () => {
-  let res = await client.records.getList("storage_locations", 1, 99999, { $autoCancel: false });
+  let res = await client.collection("storage_locations").getList(1, 99999, { $autoCancel: false });
   return { data: res.items } as unknown as APIdata<Storage.ResGetStorageRecord[]>;
 };
 
 export const getStorageList = async (params: Storage.ReqGetStorageListParams) => {
-  let res = await client.records.getList("storage_locations", params.page, params.perPage, {
+  let res = await client.collection("storage_locations").getList(params.page, params.perPage, {
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
@@ -309,19 +309,19 @@ export const getStorageList = async (params: Storage.ReqGetStorageListParams) =>
 };
 
 export const postStorageCreate = async (params: Storage.ReqCreateStorageParams) => {
-  let record = await client.records.create("storage_locations", params);
+  let record = await client.collection("storage_locations").create(params);
   return { data: record } as unknown as APIdata<Storage.ResGetStorageRecord>;
 };
 
 export const patchStorageUpdate = async (params: Storage.ReqUpdateStorageParams) => {
-  const record = await client.records.update("storage_locations", params.id, params);
+  const record = await client.collection("storage_locations").update(params.id, params);
   return { data: record } as unknown as APIdata<Storage.ResGetStorageRecord>;
 };
 
 export const deleteStorages = async (params: Storage.ReqDeleteStoragesParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.records.delete("storage_locations", id);
+    await client.collection("storage_locations").delete(id);
   }
   return true;
 };
@@ -369,25 +369,25 @@ export const getStorageLocationPathEnumTree = async () => {
 // ---- STORAGE CATEGORY ----
 
 export const postStorageCategoryCreate = async (params: StorageCategory.ReqCreateStorageCategoryParams) => {
-  let record = await client.records.create("storage_categories", params);
+  let record = await client.collection("storage_categories").create(params);
   return { data: record } as unknown as APIdata<StorageCategory.ResGetStorageCategoryRecord>;
 };
 
 export const patchStorageCategoryUpdate = async (params: StorageCategory.ReqUpdateStorageCategoryParams) => {
-  const record = await client.records.update("storage_categories", params.id, params);
+  const record = await client.collection("storage_categories").update(params.id, params);
   return { data: record } as unknown as APIdata<Storage.ResGetStorageRecord>;
 };
 
 export const deleteStorageCategories = async (params: StorageCategory.ReqDeleteStorageCategoriesParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.records.delete("storage_categories", id);
+    await client.collection("storage_categories").delete(id);
   }
   return true;
 };
 
 export const getStorageCategoryEnum = async () => {
-  let [res, err] = await tryCatchAsync(() => client.records.getList("storage_categories", 1, 99999, { $autoCancel: false }));
+  let [res, err] = await tryCatchAsync(() => client.collection("storage_categories").getList(1, 99999, { $autoCancel: false }));
   if (err) {
     console.log("getStorageCatEnum res err", res, err);
     // return false;
@@ -399,7 +399,7 @@ export const getStorageCategoryEnum = async () => {
 };
 
 export const getStorageCategoryEnumTree = async () => {
-  let [res, err] = await tryCatchAsync(() => client.records.getList("storage_categories", 1, 99999, { $autoCancel: false }));
+  let [res, err] = await tryCatchAsync(() => client.collection("storage_categories").getList(1, 99999, { $autoCancel: false }));
   if (err) {
     console.log("error", res, err);
     return false;
@@ -411,7 +411,7 @@ export const getStorageCategoryEnumTree = async () => {
 // ---- PROJECTS ----
 
 export const getProjectList = async (params: Project.ReqGetProjectListParams) => {
-  let res = await client.records.getList("projects", params.page, params.perPage, {
+  let res = await client.collection("projects").getList(params.page, params.perPage, {
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
@@ -420,24 +420,24 @@ export const getProjectList = async (params: Project.ReqGetProjectListParams) =>
 };
 
 export const getProjectsEnum = async () => {
-  let res = await client.records.getList("projects", 1, 99999, {});
+  let res = await client.collection("projects").getList(1, 99999, {});
   return { data: res.items } as unknown as APIdata<Project.ResGetProjectRecord[]>;
 };
 
 export const postProjectCreate = async (params: Project.ReqCreateProjectParams) => {
-  let record = await client.records.create("projects", params);
+  let record = await client.collection("projects").create(params);
   return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
 };
 
 export const patchProjectUpdate = async (params: Project.ReqUpdateProjectParams) => {
-  const record = await client.records.update("projects", params.id, params);
+  const record = await client.collection("projects").update(params.id, params);
   return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
 };
 
 export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.records.delete("projects", id);
+    await client.collection("projects").delete(id);
   }
   return true;
 };
@@ -451,7 +451,7 @@ export const getProjectComponentsList = async (params: Project.ReqGetProjectComp
   // if no project ID specified, return empty data set
   if (params.projectID === "") return { data: {} } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
 
-  let res_project = (await client.records.getOne("projects", params.projectID, {
+  let res_project = (await client.collection("projects").getOne(params.projectID, {
     // expand: "components" // depreciated
   })) as unknown as Project.ResGetProjectRecord;
   if (typeof res_project.quantity !== "object" || res_project.quantity === null || res_project.quantity.length === 0)
@@ -462,7 +462,7 @@ export const getProjectComponentsList = async (params: Project.ReqGetProjectComp
   let filter = params.filter;
   // filter out entire component list by those found in specified project
   nestedObjectAssign(filter, componentsFilter);
-  let res_components = (await client.records.getList("components", 1, 99999, {
+  let res_components = (await client.collection("components").getList(1, 99999, {
     filter: filterToPBString(componentsFilter),
     sort: params.sort ?? "",
     expand: params.expand ?? "" // TODO: use params expand
@@ -489,7 +489,7 @@ export const getProjectComponentsListForExport = async (params: Project.ReqGetPr
 };
 
 export const postProjectComponentAdd = async (params: Project.ReqAddProjectComponentParams) => {
-  let res_project = (await client.records.getOne("projects", params._ofProjectID, {
+  let res_project = (await client.collection("projects").getOne(params._ofProjectID, {
     // expand: "components" // depreciated
   })) as unknown as Project.ResGetProjectRecord;
 
@@ -504,12 +504,12 @@ export const postProjectComponentAdd = async (params: Project.ReqAddProjectCompo
   } else {
     res_project.quantity = [{ id: params.id, quantity: params._quantityUsed }];
   }
-  const record = await client.records.update("projects", params._ofProjectID, res_project);
+  const record = await client.collection("projects").update(params._ofProjectID, res_project);
   return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
 };
 
 export const postProjectComponentUpdate = async (params: Project.ReqUpdateProjectComponentParams) => {
-  let res_project = (await client.records.getOne("projects", params._ofProjectID, {
+  let res_project = (await client.collection("projects").getOne(params._ofProjectID, {
     // expand: "components" // depreciated
   })) as unknown as Project.ResGetProjectRecord;
   // nestedObjectAssign(res_project.quantity, { [params.id]: params._quantityUsed });
@@ -519,13 +519,13 @@ export const postProjectComponentUpdate = async (params: Project.ReqUpdateProjec
     id: params.id,
     quantity: params._quantityUsed
   };
-  const record = await client.records.update("projects", params._ofProjectID, res_project);
+  const record = await client.collection("projects").update(params._ofProjectID, res_project);
   return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
 };
 
 export const deleteProjectComponents = async (params: Project.ReqRemoveProjectComponentsParams) => {
   console.log("params", params);
-  let res_project = (await client.records.getOne("projects", params.projectID, {
+  let res_project = (await client.collection("projects").getOne(params.projectID, {
     // expand: "components" // depreciated
   })) as unknown as Project.ResGetProjectRecord;
 
@@ -536,7 +536,7 @@ export const deleteProjectComponents = async (params: Project.ReqRemoveProjectCo
     }
   }
   console.log("updating with", res_project);
-  const record = await client.records.update("projects", params.projectID, res_project);
+  const record = await client.collection("projects").update(params.projectID, res_project);
   // return true;
   return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
 };
@@ -544,7 +544,7 @@ export const deleteProjectComponents = async (params: Project.ReqRemoveProjectCo
 // ---- USERS ----
 
 export const getUserList = async (params: User.ReqGetUserListParams) => {
-  let res = await client.records.getList("profiles", params.page, params.perPage, {
+  let res = await client.collection("profiles").getList(params.page, params.perPage, {
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? "" // Default expand all???
@@ -564,29 +564,29 @@ export const getUsersListForExport = async (params: User.ReqGetUserListForExport
 };
 
 export const deleteUser = async (params: User.ReqDeleteUserParams) => {
-  await client.records.delete("profiles", params.id);
+  await client.collection("profiles").delete(params.id);
 };
 
 export const postUserCreate = async (params: User.ReqCreateUserParams) => {
-  let record = await client.records.create("profiles", params);
+  let record = await client.collection("profiles").create(params);
   return { data: record } as unknown as APIdata<User.ResGetUserRecord>;
 };
 
 export const patchUserUpdate = async (params: User.ReqUpdateUserParams) => {
-  const record = await client.records.update("profiles", params.id, params);
+  const record = await client.collection("profiles").update(params.id, params);
   return { data: record } as unknown as APIdata<User.ResGetUserRecord>;
 };
 
 export const deleteUsers = async (params: User.ReqDeleteUsersParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.records.delete("profiles", id);
+    await client.collection("profiles").delete(id);
   }
   return true;
 };
 
 export const getUserEnum = async () => {
-  let [res, err] = await tryCatchAsync(() => client.records.getList("profiles", 1, 99999, { $autoCancel: false }));
+  let [res, err] = await tryCatchAsync(() => client.collection("profiles").getList(1, 99999, { $autoCancel: false }));
   if (err) {
     console.log("getCompEnum res err", res, err);
     // return false;
@@ -600,16 +600,16 @@ export const getUserEnum = async () => {
 // ---- SETTINGS/CONFIG ----
 
 export const getConfig = async (params: Config.ReqGetConfigParams) => {
-  let res = (await client.records.getList("config")) as unknown as ResList<Config.ResGetConfigRecord>;
+  let res = (await client.collection("config").getList()) as unknown as ResList<Config.ResGetConfigRecord>;
   let configRecord = res.items.find(record => record.category === params.category);
   return { data: configRecord?.value } as unknown as APIdata<ResList<Config.ResGetConfigRecord>>;
 };
 
 export const patchConfigUpdate = async (params: Config.ReqUpdateConfigParams) => {
-  let res = (await client.records.getList("config")) as unknown as ResList<Config.ResGetConfigRecord>;
+  let res = (await client.collection("config").getList()) as unknown as ResList<Config.ResGetConfigRecord>;
   let configRecord = res.items.find(record => record.category === params.category);
   if (!configRecord) return;
-  const record = await client.records.update("config", configRecord?.id, params);
+  const record = await client.collection("config").update("", configRecord?.id, params);
   return { data: record } as unknown as APIdata<Config.ResGetConfigRecord>;
 };
 

@@ -1,30 +1,30 @@
 <template>
-	<div class="header">
-		<div class="header-lf flx-center">
-			<CollapseIcon id="collapseIcon"></CollapseIcon>
-			<Breadcrumb id="breadcrumb" v-if="themeConfig.breadcrumb"></Breadcrumb>
-		</div>
-		<div class="header-ri flx-center">
-			<div class="header-icon">
-				<!-- About -->
-				<About id="about"></About>
-				<!-- Assembly size -->
-				<AssemblySize id="assemblySize"></AssemblySize>
-				<!-- Language -->
-				<!-- <Language id="language"></Language> -->
-				<!-- Theme -->
-				<Theme id="theme"></Theme>
-				<!-- Full screen -->
-				<Fullscreen id="fullscreen"></Fullscreen>
-				<!-- SearchMenu -->
-				<SearchMenu id="searchMenu"></SearchMenu>
-			</div>
-			<!-- User name -->
-			<span class="username">{{ userInfo?.profile.name }}</span>
-			<!-- Avatar -->
-			<Avatar></Avatar>
-		</div>
-	</div>
+  <div class="header">
+    <div class="header-lf flx-center">
+      <CollapseIcon id="collapseIcon"></CollapseIcon>
+      <Breadcrumb id="breadcrumb" v-if="themeConfig.breadcrumb"></Breadcrumb>
+    </div>
+    <div class="header-ri flx-center">
+      <div class="header-icon">
+        <!-- About -->
+        <About id="about"></About>
+        <!-- Assembly size -->
+        <AssemblySize id="assemblySize"></AssemblySize>
+        <!-- Language -->
+        <!-- <Language id="language"></Language> -->
+        <!-- Theme -->
+        <Theme id="theme"></Theme>
+        <!-- Full screen -->
+        <Fullscreen id="fullscreen"></Fullscreen>
+        <!-- SearchMenu -->
+        <SearchMenu id="searchMenu"></SearchMenu>
+      </div>
+      <!-- User name -->
+      <span class="username">{{ userInfo?.name }}</span>
+      <!-- Avatar -->
+      <Avatar></Avatar>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -36,7 +36,7 @@ export namespace Login {
   }
   export interface ResLogin {
     token: string;
-    user: object;
+    record: object;
   }
   export interface ResAuthButtons {
     [propName: string]: any;
@@ -51,9 +51,9 @@ export interface ResGetRecord {
   id: string;
   created: string;
   updated: string;
-  "@collectionId": string;
-  "@collectionName": string;
-  "@expand": object;
+  collectionId: string;
+  collectionName: string;
+  expand: object;
 }
 
 type spec = {

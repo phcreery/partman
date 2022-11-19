@@ -7,7 +7,6 @@ import (
 
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/tools/rest"
 )
 
 // REFERENCES:
@@ -85,7 +84,8 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent) {
 				if err != nil {
 					// handle error
 					fmt.Println(err)
-					return c.JSON(http.StatusUnauthorized, rest.NewBadRequestError("cant query records", nil))
+					// return c.JSON(http.StatusUnauthorized, rest.
+					return c.String(http.StatusBadRequest, "cant query records")
 				}
 				// add to total
 				totalComponents += stockInt
@@ -112,7 +112,8 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent) {
 						if err != nil {
 							// handle error
 							fmt.Println(err)
-							return c.JSON(http.StatusUnauthorized, rest.NewBadRequestError("cant query records", nil))
+							// return c.JSON(http.StatusUnauthorized, rest.NewBadRequestError("cant query records", nil))
+							return c.String(http.StatusBadRequest, "cant query records")
 						}
 						// add to total
 						total += stockInt

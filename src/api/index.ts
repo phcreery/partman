@@ -29,7 +29,7 @@ const config = {
   withCredentials: true
 };
 
-const client = new PocketBase(config.baseURL, "en-US");
+const client = new PocketBase(config.baseURL, undefined, "en-US");
 
 client.beforeSend = function (url, reqConfig) {
   console.log("before send", url, reqConfig);

@@ -13,7 +13,7 @@ type OctopartTokenRes =
   | { error: string };
 
 const getOctopartConfig = async () => {
-  let res = (await client.records.getList("config")) as unknown as ResList<Config.ResGetConfigRecord>;
+  let res = (await client.collection("config").getList()) as unknown as ResList<Config.ResGetConfigRecord>;
   let configRecord = res.items.find(record => record.category === "octopart");
   const id = configRecord?.value.id;
   const secret = configRecord?.value.secret;

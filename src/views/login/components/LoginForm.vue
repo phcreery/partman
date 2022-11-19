@@ -1,7 +1,7 @@
 <template>
   <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" size="large">
     <el-form-item prop="username">
-      <el-input v-model="loginForm.username" placeholder="Email">
+      <el-input v-model="loginForm.username" placeholder="Username/Email">
         <template #prefix>
           <el-icon class="el-input__icon"><user /></el-icon>
         </template>
@@ -74,7 +74,7 @@ const login = (formEl: FormInstance | undefined, asAdmin: boolean) => {
       // * Store token
       // globalStore.setToken(res.data!.access_token);
       globalStore.setToken(res.token);
-      globalStore.setUserInfo(res.user);
+      globalStore.setUserInfo(res.record);
       // * After the login is successful, remove the Menulist and TABS data of the previous account
       menuStore.setMenuList([]);
       tabStore.closeMultipleTab();

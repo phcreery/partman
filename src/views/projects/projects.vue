@@ -158,6 +158,7 @@ const columns: Partial<ColumnProps>[] = [
   {
     prop: "description",
     label: "Description",
+    align: "left",
     search: true,
     searchType: "text"
   },

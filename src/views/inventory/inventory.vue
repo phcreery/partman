@@ -99,6 +99,10 @@ const columns: Partial<ColumnProps>[] = [
     prop: "category",
     label: "Category",
     align: "left",
+    sortable: true,
+    search: true,
+    // searchType: "select",
+    searchType: "treeSelect",
     // values that go into the treeSelect props
     searchProps: {
       value: "id",
@@ -106,10 +110,6 @@ const columns: Partial<ColumnProps>[] = [
       props: { value: "id", label: "name", emitPath: false },
       checkStrictly: true
     },
-    sortable: true,
-    search: true,
-    // searchType: "select",
-    searchType: "treeSelect",
     // renderText: (data: Component.ResGetComponentRecord) => data["@expand"].category.name,
     enumFunction: getComponentCategoryEnum,
     enumTreeFunction: getComponentCategoryEnumTree,
@@ -119,6 +119,7 @@ const columns: Partial<ColumnProps>[] = [
     prop: "name",
     label: "Name",
     width: 260,
+    align: "left",
     sortable: true,
     renderText: (data: Component.ResGetComponentRecord) => `${data.manufacturer} - ${data.mpn}`
     // isShow: false
@@ -147,6 +148,7 @@ const columns: Partial<ColumnProps>[] = [
     prop: "description",
     label: "Description",
     // width: 220,
+    align: "left",
     search: true,
     searchType: "text"
   },
@@ -190,6 +192,7 @@ const columns: Partial<ColumnProps>[] = [
     prop: "storage_location",
     label: "Location",
     width: 160,
+    align: "left",
     sortable: true,
     search: true,
     // values that go into the treeSelect props

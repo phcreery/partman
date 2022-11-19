@@ -22,7 +22,7 @@ console.log("import.meta.env.VITE_API_URL", import.meta.env.VITE_API_URL);
 console.log("window.location.origin", window.location.origin);
 
 const config = {
-  // The default address request address can be modified in the file of the beginning of .env
+  // The default address request address can be modified in the .env file
   // baseURL: import.meta.env.VITE_API_URL as string,
   baseURL: window.location.origin,
   // Set timeout time (10s)

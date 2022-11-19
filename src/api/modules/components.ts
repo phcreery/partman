@@ -669,6 +669,39 @@ export const getDashboardInfo = async () => {
   return { data: dashboardInfo } as unknown as APIdata<DashboardInfo>;
 };
 
+export const getDashboardInfoV2 = async () => {
+  type DashboardInfo = {
+    uniqueComponents: number;
+    totalComponents: number;
+    totalProjects: number;
+    totalStorageLocations: number;
+    components: Component.ResGetComponentRecord[];
+    storageLocations: Storage.ResGetStorageRecord[];
+    storageLocationsTree: Storage.ResGetStorageRecordTree[];
+  };
+
+  let res = (await client.send("/api/dashboard/info", {})) as unknown as APIdata<DashboardInfo>;
+  let storageLocationsTree = await getStorageLocationPathEnumTree();
+
+  let components = res.data.components;
+
+  // iterate recursively and find each elements where child = [] and set value: 1
+  async function iter(o: any) {
+    if (o.children && o.children.length !== 0) {
+      o.children.forEach((c: any) => iter(c));
+    } else {
+      // set value to component qty
+      o.value = components.filter((component: Component.ResGetComponentRecord) => component.storage_location === o.id).length;
+    }
+  }
+  for (const storageLocation of storageLocationsTree.data) {
+    await iter(storageLocation);
+  }
+  res.data.storageLocationsTree = storageLocationsTree.data;
+  console.log({ data: res.data });
+  return { data: res.data } as unknown as APIdata<DashboardInfo>;
+};
+
 // export const getDashboardComponentSupplyDemandRatio = async () => {
 //   let components = await getComponentEnum();
 //   let data = components.data.map((component: Component.ResGetComponentRecord) => {

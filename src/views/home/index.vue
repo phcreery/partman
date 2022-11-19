@@ -24,14 +24,13 @@
           Categories: <b>{{ qty.total_categories }}</b>
         </el-card>
       </el-col> -->
-    </el-row>
-    <el-row :gutter="12">
       <el-col :span="6">
         <el-card shadow="hover">
           Projects: <b>{{ qty.total_projects }}</b></el-card
         >
       </el-col>
     </el-row>
+    <el-row :gutter="12"> </el-row>
 
     <el-row :gutter="12">
       <el-col :span="12">
@@ -48,13 +47,13 @@ import { ref, reactive, onMounted } from "vue";
 import * as echarts from "echarts";
 import echartsThemeWonderland from "./echarts-theme-wonderland.json";
 // import { Component, ComponentCategory, Footprint, Storage, StorageCategory } from "@/api/interface";
-import { getDashboardInfo } from "@/api/modules/components";
+import { getDashboardInfo, getDashboardInfoV2 } from "@/api/modules/components";
 
 const componentStorageTree = ref(null);
 
 const qty = ref({
-  unique_components: 0,
   total_components: 0,
+  unique_components: 0,
   total_projects: 0,
   // total_categories: 0,
   total_storage_locations: 0
@@ -98,11 +97,16 @@ const storageLocationTreeOption = {
 echarts.registerTheme("wonderland", echartsThemeWonderland);
 
 const getQty = async () => {
-  const res = await getDashboardInfo();
-  qty.value = res.data.component_qty;
-  // console.log(qty);
-  storageLocationTreeData.value = res.data.storage_location_tree;
-  // console.log(storageLocationTreeData);
+  const res = await getDashboardInfoV2();
+  console.log(res, JSON.stringify(res));
+  // qty.value = res.data.component_qty;
+  qty.value.total_components = Number(res.data.totalComponents);
+  qty.value.unique_components = res.data.uniqueComponents;
+  qty.value.total_projects = res.data.totalProjects;
+  // qty.value.total_categories = res.data.total_categories;
+  qty.value.total_storage_locations = res.data.totalStorageLocations;
+
+  storageLocationTreeData.value = res.data.storageLocationsTree;
 };
 
 onMounted(async () => {

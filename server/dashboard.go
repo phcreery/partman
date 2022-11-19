@@ -7,7 +7,6 @@ import (
 
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/models"
 	"github.com/pocketbase/pocketbase/tools/rest"
 )
 
@@ -39,17 +38,22 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent) {
 			// extend the models.Record{} type with additional fields of stock
 			type ComponentRecord struct {
 				// models.Record
-				Id		  string
-				// MPN string `json:"mpn"`
-				// Description string `json:"description"`
-				Stock string `json:"stock"`
-				// Comment string `json:"comment"`
+				Id		  				string `json:"id"`
+				// MPN 					string `json:"mpn"`
+				// Description 			string `json:"description"`
+				Stock 					string `json:"stock"`
+				// Comment 				string `json:"comment"`'
+				Storage_location 		string `json:"storage_location"`
+
 			}
 			type ProjectRecord struct {
-				models.Record
+				// models.Record
+				Id		  				string `json:"id"`
 			}
 			type StorageLocationRecord struct {
-				models.Record
+				// models.Record
+				Id		  				string `json:"id"`
+				Number_of_components 	string `json:"number_of_components"`
 			}
 
 			componentsRecords := []ComponentRecord{}
@@ -59,7 +63,7 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent) {
 			db := app.Dao().DB()
 
 			db.
-			NewQuery("SELECT `id`, `stock` FROM `components`").
+			NewQuery("SELECT `id`, `stock`, `storage_location` FROM `components`").
 			All(&componentsRecords)
 
 			db.
@@ -86,7 +90,42 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent) {
 				// add to total
 				totalComponents += stockInt
 			}
-							
+
+			// loop though all storage locations and add up all records whose record.Storage_location field matches the storage location record id
+			// and set the storage location record.Number_of_components field to the total
+			for _, storageLocationRecord := range storageLocationRecords {
+				// read storage location record id
+				storageLocationRecordId := storageLocationRecord.Id
+				// set total to 0
+				total := 0
+				// loop through all components records
+				for _, componentRecord := range componentsRecords {
+					// read component record storage location
+					componentRecordStorageLocation := componentRecord.Storage_location
+					// if component record storage location matches storage location record id
+					if componentRecordStorageLocation == storageLocationRecordId {
+						// read component record stock
+						stock := componentRecord.Stock
+						// convert to int
+						stockInt, err := strconv.Atoi(stock)
+						// stockInt := stock.(int)
+						if err != nil {
+							// handle error
+							fmt.Println(err)
+							return c.JSON(http.StatusUnauthorized, rest.NewBadRequestError("cant query records", nil))
+						}
+						// add to total
+						total += stockInt
+					}
+				}
+				// find index of storage location record in storage location records and number of components to total
+				for i, storageLocationRecord := range storageLocationRecords {
+					if storageLocationRecord.Id == storageLocationRecordId {
+						storageLocationRecords[i].Number_of_components = strconv.Itoa(total)
+					}
+				}
+			}
+
 			// create type DashboardInfo struct
 			type DashboardInfo struct {
 				UniqueComponents int `json:"uniqueComponents"`
@@ -95,6 +134,7 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent) {
 				TotalStorageLocations int `json:"totalStorageLocations"`
 				// StorageLocationTree []models.StorageLocation `json:"storageLocationTree"`
 				Components []ComponentRecord `json:"components"`
+				StorageLocations []StorageLocationRecord `json:"storageLocations"`
 			}
 
 			// get dashboard info
@@ -105,13 +145,15 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent) {
 				TotalStorageLocations: len(storageLocationRecords),
 				// StorageLocationTree: storageLocationTree,
 				Components: componentsRecords,
+				StorageLocations: storageLocationRecords,
 			}
 
 			// print dashboardInfo
 			fmt.Println(dashboardInfo)
-			
+
 			// obj := map[string]interface{}{"message": "Hello world!"}
-			return c.JSON(http.StatusOK, dashboardInfo)
+			apiData := map[string]interface{}{"data": dashboardInfo}
+			return c.JSON(http.StatusOK, apiData)
 		},
 		Middlewares: []echo.MiddlewareFunc{
 			// apis.RequireAdminOrUserAuth(),

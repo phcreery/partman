@@ -47,7 +47,7 @@ import { ref, reactive, onMounted } from "vue";
 import * as echarts from "echarts";
 import echartsThemeWonderland from "./echarts-theme-wonderland.json";
 // import { Component, ComponentCategory, Footprint, Storage, StorageCategory } from "@/api/interface";
-import { getDashboardInfo, getDashboardInfoV2 } from "@/api/modules/components";
+import { getDashboardInfo } from "@/api/modules/components";
 
 const componentStorageTree = ref(null);
 
@@ -97,7 +97,7 @@ const storageLocationTreeOption = {
 echarts.registerTheme("wonderland", echartsThemeWonderland);
 
 const getQty = async () => {
-  const res = await getDashboardInfoV2();
+  const res = await getDashboardInfo();
   // qty.value = res.data.component_qty;
   qty.value.total_components = Number(res.data.totalComponents);
   qty.value.unique_components = res.data.uniqueComponents;

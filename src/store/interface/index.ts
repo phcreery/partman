@@ -4,19 +4,7 @@ export type PBUserInfo = {
   updated: string;
   email: string;
   emailVisibility: boolean;
-  // lastResetSentAt: string;
   verified: boolean;
-  // lastVerificationSentAt: string;
-  // profile: {
-  // 	// "@collectionId": string;
-  // 	// "@collectionName": string;
-  // 	avatar: string | null;
-  // 	created: string;
-  // 	id: string;
-  // 	name: string | null;
-  // 	updated: string;
-  // 	userId: string;
-  // };
   name: string | null;
   username: string | null;
   avatar: string | null;

@@ -58,15 +58,7 @@ func main() {
 		return nil
 	})
 
-	// app.OnRecordBeforeCreateRequest().Add(func(e *core.RecordEvent) error {
-	// 	server.HookComponentLogs(app, e)
-	// })
-
-	app.OnModelBeforeCreate().Add(func(e *core.ModelEvent) error {
-        log.Println(e.Model.TableName())
-		server.HookComponentLogs(app, e)
-        return nil
-    })
+	server.ComponentLogsHook(app)
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)

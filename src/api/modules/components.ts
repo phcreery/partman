@@ -103,6 +103,7 @@ export const deleteComponents = async (params: Component.ReqDeleteComponentsPara
 };
 
 export const getComponentEnum = async () => {
+  // TODO: use pb.collection('example').getFullList();
   let [res, err] = await tryCatchAsync(() => client.collection("components").getList(1, 99999, { $autoCancel: false }));
   if (err) {
     console.log("getCompEnum res err", res, err);
@@ -616,60 +617,6 @@ export const patchConfigUpdate = async (params: Config.ReqUpdateConfigParams) =>
 // ---- DASHBOARD ----
 
 export const getDashboardInfo = async () => {
-  // TODO: make this server side
-  type ComponentQty = {
-    unique_components: number;
-    total_components: number;
-    total_projects: number;
-    // total_categories: number;
-    total_storage_locations: number;
-  };
-  type DashboardInfo = {
-    component_qty: ComponentQty;
-    storage_location_tree: Storage.ResGetStorageRecordTree[];
-  };
-
-  let components = await getComponentEnum();
-  let projects = await getProjectsEnum();
-  // let categories = await getComponentCategoryEnum();
-  let storage_locations = await getComponentStorageLocationEnum();
-  let storageLocationsTree = await getStorageLocationPathEnumTree();
-
-  let qty: ComponentQty = {
-    unique_components: components.data.length,
-    total_components: 0,
-    total_projects: projects.data.length,
-    // total_categories: categories.data.length,
-    total_storage_locations: storage_locations.data.length
-  };
-  components.data.forEach((component: Component.ResGetComponentRecord) => {
-    qty.total_components += component.stock;
-  });
-
-  // iterate recursively and find each elements where child = [] and set value: 1
-  async function iter(o: any) {
-    if (o.children && o.children.length !== 0) {
-      o.children.forEach((c: any) => iter(c));
-    } else {
-      // set value to component qty
-      o.value = components.data.filter(
-        (component: Component.ResGetComponentRecord) => component.storage_location === o.id
-      ).length;
-    }
-  }
-  for (const storageLocation of storageLocationsTree.data) {
-    await iter(storageLocation);
-  }
-
-  let dashboardInfo: DashboardInfo = {
-    component_qty: qty,
-    storage_location_tree: storageLocationsTree.data
-  };
-
-  return { data: dashboardInfo } as unknown as APIdata<DashboardInfo>;
-};
-
-export const getDashboardInfoV2 = async () => {
   type DashboardInfo = {
     uniqueComponents: number;
     totalComponents: number;

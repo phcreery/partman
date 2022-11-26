@@ -11,6 +11,15 @@ import (
 // https://pocketbase.io/docs/custom-models/
 // https://pocketbase.io/docs/record-methods/
 
+func getRecordJSON(record *models.Record) (string, error) {
+	// convert record to JSON
+	b, err := record.MarshalJSON()
+	if err != nil {
+		return "", err
+	}
+	return string(b), err
+}
+
 // function to look up component and return JSON
 func getComponentValue(app core.App, id string) (string, error) {
 	// collection, err := app.Dao().FindCollectionByNameOrId("components")
@@ -23,59 +32,70 @@ func getComponentValue(app core.App, id string) (string, error) {
 		return "", err
 	}
 
-	// convert record to JSON
-	b, err := record.MarshalJSON()
-	if err != nil {
-		return "", err
-	}
-	return string(b), err
+	return getRecordJSON(record)
 }
 
 func ComponentLogsHook(app core.App) {
+	// https://pocketbase.io/docs/hooks/
+	createComponentLogEntry := func(record *models.Record, eventType string) error {
+		if record.Collection().Name == "components" {
+			// print id
+			fmt.Println(record.Id)
 
-
-	createComponentLogEntry := func(e *core.ModelEvent) error {
-		if e.Model.TableName() == "components" {
+			description := ""
+			oldComponentValue := ""
+			newComponentValue := ""
+			if eventType == "create" {
+				description = "Component created"
+				newComponentValue, _ = getRecordJSON(record)
+			} else if eventType == "update" {
+				description = "Component updated"
+				newComponentValue, _ = getRecordJSON(record)
+				oldComponentValue, _ = getComponentValue(app, record.Id)
+			} else if eventType == "delete" {
+				description = "Component deleted"
+				oldComponentValue, _ = getComponentValue(app, record.Id)
+			}
 
 			collection, err := app.Dao().FindCollectionByNameOrId("component_log")
 			if err != nil {
-				// log error
-				fmt.Println("error finding collection", err)
-				// return err
+				fmt.Println("error finding collection 'component_log'", err)
+				return err
 			}
 
-			record := models.NewRecord(collection)
+			newLogRecord := models.NewRecord(collection)
 
-			// 	// with data validation
-			form := forms.NewRecordUpsert(app, record)
+			// with data validation
+			form := forms.NewRecordUpsert(app, newLogRecord)
 
-			newComponentValue, err := getComponentValue(app, e.Model.GetId())
-			if err != nil {
-				// log error
-				fmt.Println("error getting component value", err)
-				// return err
-			}
-
-			// or form.LoadRequest(r, "")
 			form.LoadData(map[string]any{
-				"component": e.Model.GetId(),
-				"description": "someone has created a new component",
+				"component": record.Id,
+				"description": description,
 				"new_value": newComponentValue,
+				"old_value": oldComponentValue,
 			})
 
 			// validate and submit (internally it calls app.Dao().SaveRecord(record) in a transaction)
 			if err := form.Submit(); err != nil {
-				// print error
-				fmt.Println("submit error", err)
-				// return err
+				fmt.Println("create log entry error", err)
+				return err
 			}
 		}
 		return nil
 	}
 
+	// app.OnModelAfterCreate().Add(createComponentLogEntry)
+	// app.OnModelAfterUpdate().Add(createComponentLogEntry)
+	// app.OnModelAfterDelete().Add(createComponentLogEntry)
 
-	app.OnModelAfterCreate().Add(createComponentLogEntry)
-	app.OnModelAfterUpdate().Add(createComponentLogEntry)
-	app.OnModelAfterDelete().Add(createComponentLogEntry)
+	app.OnRecordAfterCreateRequest().Add(func(e *core.RecordCreateEvent) error {
+		return createComponentLogEntry(e.Record, "create")
+	})
+	app.OnRecordBeforeUpdateRequest().Add(func(e *core.RecordUpdateEvent) error {
+		return createComponentLogEntry(e.Record, "update")
+	})
+	app.OnRecordBeforeDeleteRequest().Add(func(e *core.RecordDeleteEvent) error {
+		return createComponentLogEntry(e.Record, "delete")
+	})
 
 }

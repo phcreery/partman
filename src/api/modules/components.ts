@@ -12,6 +12,7 @@ import {
   Storage,
   StorageCategory,
   Project,
+  ComponentLog,
   User,
   Config
 } from "@/api/interface/index";
@@ -21,7 +22,7 @@ function that converts JSON object of parameters to a consumable PocketBase 'fil
 ex. filter: { id: 'asdf', footprint: {0: '0806', 1: '0604'}} -> "id='asdf' && (footprint='0806' || footprint='0604')"
 */
 const filterToPBString = (filter: { [propName: string]: any }) => {
-  // console.log("filter", filter);
+  console.log("filter", filter);
   let filterParams = Object.keys(filter);
   let sarr: string[] = []; // string array
   for (const param of filterParams) {
@@ -172,6 +173,11 @@ export const postComponentCreateBatch_Client = async (fd: FormData) => {
       }
     }
   }
+};
+
+export const getComponent = async (id: string) => {
+  let res = await client.collection("components").getOne(id);
+  return {data: res} as unknown as APIdata<Component.ResGetComponentRecord>
 };
 
 // ---- COMPONENT CATEGORIES ----
@@ -540,6 +546,17 @@ export const deleteProjectComponents = async (params: Project.ReqRemoveProjectCo
   const record = await client.collection("projects").update(params.projectID, res_project);
   // return true;
   return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
+};
+
+// ---- COMPONENT LOGS ----
+
+export const getComponentLogsList = async (params: ComponentLog.ReqGetComponentLogListParams) => {
+  let res = (await client.collection("component_log").getList(params.page, params.perPage, {
+    filter: params.filter ? filterToPBString(params.filter) : "",
+    sort: params.sort ?? "",
+    expand: params.expand ?? ""
+  })) as unknown as ResList<ComponentLog.ResGetComponentLogRecord>;
+  return { data: res } as unknown as APIdata<ResList<ComponentLog.ResGetComponentLogRecord>>;
 };
 
 // ---- USERS ----

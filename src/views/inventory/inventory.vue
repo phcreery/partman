@@ -45,7 +45,7 @@
 
 <script setup lang="tsx" name="useComponent">
 import { ref, reactive } from "vue";
-import { ResList, Component } from "@/api/interface";
+import { CirclePlus, Delete, EditPen, Download, Upload, DCaret } from "@element-plus/icons-vue";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useDownload } from "@/hooks/useDownload";
@@ -54,7 +54,7 @@ import { JSON2CSV } from "@/hooks/useDataTransform";
 import ProTable from "@/components/ProTable/index.vue";
 import ImportExcel from "@/components/ImportExcel/index.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
-import { CirclePlus, Delete, EditPen, Download, Upload, DCaret } from "@element-plus/icons-vue";
+import { ResList, Component } from "@/api/interface";
 import {
   getComponentList,
   getComponentsListForExport,

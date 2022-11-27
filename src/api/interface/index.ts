@@ -242,6 +242,27 @@ export namespace Project {
   }
 }
 
+export namespace ComponentLog {
+  type ComponentLogColumns = {
+    component: string;
+    description: string;
+    new_value: string;
+    old_value: string;
+  };
+  // Requests
+  export type ReqGetComponentLogListParams = ReqList;
+  export type ReqCreateComponentLogParams = ComponentLogColumns;
+  export interface ReqUpdateComponentLogParams extends ReqRecord, ComponentLogColumns {}
+  export type ReqDeleteStorageCategoriesParams = { ids: string[] };
+  // Responses
+  export interface ResGetComponentLogRecord extends ResGetRecord, ComponentLogColumns {
+    _fullName: string;
+  }
+  export interface ResGetComponentLogRecordTree extends ResGetComponentLogRecord {
+    children: ResGetComponentLogRecordTree;
+  }
+}
+
 export namespace User {
   export type UserColumns = {
     name: string;

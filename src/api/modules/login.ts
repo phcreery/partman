@@ -146,7 +146,7 @@ export const getMenuList = () => {
             title: "General",
             path: "/settings/index",
             icon: "setting"
-          }
+          },
           // {
           //   title: "Export",
           //   path: "/404",
@@ -157,6 +157,11 @@ export const getMenuList = () => {
           //   path: "/404",
           //   icon: "Upload"
           // }
+          {
+            title: "Logs",
+            path: "/settings/logs",
+            icon: "clock"
+          }
         ]
       }
     ]

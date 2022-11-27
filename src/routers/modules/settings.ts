@@ -18,6 +18,17 @@ const homeRouter: Array<RouteRecordRaw> = [
           title: "Settings",
           key: "settings"
         }
+      },
+      {
+        path: "logs",
+        name: "logs",
+        component: () => import("@/views/settings/logs.vue"),
+        meta: {
+          keepAlive: true,
+          requiresAuth: true,
+          title: "Logs",
+          key: "logs"
+        }
       }
     ]
   }

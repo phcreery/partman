@@ -26,11 +26,12 @@
       </template>
       <!-- Expand -->
       <template #expand="scope">
-        {{ scope.row }}
+        <!-- {{ scope.row }} -->
+        <ComponentDetails :title="scope.row.name" :isView="true" :rowData="scope.row"></ComponentDetails>
       </template>
       <template #stock="scope">
         {{ scope.row.stock }}
-        <el-button type="primary" link :icon="DCaret" @click="openDrawer('Stock', scope.row)"></el-button>
+        <el-button type="primary" link :icon="DCaret" @click="openStockDrawer('Stock', scope.row)"></el-button>
       </template>
 
       <!-- Table operation -->
@@ -39,7 +40,8 @@
       </template>
     </ProTable>
     <ComponentDrawer ref="drawerRef"></ComponentDrawer>
-    <ImportExcel ref="dialogRef"></ImportExcel>
+    <ComponentStockEdit ref="drawerRefComponentStockEdit"></ComponentStockEdit>
+    <ImportExcel ref="dialogRefImport"></ImportExcel>
   </div>
 </template>
 
@@ -54,6 +56,8 @@ import { JSON2CSV } from "@/hooks/useDataTransform";
 import ProTable from "@/components/ProTable/index.vue";
 import ImportExcel from "@/components/ImportExcel/index.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
+import ComponentStockEdit from "@/views/inventory/components/ComponentStockEdit.vue";
+import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
 import { ResList, Component } from "@/api/interface";
 import {
   getComponentList,
@@ -117,10 +121,10 @@ const columns: Partial<ColumnProps>[] = [
   },
   {
     prop: "name",
-    label: "Name",
+    label: "Display Name",
     width: 260,
     align: "left",
-    sortable: true,
+    sortable: false,
     renderText: (data: Component.ResGetComponentRecord) => `${data.manufacturer} - ${data.mpn}`
     // isShow: false
   },
@@ -137,6 +141,26 @@ const columns: Partial<ColumnProps>[] = [
   {
     prop: "mpn",
     label: "MPN",
+    width: 130,
+    sortable: true,
+    search: true,
+    searchType: "text",
+    // searchProps: { disabled: true },
+    isShow: false
+  },
+  {
+    prop: "supplier",
+    label: "Supplier",
+    width: 130,
+    sortable: true,
+    search: true,
+    searchType: "text",
+    // searchProps: { disabled: true },
+    isShow: false
+  },
+  {
+    prop: "spn",
+    label: "SPN",
     width: 130,
     sortable: true,
     search: true,
@@ -284,7 +308,7 @@ const downloadFile = async () => {
 interface DialogExpose {
   acceptParams: (params: any) => void;
 }
-const dialogRef = ref<DialogExpose>();
+const dialogRefImport = ref<DialogExpose>();
 const batchAdd = () => {
   let columns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "");
   // remove specific columns from array
@@ -297,7 +321,7 @@ const batchAdd = () => {
     importApi: postComponentCreateBatch_Client,
     getTableList: proTable.value.refresh
   };
-  dialogRef.value!.acceptParams(params);
+  dialogRefImport.value!.acceptParams(params);
 };
 
 // Open the drawer (new, view, edit)
@@ -321,5 +345,19 @@ const openDrawer = (title: string, rowData: Partial<Component.ResGetComponentRec
     updateTable: proTable.value.refresh
   };
   drawerRef.value!.acceptParams(params);
+};
+
+// Open the stock drawer
+const drawerRefComponentStockEdit = ref<DrawerExpose>();
+const openStockDrawer = (title: string, rowData: Partial<Component.ResGetComponentRecord> = {}) => {
+  let params = {
+    title: `${rowData!.manufacturer} - ${rowData!.mpn}`,
+    rowData: { ...rowData },
+    isView: false,
+    addStock: 0,
+    apiUrl: patchComponentUpdate,
+    updateTable: proTable.value.refresh
+  };
+  drawerRefComponentStockEdit.value!.acceptParams(params);
 };
 </script>

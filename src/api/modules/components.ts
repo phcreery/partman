@@ -143,7 +143,9 @@ export const postComponentCreateBatch_Client = async (fd: FormData) => {
           storage_location: "", // values[6],
           comment: "",
           footprint: "",
-          specs: []
+          specs: [],
+          supplier: "",
+          spn: ""
         };
         // exit if no mpn
         if (!component.mpn) continue;
@@ -177,7 +179,7 @@ export const postComponentCreateBatch_Client = async (fd: FormData) => {
 
 export const getComponent = async (id: string) => {
   let res = await client.collection("components").getOne(id);
-  return {data: res} as unknown as APIdata<Component.ResGetComponentRecord>
+  return { data: res } as unknown as APIdata<Component.ResGetComponentRecord>;
 };
 
 // ---- COMPONENT CATEGORIES ----

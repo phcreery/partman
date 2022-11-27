@@ -136,4 +136,4 @@ go build
 ### Config
 
 - Database Admin: admin@mail.com : partmanpass
-- Default User: partman@mail.com : partmanpass
+- Default User: partman : partman@mail.com : partmanpass

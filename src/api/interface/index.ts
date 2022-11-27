@@ -69,14 +69,16 @@ type spec = {
 export namespace Component {
   export type ComponentColumns = {
     mpn: string;
+    manufacturer: string;
     description: string;
     stock: number;
     comment: string;
     storage_location: string;
     category: string;
     footprint: string;
+    supplier: string;
+    spn: string;
     ipn: string;
-    manufacturer: string;
     specs: spec[];
   };
   // Requests

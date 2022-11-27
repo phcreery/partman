@@ -26,9 +26,9 @@
           </template>
         </el-upload>
       </el-form-item>
-      <el-form-item label="Data coverage :">
+      <!-- <el-form-item label="Data coverage :">
         <el-switch v-model="isCover"> </el-switch>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
   </el-dialog>
 </template>

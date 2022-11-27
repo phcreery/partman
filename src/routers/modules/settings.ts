@@ -6,10 +6,10 @@ const homeRouter: Array<RouteRecordRaw> = [
   {
     path: "/settings",
     component: Layout,
-    redirect: "/settings/index",
+    redirect: "/settings/general",
     children: [
       {
-        path: "index",
+        path: "general",
         name: "settings",
         component: () => import("@/views/settings/general.vue"),
         meta: {

@@ -144,7 +144,7 @@ export const getMenuList = () => {
           // },
           {
             title: "General",
-            path: "/settings/index",
+            path: "/settings/general",
             icon: "setting"
           },
           // {

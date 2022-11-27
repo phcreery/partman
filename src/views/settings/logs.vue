@@ -77,9 +77,11 @@ const columns: Partial<ColumnProps>[] = [
   { type: "expand", label: "" },
   {
     prop: "component",
-    label: "Component",
+    label: "Component ID",
     width: 260,
     align: "left",
+    search: true,
+    searchType: "text",
     sortable: false
     // renderText: (data: Component.ResGetComponentRecord) => `${data.manufacturer} - ${data.mpn}`
     // isShow: false
@@ -105,19 +107,19 @@ const columns: Partial<ColumnProps>[] = [
     // searchInitParam: ["2000-09-30 00:00:00", "2042-09-20 23:59:59"],
     isShow: true
   },
-  {
-    prop: "updated",
-    label: "Updated",
-    width: 200,
-    sortable: true,
-    search: true,
-    searchType: "datetimerange",
-    searchProps: {
-      //   disabledDate: (time: Date) => time.getTime() < Date.now() - 8.64e7
-    },
-    // searchInitParam: ["2000-09-30 00:00:00", "2042-09-20 23:59:59"],
-    isShow: false
-  },
+  // {
+  //   prop: "updated",
+  //   label: "Updated",
+  //   width: 200,
+  //   sortable: true,
+  //   search: true,
+  //   searchType: "datetimerange",
+  //   searchProps: {
+  //     //   disabledDate: (time: Date) => time.getTime() < Date.now() - 8.64e7
+  //   },
+  //   // searchInitParam: ["2000-09-30 00:00:00", "2042-09-20 23:59:59"],
+  //   isShow: false
+  // },
   {
     prop: "action",
     label: "Action",

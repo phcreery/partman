@@ -48,6 +48,7 @@ import { ResList, Component, ComponentLog } from "@/api/interface";
 import {
   getComponent,
   getComponentList,
+  getComponentEnum,
   postComponentCreate,
   patchComponentUpdate,
   getComponentLogsList
@@ -78,10 +79,22 @@ const columns: Partial<ColumnProps>[] = [
   {
     prop: "component",
     label: "Component ID",
+    // width: 260,
+    align: "left",
+    search: true,
+    searchType: "text",
+    sortable: false
+    // isShow: false
+  },
+  {
+    prop: "component",
+    label: "Component MPN",
     width: 260,
     align: "left",
     search: true,
     searchType: "text",
+    enumFunction: getComponentEnum,
+    searchProps: { value: "id", label: "mpn" },
     sortable: false
     // renderText: (data: Component.ResGetComponentRecord) => `${data.manufacturer} - ${data.mpn}`
     // isShow: false
@@ -96,7 +109,7 @@ const columns: Partial<ColumnProps>[] = [
   },
   {
     prop: "created",
-    label: "Created",
+    label: "Timestamp",
     width: 200,
     sortable: true,
     search: true,

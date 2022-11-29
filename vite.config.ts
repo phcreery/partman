@@ -28,6 +28,10 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         json2csv: "json2csv/dist/json2csv.umd.js"
       }
     },
+    // variables
+    define: {
+      APP_VERSION: JSON.stringify(process.env.npm_package_version)
+    },
     // global css
     css: {
       preprocessorOptions: {

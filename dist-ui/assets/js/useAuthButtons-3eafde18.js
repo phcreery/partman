@@ -1,1 +1,0 @@
-import{r as u,a1 as s,t as a,a2 as r}from"./index-39a2cc13.js";const h=()=>{const t=u(""),e=s();t.value=e.meta.key;const o=a(()=>r().authButtonsObj[t.value]||{});return{nowKey:t,BUTTONS:o}};export{h as u};

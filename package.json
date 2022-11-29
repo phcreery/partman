@@ -12,13 +12,8 @@
     "build:client:pro": "vue-tsc --noEmit && vite build --mode production",
     "build:server": "cross-env CGO_ENABLED=0 go build",
     "build:server:all": "goreleaser release --rm-dist --snapshot",
-    "lint:eslint": "eslint --fix --ext .js,.ts,.vue ./src",
-    "lint:prettier": "prettier --write --loglevel warn \"src/**/*.{js,ts,json,tsx,css,less,scss,vue,html,md}\"",
-    "lint:stylelint": "stylelint --cache --fix \"**/*.{vue,less,postcss,css,scss}\" --cache --cache-location node_modules/.cache/stylelint/",
-    "lint:lint-staged": "lint-staged",
     "release:build": "vue-tsc --noEmit && vite build --mode production && goreleaser release --rm-dist --snapshot",
     "release:publish": "standard-version",
-    "zip": "zip-build .builds release",
     "commit": "git pull && git add -A && git-cz && git push --follow-tags"
   },
   "dependencies": {

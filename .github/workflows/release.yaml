@@ -3,7 +3,8 @@ name: basebuild
 on:
   # pull_request:
   # push:
-  on: workflow_dispatch
+  on:
+    workflow_dispatch:
 
 jobs:
   goreleaser:

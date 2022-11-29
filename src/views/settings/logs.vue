@@ -26,7 +26,8 @@
       </template>
       <!-- Expand -->
       <template #expand="scope">
-        {{ scope.row }}
+        <!-- {{ scope.row }} -->
+        <CompareComponentDetails :componentA="scope.row.old_value" :componentB="scope.row.new_value" :isView="true" />
       </template>
       <!-- Table operation -->
       <template #action="scope">
@@ -44,6 +45,7 @@ import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import ProTable from "@/components/ProTable/index.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
+import CompareComponentDetails from "@/views/settings/components/CompareComponentDetails.vue";
 import { ResList, Component, ComponentLog } from "@/api/interface";
 import {
   getComponent,

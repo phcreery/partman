@@ -12,8 +12,8 @@ import (
 	"phcreery/partman/server"
 )
 
-//go:embed all:dist-ui
-//go:embed dist-ui/*
+// go:embed all:dist-ui
+// go:embed dist-ui/*
 var distDir embed.FS
 
 // DistDirFS contains the embedded dist directory files (without the "dist" prefix)

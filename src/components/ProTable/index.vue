@@ -188,17 +188,7 @@ const { tableData, pageable, searchParam, searchInitParam, getTableList, search,
 watch(
   () => props.initParam,
   () => {
-    console.log("initParam changed", props.initParam);
-    // getTableList();
     refresh();
-  },
-  { deep: true }
-);
-
-watch(
-  () => props.pagination,
-  () => {
-    console.log("pagination changed", props.pagination);
   },
   { deep: true }
 );

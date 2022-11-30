@@ -188,7 +188,8 @@ const { tableData, pageable, searchParam, searchInitParam, getTableList, search,
 watch(
   () => props.initParam,
   () => {
-    refresh();
+    reset();
+    // refresh();
   },
   { deep: true }
 );

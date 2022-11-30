@@ -102,7 +102,6 @@ const proTree = ref();
 // If the table needs to initialize the request parameter, it will be directly defined to the propable (each request will automatically bring the parameter every time, and it will always be brought to
 const initParam = reactive<Partial<Storage.ReqGetStorageListParams>>({
   expand: "category"
-  // filter: { name: undefined, category: undefined, description: undefined }
 });
 
 const initParamCategory = reactive({});

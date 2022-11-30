@@ -4,6 +4,7 @@ import { nestedObjectAssign } from "@/utils/util";
 
 import {
   APIdata,
+  ReqList,
   ResList,
   Component,
   ComponentCategory,
@@ -16,6 +17,16 @@ import {
   User,
   Config
 } from "@/api/interface/index";
+
+const emptyData = (params: ReqList): ResList<null> => {
+  return {
+    page: params.page,
+    perPage: params.perPage,
+    totalPages: 0,
+    totalItems: 0,
+    items: []
+  };
+};
 
 /* 
 function that converts JSON object of parameters to a consumable PocketBase 'filter' string.
@@ -458,7 +469,8 @@ export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) =>
 
 export const getProjectComponentsList = async (params: Project.ReqGetProjectComponentListParams) => {
   // if no project ID specified, return empty data set
-  if (params.projectID === "") return { data: {} } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
+  if (params.projectID === "")
+    return { data: emptyData(params) } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
 
   let res_project = (await client.collection("projects").getOne(params.projectID, {
     // expand: "components" // depreciated
@@ -471,7 +483,7 @@ export const getProjectComponentsList = async (params: Project.ReqGetProjectComp
   let filter = params.filter;
   // filter out entire component list by those found in specified project
   nestedObjectAssign(filter, componentsFilter);
-  let res_components = (await client.collection("components").getList(1, 99999, {
+  let res_components = (await client.collection("components").getList(params.page, params.perPage, {
     filter: filterToPBString(componentsFilter),
     sort: params.sort ?? "",
     expand: params.expand ?? "" // TODO: use params expand
@@ -482,13 +494,28 @@ export const getProjectComponentsList = async (params: Project.ReqGetProjectComp
     theArray[index]._quantityUsed = Number(res_project.quantity.find(c => c.id === cInProj.id)?.quantity); // Type 2
     theArray[index]._ofProjectID = res_project.id; // or params.projectID
   });
+  console.log("getProjectComponentsList", res_components);
   return { data: res_components } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
+};
+
+// WIP
+export const getProjectComponentsList2 = async (params: Project.ReqGetProjectComponentListParams) => {
+  let res = (await client.send("/api/custom/projects/records", {})) as unknown as APIdata<
+    ResList<Project.ResGetProjectComponentRecord>
+  >;
+  // let res = await client.collection("projects").getList(params.page, params.perPage, {
+  //   filter: params.filter ? filterToPBString(params.filter) : "",
+  //   sort: params.sort ?? "",
+  //   expand: params.expand ?? ""
+  // });
+  console.log("getProjectComponentsList2 res", res);
+  return { data: res } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
 };
 
 export const getProjectComponentsListForExport = async (params: Project.ReqGetProjectComponentListForExportParams) => {
   let res = await getProjectComponentsList({
     page: 1,
-    perPage: 999,
+    perPage: 9999,
     filter: params.filter,
     expand: "",
     sort: "",
@@ -646,7 +673,7 @@ export const getDashboardInfo = async () => {
     storageLocationsTree: Storage.ResGetStorageRecordTree[];
   };
 
-  let res = (await client.send("/api/dashboard/info", {})) as unknown as APIdata<DashboardInfo>;
+  let res = (await client.send("/api/custom/dashboard/info", {})) as unknown as APIdata<DashboardInfo>;
   let storageLocationsTree = await getStorageLocationPathEnumTree();
 
   let components = res.data.components;

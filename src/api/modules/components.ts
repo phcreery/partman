@@ -478,11 +478,11 @@ export const getProjectComponentsList = async (params: Project.ReqGetProjectComp
   // let componentsFilter = { id: { ...res_project.components } }; // convert array of ids to { 0: id1, 1: id2, ... } // depreciated
   // let componentsFilter = { id: { ...Object.keys(res_project.quantity) } }; // convert array of { [id]: qty } to { 0: id1, 1: id2, ... } to { 0: id1, 1: id2, ... } // Type 1
   let componentsFilter = { id: { ...res_project.quantity.map(c => c.id) } }; // convert array of objects with [{ id: "", qty: # }, ...] to [ id1, id1, ... ] to { 0: id1, 1: id2, ... } // Type 2
-  let filter = params.filter;
+  let filter: object = params.filter ? params.filter : {};
   // filter out entire component list by those found in specified project
   nestedObjectAssign(filter, componentsFilter);
   let res_components = (await client.collection("components").getList(params.page, params.perPage, {
-    filter: filterToPBString(componentsFilter),
+    filter: filterToPBString(filter),
     sort: params.sort ?? "",
     expand: params.expand ?? "" // TODO: use params expand
   })) as unknown as ResList<Project.ResGetProjectComponentRecord>;
@@ -492,6 +492,8 @@ export const getProjectComponentsList = async (params: Project.ReqGetProjectComp
     theArray[index]._quantityUsed = Number(res_project.quantity.find(c => c.id === cInProj.id)?.quantity); // Type 2
     theArray[index]._ofProjectID = res_project.id; // or params.projectID
   });
+  // re add components in the project that that were not found in the component list
+
   return { data: res_components } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
 };
 

@@ -22,49 +22,17 @@ _Coming soon_
 
 ### Manually Install on Linux
 
-1. (optional) Create Linux account called partman
+1. Download latest release of partman
 
-```
-useradd -m partman
-passwd partman
-su partman
-cd ~
-```
+2. Download template database
 
-2. Download latest release of partman
-
-```
-PARTMAN_PUBLIC_DOWNLOAD_URL=$(curl -s https://api.github.com/repos/phcreery/partman/releases/latest \
-    | jq -r '.assets[] | select(.name | contains(".zip")) | .browser_download_url') && \
-    echo "$PARTMAN_PUBLIC_DOWNLOAD_URL" && \
-    echo "$PARTMAN_PUBLIC_DOWNLOAD_URL" | wget -qi - -O /tmp/partman.zip
-```
-
-3. Download template database
-
-```
-DB_PUBLIC_DOWNLOAD_URL=$(curl -s https://api.github.com/repos/phcreery/partman/releases/latest \
-    | jq -r '.assets[] | select(.name | contains(".db")) | .browser_download_url') && \
-    echo "$DB_PUBLIC_DOWNLOAD_URL" && \
-    echo "$DB_PUBLIC_DOWNLOAD_URL" | wget -qi - -O /tmp/data.db
-```
-
-4. Copy binary and db to home directory
-
-```
-unzip /tmp/partman.zip -d /tmp/partman
-mv /tmp/partman/partman /home/partman/partman
-mv /tmp/data.db /home/partman/pb_data/data.db
-chmod +x /home/partman/partman
-```
-
-5. Start partman
+3. Start partman
 
 ```
 pocketbase serve --http="0.0.0.0:8090"
 ```
 
-6. (optional) Create systemd service
+4. (optional) Create systemd service
 
 ```
 sudo nano /lib/systemd/system/partman.service
@@ -114,23 +82,23 @@ Install prerequisites
 
 ```
 go get github.com/pocketbase/pocketbase
-npm ci
+npm i
 ```
 
 ```
-npm run server
+npm run dev:server
 ```
 
 In another terminal
 
 ```
-npm run dev
+npm run dev:client
 ```
 
 ### Build
 
 ```
-go build
+npm run release:build
 ```
 
 ### Config

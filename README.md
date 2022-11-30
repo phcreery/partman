@@ -29,7 +29,7 @@ _Coming soon_
 3. Start partman
 
 ```
-pocketbase serve --http="0.0.0.0:8090"
+partman serve --http="0.0.0.0:8090"
 ```
 
 4. (optional) Create systemd service

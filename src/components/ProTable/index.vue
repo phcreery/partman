@@ -188,7 +188,17 @@ const { tableData, pageable, searchParam, searchInitParam, getTableList, search,
 watch(
   () => props.initParam,
   () => {
-    getTableList();
+    console.log("initParam changed", props.initParam);
+    // getTableList();
+    refresh();
+  },
+  { deep: true }
+);
+
+watch(
+  () => props.pagination,
+  () => {
+    console.log("pagination changed", props.pagination);
   },
   { deep: true }
 );
@@ -228,10 +238,7 @@ const colRef = ref();
 // Filtering does not need to be set up with hidden columns
 const colSetting = tableColumns.value.filter((item: Partial<ColumnProps>) => {
   return (
-    item.type !== "selection" &&
-    item.type !== "index" &&
-    item.type !== "expand" &&
-    item.prop !== "operation" // &&
+    item.type !== "selection" && item.type !== "index" && item.type !== "expand" && item.prop !== "operation" // &&
     // item.isShow !== false
   );
 });

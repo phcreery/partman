@@ -62,11 +62,13 @@ export const useTable = (
     try {
       // First put the initialization parameter and pagination parameter in the total parameter
       nestedObjectAssign(state.totalParam, initParam, isPageable ? pageParam.value : {});
+      console.log("is pageable??", isPageable, pageParam.value, state.totalParam);
       let { data } = await api(state.totalParam);
       dataCallBack && (data = dataCallBack(data));
       state.tableData = isPageable ? data.datalist : data;
       // Practical pagination data returned in the background (if there is a pagination update pagination information)
       const { pageNum, pageSize, total } = data;
+      console.log("I am the pagination data returned by the background", data);
       isPageable && updatePageable({ pageNum, pageSize, total });
     } catch (error) {
       console.log(error);

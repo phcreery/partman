@@ -18,7 +18,7 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent) {
 
 	e.Router.AddRoute(echo.Route{
 		Method: http.MethodGet,
-		Path:   "/api/dashboard/info",
+		Path:   "/api/custom/dashboard/info",
 		Handler: func(c echo.Context) error {
 
 			// collection, err := app.Dao().FindCollectionByNameOrId("components")

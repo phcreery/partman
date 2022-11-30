@@ -108,7 +108,7 @@ const proTree = ref();
 
 // If the table needs to initialize the request parameter, it will be directly defined to the prop table (each request will automatically bring the parameter every time, and it will always be brought to
 const initParam = reactive<Partial<Project.ReqGetProjectComponentListParams>>({
-  expand: "components",
+  // expand: "components",
   projectID: ""
 });
 

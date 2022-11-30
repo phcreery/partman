@@ -33,7 +33,7 @@ function that converts JSON object of parameters to a consumable PocketBase 'fil
 ex. filter: { id: 'asdf', footprint: {0: '0806', 1: '0604'}} -> "id='asdf' && (footprint='0806' || footprint='0604')"
 */
 const filterToPBString = (filter: { [propName: string]: any }) => {
-  console.log("filter", filter);
+  // console.log("filter", filter);
   let filterParams = Object.keys(filter);
   let sarr: string[] = []; // string array
   for (const param of filterParams) {
@@ -101,7 +101,7 @@ export const postComponentCreate = async (params: Component.ReqCreateComponentPa
 };
 
 export const patchComponentUpdate = async (params: Component.ReqUpdateComponentParams) => {
-  const record = await client.collection("components").update(params.id, params);
+  let record = await client.collection("components").update(params.id, params);
   return { data: record } as unknown as APIdata<Component.ResGetComponentRecord>;
 };
 
@@ -143,7 +143,6 @@ export const postComponentCreateBatch_Client = async (fd: FormData) => {
         let values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
         // let values = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
         values = values || [];
-        console.log("values", values);
         let component: Component.ComponentColumns = {
           category: "", // values[0],
           manufacturer: values[1],
@@ -181,7 +180,6 @@ export const postComponentCreateBatch_Client = async (fd: FormData) => {
           ? category.id
           : (await postComponentCategoryCreate({ name: values[0], description: "", parent: "" })).data.id;
 
-        console.log("doing component", component);
         await postComponentCreate(component);
       }
     }
@@ -201,7 +199,7 @@ export const postComponentCategoryCreate = async (params: ComponentCategory.ReqC
 };
 
 export const patchComponentCategoryUpdate = async (params: ComponentCategory.ReqUpdateComponentCategoryParams) => {
-  const record = await client.collection("component_categories").update(params.id, params);
+  let record = await client.collection("component_categories").update(params.id, params);
   return { data: record } as unknown as APIdata<Component.ResGetComponentRecord>;
 };
 
@@ -258,7 +256,7 @@ export const postFootprintCreate = async (params: Footprint.ReqCreateFootprintPa
 };
 
 export const patchFootprintUpdate = async (params: Footprint.ReqUpdateFootprintParams) => {
-  const record = await client.collection("footprints").update(params.id, params);
+  let record = await client.collection("footprints").update(params.id, params);
   return { data: record } as unknown as APIdata<Footprint.ResGetFootprintRecord>;
 };
 
@@ -278,7 +276,7 @@ export const postFootprintCategoryCreate = async (params: FootprintCategory.ReqC
 };
 
 export const patchFootprintCategoryUpdate = async (params: FootprintCategory.ReqUpdateFootprintCategoryParams) => {
-  const record = await client.collection("footprint_categories").update(params.id, params);
+  let record = await client.collection("footprint_categories").update(params.id, params);
   return { data: record } as unknown as APIdata<Footprint.ResGetFootprintRecord>;
 };
 
@@ -334,7 +332,7 @@ export const postStorageCreate = async (params: Storage.ReqCreateStorageParams) 
 };
 
 export const patchStorageUpdate = async (params: Storage.ReqUpdateStorageParams) => {
-  const record = await client.collection("storage_locations").update(params.id, params);
+  let record = await client.collection("storage_locations").update(params.id, params);
   return { data: record } as unknown as APIdata<Storage.ResGetStorageRecord>;
 };
 
@@ -394,7 +392,7 @@ export const postStorageCategoryCreate = async (params: StorageCategory.ReqCreat
 };
 
 export const patchStorageCategoryUpdate = async (params: StorageCategory.ReqUpdateStorageCategoryParams) => {
-  const record = await client.collection("storage_categories").update(params.id, params);
+  let record = await client.collection("storage_categories").update(params.id, params);
   return { data: record } as unknown as APIdata<Storage.ResGetStorageRecord>;
 };
 
@@ -476,7 +474,7 @@ export const getProjectComponentsList = async (params: Project.ReqGetProjectComp
     // expand: "components" // depreciated
   })) as unknown as Project.ResGetProjectRecord;
   if (typeof res_project.quantity !== "object" || res_project.quantity === null || res_project.quantity.length === 0)
-    return { data: {} } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
+    return { data: emptyData(params) } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
   // let componentsFilter = { id: { ...res_project.components } }; // convert array of ids to { 0: id1, 1: id2, ... } // depreciated
   // let componentsFilter = { id: { ...Object.keys(res_project.quantity) } }; // convert array of { [id]: qty } to { 0: id1, 1: id2, ... } to { 0: id1, 1: id2, ... } // Type 1
   let componentsFilter = { id: { ...res_project.quantity.map(c => c.id) } }; // convert array of objects with [{ id: "", qty: # }, ...] to [ id1, id1, ... ] to { 0: id1, 1: id2, ... } // Type 2
@@ -559,10 +557,7 @@ export const postProjectComponentUpdate = async (params: Project.ReqUpdateProjec
 };
 
 export const deleteProjectComponents = async (params: Project.ReqRemoveProjectComponentsParams) => {
-  console.log("params", params);
-  let res_project = (await client.collection("projects").getOne(params.projectID, {
-    // expand: "components" // depreciated
-  })) as unknown as Project.ResGetProjectRecord;
+  let res_project = (await client.collection("projects").getOne(params.projectID, {})) as unknown as Project.ResGetProjectRecord;
 
   for (const id of params.ids) {
     let index = res_project.quantity.findIndex(x => x.id == id);
@@ -570,9 +565,7 @@ export const deleteProjectComponents = async (params: Project.ReqRemoveProjectCo
       res_project.quantity.splice(index, 1);
     }
   }
-  console.log("updating with", res_project);
   const record = await client.collection("projects").update(params.projectID, res_project);
-  // return true;
   return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
 };
 
@@ -690,7 +683,6 @@ export const getDashboardInfo = async () => {
     await iter(storageLocation);
   }
   res.data.storageLocationsTree = storageLocationsTree.data;
-  console.log({ data: res.data });
   return { data: res.data } as unknown as APIdata<DashboardInfo>;
 };
 

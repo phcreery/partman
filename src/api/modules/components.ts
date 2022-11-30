@@ -494,7 +494,6 @@ export const getProjectComponentsList = async (params: Project.ReqGetProjectComp
     theArray[index]._quantityUsed = Number(res_project.quantity.find(c => c.id === cInProj.id)?.quantity); // Type 2
     theArray[index]._ofProjectID = res_project.id; // or params.projectID
   });
-  console.log("getProjectComponentsList", res_components);
   return { data: res_components } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
 };
 

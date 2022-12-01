@@ -533,6 +533,7 @@ export const deleteProjectComponents = async (params: ProjectComponents.ReqRemov
     if (index !== -1) {
       res_project.components.splice(index, 1);
     }
+    await client.collection("project_components").delete(id);
   }
   const record = await client.collection("projects").update(params.projectID, res_project);
   return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;

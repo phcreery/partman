@@ -16,6 +16,8 @@
       :multiple="item.searchType == 'multipleSelect'"
       placeholder="Select"
       :clearable="clearable(item)"
+      :filterable="filterable(item)"
+      :filter-node-method="(d: any, v: any) => filterNodeMethod(d, item.filterParam!(v))"
     >
       <el-option
         v-for="itemValue in item.enum"
@@ -34,6 +36,8 @@
       :multiple="item.searchType == 'multipleTreeSelect'"
       :data="item.enumTree"
       :clearable="clearable(item)"
+      :filterable="filterable(item)"
+      :filter-node-method="(d: any, v: any) => filterNodeMethod(d, item.filterParam!(v))"
     />
   </template>
   <!-- Date selection -->
@@ -99,6 +103,16 @@ interface SearchFormItem {
 // Whether there is a clear button (when the search item has the default value, the removal button does not display)
 const clearable = (item: Partial<ColumnProps>) => {
   return item.searchInitParam == null || item.searchInitParam == undefined;
+};
+
+// Whether there is a clear button (when the search item has the default value, the removal button does not display)
+const filterable = (item: Partial<ColumnProps>) => {
+  return typeof item.filterParam === "function";
+};
+
+// TreeSelect search function
+const filterNodeMethod = (value: string, data: string) => {
+  return data.toLowerCase().includes(value.toLowerCase());
 };
 
 defineProps<SearchFormItem>();

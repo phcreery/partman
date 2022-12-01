@@ -100,11 +100,6 @@ const handleSubmit = () => {
 // 	ruleFormRef.value!.validateField(val, () => {});
 // };
 
-// TreeSelect search function
-// const filterNodeMethod = (value: string, data: ProjectCategory.ResGetProjectCategoryRecord) => {
-// 	return data.name.toLowerCase().includes(value.toLowerCase());
-// };
-
 // When opening the drawer, fetch the necessary field values
 watch(drawerVisible, openValue => {
   if (openValue) {

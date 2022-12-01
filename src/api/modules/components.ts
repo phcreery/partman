@@ -469,6 +469,9 @@ export const getProjectComponentsList = async (params: ProjectComponents.ReqGetP
   let res_project = (await client.collection("projects").getOne(params.projectID, {})) as unknown as Project.ResGetProjectRecord;
 
   if (res_project.components.length === 0) res_project.components = ["none"];
+
+  // let filter: object = params.filter ? params.filter : {};
+  // nestedObjectAssign(filter, componentsFilter);
   let res_project_components = (await client.collection("project_components").getList(1, 99999, {
     filter: filterToPBString({ id: res_project.components }),
     sort: params.sort ?? "",

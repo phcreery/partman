@@ -120,11 +120,6 @@ const handleSubmit = () => {
 // 	ruleFormRef.value!.validateField(val, () => {});
 // };
 
-// TreeSelect search function
-// const filterNodeMethod = (value: string, data: Project.ResGetProjectComponentRecord) => {
-// 	return data.name.toLowerCase().includes(value.toLowerCase());
-// };
-
 const trimEllip = (string: string, length: number) => {
   return string.length > length ? string.substring(0, length) + "..." : this;
 };

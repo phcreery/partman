@@ -58,7 +58,7 @@ import ImportExcel from "@/components/ImportExcel/index.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 import ComponentStockEdit from "@/views/inventory/components/ComponentStockEdit.vue";
 import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
-import { ResList, Component } from "@/api/interface";
+import { ResList, Component, ComponentCategory, Footprint, Storage } from "@/api/interface";
 import {
   getComponentList,
   getComponentsListForExport,
@@ -75,6 +75,7 @@ import {
   getStorageCategoryEnumTree,
   postComponentCreateBatch_Client
 } from "@/api/modules/components";
+import { SupCategory } from "@/api/interface/octopart";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
 const proTable = ref();
@@ -106,7 +107,8 @@ const columns: Partial<ColumnProps>[] = [
     sortable: true,
     search: true,
     // searchType: "select",
-    searchType: "treeSelect",
+    searchType: "multipleTreeSelect",
+    filterParam: (data: ComponentCategory.ResGetComponentCategoryRecord) => data.name,
     // values that go into the treeSelect props
     searchProps: {
       value: "id",
@@ -114,7 +116,6 @@ const columns: Partial<ColumnProps>[] = [
       props: { value: "id", label: "name", emitPath: false },
       checkStrictly: true
     },
-    // renderText: (data: Component.ResGetComponentRecord) => data["@expand"].category.name,
     enumFunction: getComponentCategoryEnum,
     enumTreeFunction: getComponentCategoryEnumTree,
     isShow: false
@@ -186,6 +187,7 @@ const columns: Partial<ColumnProps>[] = [
     search: true,
     searchType: "multipleSelect",
     enumFunction: getFootprintsEnum,
+    filterParam: (data: Footprint.ResGetFootprintRecord) => data.name,
     searchProps: { value: "id", label: "name" },
     isShow: false
   },
@@ -206,7 +208,6 @@ const columns: Partial<ColumnProps>[] = [
     sortable: true,
     // search: true,
     // searchType: "select",
-    // renderText: (data: Component.ResGetComponentRecord) => data["@expand"].storage_location.name
     enumFunction: getComponentStorageLocationEnum,
     searchProps: { value: "id", label: "name" },
     isShow: false
@@ -226,10 +227,10 @@ const columns: Partial<ColumnProps>[] = [
       props: { value: "id", label: "name", disabled: "disabled", emitPath: false },
       checkStrictly: true
     },
-    searchType: "treeSelect",
-    // renderText: (data: Component.ResGetComponentRecord) => data["@expand"].category.name,
+    searchType: "multipleTreeSelect",
     enumFunction: getStorageLocationPathEnum,
     enumTreeFunction: getStorageLocationPathEnumTree,
+    filterParam: (data: Storage.ResGetStorageRecord) => data.name,
     isShow: true
   },
   {
@@ -258,18 +259,6 @@ const columns: Partial<ColumnProps>[] = [
     // searchInitParam: ["2000-09-30 00:00:00", "2042-09-20 23:59:59"],
     isShow: false
   },
-  // {
-  // 	prop: "createTime",
-  // 	label: "Creation time",
-  // 	width: 200,
-  // 	sortable: true,
-  // 	search: true,
-  // 	searchType: "datetimerange",
-  // 	searchProps: {
-  // 		disabledDate: (time: Date) => time.getTime() < Date.now() - 8.64e7
-  // 	},
-  // 	searchInitParam: ["2022-08-30 00:00:00", "2022-08-20 23:59:59"]
-  // },
   {
     prop: "action",
     label: "Action",

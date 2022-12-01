@@ -85,11 +85,13 @@ go get github.com/pocketbase/pocketbase
 npm i
 ```
 
+Run server environment
+
 ```
 npm run dev:server
 ```
 
-In another terminal
+Run client environment with HRM in another terminal
 
 ```
 npm run dev:client

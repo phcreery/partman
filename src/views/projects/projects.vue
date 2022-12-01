@@ -89,7 +89,7 @@ import ImportExcel from "@/components/ImportExcel/index.vue";
 import ProjectComponentDrawer from "@/views/projects/components/ProjectComponentDrawer.vue";
 import ProjectDrawer from "@/views/projects/components/ProjectDrawer.vue";
 import { CirclePlus, Delete, EditPen, Upload, Download } from "@element-plus/icons-vue";
-import { ResList, Project } from "@/api/interface";
+import { ResList, Project, ProjectComponents } from "@/api/interface";
 import {
   getProjectsEnum,
   getProjectComponentsList,
@@ -107,7 +107,7 @@ const proTable = ref();
 const proTree = ref();
 
 // If the table needs to initialize the request parameter, it will be directly defined to the prop table (each request will automatically bring the parameter every time, and it will always be brought to
-const initParam = reactive<Partial<Project.ReqGetProjectComponentListParams>>({
+const initParam = reactive<Partial<ProjectComponents.ReqGetProjectComponentListParams>>({
   projectID: ""
 });
 
@@ -119,7 +119,7 @@ const dataCallbackTree = (data: any) => {
   projectData.value = data;
   return data;
 };
-const dataCallbackTable = (data: ResList<Project.ReqGetProjectComponentListParams>) => {
+const dataCallbackTable = (data: ResList<ProjectComponents.ReqGetProjectComponentListParams>) => {
   return {
     datalist: data.items,
     total: data.totalItems,
@@ -141,13 +141,13 @@ const columns: Partial<ColumnProps>[] = [
   { type: "selection", width: 40, fixed: "left" },
   // { type: "expand", label: "" },
   {
-    prop: "_quantityUsed",
+    prop: "quantity",
     label: "Qty.",
     width: 80,
     sortable: true
   },
   {
-    prop: "mpn",
+    prop: "_mpn",
     label: "MPN",
     width: 130,
     sortable: true,
@@ -155,7 +155,7 @@ const columns: Partial<ColumnProps>[] = [
     searchType: "text"
   },
   {
-    prop: "description",
+    prop: "_description",
     label: "Description",
     align: "left",
     search: true,
@@ -218,10 +218,10 @@ interface DrawerExpose {
   acceptParams: (params: any) => void;
 }
 const drawerRefComponent = ref<DrawerExpose>();
-const openComponentDrawer = (title: string, rowData: Partial<Project.ResGetProjectComponentRecord> = {}) => {
+const openComponentDrawer = (title: string, rowData: Partial<ProjectComponents.ResGetProjectComponentRecord> = {}) => {
   let params = {
     title,
-    rowData: { _ofProjectID: initParam.projectID, id: rowData.id, _quantityUsed: rowData._quantityUsed }, // { ...rowData },
+    rowData: { ...rowData, _ofProjectID: initParam.projectID },
     isView: title === "View",
     apiUrl: title === "New" ? postProjectComponentAdd : title === "Edit" ? postProjectComponentUpdate : "",
     updateTable: proTable.value.refresh

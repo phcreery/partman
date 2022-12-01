@@ -208,12 +208,10 @@ export namespace OctopartConfig {
 }
 
 export namespace Project {
-  type component = { id: string; quantity: number }; //{ [key: string]: number | string };
   type ProjectColumns = {
     name: string;
     description: number;
-    // components: string[]; // depreciated
-    quantity: component[];
+    components: string[];
   };
   // Requests
   export type ReqGetProjectListParams = ReqList;
@@ -222,26 +220,32 @@ export namespace Project {
   export type ReqDeleteProjectsParams = { ids: string[] };
   // Responses
   export interface ResGetProjectRecord extends ResGetRecord, ProjectColumns {}
+}
 
+export namespace ProjectComponents {
+  type ProjectComponentColumns = {
+    component: string;
+    quantity: number;
+    _id: string;
+    _mpn: string;
+    _description: string;
+  };
   // Project Components
   // Requests
   export interface ReqGetProjectComponentListParams extends ReqList {
     projectID: string;
   }
   export type ReqGetProjectComponentListForExportParams = { filter: ReqList["filter"]; projectID: string };
-  export interface ReqAddProjectComponentParams extends ReqRecord, component {
-    _quantityUsed: number;
+  export interface ReqAddProjectComponentParams extends ProjectComponentColumns {
     _ofProjectID: string;
   }
-  export interface ReqUpdateProjectComponentParams extends ReqRecord, component {
-    _quantityUsed: number;
+  export interface ReqUpdateProjectComponentParams extends ReqRecord, ProjectComponentColumns {
     _ofProjectID: string;
   }
   export type ReqRemoveProjectComponentsParams = { projectID: string; ids: string[] };
   // Responses
-  export interface ResGetProjectComponentRecord extends ResGetRecord, Component.ComponentColumns {
-    _quantityUsed: number;
-    _ofProjectID: string;
+  export interface ResGetProjectComponentRecord extends ResGetRecord, ProjectComponentColumns {
+    expand: { component: Component.ComponentColumns & ResGetRecord };
   }
 }
 

@@ -13,15 +13,16 @@ import {
   Storage,
   StorageCategory,
   Project,
+  ProjectComponents,
   ComponentLog,
   User,
   Config
 } from "@/api/interface/index";
 
-const emptyData = (params: ReqList): ResList<null> => {
+const emptyData = (params?: ReqList): ResList<null> => {
   return {
-    page: params.page,
-    perPage: params.perPage,
+    page: params ? params.page : 0,
+    perPage: params ? params.perPage : 25,
     totalPages: 0,
     totalItems: 0,
     items: []
@@ -462,116 +463,75 @@ export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) =>
 
 // ---- PROJECT COMPONENTS ----
 
-// Type 1: [{"id": "a4bJqkHVdneg5As", "quantity": 2}, ...]
-// Type 2: { "a4bJqkHVdneg5As": 2, ... }
-
-export const getProjectComponentsList = async (params: Project.ReqGetProjectComponentListParams) => {
-  // if no project ID specified, return empty data set
+export const getProjectComponentsList = async (params: ProjectComponents.ReqGetProjectComponentListParams) => {
   if (params.projectID === "")
-    return { data: emptyData(params) } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
+    return { data: emptyData(params) } as unknown as APIdata<ResList<ProjectComponents.ResGetProjectComponentRecord>>;
   let res_project = (await client.collection("projects").getOne(params.projectID, {})) as unknown as Project.ResGetProjectRecord;
-  if (typeof res_project.quantity !== "object" || res_project.quantity === null || res_project.quantity.length === 0)
-    return { data: emptyData(params) } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
-  // let componentsFilter = { id: { ...Object.keys(res_project.quantity) } }; // convert array of { [id]: qty } to { 0: id1, 1: id2, ... } to { 0: id1, 1: id2, ... } // Type 1
-  let componentsFilter = { id: { ...res_project.quantity.map(c => c.id) } }; // convert array of objects with [{ id: "", qty: # }, ...] to [ id1, id1, ... ] to { 0: id1, 1: id2, ... } // Type 2
-  let filter: object = params.filter ? params.filter : {};
-  // filter out entire component list by those found in specified project
-  nestedObjectAssign(filter, componentsFilter);
-  let res_components = (await client.collection("components").getList(params.page, params.perPage, {
-    filter: filterToPBString(filter),
+
+  if (res_project.components.length === 0) res_project.components = ["none"];
+  let res_project_components = (await client.collection("project_components").getList(1, 99999, {
+    filter: filterToPBString({ id: res_project.components }),
     sort: params.sort ?? "",
-    expand: params.expand ?? "" // TODO: use params expand
-  })) as unknown as ResList<Project.ResGetProjectComponentRecord>;
-  // go through and add quantity used in project to each component
-  await res_components.items.forEach(function (cInProj, index, theArray) {
-    // theArray[index]._quantityUsed = res_project.quantity[cInProj.id]; // Type 1
-    theArray[index]._quantityUsed = Number(res_project.quantity.find(c => c.id === cInProj.id)?.quantity); // Type 2
-    theArray[index]._ofProjectID = res_project.id; // or params.projectID
+    expand: "component" // params.expand ?? ""
+  })) as unknown as ResList<ProjectComponents.ResGetProjectComponentRecord>;
+
+  // anchor expand.component.mpn and description into each res_project_components.items
+  res_project_components.items.forEach(function (cInProj, index, theArray) {
+    theArray[index]._id = cInProj.expand.component.id;
+    theArray[index]._mpn = cInProj.expand.component.mpn;
+    theArray[index]._description = cInProj.expand.component.description;
   });
-  // re add components in the project that that were not found in the component list
-  res_components.items.push(
-    ...res_project.quantity
-      .filter(c => !res_components.items.find(c2 => c2.id === c.id))
-      .map(c => {
-        return {
-          id: c.id,
-          description: `[${c.id}] (not found)`,
-          _quantityUsed: Number(c.quantity),
-          _ofProjectID: res_project.id
-        } as unknown as Project.ResGetProjectComponentRecord;
-      })
-  );
-  return { data: res_components } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
+
+  let res = res_project_components;
+
+  return { data: res } as unknown as APIdata<ResList<ProjectComponents.ResGetProjectComponentRecord>>;
 };
 
-// WIP
-export const getProjectComponentsList2 = async (params: Project.ReqGetProjectComponentListParams) => {
-  let res = (await client.send("/api/custom/projects/records", {})) as unknown as APIdata<
-    ResList<Project.ResGetProjectComponentRecord>
-  >;
-  // let res = await client.collection("projects").getList(params.page, params.perPage, {
-  //   filter: params.filter ? filterToPBString(params.filter) : "",
-  //   sort: params.sort ?? "",
-  //   expand: params.expand ?? ""
-  // });
-  console.log("getProjectComponentsList2 res", res);
-  return { data: res } as unknown as APIdata<ResList<Project.ResGetProjectComponentRecord>>;
-};
-
-export const getProjectComponentsListForExport = async (params: Project.ReqGetProjectComponentListForExportParams) => {
+export const getProjectComponentsListForExport = async (params: ProjectComponents.ReqGetProjectComponentListForExportParams) => {
+  if (params.projectID === "")
+    return { data: emptyData() } as unknown as APIdata<ResList<ProjectComponents.ResGetProjectComponentRecord>>;
   let res = await getProjectComponentsList({
     page: 1,
     perPage: 9999,
     filter: params.filter,
     expand: "",
     sort: "",
-    projectID: params.projectID ?? ""
+    projectID: params.projectID
   });
-  return res.data.items as unknown as Project.ResGetProjectComponentRecord[];
+  return res.data.items as unknown as ProjectComponents.ResGetProjectComponentRecord[];
 };
 
-export const postProjectComponentAdd = async (params: Project.ReqAddProjectComponentParams) => {
-  let res_project = (await client.collection("projects").getOne(params._ofProjectID, {
-    // expand: "components" // depreciated
-  })) as unknown as Project.ResGetProjectRecord;
+export const postProjectComponentAdd = async (params: ProjectComponents.ReqAddProjectComponentParams) => {
+  let res_project_components = await client
+    .collection("project_components")
+    .create({ component: params._id, quantity: params.quantity });
 
-  // check if the quantity column is not empty (new project)
-  if (typeof res_project.quantity === "object" && res_project.quantity !== null && Array.isArray(res_project.quantity)) {
-    // check if the part is already added
-    let index = res_project.quantity?.findIndex(x => x.id == params.id);
-    if (index === -1) {
-      // nestedObjectAssign(res_project, { quantity: { id: params.id, quantity: params._quantityUsed } });
-      res_project.quantity.push({ id: params.id, quantity: params._quantityUsed });
-    }
-  } else {
-    res_project.quantity = [{ id: params.id, quantity: params._quantityUsed }];
-  }
-  const record = await client.collection("projects").update(params._ofProjectID, res_project);
-  return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
+  let res_project = (await client
+    .collection("projects")
+    .getOne(params._ofProjectID, {})) as unknown as Project.ResGetProjectRecord;
+
+  // append res_project_components.id to res_project.components
+  res_project.components.push(res_project_components.id);
+
+  const record = (await client
+    .collection("projects")
+    .update(params._ofProjectID, res_project)) as unknown as Project.ResGetProjectRecord;
+  return { data: record } as unknown as APIdata<ProjectComponents.ResGetProjectComponentRecord>;
 };
 
-export const postProjectComponentUpdate = async (params: Project.ReqUpdateProjectComponentParams) => {
-  let res_project = (await client.collection("projects").getOne(params._ofProjectID, {
-    // expand: "components" // depreciated
-  })) as unknown as Project.ResGetProjectRecord;
-  // nestedObjectAssign(res_project.quantity, { [params.id]: params._quantityUsed });
-  // nestedObjectAssign(res_project, { quantity: { [params.id]: params._quantityUsed } }); // Type 1
-  res_project.quantity[res_project.quantity.findIndex(x => x.id == params.id)] = {
-    // Type 2
-    id: params.id,
-    quantity: params._quantityUsed
-  };
-  const record = await client.collection("projects").update(params._ofProjectID, res_project);
-  return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
+export const postProjectComponentUpdate = async (params: ProjectComponents.ReqUpdateProjectComponentParams) => {
+  const record = await client
+    .collection("project_components")
+    .update(params.id, { component: params._id, quantity: params.quantity });
+  return { data: record } as unknown as APIdata<ProjectComponents.ResGetProjectComponentRecord>;
 };
 
-export const deleteProjectComponents = async (params: Project.ReqRemoveProjectComponentsParams) => {
+export const deleteProjectComponents = async (params: ProjectComponents.ReqRemoveProjectComponentsParams) => {
   let res_project = (await client.collection("projects").getOne(params.projectID, {})) as unknown as Project.ResGetProjectRecord;
-
   for (const id of params.ids) {
-    let index = res_project.quantity.findIndex(x => x.id == id);
+    let index = res_project.components.findIndex(x => x == id);
     if (index !== -1) {
-      res_project.quantity.splice(index, 1);
+      res_project.components.splice(index, 1);
     }
   }
   const record = await client.collection("projects").update(params.projectID, res_project);

@@ -11,7 +11,7 @@
         label-suffix=" :"
         :append-to-body="true"
       >
-        <el-form-item label="MPN" prop="id" v-loading="components === undefined">
+        <el-form-item label="MPN" prop="_id" v-loading="components === undefined">
           <!-- <el-input
 						v-model="drawerData.rowData!.mpn"
 						placeholder="Please fill in the component"
@@ -23,23 +23,23 @@
 					</el-input> -->
           <div class="form-item-with-buttons">
             <el-space>
-              <el-select v-model="drawerData.rowData!.id" placeholder="" clearable filterable style="width: max-content">
+              <el-select v-model="drawerData.rowData!._id" placeholder="" clearable filterable style="width: max-content">
                 <el-option v-for="item in components" :key="item.id" :label="item.mpn" :value="item.id">
                   <span style="float: left">{{ item.mpn }}</span>
-                  <span style="float: right; color: var(--el-text-color-secondary); font-size: 13px">{{
-                    trimEllip(item.description, 25)
-                  }}</span>
+                  <span style="float: right; color: var(--el-text-color-secondary); font-size: 13px">
+                    {{ trimEllip(item.description, 25) }}
+                  </span>
                 </el-option>
               </el-select>
               <el-button-group>
                 <el-button :icon="Refresh" @click="refreshComponents" />
                 <el-button
                   :icon="EditPen"
-                  :disabled="!drawerData.rowData!.id || drawerData.rowData!.id === ''"
+                  :disabled="!drawerData.rowData!._id || drawerData.rowData!._id === ''"
                   @click="
                     openCreateComponentDrawer(
                       'Edit',
-                      components?.find(c => c.id === drawerData.rowData!.id)
+                      components?.find(c => c.id === drawerData.rowData!._id)
                     )
                   "
                 />
@@ -48,8 +48,8 @@
             </el-space>
           </div>
         </el-form-item>
-        <el-form-item label="Quantity" prop="_quantityUsed">
-          <el-input-number v-model="drawerData.rowData!._quantityUsed" />
+        <el-form-item label="Quantity" prop="quantity">
+          <el-input-number v-model="drawerData.rowData!.quantity" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -66,13 +66,13 @@
 import { ref, reactive, watch } from "vue";
 import { Refresh, Plus, EditPen } from "@element-plus/icons-vue";
 import { ElMessage, FormInstance } from "element-plus";
-import { Project, Component } from "@/api/interface";
+import { Project, Component, ProjectComponents } from "@/api/interface";
 import { getComponentEnum, postComponentCreate, patchComponentUpdate } from "@/api/modules/components";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 
 const rules = reactive({
-  name: [{ required: true, message: "Please enter the project name", trigger: "change" }],
-  description: [{ required: false, message: "Please enter project description", trigger: "change" }]
+  _id: [{ required: true, message: "Please enter the component", trigger: "change" }],
+  quantity: [{ required: false, message: "Please enter project description", trigger: "change" }]
 });
 
 // const cascaderProps = { value: "id", label: "name", emitPath: false };
@@ -81,7 +81,7 @@ const rules = reactive({
 interface DrawerProps {
   title: string;
   isView: boolean;
-  rowData?: Project.ResGetProjectComponentRecord;
+  rowData?: ProjectComponents.ResGetProjectComponentRecord;
   apiUrl?: (params: any) => Promise<any>;
   updateTable?: () => Promise<any>;
 }

@@ -463,17 +463,21 @@ export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) =>
 
 // ---- PROJECT COMPONENTS ----
 
-export const getProjectComponentsList = async (params: ProjectComponents.ReqGetProjectComponentListParams) => {
+export const getProjectComponentsList = async (
+  params: ProjectComponents.ReqGetProjectComponentListParams & { filter?: { _mpn: string; _description: string } }
+) => {
   if (params.projectID === "")
     return { data: emptyData(params) } as unknown as APIdata<ResList<ProjectComponents.ResGetProjectComponentRecord>>;
   let res_project = (await client.collection("projects").getOne(params.projectID, {})) as unknown as Project.ResGetProjectRecord;
 
   if (res_project.components.length === 0) res_project.components = ["none"];
 
-  // let filter: object = params.filter ? params.filter : {};
-  // nestedObjectAssign(filter, componentsFilter);
+  let filter: object = {};
+  nestedObjectAssign(filter, res_project.components ? { id: res_project.components } : {});
+  nestedObjectAssign(filter, params.filter?._mpn ? { "component.mpn": params.filter?._mpn } : {});
+  nestedObjectAssign(filter, params.filter?._description ? { "component.description": params.filter?._description } : {});
   let res_project_components = (await client.collection("project_components").getList(1, 99999, {
-    filter: filterToPBString({ id: res_project.components }),
+    filter: filterToPBString(filter),
     sort: params.sort ?? "",
     expand: "component" // params.expand ?? ""
   })) as unknown as ResList<ProjectComponents.ResGetProjectComponentRecord>;
@@ -600,12 +604,9 @@ export const deleteUsers = async (params: User.ReqDeleteUsersParams) => {
 export const getUserEnum = async () => {
   let [res, err] = await tryCatchAsync(() => client.collection("profiles").getList(1, 99999, { $autoCancel: false }));
   if (err) {
-    console.log("getCompEnum res err", res, err);
+    console.log("getUserEnum res err", res, err);
     // return false;
   }
-  // res.items.forEach((component: UserCategory.ResGetUserCategoryRecord) => {
-  // 	component._fullName = getPathName(res.items, component.id);
-  // });
   return { data: res.items } as unknown as APIdata<User.ResGetUserRecord[]>;
 };
 

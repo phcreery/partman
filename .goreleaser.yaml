@@ -9,8 +9,8 @@ before:
 builds:
   - main: ./
     binary: partman
-    # ldflags:
-    # - -s -w -X github.com/pocketbase/pocketbase.Version={{ .Version }}
+    ldflags:
+      - -s -w -X github.com/phcreery/partman.Version={{ .Version }}
     env:
       - CGO_ENABLED=0
     goos:

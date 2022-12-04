@@ -22,9 +22,20 @@ _Coming soon_
 
 ### Manually Install on Linux
 
-1. Download latest release of partman
+1. Download latest release of partman for your system
 
-2. Download template database
+2. Initialize database
+
+```
+partman serve
+```
+
+Visit the link and follow the steps to create a new admin account.
+Kill partman.
+
+```
+partman init
+```
 
 3. Start partman
 

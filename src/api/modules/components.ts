@@ -464,7 +464,7 @@ export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) =>
 // ---- PROJECT COMPONENTS ----
 
 export const getProjectComponentsList = async (
-  params: ProjectComponents.ReqGetProjectComponentListParams & { filter?: { _mpn: string; _description: string } }
+  params: ProjectComponents.ReqGetProjectComponentListParams & { filter?: { _mpn?: string; _description?: string } }
 ) => {
   if (params.projectID === "")
     return { data: emptyData(params) } as unknown as APIdata<ResList<ProjectComponents.ResGetProjectComponentRecord>>;

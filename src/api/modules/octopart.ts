@@ -77,6 +77,7 @@ export const getPartListByMPN = async (mpn: string): Promise<Query["supSearchMpn
                       value
                       units
                     }
+                    octopartUrl
                   }
                 }
               }

@@ -21,7 +21,7 @@ var Version = "(untracked)"
 //go:embed dist-ui/*
 var distDir embed.FS
 
-// DistDirFS contains the embedded dist directory files (without the "dist" prefix)
+// DistDirFS contains the embedded dist-ui directory files (without the "dist-ui" prefix)
 var DistDirFS = echo.MustSubFS(distDir, "dist-ui")
 // var DistDirFS = os.DirFS(publicDirFlag)
 
@@ -58,7 +58,7 @@ func main() {
 
 	app.RootCmd.AddCommand(&cobra.Command{
 		Use:   "init",
-		Short: "Initialize the database and create the schema",
+		Short: "Initialize the database and create the schema (WARNING: this will delete all data in the database)",
 		Run: func(cmd *cobra.Command, args []string) {
 			app.ResetBootstrapState()
 			err := app.Bootstrap()

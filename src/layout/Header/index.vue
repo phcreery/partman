@@ -13,9 +13,10 @@
         <!-- Language -->
         <!-- <Language id="language"></Language> -->
         <!-- Theme -->
-        <Theme id="theme"></Theme>
+        <!-- <Theme id="theme"></Theme> -->
+        <SwitchDark></SwitchDark>
         <!-- Full screen -->
-        <Fullscreen id="fullscreen"></Fullscreen>
+        <!-- <Fullscreen id="fullscreen"></Fullscreen> -->
         <!-- SearchMenu -->
         <SearchMenu id="searchMenu"></SearchMenu>
       </div>
@@ -38,6 +39,7 @@ import AssemblySize from "./components/AssemblySize.vue";
 import Theme from "./components/Theme.vue";
 import Avatar from "./components/Avatar.vue";
 import About from "./components/About.vue";
+import SwitchDark from "@/components/SwitchDark/index.vue";
 import { GlobalStore } from "@/store";
 
 const globalStore = GlobalStore();

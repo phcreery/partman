@@ -1,7 +1,7 @@
 {
   "name": "partman",
   "private": true,
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Electronic Component management system",
   "author": "phcreery <phcreery@gmail.com>",
   "scripts": {

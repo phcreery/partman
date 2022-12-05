@@ -31,7 +31,8 @@ partman serve
 ```
 
 Visit the link and follow the steps to create a new admin account.
-Kill partman.
+
+Kill partman. Then initialize the schema with:
 
 ```
 partman init

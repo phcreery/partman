@@ -86,6 +86,10 @@ sudo systemctl status partman
 
 Install prerequisites
 
+- golang >= 1.19
+
+- node & npm
+
 ```
 go get github.com/pocketbase/pocketbase
 npm i

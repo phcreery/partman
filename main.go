@@ -4,6 +4,8 @@ import (
 	"embed"
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
@@ -23,11 +25,11 @@ var distDir embed.FS
 
 // DistDirFS contains the embedded dist-ui directory files (without the "dist-ui" prefix)
 var DistDirFS = echo.MustSubFS(distDir, "dist-ui")
-// var DistDirFS = os.DirFS(publicDirFlag)
 
 const uiPath = "/" // trailedAdminPath
 
 // bindStaticAdminUI registers the endpoints that serves the static admin UI.
+// https://github.com/pocketbase/pocketbase/apis/base.go
 func bindStaticAdminUI(app core.App, e *core.ServeEvent) error {
 
 	// redirect to trailing slash to ensure that relative urls will still work properly
@@ -52,7 +54,7 @@ func bindStaticAdminUI(app core.App, e *core.ServeEvent) error {
 func main() {
 	app := pocketbase.New()
 
-	app.RootCmd.Use = "partman"
+	app.RootCmd.Use = filepath.Base(os.Args[0]) // "partman"
 	app.RootCmd.Short = "partman CLI"
 	app.RootCmd.Version = Version
 
@@ -60,15 +62,30 @@ func main() {
 		Use:   "init",
 		Short: "Initialize the database and create the schema (WARNING: this will delete all data in the database)",
 		Run: func(cmd *cobra.Command, args []string) {
-			app.ResetBootstrapState()
+			// app.ResetBootstrapState()
 			err := app.Bootstrap()
 			if err != nil {
 				log.Fatal(err)
 				fmt.Println("Error Bootstrapping: ", err)
 			}
-			app.RefreshSettings()
+
+			// ensure that the latest migrations are applied before starting the server
+			err = server.RunInitMigrations(app)
+			if err != nil {
+				log.Fatal(err)
+				fmt.Println("Error Running Migrations: ", err)
+			}
+
+			// app.RefreshSettings()
 			
-			server.CreateCollectionsFromJSON(app, server.Schema)
+			err = server.TryImportCollectionsFromJSON(app, server.SchemaAsForm)
+			// err = server.TryImportCollectionsFromJSON2(app, server.Schema)
+			if err != nil {
+				log.Fatal(err)
+				fmt.Println("Error Importing Collections: ", err)
+			} else {
+				fmt.Println("Collections Imported")
+			}
 		},
 	})
 

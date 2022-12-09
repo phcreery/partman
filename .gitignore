@@ -36,3 +36,4 @@ pb_public
 # goreleaser builds folder
 .builds
 .builds/*
+partman.exe

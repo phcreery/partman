@@ -27,13 +27,6 @@ _Coming soon_
 2. Initialize database
 
 ```
-partman serve
-```
-
-Visit the link and follow the steps to create a new admin account.
-Kill partman.
-
-```
 partman init
 ```
 
@@ -42,6 +35,8 @@ partman init
 ```
 partman serve --http="0.0.0.0:8090"
 ```
+
+Visit the link and follow the steps to create a new admin account.
 
 4. (optional) Create systemd service
 

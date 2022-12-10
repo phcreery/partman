@@ -1,49 +1,49 @@
 /**
  * v-longpress
- * 长按指令，长按时触发事件
+ * Long press the instruction, long press to trigger the event on time
  */
 import type { Directive, DirectiveBinding } from "vue";
 
 const directive: Directive = {
-	mounted(el: HTMLElement, binding: DirectiveBinding) {
-		if (typeof binding.value !== "function") {
-			throw "callback must be a function";
-		}
-		// 定义变量
-		let pressTimer: any = null;
-		// 创建计时器（ 2秒后执行函数 ）
-		const start = (e: any) => {
-			if (e.button) {
-				if (e.type === "click" && e.button !== 0) {
-					return;
-				}
-			}
-			if (pressTimer === null) {
-				pressTimer = setTimeout(() => {
-					handler(e);
-				}, 1000);
-			}
-		};
-		// 取消计时器
-		const cancel = () => {
-			if (pressTimer !== null) {
-				clearTimeout(pressTimer);
-				pressTimer = null;
-			}
-		};
-		// 运行函数
-		const handler = (e: MouseEvent | TouchEvent) => {
-			binding.value(e);
-		};
-		// 添加事件监听器
-		el.addEventListener("mousedown", start);
-		el.addEventListener("touchstart", start);
-		// 取消计时器
-		el.addEventListener("click", cancel);
-		el.addEventListener("mouseout", cancel);
-		el.addEventListener("touchend", cancel);
-		el.addEventListener("touchcancel", cancel);
-	}
+  mounted(el: HTMLElement, binding: DirectiveBinding) {
+    if (typeof binding.value !== "function") {
+      throw "callback must be a function";
+    }
+    // Definition variable
+    let pressTimer: any = null;
+    // Create a timer (execute function after 2 seconds)
+    const start = (e: any) => {
+      if (e.button) {
+        if (e.type === "click" && e.button !== 0) {
+          return;
+        }
+      }
+      if (pressTimer === null) {
+        pressTimer = setTimeout(() => {
+          handler(e);
+        }, 1000);
+      }
+    };
+    // Cancel the timer
+    const cancel = () => {
+      if (pressTimer !== null) {
+        clearTimeout(pressTimer);
+        pressTimer = null;
+      }
+    };
+    // Run function
+    const handler = (e: MouseEvent | TouchEvent) => {
+      binding.value(e);
+    };
+    // Add event monitor
+    el.addEventListener("mousedown", start);
+    el.addEventListener("touchstart", start);
+    // Cancel the timer
+    el.addEventListener("click", cancel);
+    el.addEventListener("mouseout", cancel);
+    el.addEventListener("touchend", cancel);
+    el.addEventListener("touchcancel", cancel);
+  }
 };
 
 export default directive;

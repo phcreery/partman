@@ -1,39 +1,39 @@
 // @see: https://www.prettier.cn
 
 module.exports = {
-  // 超过最大值换行
+  // More than the maximum value change
   printWidth: 130,
-  // 缩进字节数
+  // Indentation byte number
   tabWidth: 2,
-  // 使用制表符而不是空格缩进行
+  // Use the surface system instead of the space shrinkage
   useTabs: false,
-  // 结尾不用分号(true有，false没有)
+  // There is no segmentation at the end (TRUE, False No)
   semi: true,
-  // 使用单引号(true单双引号，false双引号)
+  // Use a single quotation number (TRUE single and double quotes, false dual quotes)
   singleQuote: false,
-  // 更改引用对象属性的时间 可选值"<as-needed|consistent|preserve>"
+  // Change the time selection of the reference object attribute "<As-Needed | Consistent | Preserve>" "" "
   quoteProps: "as-needed",
-  // 在对象，数组括号与文字之间加空格 "{ foo: bar }"
+  // Add an empty lattice between the objects and array brackets and text "{foo: bar}"
   bracketSpacing: true,
-  // 多行时尽可能打印尾随逗号。（例如，单行数组永远不会出现逗号结尾。） 可选值"<none|es5|all>"，默认none
+  // Time to print the commas as much as possible.(For example, there will never be a comma ending in a single array.) The optional value "<none | ES5 | All>", default None
   trailingComma: "none",
-  // 在JSX中使用单引号而不是双引号
+  // Use a single quotation number instead of dual quotes in JSX
   jsxSingleQuote: false,
-  //  (x) => {} 箭头函数参数只有一个时是否要有小括号。avoid：省略括号 ,always：不省略括号
+  //  (x) => {} The parameter of the arrow function must have small brackets when there is only one.avoid: omitted brackets, alway: not omitted brackets
   arrowParens: "avoid",
-  // 如果文件顶部已经有一个 doclock，这个选项将新建一行注释，并打上@format标记。
+  // If there is already a DOCLOCK on the top of the file, this option will create a new line of comment and hit @Format mark.
   insertPragma: false,
-  // 指定要使用的解析器，不需要写文件开头的 @prettier
+  // Specify the parser to be used, no need to write the beginning of the file @Prettier
   requirePragma: false,
-  // 默认值。因为使用了一些折行敏感型的渲染器（如GitHub comment）而按照markdown文本样式进行折行
+  // Defaults.Because of the use of some sensitive renders (such as GitHub Comment), it is based on the Markdown text style
   proseWrap: "preserve",
-  // 在html中空格是否是敏感的 "css" - 遵守CSS显示属性的默认值， "strict" - 空格被认为是敏感的 ，"ignore" - 空格被认为是不敏感的
+  // Is it a sensitive "CSS" -CSS -compliance with the default value of the CSS display attribute in the HTML hollow?
   htmlWhitespaceSensitivity: "css",
-  // 换行符使用 lf 结尾是 可选值"<auto|lf|crlf|cr>"
+  // The ending of the line is the optional value of the use of LF"<auto|lf|crlf|cr>"
   endOfLine: "auto",
-  // 这两个选项可用于格式化以给定字符偏移量（分别包括和不包括）开始和结束的代码
+  // These two options can be used to formatting the code that starts and ends with the offset (including and excluding).
   rangeStart: 0,
   rangeEnd: Infinity,
-  // Vue文件脚本和样式标签缩进
+  // Vue file script and style label shrinkage
   vueIndentScriptAndStyle: false
 };

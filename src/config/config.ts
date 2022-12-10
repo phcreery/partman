@@ -1,10 +1,10 @@
-// ? 全局不动配置项 只做导出不做修改
+// ? Global non -moving configuration items are only exported and not modified
 
-// * 首页地址（默认）
+// * Homepage (default))
 export const HOME_URL: string = "/home/index";
 
-// * Tabs（黑名单地址，不需要添加到 tabs 的路由地址）
+// * Tabs (Blacklist address, no need to add to tabs routing address)
 export const TABS_BLACK_LIST: string[] = ["/403", "/404", "/500", "/layout", "/login", "/dataScreen"];
 
-// * 高德地图key
+// * Gaode Map KEY
 export const MAP_KEY: string = "";

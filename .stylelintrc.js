@@ -1,41 +1,41 @@
 // @see: https://stylelint.io
 
 module.exports = {
-  /* 继承某些已有的规则 */
+  /* Inherit some existing rules */
   extends: [
-    "stylelint-config-standard", // 配置stylelint拓展插件
-    "stylelint-config-html/vue", // 配置 vue 中 template 样式格式化
-    "stylelint-config-standard-scss", // 配置stylelint scss插件
-    "stylelint-config-recommended-vue/scss", // 配置 vue 中 scss 样式格式化
-    "stylelint-config-recess-order", // 配置stylelint css属性书写顺序插件,
-    "stylelint-config-prettier" // 配置stylelint和prettier兼容
+    "stylelint-config-standard", // Configure the stylelint expansion plug -in
+    "stylelint-config-html/vue", // Configure the Template style formatting in Vue
+    "stylelint-config-standard-scss", //Configure stylelint SCSS plug -in
+    "stylelint-config-recommended-vue/scss", // Configure the SCSS style formatting in Vue
+    "stylelint-config-recess-order", // Configure the stylelint CSS attribute writing order plug -in,
+    "stylelint-config-prettier" // Configure styleLint and Prettier compatibility
   ],
   overrides: [
-    // 扫描 .vue/html 文件中的<style>标签内的样式
+    // Scan .vue/html file in the <style> label
     {
       files: ["**/*.{vue,html}"],
       customSyntax: "postcss-html"
     }
   ],
   /**
-   * null  => 关闭该规则
+   * null  => Turn off the rule
    */
   rules: {
-    "no-descending-specificity": null, // 禁止在具有较高优先级的选择器后出现被其覆盖的较低优先级的选择器
-    "function-url-quotes": "always", // 要求或禁止 URL 的引号 "always(必须加上引号)"|"never(没有引号)"
-    "string-quotes": "double", // 指定字符串使用单引号或双引号
-    "unit-case": null, // 指定单位的大小写 "lower(全小写)"|"upper(全大写)"
-    "color-hex-case": "lower", // 指定 16 进制颜色的大小写 "lower(全小写)"|"upper(全大写)"
-    "color-hex-length": "long", // 指定 16 进制颜色的简写或扩写 "short(16进制简写)"|"long(16进制扩写)"
-    "rule-empty-line-before": "never", // 要求或禁止在规则之前的空行 "always(规则之前必须始终有一个空行)"|"never(规则前绝不能有空行)"|"always-multi-line(多行规则之前必须始终有一个空行)"|"never-multi-line(多行规则之前绝不能有空行。)"
-    "font-family-no-missing-generic-family-keyword": null, // 禁止在字体族名称列表中缺少通用字体族关键字
-    "block-opening-brace-space-before": "always", // 要求在块的开大括号之前必须有一个空格或不能有空白符 "always(大括号前必须始终有一个空格)"|"never(左大括号之前绝不能有空格)"|"always-single-line(在单行块中的左大括号之前必须始终有一个空格)"|"never-single-line(在单行块中的左大括号之前绝不能有空格)"|"always-multi-line(在多行块中，左大括号之前必须始终有一个空格)"|"never-multi-line(多行块中的左大括号之前绝不能有空格)"
-    "property-no-unknown": null, // 禁止未知的属性(true 为不允许)
-    "no-empty-source": null, // 禁止空源码
-    "declaration-block-trailing-semicolon": null, // 要求或不允许在声明块中使用尾随分号 string："always(必须始终有一个尾随分号)"|"never(不得有尾随分号)"
-    "selector-class-pattern": null, // 强制选择器类名的格式
-    "scss/at-import-partial-extension": null, // 解决不能引入scss文件
-    "value-no-vendor-prefix": null, // 关闭 vendor-prefix(为了解决多行省略 -webkit-box)
+    "no-descending-specificity": null, // It is forbidden to appear a lower priority selection device that is covered with a high priority selectioner
+    "function-url-quotes": "always", // Require or prohibit URL's quotes "Always (must be added with quotes)" | NEVER (no quoted) "
+    "string-quotes": "double", // Specify a string to use a single quotation number or dual quotation number
+    "unit-case": null, // Specification of the designated unit "LOWER (Full of Case)" | "Upper (fully written)" ""
+    "color-hex-case": "lower", // Specify the case of the hexadecimal color "LOWER (full lowercase)" | upper (full -write) ""
+    "color-hex-length": "long", // Specify the abbreviation or expansion of the hexadecimal color "SHORT (Hexadecimal abbreviation)" | "Long (hexadecimal expansion)"
+    "rule-empty-line-before": "never", // Require or prohibit the empty line "Always before the rules (must always have an empty line before the rules)" | "NEVER (must not have an empty line before the rules)" | Always-Multi-Line (must always be available before the multi-line rules must always be available before"One empty line)" NEVER-Multi-Line (must not have an empty line before the multi-line rules.) "" "" "" "" "
+    "font-family-no-missing-generic-family-keyword": null, // Forbidden to lack general -purpose font group keywords in the list of font names
+    "block-opening-brace-space-before": "always", // There must be a space or a blank symbol "Alway (must always have a space before the brackets)" | "NEVER before the bonus)" | AlwayS-SINGLE-LINE (must always have a space before the left brackets in one-line block) "" NEVER-SINGLE-LINE (must not have a space before the left blockbuts in one line) "" Always-Multi-Line (in theIn the multi-line block, there must always be a space before the left brackets) "" NEVER-Multi-Line (the left bonus in the multi-row block must not have a space before)
+    "property-no-unknown": null, // No unknown attributes (TRUE is not allowed)
+    "no-empty-source": null, // No empty source code
+    "declaration-block-trailing-semicolon": null, // Requirement or not allowed to use the tail score number string in the statement: "Always (must always have a score number)" | "
+    "selector-class-pattern": null, // Format of forced selection device category name
+    "scss/at-import-partial-extension": null, // Solution cannot introduce SCSS files
+    "value-no-vendor-prefix": null, // Turn off Vendor-Prefix (in order to solve the multi-line -webkit-box)
     "selector-pseudo-class-no-unknown": [
       true,
       {

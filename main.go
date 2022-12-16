@@ -62,7 +62,6 @@ func main() {
 		Use:   "init",
 		Short: "Initialize the database and create the schema (WARNING: this will delete all data in the database)",
 		Run: func(cmd *cobra.Command, args []string) {
-			// app.ResetBootstrapState()
 			err := app.Bootstrap()
 			if err != nil {
 				log.Fatal(err)
@@ -88,10 +87,6 @@ func main() {
 			}
 		},
 	})
-
-	// app.OnAfterBootstrap().Add(func(e *core.BootstrapEvent) error {
-	// 	return nil
-	// })
 
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
 		

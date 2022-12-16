@@ -6,29 +6,28 @@
 
 <script setup lang="ts">
 import { reactive, computed } from "vue";
-import { GlobalStore } from "@/store";
-// Configure Element Chinese and English
+import { GlobalStore } from "@/stores";
+import { useTheme } from "@/hooks/useTheme";
+import { getBrowserLang } from "@/utils/util";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
 import en from "element-plus/es/locale/lang/en";
-// Theme
-import { useTheme } from "@/hooks/useTheme";
+
+// Use theme
 useTheme();
 
 const globalStore = GlobalStore();
-// Configure whether there is a space in the middle of the ELEMENT button text
+// ConfigurationelementIs there a space between the button text
 const config = reactive({
 	autoInsertSpace: false
 });
 
-// element Language configuration
-const i18nLocale = computed((): any => {
+// element Language Configuration
+const i18nLocale = computed(() => {
 	if (globalStore.language && globalStore.language == "zh") return zhCn;
 	if (globalStore.language == "en") return en;
-	return "";
+	return getBrowserLang() == "zh" ? zhCn : en;
 });
 
 // Configure global component size (small/default(medium)/large)
 const assemblySize = computed((): string => globalStore.assemblySize);
 </script>
-
-<style scoped lang="scss"></style>

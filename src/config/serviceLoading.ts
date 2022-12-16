@@ -1,6 +1,6 @@
 import { ElLoading } from "element-plus";
 
-/* Global request loading(Service method call) */
+/* Global request loading(服务方式Call) */
 let loadingInstance: ReturnType<typeof ElLoading.service>;
 
 const startLoading = () => {
@@ -15,12 +15,11 @@ const endLoading = () => {
 	loadingInstance.close();
 };
 
-// So showFullScreenLoading() tryHideFullScreenLoading() What to do is to merge the request at the same time.
-// Deak a variable needLoadingRequestCount，Each time you call ShowfullScreenLoading method needLoadingRequestCount + 1。
-// Call TryhideFullScreenLoading() method，needLoadingRequestCount - 1.When NeedloadingRequestCount is 0, Loading is over.
+// Then showFullScreenLoading() tryHideFullScreenLoading() The thing to do is to merge the requests at the same moment。
+// Declare a variable needLoadingRequestCount，Each time you callshowFullScreenLoadingMethods needLoadingRequestCount + 1。
+// 调用tryHideFullScreenLoading()Methods，needLoadingRequestCount - 1。needLoadingRequestCountfor 0 Time，End loading。
 let needLoadingRequestCount = 0;
 export const showFullScreenLoading = () => {
-	// console.log("show full screen loading (loading...)", needLoadingRequestCount);
 	if (needLoadingRequestCount === 0) {
 		startLoading();
 	}
@@ -28,7 +27,6 @@ export const showFullScreenLoading = () => {
 };
 
 export const tryHideFullScreenLoading = () => {
-	// console.log("hide full screen loading (done)", needLoadingRequestCount);
 	if (needLoadingRequestCount <= 0) return;
 	needLoadingRequestCount--;
 	if (needLoadingRequestCount === 0) {

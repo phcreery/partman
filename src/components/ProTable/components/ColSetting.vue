@@ -1,11 +1,11 @@
 <template>
   <!-- Column display settings -->
-  <el-drawer title="Column settings" v-model="drawerVisible" size="400px">
-    <div class="table-box">
+  <el-drawer title="Column settings" v-model="drawerVisible" size="500px">
+    <div class="table" ref="colTableRef">
       <el-table :data="colSetting" :border="true">
         <el-table-column prop="label" label="Column" :align="'center'" />
         <el-table-column prop="name" label="Visibility" v-slot="scope" :align="'center'">
-          <el-switch v-model="scope.row.isShow" @click="switchShow"></el-switch>
+          <el-switch v-model="scope.row.isShow"></el-switch>
         </el-table-column>
         <template #empty>
           <div class="table-empty">
@@ -19,25 +19,21 @@
 </template>
 
 <script setup lang="ts" name="colSetting">
-import { ref, nextTick } from "vue";
+import { ref } from "vue";
 import { ColumnProps } from "@/components/ProTable/interface";
-
-const props = defineProps<{ colSetting: Partial<ColumnProps>[]; tableRef: any }>();
-
+defineProps<{ colSetting: ColumnProps[] }>();
 const drawerVisible = ref<boolean>(false);
-// Open the column settings
-const openColSetting = (): void => {
+// 打开列设置
+const openColSetting = () => {
   drawerVisible.value = true;
 };
-
-// Re -layout when the hidden hidden time Table (Prevent table shake,After hidden display, horizontal scroll bar will appear,element-plus Internal questions have been raised issues）
-const switchShow = () => {
-  nextTick(() => {
-    props.tableRef.doLayout();
-  });
-};
-
 defineExpose({
   openColSetting
 });
 </script>
+
+<style scoped lang="scss">
+.cursor-move {
+  cursor: move;
+}
+</style>

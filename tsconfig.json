@@ -31,5 +31,5 @@
     "skipLibCheck": true
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "vite.config.ts"],
-  "exclude": ["node_modules", "dist", "**/*.js"]
+  "exclude": ["node_modules", "dist", "**/*.js", "src_**", "template"]
 }

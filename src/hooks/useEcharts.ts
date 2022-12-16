@@ -1,23 +1,31 @@
-import { onUnmounted } from "vue";
+import { onActivated, onDeactivated, onBeforeUnmount } from "vue";
 import * as echarts from "echarts";
 
 /**
- * @description Use eCharts (just to add graphics response)
- * @param {Element} myChart ECharts instance (must pass)
- * @param {Object} options Draw the parameters of ECharts (must pass)
+ * @description UseEcharts(Just to add chart responsiveness)
+ * @param {Element} myChart EchartsExample(Must Pass)
+ * @param {Object} options DrawingEchartsThe parameters of(Must Pass)
  * @return void
  * */
 export const useEcharts = (myChart: echarts.ECharts, options: echarts.EChartsCoreOption) => {
-  if (options && typeof options === "object") {
-    myChart.setOption(options);
-  }
-  const echartsResize = () => {
-    myChart && myChart.resize();
-  };
+	if (options && typeof options === "object") {
+		myChart.setOption(options);
+	}
+	const echartsResize = () => {
+		myChart && myChart.resize();
+	};
 
-  window.addEventListener("resize", echartsResize, false);
+	window.addEventListener("resize", echartsResize);
 
-  onUnmounted(() => {
-    window.removeEventListener("resize", echartsResize);
-  });
+	onActivated(() => {
+		window.addEventListener("resize", echartsResize);
+	});
+
+	onDeactivated(() => {
+		window.removeEventListener("resize", echartsResize);
+	});
+
+	onBeforeUnmount(() => {
+		window.removeEventListener("resize", echartsResize);
+	});
 };

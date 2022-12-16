@@ -14,10 +14,10 @@ import ElementPlus from "element-plus";
 import * as Icons from "@element-plus/icons-vue";
 // element css
 import "element-plus/dist/index.css";
-// element dark(Built -in dark mode)
+// element dark(Built-in dark mode)
 import "element-plus/theme-chalk/dark/css-vars.css";
-// custom element dark(Custom Diablo Mode)
-import "@/styles/element-dark.scss";
+// custom element dark(Customized dark mode)
+import "@/styles/theme/element-dark.scss";
 // custom element css
 import "@/styles/element.scss";
 // custom directives
@@ -25,13 +25,19 @@ import directives from "@/directives/index";
 // vue Router
 import router from "@/routers/index";
 // vue i18n
-import I18n from "@/language/index";
+import I18n from "@/languages/index";
 // pinia store
-import pinia from "@/store/index";
+import pinia from "@/stores/index";
+// svg icons
+import "virtual:svg-icons-register";
+// errorHandler
+import errorHandler from "@/utils/errorHandler";
 
 const app = createApp(App);
 
-// Register Element icons component
+app.config.errorHandler = errorHandler;
+
+// Registrationelement IconsComponents
 Object.keys(Icons).forEach(key => {
 	app.component(key, Icons[key as keyof typeof Icons]);
 });

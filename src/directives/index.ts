@@ -1,4 +1,5 @@
 import { App } from "vue";
+import auth from "./modules/auth";
 import copy from "./modules/copy";
 import waterMarker from "./modules/waterMarker";
 import draggable from "./modules/draggable";
@@ -7,22 +8,23 @@ import throttle from "./modules/throttle";
 import longpress from "./modules/longpress";
 
 const directivesList: any = {
-  // Custom directives
-  copy,
-  waterMarker,
-  draggable,
-  debounce,
-  throttle,
-  longpress
+	// Custom directives
+	auth,
+	copy,
+	waterMarker,
+	draggable,
+	debounce,
+	throttle,
+	longpress
 };
 
 const directives = {
-  install: function (app: App<Element>) {
-    Object.keys(directivesList).forEach(key => {
-      // Register all custom instructions
-      app.directive(key, directivesList[key]);
-    });
-  }
+	install: function (app: App<Element>) {
+		Object.keys(directivesList).forEach(key => {
+			// Register all custom commands
+			app.directive(key, directivesList[key]);
+		});
+	}
 };
 
 export default directives;

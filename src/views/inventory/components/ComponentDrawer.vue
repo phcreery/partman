@@ -167,7 +167,7 @@ import {
   postStorageCreate,
   postComponentCategoryCreate
 } from "@/api/modules/components";
-import { nestedObjectAssign } from "@/utils/util";
+import { nestedObjectAssign } from "@/utils/nestedObjectAssign";
 // import UploadImg from "@/components/UploadImg/index.vue";
 import FootprintDrawer from "@/views/footprints/components/FootprintDrawer.vue";
 import StorageDrawer from "@/views/storage/components/StorageDrawer.vue";

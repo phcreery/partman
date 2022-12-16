@@ -1,23 +1,23 @@
-import { AuthStore } from "@/store/modules/auth";
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
+import { AuthStore } from "@/stores/modules/auth";
 
 /**
- * @description Page button permission
+ * @description Page button permissions
  * */
 export const useAuthButtons = () => {
-	// Current page keyword
+	// Current page keywords
 	const nowKey = ref<string>("");
-	// The current page routing object
+	// Current page routing object
 	const route = useRoute();
 
-	nowKey.value = route.meta.key as string;
+	nowKey.value = route.name as string;
 
 	// Current page button permission list
 	const BUTTONS = computed(() => {
 		const authStore = AuthStore();
-		// Before the interface data is obtained, it is set to an empty object, otherwise the error will be reported
-		return authStore.authButtonsObj[nowKey.value] || {};
+		// Before getting the interface data，Set to empty object，Otherwise, an error is reported
+		return authStore.authButtonListGet[nowKey.value] || {};
 	});
 
 	return {

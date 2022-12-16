@@ -1,65 +1,85 @@
 <template>
-  <div class="table-search" v-if="columns.length">
-    <el-form ref="formRef" :model="searchParam" :inline="true" label-width="100px" :style="`max-width: ${maxWidth}px`">
-      <template v-for="item in getSearchList" :key="item.prop">
-        <el-form-item :label="`${item.label} :`">
-          <SearchFormItem :item="item" :searchParam="searchParam"></SearchFormItem>
-        </el-form-item>
-      </template>
-    </el-form>
-    <div class="search-operation">
-      <el-button type="primary" :icon="Search" @click="search">Search</el-button>
-      <el-button :icon="Delete" @click="reset">Reset</el-button>
-      <el-button type="primary" link class="search-isOpen" @click="searchShow = !searchShow" v-if="columns.length > maxLength">
-        {{ searchShow ? "Simple" : "Advanced" }}
-        <el-icon class="el-icon--right">
-          <component :is="searchShow ? ArrowUp : ArrowDown"></component>
-        </el-icon>
-      </el-button>
-    </div>
-  </div>
+	<div class="card table-search" v-if="columns.length">
+		<el-form ref="formRef" :model="searchParam" label-width="auto">
+			<Grid ref="gridRef" :collapsed="collapsed" :gap="[20, 0]" :cols="searchCol">
+				<GridItem v-for="(item, index) in columns" :key="item.prop" v-bind="getResponsive(item)" :index="index">
+					<el-form-item :label="`${item.label} :`">
+						<SearchFormItem :column="item" :searchParam="searchParam" />
+					</el-form-item>
+				</GridItem>
+				<GridItem suffix>
+					<div class="operation">
+						<el-button type="primary" :icon="Search" @click="search">Search</el-button>
+						<el-button :icon="Delete" @click="reset">Reset</el-button>
+						<el-button v-if="showCollapse" type="primary" link class="search-isOpen" @click="collapsed = !collapsed">
+							{{ collapsed ? "Expand" : "Merger" }}
+							<el-icon class="el-icon--right">
+								<component :is="collapsed ? ArrowDown : ArrowUp"></component>
+							</el-icon>
+						</el-button>
+					</div>
+				</GridItem>
+			</Grid>
+		</el-form>
+	</div>
 </template>
-
-<script setup lang="ts" name="searchForm">
-import { ref, computed, onMounted } from "vue";
-import { ColumnProps } from "@/components/ProTable/interface/index";
-import SearchFormItem from "./components/SearchFormItem.vue";
+<script setup lang="ts" name="SearchForm">
+import { computed, ref } from "vue";
+import { ColumnProps } from "@/components/ProTable/interface";
+import { BreakPoint } from "@/components/Grid/interface";
 import { Delete, Search, ArrowDown, ArrowUp } from "@element-plus/icons-vue";
+import SearchFormItem from "./components/SearchFormItem.vue";
+import Grid from "@/components/Grid/index.vue";
+import GridItem from "@/components/Grid/components/GridItem.vue";
 
-interface componentProps {
-  columns: Partial<ColumnProps>[]; // Search configuration column
-  searchParam: any; // Search parameter
-  search: (params: any) => void; // Search method
-  reset: (params: any) => void; // Reset
+interface ProTableProps {
+	columns?: ColumnProps[]; // Search configuration column
+	searchParam?: { [key: string]: any }; // Search Parameters
+	searchCol: number | Record<BreakPoint, number>;
+	search: (params: any) => void; // Search Method
+	reset: (params: any) => void; // Reset method
 }
 
-// Defaults
-const props = withDefaults(defineProps<componentProps>(), {
-  columns: () => [],
-  searchParam: {}
+// Default Value
+const props = withDefaults(defineProps<ProTableProps>(), {
+	columns: () => [],
+	searchParam: () => ({})
 });
 
-const maxLength = ref<number>(4);
-const maxWidth = ref<number>(1260);
+// Get Responsive Settings
+const getResponsive = (item: ColumnProps) => {
+	return {
+		span: item.search?.span,
+		offset: item.search?.offset ?? 0,
+		xs: item.search?.xs,
+		sm: item.search?.sm,
+		md: item.search?.md,
+		lg: item.search?.lg,
+		xl: item.search?.xl
+	};
+};
 
-onMounted(() => {
-  // * Temporarily only judge these two situations (the fourth search item is time/date range || The first three existence time/date range selection box)
-  // * In the later period, the adaptive width change of the text box through CSS has achieved the same style as Pro-Table in Antd, but the self-feel is not very good, so I don’t use
-  if (props.columns.length >= 4) {
-    const searchTypeArr = ["datetimerange", "daterange"];
-    searchTypeArr.includes(props.columns[3].searchType!) ? ((maxWidth.value = 945), (maxLength.value = 3)) : null;
-    props.columns.slice(0, 3).forEach(item => {
-      searchTypeArr.includes(item.searchType!) ? ((maxWidth.value = 1155), (maxLength.value = 3)) : null;
-    });
-  }
-});
+// Whether to collapse search items by default
+const collapsed = ref(true);
 
-// Whether to start search items
-const searchShow = ref(false);
+// Get responsive breakpoints
+const gridRef = ref();
+const breakPoint = computed<BreakPoint>(() => gridRef.value?.breakPoint);
 
-// Search item length based on whether to expand the configuration
-const getSearchList = computed((): Partial<ColumnProps>[] => {
-  if (searchShow.value) return props.columns;
-  return props.columns.slice(0, maxLength.value);
+// Determine whether to display Expand/Merger Buttons
+const showCollapse = computed(() => {
+	let show = false;
+	props.columns.reduce((prev, current) => {
+		prev +=
+			(current.search![breakPoint.value]?.span ?? current.search?.span ?? 1) +
+			(current.search![breakPoint.value]?.offset ?? current.search?.offset ?? 0);
+		if (typeof props.searchCol !== "number") {
+			if (prev >= props.searchCol[breakPoint.value]) show = true;
+		} else {
+			if (prev > props.searchCol) show = true;
+		}
+		return prev;
+	}, 0);
+	return show;
 });
 </script>

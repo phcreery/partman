@@ -18,13 +18,13 @@
   <div class="login-btn">
     <el-button :icon="CircleClose" round @click="resetForm(loginFormRef)" size="large">Reset</el-button>
     <!-- <el-button :icon="Key" round @click="login(loginFormRef, true)" size="large" :loading="loading"> Admin Login </el-button> -->
-    <el-button :icon="UserFilled" round @click="login(loginFormRef, false)" size="large" type="primary" :loading="loading">
+    <el-button :icon="UserFilled" round @click="login(loginFormRef)" size="large" type="primary" :loading="loading">
       Login
     </el-button>
   </div>
 </template>
 
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { Login } from "@/api/interface";
@@ -32,9 +32,9 @@ import { CircleClose, UserFilled, Key } from "@element-plus/icons-vue";
 import type { ElForm } from "element-plus";
 import { ElMessage } from "element-plus";
 import { loginApi, loginApiAsAdmin } from "@/api/modules/login";
-import { GlobalStore } from "@/store";
-import { MenuStore } from "@/store/modules/menu";
-import { TabsStore } from "@/store/modules/tabs";
+import { GlobalStore } from "@/stores";
+import { MenuStore } from "@/stores/modules/menu";
+import { TabsStore } from "@/stores/modules/tabs";
 // import md5 from "js-md5";
 
 const globalStore = GlobalStore();
@@ -100,6 +100,83 @@ onMounted(() => {
     if (e.code === "Enter" || e.code === "enter" || e.code === "NumpadEnter") {
       if (loading.value) return;
       login(loginFormRef.value, false);
+    }
+  };
+});
+</script>
+
+<style scoped lang="scss">
+@import "../index.scss";
+</style> -->
+
+<script setup lang="ts">
+import { ref, reactive, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { Login } from "@/api/interface";
+import { ElNotification } from "element-plus";
+import { loginApi } from "@/api/modules/login";
+import { GlobalStore } from "@/stores";
+import { TabsStore } from "@/stores/modules/tabs";
+import { getTimeState } from "@/utils/util";
+import { HOME_URL } from "@/config/config";
+import { initDynamicRouter } from "@/routers/modules/dynamicRouter";
+import { CircleClose, UserFilled } from "@element-plus/icons-vue";
+import type { ElForm } from "element-plus";
+import md5 from "js-md5";
+
+const router = useRouter();
+const tabsStore = TabsStore();
+const globalStore = GlobalStore();
+// 定义 formRef（校验规则）
+type FormInstance = InstanceType<typeof ElForm>;
+const loginFormRef = ref<FormInstance>();
+const loginRules = reactive({
+  username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+  password: [{ required: true, message: "请输入密码", trigger: "blur" }]
+});
+const loading = ref(false);
+const loginForm = reactive<Login.ReqLoginParams>({ username: "", password: "" });
+const login = (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  formEl.validate(async valid => {
+    if (!valid) return;
+    loading.value = true;
+    try {
+      // 1.执行登录接口
+      // const { data } = await loginApi({ ...loginForm, password: md5(loginForm.password) });
+      const { data } = await loginApi(loginForm);
+      // globalStore.setToken(data.access_token);
+      globalStore.setToken(data.token);
+      globalStore.setUserInfo(data.record);
+      // 2.添加动态路由
+      await initDynamicRouter();
+      // 3.清除上个账号的 tab 信息
+      tabsStore.closeMultipleTab();
+      // 4.跳转到首页
+      router.push(HOME_URL);
+      ElNotification({
+        title: getTimeState(),
+        message: "欢迎登录 Geeker-Admin",
+        type: "success",
+        duration: 3000
+      });
+    } finally {
+      loading.value = false;
+    }
+  });
+};
+// resetForm
+const resetForm = (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  formEl.resetFields();
+};
+onMounted(() => {
+  // 监听enter事件（调用登录）
+  document.onkeydown = (e: any) => {
+    e = window.event || e;
+    if (e.code === "Enter" || e.code === "enter" || e.code === "NumpadEnter") {
+      if (loading.value) return;
+      login(loginFormRef.value);
     }
   };
 });

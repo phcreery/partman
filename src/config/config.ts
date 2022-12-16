@@ -1,10 +1,16 @@
-// ? Global non -moving configuration items are only exported and not modified
+// ? Global immobility configuration items Export only without modification
 
-// * Homepage (default))
-export const HOME_URL: string = "/home/index";
+// * Home Address（Default）
+export const HOME_URL: string = "/home";
 
-// * Tabs (Blacklist address, no need to add to tabs routing address)
-export const TABS_BLACK_LIST: string[] = ["/403", "/404", "/500", "/layout", "/login", "/dataScreen"];
+// * Login page address（Default）
+export const LOGIN_URL: string = "/login";
 
-// * Gaode Map KEY
+// * Default theme color
+export const DEFAULT_PRIMARY: string = "#009688";
+
+// * Tabs（Whitelist Address，It is not necessary to add to the tabs The routing address of）
+export const TABS_WHITE_LIST: string[] = ["/403", "/404", "/500", LOGIN_URL];
+
+// * Gaode Mapkey
 export const MAP_KEY: string = "";

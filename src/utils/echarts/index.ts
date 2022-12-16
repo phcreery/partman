@@ -1,8 +1,8 @@
-// * Echarts 按需引入
+// * Echarts On-demand introduction
 import * as echarts from "echarts/core";
 import {
 	BarChart,
-	// 系列类型的定义后缀都为 SeriesOption
+	// 系列Type的定义后缀都为 SeriesOption
 	BarSeriesOption,
 	LineChart,
 	LineSeriesOption
@@ -10,22 +10,22 @@ import {
 import { LegendComponent } from "echarts/components";
 import {
 	TitleComponent,
-	// 组件类型的定义后缀都为 ComponentOption
+	// The component types are defined with the suffix ComponentOption
 	TitleComponentOption,
 	TooltipComponent,
 	TooltipComponentOption,
 	GridComponent,
 	GridComponentOption,
-	// 数据集组件
+	// Data set components
 	DatasetComponent,
 	DatasetComponentOption,
-	// 内置数据转换器组件 (filter, sort)
+	// Built-in data converter assembly (filter, sort)
 	TransformComponent
 } from "echarts/components";
 import { LabelLayout, UniversalTransition } from "echarts/features";
 import { CanvasRenderer } from "echarts/renderers";
 
-// 通过 ComposeOption 来组合出一个只有必须组件和图表的 Option 类型
+// By ComposeOption to assemble a chart with only the required components and Option 类型
 export type ECOption = echarts.ComposeOption<
 	| BarSeriesOption
 	| LineSeriesOption
@@ -35,7 +35,7 @@ export type ECOption = echarts.ComposeOption<
 	| DatasetComponentOption
 >;
 
-// 注册必须的组件
+// Register required components
 echarts.use([
 	LegendComponent,
 	TitleComponent,

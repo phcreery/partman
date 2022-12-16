@@ -1,11 +1,9 @@
-// * Request enumeration configuration
+// * Request Enumeration Configuration
 /**
- * @description：Request configuration
+ * @description：Request Configuration
  */
 export enum ResultEnum {
 	SUCCESS = 200,
-	BADREQ = 400,
-	FORBIDDEN = 403,
 	ERROR = 500,
 	OVERDUE = 599,
 	TIMEOUT = 10000,
@@ -13,7 +11,7 @@ export enum ResultEnum {
 }
 
 /**
- * @description：Method of requesting
+ * @description：Request Method
  */
 export enum RequestEnum {
 	GET = "GET",
@@ -24,14 +22,14 @@ export enum RequestEnum {
 }
 
 /**
- * @description：Commonly used ContentTyp type
+ * @description：Commonly usedcontentTypType
  */
 export enum ContentTypeEnum {
 	// json
 	JSON = "application/json;charset=UTF-8",
 	// text
 	TEXT = "text/plain;charset=UTF-8",
-	// form-data General with QS
+	// form-data General fitqs
 	FORM_URLENCODED = "application/x-www-form-urlencoded;charset=UTF-8",
 	// form-data Upload
 	FORM_DATA = "multipart/form-data;charset=UTF-8"

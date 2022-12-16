@@ -41,7 +41,7 @@ import {
   postStorageCreate,
   postComponentCategoryCreate
 } from "@/api/modules/components";
-import { nestedObjectAssign } from "@/utils/util";
+import { nestedObjectAssign } from "@/utils/nestedObjectAssign";
 
 interface DetailsProps {
   title: string;

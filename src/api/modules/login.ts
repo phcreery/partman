@@ -1,4 +1,4 @@
-import { Login } from "@/api/interface/index";
+import { Login, APIdata } from "@/api/interface/index";
 // import Menu from "@/assets/json/menu.json";
 // import qs from "qs";
 
@@ -9,7 +9,7 @@ import client from "@/api";
  * @name Login module
  */
 // * User login interface
-export const loginApi = async (params: Login.ReqLoginParams): Promise<Login.ResLogin> => {
+export const loginApi = async (params: Login.ReqLoginParams): Promise<APIdata<Login.ResLogin>> => {
   // return http.post<Login.ResLogin>(PORT1 + `/login`, params); // normal post json ask  ==>  application/json
   // return http.post<Login.ResLogin>(PORT1 + `/login`, {}, { params }); // post Request to carry Query parameter  ==>  ?username=admin&password=123456
   // return http.post<Login.ResLogin>(PORT1 + `/login`, qs.stringify(params)); // post Request to carry form parameters  ==>  application/x-www-form-urlencoded
@@ -17,7 +17,7 @@ export const loginApi = async (params: Login.ReqLoginParams): Promise<Login.ResL
   const authData = await client.collection("users").authWithPassword(params.username, params.password);
   // authData.user = await client.collection("users").getOne(authData.record.id);
   console.log("authData", authData);
-  return authData;
+  return { data: authData };
 };
 
 export const loginApiAsAdmin = async (params: Login.ReqLoginParams): Promise<Login.ResLogin> => {
@@ -27,9 +27,25 @@ export const loginApiAsAdmin = async (params: Login.ReqLoginParams): Promise<Log
   return adminAuthData;
 };
 
+// * 用户退出登录
+export const logoutApi = () => {
+  return null; // http.post<Login.ResLogout>(PORT1 + `/logout`);
+};
+
 // * Get the button permissions
-export const getAuthButtons = () => {
+export const getAuthButtonListApi = (): Login.ResAuthButtons => {
   // return http.get<Login.ResAuthButtons>(PORT1 + `/auth/buttons`);
+  // return {
+  //   code: 200,
+  //   msg: "success",
+  //   data: {
+  //     inventory: ["add", "batchAdd", "export", "batchDelete", "status", "view", "edit", "reset", "delete"],
+  //     footprints: ["add", "delete", "view", "edit"],
+  //     storage: ["add", "delete", "view", "edit"],
+  //     categories: ["add", "delete", "view", "edit"],
+  //     projects: ["add", "delete", "view", "edit", "batchAdd", "export"]
+  //   }
+  // };
   return {
     code: 200,
     msg: "success",
@@ -84,85 +100,149 @@ export const getAuthButtons = () => {
 };
 
 // * Get the menu list
-export const getMenuList = () => {
+export const getAuthMenuListApi = () => {
   // return http.get<Menu.MenuOptions[]>(PORT1 + `/menu/list`);
   // If you want to make the menu into local data, comment on the line of code on the previous line, and introduce the local Menu.json data
-  return {
+  let res = {
     code: 200,
     msg: "success",
     data: [
       {
-        title: "Home",
-        path: "/home/index",
-        icon: "home-filled"
+        path: "/home",
+        name: "home",
+        component: "/home/index",
+        meta: {
+          icon: "home-filled",
+          title: "Home",
+          isLink: "",
+          isHide: false,
+          isFull: false,
+          isAffix: true,
+          isKeepAlive: true
+        }
       },
       {
-        title: "Inventory",
-        path: "/inventory/index",
-        icon: "cpu"
+        path: "/inventory",
+        name: "inventory",
+        component: "/inventory/index",
+        meta: {
+          icon: "cpu",
+          title: "Inventory",
+          isLink: "",
+          isHide: false,
+          isFull: false,
+          isAffix: true,
+          isKeepAlive: true
+        },
+        children: []
       },
       {
-        title: "Categories",
-        path: "/categories/index",
-        icon: "folder"
+        path: "/categories",
+        name: "categories",
+        component: "/categories/index",
+        meta: {
+          icon: "folder",
+          title: "Categories",
+          isLink: "",
+          isHide: false,
+          isFull: false,
+          isAffix: true,
+          isKeepAlive: true
+        }
       },
       {
-        title: "Footprints",
-        path: "/footprints/index",
-        icon: "menu"
+        path: "/footprints",
+        name: "footprints",
+        component: "/footprints/index",
+        meta: {
+          icon: "menu",
+          title: "Footprints",
+          isLink: "",
+          isHide: false,
+          isFull: false,
+          isAffix: true,
+          isKeepAlive: true
+        },
+        children: []
       },
       {
-        title: "Storage",
-        path: "/storage/index",
-        icon: "TakeawayBox"
+        path: "/storage",
+        name: "storage",
+        component: "/storage/index",
+        meta: {
+          icon: "TakeawayBox",
+          title: "Storage",
+          isLink: "",
+          isHide: false,
+          isFull: false,
+          isAffix: true,
+          isKeepAlive: true
+        },
+        children: []
       },
       {
-        title: "Projects",
-        path: "/projects/index",
-        icon: "odometer"
+        path: "/projects",
+        name: "projects",
+        component: "/projects/index",
+        meta: {
+          icon: "odometer",
+          title: "Projects",
+          isLink: "",
+          isHide: false,
+          isFull: false,
+          isAffix: true,
+          isKeepAlive: true
+        },
+        children: []
       },
-      // {
-      //   title: "Builds",
-      //   path: "/builds",
-      //   icon: "promotion"
-      // },
-      // {
-      //   title: "Purchase",
-      //   path: "/builds",
-      //   icon: "goods"
-      // },
       {
-        title: "Settings",
         path: "/settings",
-        icon: "setting",
-        children: [
-          // {
-          //   title: "Users",
-          //   path: "/users/index",
-          //   icon: "user"
-          // },
-          {
-            title: "General",
-            path: "/settings/general",
-            icon: "setting"
-          },
-          // {
-          //   title: "Export",
-          //   path: "/404",
-          //   icon: "Download"
-          // },
-          // {
-          //   title: "Import",
-          //   path: "/404",
-          //   icon: "Upload"
-          // }
-          {
-            title: "Logs",
-            path: "/settings/logs",
-            icon: "clock"
-          }
-        ]
+        name: "settings",
+        component: "/settings/general",
+        meta: {
+          icon: "setting",
+          title: "Settings",
+          isLink: "",
+          isHide: false,
+          isFull: false,
+          isAffix: true,
+          isKeepAlive: true
+        },
+        children: []
       }
+      // {
+      //   title: "Settings",
+      //   path: "/settings",
+      //   icon: "setting",
+      //   children: [
+      //     // {
+      //     //   title: "Users",
+      //     //   path: "/users/index",
+      //     //   icon: "user"
+      //     // },
+      //     {
+      //       title: "General",
+      //       path: "/settings/general",
+      //       icon: "setting"
+      //     },
+      //     // {
+      //     //   title: "Export",
+      //     //   path: "/404",
+      //     //   icon: "Download"
+      //     // },
+      //     // {
+      //     //   title: "Import",
+      //     //   path: "/404",
+      //     //   icon: "Upload"
+      //     // }
+      //     {
+      //       title: "Logs",
+      //       path: "/settings/logs",
+      //       icon: "clock"
+      //     }
+      //   ]
+      // }
     ]
   };
+  return res; //.data;
 };

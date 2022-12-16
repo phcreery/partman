@@ -4,11 +4,13 @@ import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
 import { wrapperEnv } from "./src/utils/getEnv";
 import { visualizer } from "rollup-plugin-visualizer";
+import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 import viteCompression from "vite-plugin-compression";
 import VueSetupExtend from "vite-plugin-vue-setup-extend";
 import eslintPlugin from "vite-plugin-eslint";
 import vueJsx from "@vitejs/plugin-vue-jsx";
-import importToCDN from "vite-plugin-cdn-import";
+// import importToCDN from "vite-plugin-cdn-import";
+import { Plugin as importToCDN } from "vite-plugin-cdn-import";
 // import AutoImport from "unplugin-auto-import/vite";
 // import Components from "unplugin-vue-components/vite";
 // import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
@@ -48,10 +50,11 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       cors: true,
       // https: false,
       // Agent cross -domain (Mock does not need to be configured, here is just a matter)
+      // 跨域代理配置
       proxy: {
         "/api": {
-          // target: "https://www.fastmock.site/mock/f81e8333c1a9276214bcdbc170d9e0a0", // fastmock
           target: "https://mock.mengxuegu.com/mock/629d727e6163854a32e8307e", // easymock
+          // target: "https://www.fastmock.site/mock/f81e8333c1a9276214bcdbc170d9e0a0", // fastmock
           changeOrigin: true,
           rewrite: path => path.replace(/^\/api/, "")
         }
@@ -66,6 +69,11 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
             title: viteEnv.VITE_GLOB_APP_TITLE
           }
         }
+      }),
+      // * 使用 svg 图标
+      createSvgIconsPlugin({
+        iconDirs: [resolve(process.cwd(), "src/assets/icons")],
+        symbolId: "icon-[dir]-[name]"
       }),
       // * EsLint: The error information is displayed on the browser interface
       // eslintPlugin(),

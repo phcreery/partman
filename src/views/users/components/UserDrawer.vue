@@ -59,7 +59,7 @@ import { ElMessage, FormInstance } from "element-plus";
 // import { genderType } from "@/utils/serviceDict";
 import { User } from "@/api/interface";
 // import { getFootprintsEnum } from "@/api/modules/components";
-import { nestedObjectAssign } from "@/utils/util";
+import { nestedObjectAssign } from "@/utils/nestedObjectAssign";
 // import UploadImg from "@/components/UploadImg/index.vue";
 
 const rules = reactive({

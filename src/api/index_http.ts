@@ -5,7 +5,7 @@ import { AxiosCanceler } from "./helper/axiosCancel";
 import { ResultEnum } from "@/enums/httpEnum";
 import { checkStatus } from "./helper/checkStatus";
 import { ElMessage } from "element-plus";
-import { GlobalStore } from "@/store";
+import { GlobalStore } from "@/stores";
 import router from "@/routers";
 
 /**

@@ -2,33 +2,33 @@ import { ElMessageBox, ElMessage } from "element-plus";
 import { HandleData } from "./interface";
 
 /**
- * @description Operate a single data information (secondary confirmation [delete, disable, enable, reset password])
- * @param {Function} api API method of operating data interface(Must pass)
- * @param {Object} params The operation data parameters carried {id,params}(Must pass)
- * @param {String} message Prompt information(Must pass)
- * @param {String} confirmType Icon type(No need to pass,The default is warning)
+ * @description Manipulate single data message(Secondary confirmation【Delete、Disable、Enable、Reset Password】)
+ * @param {Function} api Operating the data interface of theapiMethods(Must Pass)
+ * @param {Object} params Operating data parameters carried {id,params}(Must Pass)
+ * @param {String} message Tip Message(Must Pass)
+ * @param {String} confirmType iconType(No need to pass,Default is warning)
  * @return Promise
  */
 export const useHandleData = <P = any, R = any>(
-  api: (params: P) => Promise<R>,
-  params: Parameters<typeof api>[0],
-  message: string,
-  confirmType: HandleData.MessageType = "warning"
+	api: (params: P) => Promise<R>,
+	params: Parameters<typeof api>[0],
+	message: string,
+	confirmType: HandleData.MessageType = "warning"
 ) => {
-  return new Promise((resolve, reject) => {
-    ElMessageBox.confirm(`${message}?`, "Are you sure?", {
-      confirmButtonText: "Yes",
-      cancelButtonText: "Cancel",
-      type: confirmType,
-      draggable: true
-    }).then(async () => {
-      const res = await api(params);
-      if (!res) return reject(false);
-      ElMessage({
-        type: "success",
-        message: `${message} success!`
-      });
-      resolve(true);
-    });
-  });
+	return new Promise((resolve, reject) => {
+		ElMessageBox.confirm(`whether${message}?`, "Warm Tips", {
+			confirmButtonText: "Determine",
+			cancelButtonText: "Cancellation",
+			type: confirmType,
+			draggable: true
+		}).then(async () => {
+			const res = await api(params);
+			if (!res) return reject(false);
+			ElMessage({
+				type: "success",
+				message: `${message}Success!`
+			});
+			resolve(true);
+		});
+	});
 };

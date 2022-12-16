@@ -1,6 +1,6 @@
 import { arrayToTree } from "performant-array-to-tree";
 import client, { tryCatchAsync } from "@/api";
-import { nestedObjectAssign } from "@/utils/util";
+import { nestedObjectAssign } from "@/utils/nestedObjectAssign";
 
 import {
   APIdata,
@@ -34,7 +34,7 @@ function that converts JSON object of parameters to a consumable PocketBase 'fil
 ex. filter: { id: 'asdf', footprint: {0: '0806', 1: '0604'}} -> "id='asdf' && (footprint='0806' || footprint='0604')"
 */
 const filterToPBString = (filter: { [propName: string]: any }) => {
-  // console.log("filter", filter);
+  console.log("filter", filter);
   let filterParams = Object.keys(filter);
   let sarr: string[] = []; // string array
   for (const param of filterParams) {
@@ -52,6 +52,7 @@ const filterToPBString = (filter: { [propName: string]: any }) => {
     }
   }
   let s = sarr.join(" && ");
+  console.log("filter string", s);
   return s;
 };
 
@@ -71,6 +72,7 @@ const getPathName = (data: any[], id: string, identifier = "id", parentIdentifie
 // ---- COMPONENTS ----
 
 export const getComponentList = async (params: Component.ReqGetComponentListParams) => {
+  console.log("getComponentList params", params);
   let res = await client.collection("components").getList(params.page, params.perPage, {
     // filter: Object.keys(params.filter).length !== 0 ? params.filter : "",
     filter: params.filter ? filterToPBString(params.filter) : "",

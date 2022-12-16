@@ -1,79 +1,68 @@
 <template>
-  <div class="table-box">
-    <el-row :gutter="20">
-      <el-col :span="6">
-        <ProTree
-          ref="proTree"
-          :requestApi="getComponentCategoryEnumTree"
-          :initParam="initParamCategory"
-          :dataCallback="dataCallbackTree"
-          @handle-node-click="handleCategorySelect"
+  <div class="main-box">
+    <ProTree
+      ref="proTree"
+      :requestApi="getComponentCategoryEnumTree"
+      :initParam="initParamCategory"
+      :dataCallback="dataCallbackTree"
+      @handle-node-click="handleCategorySelect"
+    >
+      <template #treeHeader="scope">
+        <el-button type="primary" :icon="CirclePlus" @click="openComponentCategoryDrawer('New')" v-if="BUTTONS.add"></el-button>
+        <el-button
+          :icon="EditPen"
+          :disabled="scope.row.id === ''"
+          @click="openComponentCategoryDrawer('Edit', scope.row)"
+          v-if="BUTTONS.edit"
+        ></el-button>
+        <el-button
+          type="danger"
+          :icon="Delete"
+          plain
+          :disabled="scope.row.id === ''"
+          @click="batchDeleteCategory([scope.row.id])"
+          v-if="BUTTONS.delete"
         >
-          <template #treeHeader="scope">
-            <el-button
-              type="primary"
-              :icon="CirclePlus"
-              @click="openComponentCategoryDrawer('New')"
-              v-if="BUTTONS.add"
-            ></el-button>
-            <el-button
-              :icon="EditPen"
-              :disabled="scope.row.id === ''"
-              @click="openComponentCategoryDrawer('Edit', scope.row)"
-              v-if="BUTTONS.edit"
-            ></el-button>
-            <el-button
-              type="danger"
-              :icon="Delete"
-              plain
-              :disabled="scope.row.id === ''"
-              @click="batchDeleteCategory([scope.row.id])"
-              v-if="BUTTONS.delete"
-            >
-            </el-button>
-          </template>
-        </ProTree>
-      </el-col>
-      <el-col :span="18">
-        <div class="table-box">
-          <ProTable
-            ref="proTable"
-            :columns="columns"
-            :requestApi="getComponentList"
-            :initParam="initParam"
-            :isPageable="true"
-            :dataCallback="dataCallbackTable"
+        </el-button>
+      </template>
+    </ProTree>
+    <div class="table-box">
+      <ProTable
+        ref="proTable"
+        :columns="columns"
+        :requestApi="getComponentList"
+        :initParam="initParam"
+        :isPageable="true"
+        :dataCallback="dataCallbackTable"
+      >
+        <!-- Table header button -->
+        <template #tableHeader="scope">
+          <el-button type="primary" :icon="CirclePlus" @click="openComponentDrawer('New')" v-if="BUTTONS.add">
+            New Component
+          </el-button>
+          <el-button
+            type="danger"
+            :icon="Delete"
+            plain
+            :disabled="!scope.isSelected"
+            @click="batchDelete(scope.selectedListIds)"
+            v-if="BUTTONS.delete"
           >
-            <!-- Table header button -->
-            <template #tableHeader="scope">
-              <el-button type="primary" :icon="CirclePlus" @click="openComponentDrawer('New')" v-if="BUTTONS.add">
-                New Component
-              </el-button>
-              <el-button
-                type="danger"
-                :icon="Delete"
-                plain
-                :disabled="!scope.isSelected"
-                @click="batchDelete(scope.ids)"
-                v-if="BUTTONS.delete"
-              >
-                Delete
-              </el-button>
-            </template>
-            <!-- Expand -->
-            <template #expand="scope">
-              {{ scope.row }}
-            </template>
-            <!-- Table operation -->
-            <template #action="scope">
-              <el-button type="primary" link :icon="EditPen" @click="openComponentDrawer('Edit', scope.row)">Edit</el-button>
-            </template>
-          </ProTable>
-          <ComponentDrawer ref="drawerRefComponent"></ComponentDrawer>
-          <ComponentCategoryDrawer ref="drawerRefComponentCategory"></ComponentCategoryDrawer>
-        </div>
-      </el-col>
-    </el-row>
+            Delete
+          </el-button>
+        </template>
+        <!-- Expand -->
+        <template #expand="scope">
+          {{ scope.row }}
+        </template>
+        <!-- Table operation -->
+        <template #action="scope">
+          <el-button type="primary" link :icon="EditPen" @click="openComponentDrawer('Edit', scope.row)">Edit</el-button>
+        </template>
+      </ProTable>
+      <ComponentDrawer ref="drawerRefComponent"></ComponentDrawer>
+      <ComponentCategoryDrawer ref="drawerRefComponentCategory"></ComponentCategoryDrawer>
+    </div>
   </div>
 </template>
 
@@ -137,7 +126,7 @@ const handleCategorySelect = (data: any) => {
 const { BUTTONS } = useAuthButtons();
 
 // Table configuration item
-const columns: Partial<ColumnProps>[] = [
+const columns: ColumnProps[] = [
   { type: "selection", width: 40, fixed: "left" },
   // { type: "expand", label: "" },
   {
@@ -145,8 +134,8 @@ const columns: Partial<ColumnProps>[] = [
     label: "Name",
     width: 260,
     align: "left",
-    sortable: true,
-    renderText: (data: Component.ResGetComponentRecord) => `${data.manufacturer} - ${data.mpn}`
+    sortable: true
+    // renderText: (data: Component.ResGetComponentRecord) => `${data.manufacturer} - ${data.mpn}`
     // isShow: false
   },
   {
@@ -154,9 +143,7 @@ const columns: Partial<ColumnProps>[] = [
     label: "Mfr.",
     width: 130,
     sortable: true,
-    search: true,
-    searchType: "text",
-    // searchProps: { disabled: true },
+    search: { el: "input" },
     isShow: false
   },
   {
@@ -164,9 +151,7 @@ const columns: Partial<ColumnProps>[] = [
     label: "MPN",
     width: 130,
     sortable: true,
-    search: true,
-    searchType: "text",
-    // searchProps: { disabled: true },
+    search: { el: "input" },
     isShow: false
   },
   {
@@ -174,26 +159,38 @@ const columns: Partial<ColumnProps>[] = [
     label: "Category",
     width: 120,
     align: "left",
-    sortable: true,
-    // search: true,
-    // searchType: "select",
-    searchType: "treeSelect",
-    // values that go into the treeSelect props
-    searchProps: {
-      value: "id",
-      label: "_fullName",
-      props: { value: "id", label: "name", emitPath: false },
-      checkStrictly: true
-    },
-    enumFunction: async () => {
+    enum: async () => {
       // nextTick to prevent calling api multiple times and per instant and race condition on loading screen tracker
-      await nextTick();
-      return await getComponentCategoryEnum();
-    },
-    enumTreeFunction: async () => {
       await nextTick();
       return await getComponentCategoryEnumTree();
     },
+    fieldNames: { value: "id", label: "name" },
+    sortable: true,
+    search: {
+      el: "tree-select",
+      props: {
+        props: { value: "id", label: "name" }
+      }
+    },
+    // search: true,
+    // searchType: "select",
+    // searchType: "treeSelect",
+    // values that go into the treeSelect props
+    // searchProps: {
+    //   value: "id",
+    //   label: "_fullName",
+    //   props: { value: "id", label: "name", emitPath: false },
+    //   checkStrictly: true
+    // },
+    // enumFunction: async () => {
+    //   // nextTick to prevent calling api multiple times and per instant and race condition on loading screen tracker
+    //   await nextTick();
+    //   return await getComponentCategoryEnum();
+    // },
+    // enumTreeFunction: async () => {
+    //   await nextTick();
+    //   return await getCompentCategoryEnumTree();
+    // },on
     isShow: false
   },
   {
@@ -201,8 +198,7 @@ const columns: Partial<ColumnProps>[] = [
     label: "Description",
     // width: 220,
     align: "left",
-    search: true,
-    searchType: "text"
+    search: { el: "input" }
   },
   {
     prop: "action",

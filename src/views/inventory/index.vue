@@ -1,49 +1,47 @@
 <template>
-  <div class="main-box">
-    <div class="table-box">
-      <ProTable
-        ref="proTable"
-        :columns="columns"
-        :requestApi="getComponentList"
-        :initParam="initParam"
-        :isPageable="true"
-        :dataCallback="dataCallback"
-      >
-        <!-- Table header button -->
-        <template #tableHeader="scope">
-          <el-button type="primary" :icon="CirclePlus" @click="openDrawer('New')" v-if="BUTTONS.add">New Component</el-button>
-          <el-button type="primary" :icon="Upload" plain @click="batchAdd" v-if="BUTTONS.batchAdd">Import</el-button>
-          <el-button type="primary" :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button>
-          <el-button
-            type="danger"
-            :icon="Delete"
-            plain
-            :disabled="!scope.isSelected"
-            @click="batchDelete(scope.selectedListIds)"
-            v-if="BUTTONS.batchDelete"
-          >
-            Delete
-          </el-button>
-        </template>
-        <!-- Expand -->
-        <template #expand="scope">
-          <!-- {{ scope.row }} -->
-          <ComponentDetails :title="scope.row.name" :isView="true" :rowData="scope.row"></ComponentDetails>
-        </template>
-        <template #stock="scope">
-          {{ scope.row.stock }}
-          <el-button type="primary" link :icon="DCaret" @click="openStockDrawer('Stock', scope.row)"></el-button>
-        </template>
+  <div class="table-box">
+    <ProTable
+      ref="proTable"
+      :columns="columns"
+      :requestApi="getComponentList"
+      :initParam="initParam"
+      :isPageable="true"
+      :dataCallback="dataCallback"
+    >
+      <!-- Table header button -->
+      <template #tableHeader="scope">
+        <el-button type="primary" :icon="CirclePlus" @click="openDrawer('New')" v-if="BUTTONS.add">New Component</el-button>
+        <el-button type="primary" :icon="Upload" plain @click="batchAdd" v-if="BUTTONS.batchAdd">Import</el-button>
+        <el-button type="primary" :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button>
+        <el-button
+          type="danger"
+          :icon="Delete"
+          plain
+          :disabled="!scope.isSelected"
+          @click="batchDelete(scope.selectedListIds)"
+          v-if="BUTTONS.batchDelete"
+        >
+          Delete
+        </el-button>
+      </template>
+      <!-- Expand -->
+      <template #expand="scope">
+        <!-- {{ scope.row }} -->
+        <ComponentDetails :title="scope.row.name" :isView="true" :rowData="scope.row"></ComponentDetails>
+      </template>
+      <template #stock="scope">
+        {{ scope.row.stock }}
+        <el-button type="primary" link :icon="DCaret" @click="openStockDrawer('Stock', scope.row)"></el-button>
+      </template>
 
-        <!-- Table operation -->
-        <template #action="scope">
-          <el-button type="primary" link :icon="EditPen" @click="openDrawer('Edit', scope.row)">Edit</el-button>
-        </template>
-      </ProTable>
-      <ComponentDrawer ref="drawerRef"></ComponentDrawer>
-      <ComponentStockEdit ref="drawerRefComponentStockEdit"></ComponentStockEdit>
-      <ImportExcel ref="dialogRefImport"></ImportExcel>
-    </div>
+      <!-- Table operation -->
+      <template #action="scope">
+        <el-button type="primary" link :icon="EditPen" @click="openDrawer('Edit', scope.row)">Edit</el-button>
+      </template>
+    </ProTable>
+    <ComponentDrawer ref="drawerRef"></ComponentDrawer>
+    <ComponentStockEdit ref="drawerRefComponentStockEdit"></ComponentStockEdit>
+    <ImportExcel ref="dialogRefImport"></ImportExcel>
   </div>
 </template>
 
@@ -98,7 +96,7 @@ const dataCallback = (data: ResList<Component.ResGetComponentRecord>) => {
 const { BUTTONS } = useAuthButtons();
 
 // Table configuration item
-const columns: Partial<ColumnProps>[] = [
+const columns: ColumnProps[] = [
   { type: "selection", width: 40, fixed: "left" },
   { type: "expand", label: "" },
   {
@@ -109,7 +107,10 @@ const columns: Partial<ColumnProps>[] = [
     fieldNames: { value: "id", label: "name" },
     sortable: true,
     search: {
-      el: "select"
+      el: "tree-select",
+      props: {
+        props: { value: "id", label: "name" }
+      }
     },
     isShow: false
   },
@@ -204,8 +205,6 @@ const columns: Partial<ColumnProps>[] = [
     search: {
       el: "tree-select",
       props: {
-        value: "id",
-        label: "_fullName",
         props: { value: "id", label: "name" }
       }
     },

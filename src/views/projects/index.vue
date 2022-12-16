@@ -1,75 +1,71 @@
 <template>
-  <div class="table-box">
-    <el-row :gutter="20">
-      <el-col :span="6">
-        <ProTree
-          ref="proTree"
-          :requestApi="getProjectsEnum"
-          :initParam="initParamProject"
-          :dataCallback="dataCallbackTree"
-          @handle-node-click="handleProjectSelect"
-          :showAll="false"
+  <div class="main-box">
+    <ProTree
+      ref="proTree"
+      title="Projects"
+      :requestApi="getProjectsEnum"
+      :initParam="initParamProject"
+      :dataCallback="dataCallbackTree"
+      @handle-node-click="handleProjectSelect"
+      :showAll="false"
+    >
+      <template #treeHeader="scope">
+        <el-button type="primary" :icon="CirclePlus" @click="openProjectDrawer('New')" v-if="BUTTONS.add"></el-button>
+        <el-button
+          :icon="EditPen"
+          :disabled="scope.row.id === ''"
+          @click="openProjectDrawer('Edit', scope.row)"
+          v-if="BUTTONS.edit"
+        ></el-button>
+        <el-button
+          type="danger"
+          :icon="Delete"
+          plain
+          :disabled="scope.row.id === ''"
+          @click="batchDeleteProject([scope.row.id])"
+          v-if="BUTTONS.delete"
         >
-          <template #treeHeader="scope">
-            <el-button type="primary" :icon="CirclePlus" @click="openProjectDrawer('New')" v-if="BUTTONS.add"></el-button>
-            <el-button
-              :icon="EditPen"
-              :disabled="scope.row.id === ''"
-              @click="openProjectDrawer('Edit', scope.row)"
-              v-if="BUTTONS.edit"
-            ></el-button>
-            <el-button
-              type="danger"
-              :icon="Delete"
-              plain
-              :disabled="scope.row.id === ''"
-              @click="batchDeleteProject([scope.row.id])"
-              v-if="BUTTONS.delete"
-            >
-            </el-button>
-          </template>
-        </ProTree>
-      </el-col>
-      <el-col :span="18">
-        <div class="table-box">
-          <ProTable
-            ref="proTable"
-            :columns="columns"
-            :requestApi="getProjectComponentsList"
-            :initParam="initParam"
-            :isPageable="true"
-            :dataCallback="dataCallbackTable"
+        </el-button>
+      </template>
+    </ProTree>
+    <!-- <TreeFilter title="Projects" multiple label="name" :requestApi="getProjectsEnum" @change="handleProjectSelect" /> -->
+    <div class="table-box">
+      <ProTable
+        ref="proTable"
+        :columns="columns"
+        :requestApi="getProjectComponentsList"
+        :initParam="initParam"
+        :isPageable="true"
+        :dataCallback="dataCallbackTable"
+      >
+        <!-- Table header button -->
+        <template #tableHeader="scope">
+          <el-button type="primary" :icon="CirclePlus" @click="openComponentDrawer('New')" v-if="BUTTONS.add">
+            Add Component
+          </el-button>
+          <el-button
+            type="danger"
+            :icon="Delete"
+            plain
+            :disabled="!scope.isSelected"
+            @click="batchDelete(scope.ids)"
+            v-if="BUTTONS.delete"
           >
-            <!-- Table header button -->
-            <template #tableHeader="scope">
-              <el-button type="primary" :icon="CirclePlus" @click="openComponentDrawer('New')" v-if="BUTTONS.add">
-                Add Component
-              </el-button>
-              <el-button
-                type="danger"
-                :icon="Delete"
-                plain
-                :disabled="!scope.isSelected"
-                @click="batchDelete(scope.ids)"
-                v-if="BUTTONS.delete"
-              >
-                Delete
-              </el-button>
-              <el-button type="primary" :icon="Upload" plain @click="batchAdd" v-if="BUTTONS.batchAdd">Import BOM</el-button>
-              <el-button type="primary" :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button>
-            </template>
-            <!-- Expand -->
-            <template #expand="scope">
-              {{ scope.row }}
-            </template>
-            <!-- Table operation -->
-            <template #action="scope">
-              <el-button type="primary" link :icon="EditPen" @click="openComponentDrawer('Edit', scope.row)">Edit</el-button>
-            </template>
-          </ProTable>
-        </div>
-      </el-col>
-    </el-row>
+            Delete
+          </el-button>
+          <el-button type="primary" :icon="Upload" plain @click="batchAdd" v-if="BUTTONS.batchAdd">Import BOM</el-button>
+          <el-button type="primary" :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button>
+        </template>
+        <!-- Expand -->
+        <template #expand="scope">
+          {{ scope.row }}
+        </template>
+        <!-- Table operation -->
+        <template #action="scope">
+          <el-button type="primary" link :icon="EditPen" @click="openComponentDrawer('Edit', scope.row)">Edit</el-button>
+        </template>
+      </ProTable>
+    </div>
     <ProjectDrawer ref="drawerRefProject"></ProjectDrawer>
     <ProjectComponentDrawer ref="drawerRefComponent"></ProjectComponentDrawer>
     <ImportExcel ref="dialogRef"></ImportExcel>
@@ -85,6 +81,7 @@ import { useAuthButtons } from "@/hooks/useAuthButtons";
 import { JSON2CSV } from "@/hooks/useDataTransform";
 import ProTable from "@/components/ProTable/index.vue";
 import ProTree from "@/components/ProTree/index.vue";
+import TreeFilter from "@/components/TreeFilter/index.vue";
 import ImportExcel from "@/components/ImportExcel/index.vue";
 import ProjectComponentDrawer from "@/views/projects/components/ProjectComponentDrawer.vue";
 import ProjectDrawer from "@/views/projects/components/ProjectDrawer.vue";
@@ -137,7 +134,7 @@ const handleProjectSelect = (data: any) => {
 const { BUTTONS } = useAuthButtons();
 
 // Table configuration item
-const columns: Partial<ColumnProps>[] = [
+const columns: ColumnProps[] = [
   { type: "selection", width: 40, fixed: "left" },
   // { type: "expand", label: "" },
   {
@@ -151,15 +148,13 @@ const columns: Partial<ColumnProps>[] = [
     label: "MPN",
     width: 130,
     sortable: true,
-    search: true,
-    searchType: "text"
+    search: { el: "input" }
   },
   {
     prop: "_description",
     label: "Description",
     align: "left",
-    search: true,
-    searchType: "text"
+    search: { el: "input" }
   },
   {
     prop: "action",

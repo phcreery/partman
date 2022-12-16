@@ -1,6 +1,8 @@
 <template>
-  <div class="tree-box">
+  <!-- <div class="tree-box"> -->
+  <div class="card filter">
     <!-- Header buttons -->
+    <h4 class="title sle" v-if="title">{{ title }}</h4>
     <div class="tree-header">
       <div class="header-button-lf">
         <slot name="treeHeader" :row="selectedItem"></slot>
@@ -13,7 +15,7 @@
     </div>
     <el-input v-model="filterText" placeholder="Filter keyword" />
     <!-- Tree -->
-    <el-scrollbar>
+    <el-scrollbar :style="{ height: title ? `calc(100% - 115px)` : `calc(100% - 78px)` }">
       <el-tree
         ref="treeRef"
         :data="treeData"
@@ -25,6 +27,7 @@
         :filter-node-method="filterNode"
         :node-key="id"
         :current-node-key="''"
+        :check-strictly="false"
       />
     </el-scrollbar>
   </div>
@@ -42,6 +45,7 @@ interface componentProps {
   toolButton?: boolean; // Whether the table function button is displayed ==> Non -pass (default TRUE)
   id?: string; // 选择的id ==> 非必传，默认为 “id”
   label?: string; // the name of the data
+  title?: string; // treeFilter 标题 ==> 非必传
   childrenName?: string; // When the data exists in children, specify the children key name ==> Non -component (default "children")
   showAll?: boolean;
 }

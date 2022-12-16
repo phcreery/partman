@@ -45,31 +45,6 @@ export type TypeProp = "index" | "selection" | "expand";
 
 export type FixedProp = "left" | "right";
 
-// export interface ColumnProps {
-//   type: TypeProp; // index | selection | Expand (special type)
-//   prop: string; // Unit data (non-special type must be filled) Field name corresponds to the field name of the column content
-//   label: string; // Table title
-//   align: "left" | "center" | "right";
-//   width: number | string; // Sequence
-//   minWidth: number | string; // Minimum width
-//   isShow: boolean; // Whether it is displayed in the table
-//   sortable: boolean; // Whether it can be sorted (static sorting)
-//   fixed: FixedProp; // Fixed column
-//   tag: boolean; // Whether it is a label display
-//   image: boolean; // Whether it is a picture display
-//   search: boolean; // Whether it is a searchable item
-//   searchType: SearchType; // Search item type: text | select | multipleSelect | treeSelect | multipleTreeSelect | date | timerange | datetimerange
-//   searchProps: { [key: string]: any }; // Search item parameters, according to the element documentation, the tag comes with attributes > props attribute
-//   searchInitParam: string | number | boolean | any[]; // The initial value of the search item
-//   filterParam: (data: any) => any; // Filter parameters, the return value is the parameter object
-//   enum: EnumProps[]; // Dictionaries, formatted cells, and drop-down options for the search box
-//   enumFunction: () => Promise<any>; // Enumeration function, fills out enum with result
-//   enumTree: EnumProps[]; // Dictionaries, formatted cells, and drop-down options for the search box
-//   enumTreeFunction: () => Promise<any>; // Enumeration Tree function, fills out enumTree with result
-//   renderHeader: (params: any) => any; // Custom table header
-//   renderText: (data: any) => string; // custom (table only) Value renderer (will not be searchable)
-// }
-
 export interface ColumnProps<T = any> extends Partial<Omit<TableColumnCtx<T>, "children" | "renderHeader" | "renderCell">> {
   tag?: boolean; // 是否是标签展示
   isShow?: boolean; // 是否显示在表格当中

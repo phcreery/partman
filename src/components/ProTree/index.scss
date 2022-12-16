@@ -1,26 +1,49 @@
-.tree-box {
-	box-sizing: border-box;
-	// width: 240px;
-	height: 100%;
-	// padding: 18px;
-	// margin-right: 10px;
-	.el-scrollbar {
-		/* 47px 为文本框高度 32px + 15px */
-		height: calc(100% - 47px);
-		:deep(.el-tree) {
-			height: 80%;
-			overflow: auto;
-			.el-tree-node__content {
-				height: 30px;
-			}
-		}
-		:deep(.el-tree--highlight-current) {
-			.el-tree-node.is-current > .el-tree-node__content {
-				background-color: $primary-color;
-				.el-tree-node__label {
-					color: white;
-				}
-			}
-		}
-	}
+.filter {
+  box-sizing: border-box;
+  width: 260px;
+  height: 100%;
+  padding: 18px;
+  margin-right: 10px;
+  .title {
+    margin: 0 0 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--el-color-info-dark-2);
+    letter-spacing: 0.5px;
+  }
+  .tree-header {
+    .header-button-lf {
+      float: left;
+    }
+    .header-button-ri {
+      float: right;
+    }
+    .el-button {
+      margin-bottom: 15px;
+    }
+  }
+  .el-input {
+    margin: 0 0 15px;
+  }
+  .el-scrollbar {
+    :deep(.el-tree) {
+      height: 80%;
+      overflow: auto;
+      .el-tree-node__content {
+        height: 30px;
+      }
+    }
+    :deep(.el-tree--highlight-current) {
+      .el-tree-node.is-current > .el-tree-node__content {
+        background-color: var(--el-color-primary);
+        .el-tree-node__label,
+        .el-tree-node__expand-icon {
+          color: white;
+        }
+        .is-leaf {
+          color: transparent;
+        }
+      }
+    }
+  }
 }

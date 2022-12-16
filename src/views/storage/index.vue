@@ -1,74 +1,68 @@
 <template>
-  <div class="table-box">
-    <el-row :gutter="20">
-      <el-col :span="6">
-        <ProTree
-          ref="proTree"
-          :requestApi="getStorageCategoryEnumTree"
-          :initParam="initParamCategory"
-          :dataCallback="dataCallbackTree"
-          @handle-node-click="handleCategorySelect"
+  <div class="main-box">
+    <ProTree
+      ref="proTree"
+      :requestApi="getStorageCategoryEnumTree"
+      :initParam="initParamCategory"
+      :dataCallback="dataCallbackTree"
+      @handle-node-click="handleCategorySelect"
+    >
+      <template #treeHeader="scope">
+        <el-button type="primary" :icon="CirclePlus" @click="openStorageCategoryDrawer('New')" v-if="BUTTONS.add"></el-button>
+        <el-button
+          :icon="EditPen"
+          :disabled="scope.row.id === ''"
+          @click="openStorageCategoryDrawer('Edit', scope.row)"
+          v-if="BUTTONS.edit"
+        ></el-button>
+        <el-button
+          type="danger"
+          :icon="Delete"
+          plain
+          :disabled="scope.row.id === ''"
+          @click="batchDeleteCategory([scope.row.id])"
+          v-if="BUTTONS.delete"
         >
-          <template #treeHeader="scope">
-            <el-button type="primary" :icon="CirclePlus" @click="openStorageCategoryDrawer('New')" v-if="BUTTONS.add"></el-button>
-            <el-button
-              :icon="EditPen"
-              :disabled="scope.row.id === ''"
-              @click="openStorageCategoryDrawer('Edit', scope.row)"
-              v-if="BUTTONS.edit"
-            ></el-button>
-            <el-button
-              type="danger"
-              :icon="Delete"
-              plain
-              :disabled="scope.row.id === ''"
-              @click="batchDeleteCategory([scope.row.id])"
-              v-if="BUTTONS.delete"
-            >
-            </el-button>
-          </template>
-        </ProTree>
-      </el-col>
-      <el-col :span="18">
-        <div class="table-box">
-          <ProTable
-            ref="proTable"
-            :columns="columns"
-            :requestApi="getStorageList"
-            :initParam="initParam"
-            :isPageable="true"
-            :dataCallback="dataCallbackTable"
+        </el-button>
+      </template>
+    </ProTree>
+    <div class="table-box">
+      <ProTable
+        ref="proTable"
+        :columns="columns"
+        :requestApi="getStorageList"
+        :initParam="initParam"
+        :isPageable="true"
+        :dataCallback="dataCallbackTable"
+      >
+        <!-- Table header button -->
+        <template #tableHeader="scope">
+          <el-button type="primary" :icon="CirclePlus" @click="openStorageDrawer('New')" v-if="BUTTONS.add">
+            New Storage
+          </el-button>
+          <el-button
+            type="danger"
+            :icon="Delete"
+            plain
+            :disabled="!scope.isSelected"
+            @click="batchDelete(scope.selectedListIds)"
+            v-if="BUTTONS.delete"
           >
-            <!-- Table header button -->
-            <template #tableHeader="scope">
-              <el-button type="primary" :icon="CirclePlus" @click="openStorageDrawer('New')" v-if="BUTTONS.add">
-                New Storage
-              </el-button>
-              <el-button
-                type="danger"
-                :icon="Delete"
-                plain
-                :disabled="!scope.isSelected"
-                @click="batchDelete(scope.ids)"
-                v-if="BUTTONS.delete"
-              >
-                Delete
-              </el-button>
-            </template>
-            <!-- Expand -->
-            <template #expand="scope">
-              {{ scope.row }}
-            </template>
-            <!-- Table operation -->
-            <template #action="scope">
-              <el-button type="primary" link :icon="EditPen" @click="openStorageDrawer('Edit', scope.row)">Edit</el-button>
-            </template>
-          </ProTable>
-          <StorageDrawer ref="drawerRefStorage"></StorageDrawer>
-          <StorageCategoryDrawer ref="drawerRefStorageCategory"></StorageCategoryDrawer>
-        </div>
-      </el-col>
-    </el-row>
+            Delete
+          </el-button>
+        </template>
+        <!-- Expand -->
+        <template #expand="scope">
+          {{ scope.row }}
+        </template>
+        <!-- Table operation -->
+        <template #action="scope">
+          <el-button type="primary" link :icon="EditPen" @click="openStorageDrawer('Edit', scope.row)">Edit</el-button>
+        </template>
+      </ProTable>
+      <StorageDrawer ref="drawerRefStorage"></StorageDrawer>
+      <StorageCategoryDrawer ref="drawerRefStorageCategory"></StorageCategoryDrawer>
+    </div>
   </div>
 </template>
 
@@ -131,7 +125,7 @@ const handleCategorySelect = (data: any) => {
 const { BUTTONS } = useAuthButtons();
 
 // Table configuration item
-const columns: Partial<ColumnProps>[] = [
+const columns: ColumnProps[] = [
   { type: "selection", width: 40, fixed: "left" },
   // { type: "expand", label: "" },
   {
@@ -139,38 +133,26 @@ const columns: Partial<ColumnProps>[] = [
     label: "Name",
     width: 200,
     sortable: true,
-    search: true,
-    searchType: "text"
+    search: { el: "input" }
   },
   {
     prop: "category",
     label: "Category",
     width: 200,
     sortable: true,
-    // search: true,
-    // searchType: "text",
-    searchProps: {
-      value: "id",
-      label: "_fullName",
-      props: { value: "id", label: "name", emitPath: false },
-      checkStrictly: true
-    },
-    enumFunction: async () => {
+    enum: async () => {
       // nextTick to prevent calling api multiple times and per instant and race condition on loading screen tracker
       await nextTick();
       return await getStorageCategoryEnum();
     },
-    enumTreeFunction: async () => {
-      await nextTick();
-      return await getStorageCategoryEnumTree();
-    }
+    fieldNames: { value: "id", label: "_fullName" },
+    isShow: false
   },
   {
     prop: "description",
     label: "Description",
     // width: 220,
-    search: true,
-    searchType: "text"
+    search: { el: "input" }
   },
   {
     prop: "action",

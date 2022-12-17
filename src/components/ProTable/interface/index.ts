@@ -10,17 +10,6 @@ export interface EnumProps {
   [key: string]: any;
 }
 
-// export type SearchType =
-//   | "text"
-//   | "select"
-//   | "multipleSelect"
-//   | "treeSelect"
-//   | "multipleTreeSelect"
-//   | "date"
-//   | "daterange"
-//   | "timerange"
-//   | "datetimerange";
-
 export type SearchType =
   | "input"
   | "select"

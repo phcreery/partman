@@ -5,7 +5,7 @@ const srcTemplateFilesToRemove = [
   "utils/serviceDict.ts" // contains unused male/female enum dict
 ];
 
-const srcTemplateFoldersToRemove = [];
+// const srcTemplateFoldersToRemove = [];
 
 // these file are the ones to keep untouched in the src directory
 const srcMyFilesToKeep = ["hooks/useDataTransform.ts", "hooks/useDownload.ts", "utils/nestedObjectAssign.ts"];

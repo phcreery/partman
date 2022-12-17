@@ -1,54 +1,54 @@
 /* themeConfigProp */
 export interface ThemeConfigProps {
-	layout: string;
-	primary: string;
-	isDark: boolean;
-	isGrey: boolean;
-	isCollapse: boolean;
-	isWeak: boolean;
-	breadcrumb: boolean;
-	breadcrumbIcon: boolean;
-	tabs: boolean;
-	tabsIcon: boolean;
-	footer: boolean;
-	maximize: boolean;
+  layout: string;
+  primary: string;
+  isDark: boolean;
+  isGrey: boolean;
+  isCollapse: boolean;
+  isWeak: boolean;
+  breadcrumb: boolean;
+  breadcrumbIcon: boolean;
+  tabs: boolean;
+  tabsIcon: boolean;
+  footer: boolean;
+  maximize: boolean;
 }
 
 /* GlobalState */
 export interface GlobalState {
-	token: string;
-	userInfo: any;
-	assemblySize: string;
-	language: string;
-	themeConfig: ThemeConfigProps;
+  token: string;
+  userInfo: any;
+  assemblySize: string;
+  language: string;
+  themeConfig: ThemeConfigProps;
 }
 
 /* tabsMenuProps */
 export interface TabsMenuProps {
-	icon: string;
-	title: string;
-	path: string;
-	name: string;
-	close: boolean;
+  icon: string;
+  title: string;
+  path: string;
+  name: string;
+  close: boolean;
 }
 
 /* TabsState */
 export interface TabsState {
-	tabsMenuList: TabsMenuProps[];
+  tabsMenuList: TabsMenuProps[];
 }
 
 /* AuthState */
 export interface AuthState {
-	routeName: string;
-	authButtonList: {
-		[key: string]: {
-			[key: string]: boolean;
-		};
-	};
-	authMenuList: Menu.MenuOptions[];
+  routeName: string;
+  authButtonList: {
+    [key: string]: {
+      [key: string]: boolean;
+    };
+  };
+  authMenuList: Menu.MenuOptions[];
 }
 
 /* keepAliveState */
 export interface keepAliveState {
-	keepLiveName: string[];
+  keepLiveName: string[];
 }

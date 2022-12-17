@@ -131,7 +131,7 @@ export const getAuthMenuListApi = () => {
           isLink: "",
           isHide: false,
           isFull: false,
-          isAffix: true,
+          isAffix: false,
           isKeepAlive: true
         },
         children: []
@@ -146,7 +146,7 @@ export const getAuthMenuListApi = () => {
           isLink: "",
           isHide: false,
           isFull: false,
-          isAffix: true,
+          isAffix: false,
           isKeepAlive: true
         }
       },
@@ -160,7 +160,7 @@ export const getAuthMenuListApi = () => {
           isLink: "",
           isHide: false,
           isFull: false,
-          isAffix: true,
+          isAffix: false,
           isKeepAlive: true
         },
         children: []
@@ -175,7 +175,7 @@ export const getAuthMenuListApi = () => {
           isLink: "",
           isHide: false,
           isFull: false,
-          isAffix: true,
+          isAffix: false,
           isKeepAlive: true
         },
         children: []
@@ -190,7 +190,7 @@ export const getAuthMenuListApi = () => {
           isLink: "",
           isHide: false,
           isFull: false,
-          isAffix: true,
+          isAffix: false,
           isKeepAlive: true
         },
         children: []
@@ -205,7 +205,7 @@ export const getAuthMenuListApi = () => {
           isLink: "",
           isHide: false,
           isFull: false,
-          isAffix: true,
+          isAffix: false,
           isKeepAlive: true
         },
         children: []

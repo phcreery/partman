@@ -48,7 +48,7 @@
             :icon="Delete"
             plain
             :disabled="!scope.isSelected"
-            @click="batchDelete(scope.ids)"
+            @click="batchDelete(scope.selectedListIds)"
             v-if="BUTTONS.delete"
           >
             Delete
@@ -81,7 +81,7 @@ import { useAuthButtons } from "@/hooks/useAuthButtons";
 import { JSON2CSV } from "@/hooks/useDataTransform";
 import ProTable from "@/components/ProTable/index.vue";
 import ProTree from "@/components/ProTree/index.vue";
-import TreeFilter from "@/components/TreeFilter/index.vue";
+// import TreeFilter from "@/components/TreeFilter/index.vue";
 import ImportExcel from "@/components/ImportExcel/index.vue";
 import ProjectComponentDrawer from "@/views/projects/components/ProjectComponentDrawer.vue";
 import ProjectDrawer from "@/views/projects/components/ProjectDrawer.vue";

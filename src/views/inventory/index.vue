@@ -58,7 +58,11 @@ import ImportExcel from "@/components/ImportExcel/index.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 import ComponentStockEdit from "@/views/inventory/components/ComponentStockEdit.vue";
 import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
-import { ResList, Component, ComponentCategory, Footprint, Storage } from "@/api/interface";
+import {
+  ResList,
+  Component
+  // ComponentCategory, Footprint, Storage
+} from "@/api/interface";
 import {
   getComponentList,
   getComponentsListForExport,
@@ -286,6 +290,7 @@ interface DrawerExpose {
 }
 const drawerRef = ref<DrawerExpose>();
 const openDrawer = (title: string, rowData: Partial<Component.ResGetComponentRecord> = {}) => {
+  /*eslint indent: ["error", 2, { "ignoredNodes": ["ConditionalExpression"] }]*/
   let params = {
     title,
     rowData: { ...rowData },

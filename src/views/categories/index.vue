@@ -82,7 +82,7 @@ import {
   postComponentCreate,
   patchComponentUpdate,
   deleteComponents,
-  getComponentCategoryEnum,
+  // getComponentCategoryEnum,
   getComponentCategoryEnumTree,
   postComponentCategoryCreate,
   patchComponentCategoryUpdate,
@@ -134,8 +134,14 @@ const columns: ColumnProps[] = [
     label: "Name",
     width: 260,
     align: "left",
-    sortable: true
-    // renderText: (data: Component.ResGetComponentRecord) => `${data.manufacturer} - ${data.mpn}`
+    sortable: true,
+    render: (scope: { row: Component.ResGetComponentRecord }) => {
+      return (
+        <div>
+          {scope.row.manufacturer} - {scope.row.mpn}
+        </div>
+      );
+    }
     // isShow: false
   },
   {

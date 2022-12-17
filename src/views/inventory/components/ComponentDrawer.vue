@@ -157,10 +157,16 @@ import { ref, reactive, watch } from "vue";
 import { Refresh, Plus, Search, Delete } from "@element-plus/icons-vue";
 import { ElMessage, FormInstance } from "element-plus";
 // import { genderType } from "@/utils/serviceDict";
-import { Component, ComponentCategory, Footprint, Storage, StorageCategory } from "@/api/interface";
+import {
+  Component,
+  ComponentCategory,
+  Footprint,
+  Storage
+  // StorageCategory
+} from "@/api/interface";
 import {
   getFootprintsEnum,
-  getComponentStorageLocationEnum,
+  // getComponentStorageLocationEnum,
   getStorageLocationPathEnumTree,
   getComponentCategoryEnumTree,
   postFootprintCreate,
@@ -334,4 +340,6 @@ defineExpose({
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+@import "./componentDrawer.scss";
+</style>

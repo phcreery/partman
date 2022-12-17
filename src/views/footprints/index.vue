@@ -140,7 +140,6 @@ const columns: ColumnProps[] = [
     prop: "category",
     label: "Category",
     width: 120,
-    // enum: getFootprintCategoryEnumTree,
     enum: async () => {
       // nextTick to prevent calling api multiple times and per instant and race condition on loading screen tracker
       await nextTick();

@@ -30,7 +30,6 @@
         >
       </el-col>
     </el-row>
-    <el-row :gutter="12"> </el-row>
 
     <el-row :gutter="12">
       <el-col :span="12">

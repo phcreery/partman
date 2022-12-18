@@ -1,39 +1,39 @@
 <!-- Classic Layout -->
 <template>
-	<el-container class="layout">
-		<el-header>
-			<div class="header-lf">
-				<div class="logo flx-center">
-					<img src="@/assets/images/logo.svg" alt="logo" />
-					<span>Geeker Admin</span>
-				</div>
-				<ToolBarLeft />
-			</div>
-			<ToolBarRight />
-		</el-header>
-		<el-container class="classic-content">
-			<el-aside>
-				<div class="menu" :style="{ width: isCollapse ? '65px' : '210px' }">
-					<el-scrollbar>
-						<el-menu
-							:default-active="activeMenu"
-							:router="false"
-							:collapse="isCollapse"
-							:collapse-transition="false"
-							:unique-opened="true"
-							background-color="#ffffff"
-							text-color="#303133"
-						>
-							<SubMenu :menuList="menuList" />
-						</el-menu>
-					</el-scrollbar>
-				</div>
-			</el-aside>
-			<el-container class="classic-main">
-				<Main />
-			</el-container>
-		</el-container>
-	</el-container>
+  <el-container class="layout">
+    <el-header>
+      <div class="header-lf">
+        <div class="logo flx-center">
+          <img src="@/assets/images/logo.png" alt="logo" />
+          <span>partman</span>
+        </div>
+        <ToolBarLeft />
+      </div>
+      <ToolBarRight />
+    </el-header>
+    <el-container class="classic-content">
+      <el-aside>
+        <div class="menu" :style="{ width: isCollapse ? '65px' : '210px' }">
+          <el-scrollbar>
+            <el-menu
+              :default-active="activeMenu"
+              :router="false"
+              :collapse="isCollapse"
+              :collapse-transition="false"
+              :unique-opened="true"
+              background-color="#ffffff"
+              text-color="#303133"
+            >
+              <SubMenu :menuList="menuList" />
+            </el-menu>
+          </el-scrollbar>
+        </div>
+      </el-aside>
+      <el-container class="classic-main">
+        <Main />
+      </el-container>
+    </el-container>
+  </el-container>
 </template>
 
 <script setup lang="ts" name="layoutClassic">
@@ -60,34 +60,34 @@ const isCollapse = computed(() => globalStore.themeConfig.isCollapse);
 
 <style lang="scss">
 .classic {
-	.classic-content {
-		height: calc(100% - 55px); // Minus head height
-		.classic-main {
-			display: flex;
-			flex-direction: column;
-		}
-	}
-	.el-menu,
-	.el-menu--popup {
-		.el-menu-item {
-			&.is-active {
-				background: var(--el-color-primary-light-9);
-				&::before {
-					position: absolute;
-					top: 0;
-					bottom: 0;
-					left: 0;
-					width: 4px;
-					content: "";
-					background: var(--el-color-primary);
-				}
-			}
-		}
-	}
+  .classic-content {
+    height: calc(100% - 55px); // Minus head height
+    .classic-main {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  .el-menu,
+  .el-menu--popup {
+    .el-menu-item {
+      &.is-active {
+        background: var(--el-color-primary-light-9);
+        &::before {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          width: 4px;
+          content: "";
+          background: var(--el-color-primary);
+        }
+      }
+    }
+  }
 
-	// guide
-	#driver-highlighted-element-stage {
-		background-color: #606266 !important;
-	}
+  // guide
+  #driver-highlighted-element-stage {
+    background-color: #606266 !important;
+  }
 }
 </style>

@@ -22,7 +22,7 @@ export const useTable = (
       // Current page数
       pageNum: 1,
       // Number of bars per page
-      pageSize: 10,
+      pageSize: 25,
       // Total number of articles
       total: 0
     },

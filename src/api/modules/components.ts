@@ -317,6 +317,7 @@ export const getFootprintCategoryEnumTree = async () => {
 
 export const getComponentStorageLocationEnum = async () => {
   let res = await client.collection("storage_locations").getList(1, 99999, { $autoCancel: false });
+  console.log("storage_locations", res);
   return { data: res.items } as unknown as APIdata<Storage.ResGetStorageRecord[]>;
 };
 
@@ -383,7 +384,11 @@ export const getStorageLocationPathEnumTree = async () => {
     storage_category.disabled = true;
   });
   storage_categories.data.push(...storage_locations.data);
+  storage_categories.data.forEach((storage_location: StorageCategory.ResGetStorageCategoryRecord) => {
+    storage_location._fullName = getPathName(storage_categories.data, storage_location.id);
+  });
   const tree = arrayToTree(storage_categories.data, { id: "id", parentId: "parent", dataField: null });
+  console.log("getStorageLocationPathEnumTree", tree);
   return { data: tree } as unknown as APIdata<Storage.ResGetStorageRecordTree[]>;
 };
 

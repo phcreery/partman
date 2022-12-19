@@ -6,12 +6,12 @@ import { isArray } from "@/utils/is";
  * @return string
  */
 export function localGet(key: string) {
-	const value = window.localStorage.getItem(key);
-	try {
-		return JSON.parse(window.localStorage.getItem(key) as string);
-	} catch (error) {
-		return value;
-	}
+  const value = window.localStorage.getItem(key);
+  try {
+    return JSON.parse(window.localStorage.getItem(key) as string);
+  } catch (error) {
+    return value;
+  }
 }
 
 /**
@@ -21,7 +21,7 @@ export function localGet(key: string) {
  * @return void
  */
 export function localSet(key: string, value: any) {
-	window.localStorage.setItem(key, JSON.stringify(value));
+  window.localStorage.setItem(key, JSON.stringify(value));
 }
 
 /**
@@ -30,7 +30,7 @@ export function localSet(key: string, value: any) {
  * @return void
  */
 export function localRemove(key: string) {
-	window.localStorage.removeItem(key);
+  window.localStorage.removeItem(key);
 }
 
 /**
@@ -38,7 +38,7 @@ export function localRemove(key: string) {
  * @return void
  */
 export function localClear() {
-	window.localStorage.clear();
+  window.localStorage.clear();
 }
 
 /**
@@ -47,9 +47,9 @@ export function localClear() {
  * @return string
  */
 export function isType(val: any) {
-	if (val === null) return "null";
-	if (typeof val !== "object") return typeof val;
-	else return Object.prototype.toString.call(val).slice(8, -1).toLocaleLowerCase();
+  if (val === null) return "null";
+  if (typeof val !== "object") return typeof val;
+  else return Object.prototype.toString.call(val).slice(8, -1).toLocaleLowerCase();
 }
 
 /**
@@ -57,31 +57,31 @@ export function isType(val: any) {
  * @return string
  */
 export function generateUUID() {
-	if (typeof crypto === "object") {
-		if (typeof crypto.randomUUID === "function") {
-			return crypto.randomUUID();
-		}
-		if (typeof crypto.getRandomValues === "function" && typeof Uint8Array === "function") {
-			const callback = (c: any) => {
-				const num = Number(c);
-				return (num ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (num / 4)))).toString(16);
-			};
-			return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, callback);
-		}
-	}
-	let timestamp = new Date().getTime();
-	let performanceNow = (typeof performance !== "undefined" && performance.now && performance.now() * 1000) || 0;
-	return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-		let random = Math.random() * 16;
-		if (timestamp > 0) {
-			random = (timestamp + random) % 16 | 0;
-			timestamp = Math.floor(timestamp / 16);
-		} else {
-			random = (performanceNow + random) % 16 | 0;
-			performanceNow = Math.floor(performanceNow / 16);
-		}
-		return (c === "x" ? random : (random & 0x3) | 0x8).toString(16);
-	});
+  if (typeof crypto === "object") {
+    if (typeof crypto.randomUUID === "function") {
+      return crypto.randomUUID();
+    }
+    if (typeof crypto.getRandomValues === "function" && typeof Uint8Array === "function") {
+      const callback = (c: any) => {
+        const num = Number(c);
+        return (num ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (num / 4)))).toString(16);
+      };
+      return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, callback);
+    }
+  }
+  let timestamp = new Date().getTime();
+  let performanceNow = (typeof performance !== "undefined" && performance.now && performance.now() * 1000) || 0;
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+    let random = Math.random() * 16;
+    if (timestamp > 0) {
+      random = (timestamp + random) % 16 | 0;
+      timestamp = Math.floor(timestamp / 16);
+    } else {
+      random = (performanceNow + random) % 16 | 0;
+      performanceNow = Math.floor(performanceNow / 16);
+    }
+    return (c === "x" ? random : (random & 0x3) | 0x8).toString(16);
+  });
 }
 
 /**
@@ -91,22 +91,22 @@ export function generateUUID() {
  * @returns Same return true，The opposite is true
  */
 export function isObjectValueEqual(a: { [key: string]: any }, b: { [key: string]: any }) {
-	if (!a || !b) return false;
-	let aProps = Object.getOwnPropertyNames(a);
-	let bProps = Object.getOwnPropertyNames(b);
-	if (aProps.length != bProps.length) return false;
-	for (let i = 0; i < aProps.length; i++) {
-		let propName = aProps[i];
-		let propA = a[propName];
-		let propB = b[propName];
-		if (!b.hasOwnProperty(propName)) return false;
-		if (propA instanceof Object) {
-			if (!isObjectValueEqual(propA, propB)) return false;
-		} else if (propA !== propB) {
-			return false;
-		}
-	}
-	return true;
+  if (!a || !b) return false;
+  let aProps = Object.getOwnPropertyNames(a);
+  let bProps = Object.getOwnPropertyNames(b);
+  if (aProps.length != bProps.length) return false;
+  for (let i = 0; i < aProps.length; i++) {
+    let propName = aProps[i];
+    let propA = a[propName];
+    let propB = b[propName];
+    if (!b.hasOwnProperty(propName)) return false;
+    if (propA instanceof Object) {
+      if (!isObjectValueEqual(propA, propB)) return false;
+    } else if (propA !== propB) {
+      return false;
+    }
+  }
+  return true;
 }
 
 /**
@@ -116,8 +116,8 @@ export function isObjectValueEqual(a: { [key: string]: any }, b: { [key: string]
  * @return number
  */
 export function randomNum(min: number, max: number): number {
-	let num = Math.floor(Math.random() * (min - max) + max);
-	return num;
+  let num = Math.floor(Math.random() * (min - max) + max);
+  return num;
 }
 
 /**
@@ -125,16 +125,16 @@ export function randomNum(min: number, max: number): number {
  * @return string
  */
 export function getTimeState() {
-	// 获取Current时间
-	let timeNow = new Date();
-	// Get current hour
-	let hours = timeNow.getHours();
-	// 判断When前时间段
-	if (hours >= 6 && hours <= 10) return `Good Morning ⛅`;
-	if (hours >= 10 && hours <= 14) return `Medium午好 🌞`;
-	if (hours >= 14 && hours <= 18) return `Good afternoon 🌞`;
-	if (hours >= 18 && hours <= 24) return `Good evening 🌛`;
-	if (hours >= 0 && hours <= 6) return `Good morning 🌛`;
+  // 获取Current时间
+  let timeNow = new Date();
+  // Get current hour
+  let hours = timeNow.getHours();
+  // 判断When前时间段
+  if (hours >= 6 && hours <= 10) return `Good Morning ⛅`;
+  if (hours >= 10 && hours <= 14) return `Medium午好 🌞`;
+  if (hours >= 14 && hours <= 18) return `Good afternoon 🌞`;
+  if (hours >= 18 && hours <= 24) return `Good evening 🌛`;
+  if (hours >= 0 && hours <= 6) return `Good morning 🌛`;
 }
 
 /**
@@ -142,14 +142,14 @@ export function getTimeState() {
  * @return string
  */
 export function getBrowserLang() {
-	let browserLang = navigator.language ? navigator.language : navigator.browserLanguage;
-	let defaultBrowserLang = "";
-	if (browserLang.toLowerCase() === "cn" || browserLang.toLowerCase() === "zh" || browserLang.toLowerCase() === "zh-cn") {
-		defaultBrowserLang = "zh";
-	} else {
-		defaultBrowserLang = "en";
-	}
-	return defaultBrowserLang;
+  let browserLang = navigator.language ? navigator.language : navigator.browserLanguage;
+  let defaultBrowserLang = "";
+  if (browserLang.toLowerCase() === "cn" || browserLang.toLowerCase() === "zh" || browserLang.toLowerCase() === "zh-cn") {
+    defaultBrowserLang = "zh";
+  } else {
+    defaultBrowserLang = "en";
+  }
+  return defaultBrowserLang;
 }
 
 /**
@@ -159,15 +159,15 @@ export function getBrowserLang() {
  * @return array
  */
 export function filterCurrentRoute(menuList: Menu.MenuOptions[], path: string) {
-	let result = {};
-	for (let item of menuList) {
-		if (item.path === path) return item;
-		if (item.children) {
-			const res = filterCurrentRoute(item.children, path);
-			if (Object.keys(res).length) result = res;
-		}
-	}
-	return result;
+  let result = {};
+  for (let item of menuList) {
+    if (item.path === path) return item;
+    if (item.children) {
+      const res = filterCurrentRoute(item.children, path);
+      if (Object.keys(res).length) result = res;
+    }
+  }
+  return result;
 }
 
 /**
@@ -176,12 +176,12 @@ export function filterCurrentRoute(menuList: Menu.MenuOptions[], path: string) {
  * @return array
  */
 export function getFlatArr(menuList: Menu.MenuOptions[]) {
-	let newMenuList: Menu.MenuOptions[] = JSON.parse(JSON.stringify(menuList));
-	return newMenuList.reduce((pre: Menu.MenuOptions[], current: Menu.MenuOptions) => {
-		let flatArr = [...pre, current];
-		if (current.children) flatArr = [...flatArr, ...getFlatArr(current.children)];
-		return flatArr;
-	}, []);
+  let newMenuList: Menu.MenuOptions[] = JSON.parse(JSON.stringify(menuList));
+  return newMenuList.reduce((pre: Menu.MenuOptions[], current: Menu.MenuOptions) => {
+    let flatArr = [...pre, current];
+    if (current.children) flatArr = [...flatArr, ...getFlatArr(current.children)];
+    return flatArr;
+  }, []);
 }
 
 /**
@@ -191,11 +191,11 @@ export function getFlatArr(menuList: Menu.MenuOptions[]) {
  * @return array
  * */
 export function getKeepAliveRouterName(menuList: Menu.MenuOptions[], keepAliveArr: string[] = []) {
-	menuList.forEach(item => {
-		item.meta.isKeepAlive && item.name && keepAliveArr.push(item.name);
-		item.children?.length && getKeepAliveRouterName(item.children, keepAliveArr);
-	});
-	return keepAliveArr;
+  menuList.forEach(item => {
+    item.meta.isKeepAlive && item.name && keepAliveArr.push(item.name);
+    item.children?.length && getKeepAliveRouterName(item.children, keepAliveArr);
+  });
+  return keepAliveArr;
 }
 
 /**
@@ -204,11 +204,11 @@ export function getKeepAliveRouterName(menuList: Menu.MenuOptions[], keepAliveAr
  * @return array
  * */
 export function getShowMenuList(menuList: Menu.MenuOptions[]) {
-	let newMenuList: Menu.MenuOptions[] = JSON.parse(JSON.stringify(menuList));
-	return newMenuList.filter(item => {
-		item.children?.length && (item.children = getShowMenuList(item.children));
-		return !item.meta?.isHide;
-	});
+  let newMenuList: Menu.MenuOptions[] = JSON.parse(JSON.stringify(menuList));
+  return newMenuList.filter(item => {
+    item.children?.length && (item.children = getShowMenuList(item.children));
+    return !item.meta?.isHide;
+  });
 }
 
 /**
@@ -218,11 +218,11 @@ export function getShowMenuList(menuList: Menu.MenuOptions[]) {
  * @return array
  */
 export function getMenuListPath(menuList: Menu.MenuOptions[], menuPathArr: string[] = []) {
-	menuList.forEach((item: Menu.MenuOptions) => {
-		typeof item === "object" && item.path && menuPathArr.push(item.path);
-		item.children?.length && getMenuListPath(item.children, menuPathArr);
-	});
-	return menuPathArr;
+  menuList.forEach((item: Menu.MenuOptions) => {
+    typeof item === "object" && item.path && menuPathArr.push(item.path);
+    item.children?.length && getMenuListPath(item.children, menuPathArr);
+  });
+  return menuPathArr;
 }
 
 /**
@@ -232,18 +232,18 @@ export function getMenuListPath(menuList: Menu.MenuOptions[], menuPathArr: strin
  * @returns array
  */
 export function getCurrentBreadcrumb(path: string, menuList: Menu.MenuOptions[]) {
-	let tempPath: Menu.MenuOptions[] = [];
-	try {
-		const getNodePath = (node: Menu.MenuOptions) => {
-			tempPath.push(node);
-			if (node.path === path) throw new Error("Find IT!");
-			if (node.children?.length) node.children.forEach(item => getNodePath(item));
-			tempPath.pop();
-		};
-		menuList.forEach(item => getNodePath(item));
-	} catch (e) {
-		return tempPath;
-	}
+  let tempPath: Menu.MenuOptions[] = [];
+  try {
+    const getNodePath = (node: Menu.MenuOptions) => {
+      tempPath.push(node);
+      if (node.path === path) throw new Error("Find IT!");
+      if (node.children?.length) node.children.forEach(item => getNodePath(item));
+      tempPath.pop();
+    };
+    menuList.forEach(item => getNodePath(item));
+  } catch (e) {
+    return tempPath;
+  }
 }
 
 /**
@@ -252,13 +252,13 @@ export function getCurrentBreadcrumb(path: string, menuList: Menu.MenuOptions[])
  * @returns array
  */
 export function getAllBreadcrumbList(menuList: Menu.MenuOptions[]) {
-	let handleBreadcrumbList: { [key: string]: any } = {};
-	const loop = (menuItem: Menu.MenuOptions) => {
-		if (menuItem?.children?.length) menuItem.children.forEach(item => loop(item));
-		handleBreadcrumbList[menuItem.path] = getCurrentBreadcrumb(menuItem.path, menuList);
-	};
-	menuList.forEach(item => loop(item));
-	return handleBreadcrumbList;
+  let handleBreadcrumbList: { [key: string]: any } = {};
+  const loop = (menuItem: Menu.MenuOptions) => {
+    if (menuItem?.children?.length) menuItem.children.forEach(item => loop(item));
+    handleBreadcrumbList[menuItem.path] = getCurrentBreadcrumb(menuItem.path, menuList);
+  };
+  menuList.forEach(item => loop(item));
+  return handleBreadcrumbList;
 }
 
 /**
@@ -269,9 +269,9 @@ export function getAllBreadcrumbList(menuList: Menu.MenuOptions[]) {
  * @return string
  * */
 export function defaultFormat(row: number, col: number, callValue: any) {
-	// If the current value is an array,使用 / Splicing（Customized according to requirements）
-	if (isArray(callValue)) return callValue.length ? callValue.join(" / ") : "--";
-	return callValue ?? "--";
+  // If the current value is an array,使用 / Splicing（Customized according to requirements）
+  if (isArray(callValue)) return callValue.length ? callValue.join(" / ") : "--";
+  return callValue ?? "--";
 }
 
 /**
@@ -280,9 +280,9 @@ export function defaultFormat(row: number, col: number, callValue: any) {
  * @return string
  * */
 export function formatValue(callValue: any) {
-	// 如果Current值为数组,使用 / Splicing（Customized according to requirements）
-	if (isArray(callValue)) return callValue.length ? callValue.join(" / ") : "--";
-	return callValue ?? "--";
+  // 如果Current值为数组,使用 / Splicing（Customized according to requirements）
+  if (isArray(callValue)) return callValue.length ? callValue.join(" / ") : "--";
+  return callValue ?? "--";
 }
 
 /**
@@ -292,11 +292,11 @@ export function formatValue(callValue: any) {
  * @return any
  * */
 export function handleRowAccordingToProp(row: { [key: string]: any }, prop: string) {
-	if (!prop.includes(".")) return row[prop];
-	prop.split(".").forEach(item => {
-		row = row[item] ?? "--";
-	});
-	return row;
+  if (!prop.includes(".")) return row[prop];
+  prop.split(".").forEach(item => {
+    row = row[item] ?? "--";
+  });
+  return row;
 }
 
 /**
@@ -305,9 +305,9 @@ export function handleRowAccordingToProp(row: { [key: string]: any }, prop: stri
  * @return string
  * */
 export function handleProp(prop: string) {
-	const propArr = prop.split(".");
-	if (propArr.length == 1) return prop;
-	return propArr[propArr.length - 1];
+  const propArr = prop.split(".");
+  if (propArr.length == 1) return prop;
+  return propArr[propArr.length - 1];
 }
 
 /**
@@ -318,15 +318,23 @@ export function handleProp(prop: string) {
  * @return string
  * */
 export function filterEnum(
-	callValue: any,
-	enumData: { [key: string]: any } | undefined,
-	searchProps?: { [key: string]: any },
-	type?: string
+  callValue: any,
+  enumData: { [key: string]: any } | undefined,
+  searchProps?: { [key: string]: any },
+  type?: string
 ): string {
-	const value = searchProps?.value ?? "value";
-	const label = searchProps?.label ?? "label";
-	let filterData: any = {};
-	if (Array.isArray(enumData)) filterData = enumData.find((item: any) => item[value] === callValue);
-	if (type == "tag") return filterData?.tagType ? filterData.tagType : "";
-	return filterData ? filterData[label] : "--";
+  const value = searchProps?.value ?? "value";
+  const label = searchProps?.label ?? "label";
+  let filterData: any = {};
+  // if (Array.isArray(enumData)) filterData = enumData.find((item: any) => item[value] === callValue);
+  if (Array.isArray(enumData)) filterData = findItemNested(enumData, value, callValue, "children");
+  if (type == "tag") return filterData?.tagType ? filterData.tagType : "";
+  return filterData ? filterData[label] : "--";
 }
+
+const findItemNested = (arr: any, itemKey: string, itemValue: any, nestingKey: string) =>
+  arr.reduce((a: any, item: any) => {
+    if (a) return a;
+    if (item[itemKey] === itemValue) return item;
+    if (item[nestingKey]) return findItemNested(item[nestingKey], itemKey, itemValue, nestingKey);
+  }, null);

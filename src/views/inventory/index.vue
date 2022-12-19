@@ -61,7 +61,9 @@ import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue"
 import {
   ResList,
   Component
-  // ComponentCategory, Footprint, Storage
+  // ComponentCategory,
+  // Footprint,
+  // Storage
 } from "@/api/interface";
 import {
   getComponentList,
@@ -190,13 +192,20 @@ const columns: ColumnProps[] = [
     search: { el: "input" },
     isShow: false
   },
-  {
-    prop: "storage_location",
-    label: "Short Location",
-    width: 160,
-    sortable: true,
-    isShow: false
-  },
+  // {
+  //   prop: "storage_location",
+  //   label: "Short Location",
+  //   width: 160,
+  //   enum: getComponentStorageLocationEnum,
+  //   fieldNames: { value: "id", label: "name" },
+  //   sortable: true,
+  //   search: { el: "select" },
+  //   //
+  //   // searchType: "select",
+  //   // enumFunction: getComponentStorageLocationEnum,
+  //   // searchProps: { value: "id", label: "name" },
+  //   isShow: true
+  // },
 
   {
     prop: "storage_location",
@@ -204,14 +213,18 @@ const columns: ColumnProps[] = [
     width: 160,
     align: "left",
     enum: getStorageLocationPathEnumTree,
-    fieldNames: { value: "id", label: "name" },
+    // isFilterEnum: false,
+    fieldNames: { value: "id", label: "_fullName" },
     sortable: true,
     search: {
       el: "tree-select",
       props: {
-        props: { value: "id", label: "name" }
+        props: { value: "id", label: "name", disabled: "disabled" }
       }
     },
+    // render: (scope: { row: Component.ResGetComponentRecord }) => {
+    //   return <div>{scope.row}</div>;
+    // },
     isShow: true
   },
   {

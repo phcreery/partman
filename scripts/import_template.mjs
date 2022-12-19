@@ -19,10 +19,12 @@ const srcMyFoldersToKeep = [
   // Update button layout in top-right of pro-table
   // remove "item.isShow &&" from colSetting
   // change default pageSize: 25,
-  "/hooks/useTable.ts", // TODO: update pageParam() => page & perPage
+  "hooks/useTable.ts", // TODO: update pageParam() => page & perPage
   // Object.assign(state.totalParam, { filter: nowSearchParam }, isPageable ? pageParam.value : {});
+  "utils/util.ts",
+  // implement findItemNested for tree-select enum
   "components/ProTree", // TODO: use new tree filter component found in the template
-  "/layouts/components/Header/ToolBarRight.vue" // my custom toolbar with removed items
+  "layouts/components/Header/ToolBarRight.vue" // my custom toolbar with removed items
 ];
 
 // backup src directory to src_backup

@@ -74,13 +74,14 @@ sudo systemctl status partman
 
 🚀 Technologies used:
 
-- Geeker Admin (from latest commit on 7/31/22)
+- Vite 3.2
 - Vue 3.2
-- Vite 2
 - TypeScript
-- Pinia
+- [Geeker Admin Template](https://github.com/HalseySpicy/Geeker-Admin) (from latest commit on 12/11/22)
 - Element-Plus
-- PocketBase
+- Pinia
+- Go
+- [PocketBase](https://pocketbase.io/)
 
 ### Dev Setup
 

@@ -41,13 +41,12 @@ const getFormData = async () => {
     let { data } = await getConfig({ category: "octopart" });
     Object.assign(formData, data);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
 const onSubmit = async () => {
   let data = await patchConfigUpdate({ category: "octopart", value: formData });
-  console.log(data);
   data !== undefined
     ? ElMessage.success("Save Success")
     : ElMessage.error(`Error Saving Settings : octopart - ${JSON.stringify(formData)}`);

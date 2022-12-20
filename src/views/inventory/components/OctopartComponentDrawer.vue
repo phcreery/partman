@@ -106,7 +106,6 @@ const acceptParams = (params: DrawerProps): void => {
 const ruleFormRef = ref<FormInstance>();
 // Submit data (new/edit)
 const handleSubmit = (part: SupPart) => {
-  console.log("submitting", part, drawerData.value.rowData);
   ruleFormRef.value!.validate(async valid => {
     if (!valid) return;
     try {
@@ -125,7 +124,7 @@ const handleSubmit = (part: SupPart) => {
       drawerData.value.updateTable!(component);
       drawerVisible.value = false;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       ElMessage.error(String(error));
     }
   });

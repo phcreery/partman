@@ -34,7 +34,7 @@ function that converts JSON object of parameters to a consumable PocketBase 'fil
 ex. filter: { id: 'asdf', footprint: {0: '0806', 1: '0604'}} -> "id='asdf' && (footprint='0806' || footprint='0604')"
 */
 const filterToPBString = (filter: { [propName: string]: any }) => {
-  console.log("filter", filter);
+  // console.log("filter", filter);
   let filterParams = Object.keys(filter);
   let sarr: string[] = []; // string array
   for (const param of filterParams) {
@@ -52,7 +52,7 @@ const filterToPBString = (filter: { [propName: string]: any }) => {
     }
   }
   let s = sarr.join(" && ");
-  console.log("filter string", s);
+  // console.log("filter string", s);
   return s;
 };
 
@@ -72,7 +72,6 @@ const getPathName = (data: any[], id: string, identifier = "id", parentIdentifie
 // ---- COMPONENTS ----
 
 export const getComponentList = async (params: Component.ReqGetComponentListParams) => {
-  console.log("getComponentList params", params);
   let res = await client.collection("components").getList(params.page, params.perPage, {
     // filter: Object.keys(params.filter).length !== 0 ? params.filter : "",
     filter: params.filter ? filterToPBString(params.filter) : "",
@@ -121,7 +120,7 @@ export const getComponentEnum = async () => {
   // TODO: use pb.collection('example').getFullList();
   let [res, err] = await tryCatchAsync(() => client.collection("components").getList(1, 99999, { $autoCancel: false }));
   if (err) {
-    console.log("getCompEnum res err", res, err);
+    console.error("getCompEnum res err", res, err);
     // return false;
   }
   // res.items.forEach((component: ComponentCategory.ResGetComponentCategoryRecord) => {
@@ -217,7 +216,7 @@ export const deleteComponentCategories = async (params: ComponentCategory.ReqDel
 export const getComponentCategoryEnum = async () => {
   let [res, err] = await tryCatchAsync(() => client.collection("component_categories").getList(1, 99999, { $autoCancel: false }));
   if (err) {
-    console.log("getCompCatEnum res err", res, err);
+    console.error("getCompCatEnum res err", res, err);
     // return false;
   }
   res.items.forEach((component: ComponentCategory.ResGetComponentCategoryRecord) => {
@@ -289,7 +288,7 @@ export const deleteFootprintCategories = async (params: FootprintCategory.ReqDel
 export const getFootprintCategoryEnum = async () => {
   let [res, err] = await tryCatchAsync(() => client.collection("footprint_categories").getList(1, 99999, { $autoCancel: false }));
   if (err) {
-    console.log("getFootprintCatEnum res err", res, err);
+    console.error("getFootprintCatEnum res err", res, err);
     // return false;
   }
   res.items.forEach((footprint: FootprintCategory.ResGetFootprintCategoryRecord) => {
@@ -308,7 +307,6 @@ export const getFootprintCategoryEnumTree = async () => {
 
 export const getComponentStorageLocationEnum = async () => {
   let res = await client.collection("storage_locations").getList(1, 99999, { $autoCancel: false });
-  console.log("storage_locations", res);
   return { data: res.items } as unknown as APIdata<Storage.ResGetStorageRecord[]>;
 };
 
@@ -393,7 +391,7 @@ export const deleteStorageCategories = async (params: StorageCategory.ReqDeleteS
 export const getStorageCategoryEnum = async () => {
   let [res, err] = await tryCatchAsync(() => client.collection("storage_categories").getList(1, 99999, { $autoCancel: false }));
   if (err) {
-    console.log("getStorageCatEnum res err", res, err);
+    console.error("getStorageCatEnum res err", res, err);
     // return false;
   }
   res.items.forEach((storage_location: StorageCategory.ResGetStorageCategoryRecord) => {
@@ -585,7 +583,7 @@ export const deleteUsers = async (params: User.ReqDeleteUsersParams) => {
 export const getUserEnum = async () => {
   let [res, err] = await tryCatchAsync(() => client.collection("profiles").getList(1, 99999, { $autoCancel: false }));
   if (err) {
-    console.log("getUserEnum res err", res, err);
+    console.error("getUserEnum res err", res, err);
     // return false;
   }
   return { data: res.items } as unknown as APIdata<User.ResGetUserRecord[]>;

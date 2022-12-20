@@ -63,7 +63,6 @@ interface DrawerProps {
 
 // Parameters transmitted from the parent component
 const acceptParams = (params: DrawerProps): void => {
-  console.log("params", params);
   drawerData.value = params;
   drawerVisible.value = true;
 };
@@ -88,7 +87,6 @@ const ruleFormRef = ref<FormInstance>();
 // Submit data (new/edit)
 const handleSubmit = () => {
   ruleFormRef.value!.validate(async valid => {
-    console.log("submit", valid, ruleFormRef.value, componentCategories.value, drawerData.value.rowData!);
     if (!valid) return;
     try {
       await drawerData.value.apiUrl!(drawerData.value.rowData);
@@ -96,7 +94,7 @@ const handleSubmit = () => {
       drawerData.value.updateTable!();
       drawerVisible.value = false;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   });
 };

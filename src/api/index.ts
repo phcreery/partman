@@ -87,7 +87,7 @@ const handleError = (e: unknown) => {
   } else if (e instanceof Error) {
     errorMessage = e.message; // works, `e` narrowed to Error
   }
-  console.log("err", errorMessage);
+  console.error("err", errorMessage);
   ElMessage.error(errorMessage);
 };
 

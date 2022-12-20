@@ -27,7 +27,7 @@ export const getNewToken = async () => {
     body: `grant_type=client_credentials&client_id=${octopartConfig.id}&client_secret=${octopartConfig.secret}`,
     headers: { "Content-Type": "application/x-www-form-urlencoded" }
   })) as unknown as OctopartTokenRes;
-  console.log("token info", res);
+  // console.log("token info", res);
   if ("error" in res) {
     ElMessage.error(`Octopart Token Error: ${res.error}`);
     return "";
@@ -46,7 +46,7 @@ export const graphql = async (body: object) => {
     body: body,
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
   });
-  console.log("graphql res", res);
+  // console.log("graphql res", res);
   return res.data;
 };
 

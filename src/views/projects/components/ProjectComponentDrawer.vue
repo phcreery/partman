@@ -26,7 +26,7 @@
               <el-select v-model="drawerData.rowData!._id" placeholder="" clearable filterable style="width: max-content">
                 <el-option v-for="item in components" :key="item.id" :label="item.mpn" :value="item.id">
                   <span style="float: left">{{ item.mpn }}</span>
-                  <span style="float: right; color: var(--el-text-color-secondary); font-size: 13px">
+                  <span style="float: right; font-size: 13px; color: var(--el-text-color-secondary)">
                     {{ trimEllip(item.description, 25) }}
                   </span>
                 </el-option>
@@ -110,7 +110,7 @@ const handleSubmit = () => {
       drawerData.value.updateTable!();
       drawerVisible.value = false;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   });
 };

@@ -45,6 +45,6 @@ export const useDownload = async (
     document.body.removeChild(exportFile);
     window.URL.revokeObjectURL(blobUrl);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };

@@ -231,7 +231,7 @@ const handleSubmit = () => {
       drawerData.value.updateTable!();
       drawerVisible.value = false;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   });
 };
@@ -266,7 +266,6 @@ const refreshCategories = () => getComponentCategoryEnumTree().then(res => (comp
 const refreshStorageLocations = () =>
   getStorageLocationPathEnumTree().then(res => {
     componentStorageLocations.value = res.data;
-    console.log(res.data);
   });
 const refreshFootprints = () => getFootprintsEnum().then(res => (componentFootprints.value = res.data));
 

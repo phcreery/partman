@@ -53,6 +53,7 @@ import { useHandleData } from "@/hooks/useHandleData";
 import { useDownload } from "@/hooks/useDownload";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import { JSON2CSV } from "@/hooks/useDataTransform";
+import { filterNodeMethod } from "@/utils/filterNodeMethod";
 import ProTable from "@/components/ProTable/index.vue";
 import ImportExcel from "@/components/ImportExcel/index.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
@@ -115,7 +116,9 @@ const columns: ColumnProps[] = [
     search: {
       el: "tree-select",
       props: {
-        props: { value: "id", label: "name" }
+        props: { value: "id", label: "name" },
+        filterable: true,
+        filterNodeMethod: (v: any, d: any) => filterNodeMethod(v, d["_fullName"])
       }
     },
     isShow: false
@@ -181,7 +184,15 @@ const columns: ColumnProps[] = [
     enum: getFootprintsEnum,
     fieldNames: { value: "id", label: "name" },
     sortable: true,
-    search: { el: "select", props: { value: "id", label: "name", multiple: true } },
+    search: {
+      el: "select",
+      props: {
+        value: "id",
+        label: "name",
+        multiple: true,
+        filterable: true
+      }
+    },
     isShow: false
   },
   { prop: "stock", label: "Stock", width: 80 },
@@ -219,7 +230,9 @@ const columns: ColumnProps[] = [
     search: {
       el: "tree-select",
       props: {
-        props: { value: "id", label: "name", disabled: "disabled" }
+        props: { value: "id", label: "name", disabled: "disabled" },
+        filterable: true,
+        filterNodeMethod: (v: any, d: any) => filterNodeMethod(v, d["_fullName"])
       }
     },
     // render: (scope: { row: Component.ResGetComponentRecord }) => {

@@ -23,6 +23,7 @@ const srcMyFoldersToKeep = [
   // Object.assign(state.totalParam, { filter: nowSearchParam }, isPageable ? pageParam.value : {});
   "utils/util.ts",
   // implement findItemNested for tree-select enum
+  "utils/filterNodeMethod.ts", // filterNodeMethod for filterable tree-select inputs
   "components/ProTree", // TODO: use new tree filter component found in the template
   "layouts/components/Header/ToolBarRight.vue" // my custom toolbar with removed items
 ];

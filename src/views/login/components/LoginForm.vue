@@ -24,105 +24,20 @@
   </div>
 </template>
 
-<!-- <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import { Login } from "@/api/interface";
-import { CircleClose, UserFilled, Key } from "@element-plus/icons-vue";
-import type { ElForm } from "element-plus";
-import { ElMessage } from "element-plus";
-import { loginApi, loginApiAsAdmin } from "@/api/modules/login";
-import { GlobalStore } from "@/stores";
-import { MenuStore } from "@/stores/modules/menu";
-import { TabsStore } from "@/stores/modules/tabs";
-// import md5 from "js-md5";
-
-const globalStore = GlobalStore();
-const menuStore = MenuStore();
-const tabStore = TabsStore();
-
-// Define Form ref (verification rules)
-type FormInstance = InstanceType<typeof ElForm>;
-const loginFormRef = ref<FormInstance>();
-const loginRules = reactive({
-  username: [{ required: true, message: "Please enter user name", trigger: "blur" }],
-  password: [{ required: true, message: "Please enter your password", trigger: "blur" }]
-});
-
-// Login form data
-const loginForm = reactive<Login.ReqLoginParams>({
-  username: "",
-  password: ""
-});
-
-const loading = ref<boolean>(false);
-const router = useRouter();
-// login
-const login = (formEl: FormInstance | undefined, asAdmin: boolean) => {
-  if (!formEl) return;
-  formEl.validate(async valid => {
-    if (!valid) return;
-    loading.value = true;
-    try {
-      const requestLoginForm: Login.ReqLoginParams = {
-        username: loginForm.username,
-        password: loginForm.password // md5(loginForm.password)
-      };
-      // const res = asAdmin ? await loginApiAsAdmin(requestLoginForm) : await loginApi(requestLoginForm);
-      const res = await loginApi(requestLoginForm);
-
-      // * Store token
-      // globalStore.setToken(res.data!.access_token);
-      globalStore.setToken(res.token);
-      globalStore.setUserInfo(res.record);
-      // * After the login is successful, remove the Menulist and TABS data of the previous account
-      menuStore.setMenuList([]);
-      tabStore.closeMultipleTab();
-
-      ElMessage.success("Login successful!");
-      router.push({ name: "home" });
-    } finally {
-      loading.value = false;
-    }
-  });
-};
-
-// resetForm
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  formEl.resetFields();
-};
-
-onMounted(() => {
-  // Surveillance ENTER event (call login)
-  document.onkeydown = (e: any) => {
-    e = window.event || e;
-    if (e.code === "Enter" || e.code === "enter" || e.code === "NumpadEnter") {
-      if (loading.value) return;
-      login(loginFormRef.value, false);
-    }
-  };
-});
-</script>
-
-<style scoped lang="scss">
-@import "../index.scss";
-</style> -->
-
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { Login } from "@/api/interface";
-import { ElNotification } from "element-plus";
+// import { ElNotification } from "element-plus";
 import { loginApi } from "@/api/modules/login";
 import { GlobalStore } from "@/stores";
 import { TabsStore } from "@/stores/modules/tabs";
-import { getTimeState } from "@/utils/util";
+// import { getTimeState } from "@/utils/util";
 import { HOME_URL } from "@/config/config";
 import { initDynamicRouter } from "@/routers/modules/dynamicRouter";
 import { CircleClose, UserFilled } from "@element-plus/icons-vue";
 import type { ElForm } from "element-plus";
-import md5 from "js-md5";
+// import md5 from "js-md5";
 
 const router = useRouter();
 const tabsStore = TabsStore();
@@ -131,8 +46,8 @@ const globalStore = GlobalStore();
 type FormInstance = InstanceType<typeof ElForm>;
 const loginFormRef = ref<FormInstance>();
 const loginRules = reactive({
-  username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-  password: [{ required: true, message: "请输入密码", trigger: "blur" }]
+  username: [{ required: true, message: "Please enter user name", trigger: "blur" }],
+  password: [{ required: true, message: "Please enter the password", trigger: "blur" }]
 });
 const loading = ref(false);
 const loginForm = reactive<Login.ReqLoginParams>({ username: "", password: "" });
@@ -153,13 +68,14 @@ const login = (formEl: FormInstance | undefined) => {
       // 3.清除上个账号的 tab 信息
       tabsStore.closeMultipleTab();
       // 4.跳转到首页
-      router.push(HOME_URL);
-      ElNotification({
-        title: getTimeState(),
-        message: "欢迎登录 Geeker-Admin",
-        type: "success",
-        duration: 3000
-      });
+      // router.push(HOME_URL);
+      router.push({ name: "home" });
+      // ElNotification({
+      //   title: getTimeState(),
+      //   message: "欢迎登录 Geeker-Admin",
+      //   type: "success",
+      //   duration: 3000
+      // });
     } finally {
       loading.value = false;
     }

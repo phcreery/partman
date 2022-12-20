@@ -67,7 +67,7 @@ const handleSubmit = () => {
     if (!valid) return;
     if (!drawerData.value.rowData) return;
     try {
-      drawerData.value.rowData.stock = drawerData.value.rowData?.stock! + drawerData.value.addStock;
+      drawerData.value.rowData.stock = drawerData.value.rowData?.stock + drawerData.value.addStock;
       drawerData.value.addStock = 0;
       await drawerData.value.apiUrl!(drawerData.value.rowData);
       ElMessage.success({ message: `${drawerData.value.title} component success!` });

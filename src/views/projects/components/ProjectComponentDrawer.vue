@@ -66,7 +66,7 @@
 import { ref, reactive, watch } from "vue";
 import { Refresh, Plus, EditPen } from "@element-plus/icons-vue";
 import { ElMessage, FormInstance } from "element-plus";
-import { Project, Component, ProjectComponents } from "@/api/interface";
+import { Component, ProjectComponents } from "@/api/interface";
 import { getComponentEnum, postComponentCreate, patchComponentUpdate } from "@/api/modules/components";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 

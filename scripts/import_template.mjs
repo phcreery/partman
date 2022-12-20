@@ -1,5 +1,5 @@
 // This script is used to import the template into the project
-import { copyFolderRecursiveSync, copyFileSync, deleteFolderRecursive, copyFolderRecursiveSync2 } from "./utils.mjs";
+import { copyFileSync, deleteFolderRecursive, copyFolderRecursiveSync2 } from "./utils.mjs";
 
 const srcTemplateFilesToRemove = [
   "utils/serviceDict.ts" // contains unused male/female enum dict

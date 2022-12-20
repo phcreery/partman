@@ -1,7 +1,7 @@
 import client from "@/api";
 import { ElMessage } from "element-plus";
 
-import { ResList, OctopartConfig, Config } from "@/api/interface/index";
+import { ResList, Config } from "@/api/interface/index";
 import { Query } from "@/api/interface/octopart";
 type OctopartTokenRes =
   | {

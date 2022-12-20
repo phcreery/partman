@@ -4,6 +4,7 @@ import { BreakPoint, Responsive } from "@/components/Grid/interface";
 export interface EnumProps {
   label: string; // Text displayed in the option box
   value: any; // Optional value
+  childrenKey?: string; // key to search children
   disabled?: boolean; // Whether to disable this option
   tagType?: string; // When tag is true, this choice will specify the TAG display type
   children?: EnumProps[]; // When choosing for tree shape, you can pass children Properties specified sub -options

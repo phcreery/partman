@@ -110,7 +110,7 @@ const columns: ColumnProps[] = [
     label: "Category",
     align: "left",
     enum: getComponentCategoryEnumTree,
-    fieldNames: { value: "id", label: "name" },
+    fieldNames: { value: "id", label: "_fullName" },
     sortable: true,
     search: {
       el: "tree-select",

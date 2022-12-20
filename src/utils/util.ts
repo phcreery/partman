@@ -325,16 +325,18 @@ export function filterEnum(
 ): string {
   const value = searchProps?.value ?? "value";
   const label = searchProps?.label ?? "label";
+  const childrenKey = searchProps?.childrenKey ?? "children";
   let filterData: any = {};
   // if (Array.isArray(enumData)) filterData = enumData.find((item: any) => item[value] === callValue);
-  if (Array.isArray(enumData)) filterData = findItemNested(enumData, value, callValue, "children");
+  if (Array.isArray(enumData)) filterData = findItemNested(enumData, value, callValue, childrenKey);
   if (type == "tag") return filterData?.tagType ? filterData.tagType : "";
   return filterData ? filterData[label] : "--";
 }
 
-const findItemNested = (arr: any, itemKey: string, itemValue: any, nestingKey: string) =>
-  arr.reduce((a: any, item: any) => {
+export function findItemNested(arr: any, itemKey: string, itemValue: any, nestingKey: string) {
+  return arr.reduce((a: any, item: any) => {
     if (a) return a;
     if (item[itemKey] === itemValue) return item;
     if (item[nestingKey]) return findItemNested(item[nestingKey], itemKey, itemValue, nestingKey);
   }, null);
+}

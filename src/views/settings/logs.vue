@@ -136,8 +136,8 @@ const columns: Partial<ColumnProps>[] = [
   //   isShow: false
   // },
   {
-    prop: "action",
-    label: "Action",
+    prop: "operation",
+    label: "Operation",
     width: 100,
     fixed: "right"
   }

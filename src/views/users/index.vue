@@ -106,8 +106,8 @@ const columns: Partial<ColumnProps>[] = [
   //   searchInitParam: ["2022-08-30 00:00:00", "2022-08-20 23:59:59"]
   // },
   {
-    prop: "action",
-    label: "Action",
+    prop: "operation",
+    label: "Operation",
     width: 100,
     fixed: "right"
   }

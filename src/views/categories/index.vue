@@ -207,8 +207,8 @@ const columns: ColumnProps[] = [
     search: { el: "input" }
   },
   {
-    prop: "action",
-    label: "Action",
+    prop: "operation",
+    label: "Operation",
     width: 100,
     fixed: "right"
   }
@@ -217,13 +217,13 @@ const columns: ColumnProps[] = [
 // Batch delete footprints
 const batchDelete = async (ids: string[]) => {
   await useHandleData(deleteComponents, { ids }, "Delete the selected footprints(s)");
-  proTable.value.refresh();
+  proTable.value.getTableList();
 };
 
 // Batch delete footprints
 const batchDeleteCategory = async (ids: string[]) => {
   await useHandleData(deleteComponentCategories, { ids }, "Delete the selected footprint categories(s)");
-  proTree.value.refresh();
+  proTree.value.getTableList();
 };
 
 // Open the drawer (new, view, edit)
@@ -237,7 +237,7 @@ const openComponentDrawer = (title: string, rowData: Partial<Component.ResGetCom
     rowData: { ...rowData },
     isView: title === "View",
     apiUrl: title === "New" ? postComponentCreate : title === "Edit" ? patchComponentUpdate : "",
-    updateTable: proTable.value.refresh
+    updateTable: proTable.value.getTableList
   };
   drawerRefComponent.value!.acceptParams(params);
 };
@@ -249,7 +249,7 @@ const openComponentCategoryDrawer = (title: string, rowData: Partial<ComponentCa
     rowData: { ...rowData },
     isView: title === "View",
     apiUrl: title === "New" ? postComponentCategoryCreate : title === "Edit" ? patchComponentCategoryUpdate : "",
-    updateTable: proTree.value.refresh
+    updateTable: proTree.value.getTableList
   };
   drawerRefComponentCategory.value!.acceptParams(params);
 };

@@ -155,8 +155,8 @@ const columns: ColumnProps[] = [
     search: { el: "input" }
   },
   {
-    prop: "action",
-    label: "Action",
+    prop: "operation",
+    label: "Operation",
     width: 100,
     fixed: "right"
   }
@@ -165,13 +165,13 @@ const columns: ColumnProps[] = [
 // Batch delete footprints
 const batchDelete = async (ids: string[]) => {
   await useHandleData(deleteStorages, { ids }, "Delete the selected footprints(s)");
-  proTable.value.refresh();
+  proTable.value.getTableList();
 };
 
 // Batch delete footprints
 const batchDeleteCategory = async (ids: string[]) => {
   await useHandleData(deleteStorageCategories, { ids }, "Delete the selected footprint categories(s)");
-  proTree.value.refresh();
+  proTree.value.getTableList();
 };
 
 // Open the drawer (new, view, edit)
@@ -185,7 +185,7 @@ const openStorageDrawer = (title: string, rowData: Partial<Storage.ResGetStorage
     rowData: { ...rowData },
     isView: title === "View",
     apiUrl: title === "New" ? postStorageCreate : title === "Edit" ? patchStorageUpdate : "",
-    updateTable: proTable.value.refresh
+    updateTable: proTable.value.getTableList
   };
   drawerRefStorage.value!.acceptParams(params);
 };
@@ -197,7 +197,7 @@ const openStorageCategoryDrawer = (title: string, rowData: Partial<StorageCatego
     rowData: { ...rowData },
     isView: title === "View",
     apiUrl: title === "New" ? postStorageCategoryCreate : title === "Edit" ? patchStorageCategoryUpdate : "",
-    updateTable: proTree.value.refresh
+    updateTable: proTree.value.getTableList
   };
   drawerRefStorageCategory.value!.acceptParams(params);
 };

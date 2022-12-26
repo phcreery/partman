@@ -257,8 +257,8 @@ const columns: ColumnProps[] = [
     isShow: false
   },
   {
-    prop: "action",
-    label: "Action",
+    prop: "operation",
+    label: "Operation",
     width: 100,
     fixed: "right"
   }
@@ -267,12 +267,12 @@ const columns: ColumnProps[] = [
 // Delete user information
 // const deleteComponent = async (params: Component.ResGetComponentRecord) => {
 // 	await useHandleData(deleteComponents, { ids: [params.id] }, `Delete [${params.name}] component`);
-// 	proTable.value.refresh();
+// 	proTable.value.getTableList();
 // };
 // Batch delete components
 const batchDelete = async (ids: string[]) => {
   await useHandleData(deleteComponents, { ids }, "Delete the selected component(s)");
-  proTable.value.refresh();
+  proTable.value.getTableList();
 };
 // Export component list
 const downloadFile = async () => {
@@ -284,7 +284,7 @@ const downloadFile = async () => {
 
   let columns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "");
   // remove specific columns from array
-  let badColumns = ["action", "expand", "selection", "footprint", "name"];
+  let badColumns = ["operation", "expand", "selection", "footprint", "name"];
   columns = columns.filter((c: string) => !badColumns.includes(c));
 
   let csv = JSON2CSV(json, columns);
@@ -296,16 +296,17 @@ interface DialogExpose {
 }
 const dialogRefImport = ref<DialogExpose>();
 const batchAdd = () => {
-  let columns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "");
+  // console.log(proTable.value.printData);
+  let templateColumns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "");
   // remove specific columns from array
-  let badColumns = ["action", "expand", "selection", "footprint", "name"];
-  columns = columns.filter((c: string) => !badColumns.includes(c));
-  let csv = JSON2CSV({}, columns);
+  let badColumns = ["operation", "expand", "selection", "footprint", "name"];
+  templateColumns = templateColumns.filter((c: string) => !badColumns.includes(c));
+  let templateCSV = JSON2CSV({}, templateColumns);
   let params = {
     title: "component",
-    tempApi: () => csv,
+    tempApi: () => templateCSV,
     importApi: postComponentCreateBatch_Client,
-    getTableList: proTable.value.refresh
+    getTableList: proTable.value.getTableList
   };
   dialogRefImport.value!.acceptParams(params);
 };
@@ -329,7 +330,7 @@ const openDrawer = (title: string, rowData: Partial<Component.ResGetComponentRec
         : title === "Stock"
         ? patchComponentUpdate
         : "",
-    updateTable: proTable.value.refresh
+    updateTable: proTable.value.getTableList
   };
   drawerRef.value!.acceptParams(params);
 };
@@ -343,7 +344,7 @@ const openStockDrawer = (title: string, rowData: Partial<Component.ResGetCompone
     isView: false,
     addStock: 0,
     apiUrl: patchComponentUpdate,
-    updateTable: proTable.value.refresh
+    updateTable: proTable.value.getTableList
   };
   drawerRefComponentStockEdit.value!.acceptParams(params);
 };

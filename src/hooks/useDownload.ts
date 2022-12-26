@@ -14,7 +14,7 @@ export const useDownload = async (
   tempName: string,
   params: any = {},
   isNotify: boolean = true,
-  fileType: string = ".xlsx"
+  fileType: string = ".csv"
 ) => {
   if (isNotify) {
     ElNotification({

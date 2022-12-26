@@ -162,8 +162,8 @@ const columns: ColumnProps[] = [
     search: { el: "input" }
   },
   {
-    prop: "action",
-    label: "Action",
+    prop: "operation",
+    label: "Operation",
     width: 100,
     fixed: "right"
   }
@@ -172,13 +172,13 @@ const columns: ColumnProps[] = [
 // Batch delete footprints
 const batchDelete = async (ids: string[]) => {
   await useHandleData(deleteFootprints, { ids }, "Delete the selected footprints(s)");
-  proTable.value.refresh();
+  proTable.value.getTableList();
 };
 
 // Batch delete footprints
 const batchDeleteCategory = async (ids: string[]) => {
   await useHandleData(deleteFootprintCategories, { ids }, "Delete the selected footprint categories(s)");
-  proTree.value.refresh();
+  proTree.value.getTableList();
 };
 
 // Open the drawer (new, view, edit)
@@ -192,7 +192,7 @@ const openFootprintDrawer = (title: string, rowData: Partial<Footprint.ResGetFoo
     rowData: { ...rowData },
     isView: title === "View",
     apiUrl: title === "New" ? postFootprintCreate : title === "Edit" ? patchFootprintUpdate : "",
-    updateTable: proTable.value.refresh
+    updateTable: proTable.value.getTableList
   };
   drawerRefFootprint.value!.acceptParams(params);
 };
@@ -204,7 +204,7 @@ const openFootprintCategoryDrawer = (title: string, rowData: Partial<FootprintCa
     rowData: { ...rowData },
     isView: title === "View",
     apiUrl: title === "New" ? postFootprintCategoryCreate : title === "Edit" ? patchFootprintCategoryUpdate : "",
-    updateTable: proTree.value.refresh
+    updateTable: proTree.value.getTableList
   };
   drawerRefFootprintCategory.value!.acceptParams(params);
 };

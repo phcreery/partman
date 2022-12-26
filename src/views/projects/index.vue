@@ -157,8 +157,8 @@ const columns: ColumnProps[] = [
     search: { el: "input" }
   },
   {
-    prop: "action",
-    label: "Action",
+    prop: "operation",
+    label: "Operation",
     width: 100,
     fixed: "right"
   }
@@ -171,13 +171,13 @@ const batchDelete = async (ids: string[]) => {
     { projectID: String(initParam.projectID), ids },
     "Remove the selected components(s) from project"
   );
-  proTable.value.refresh();
+  proTable.value.getTableList();
 };
 
 // Batch delete footprints
 const batchDeleteProject = async (ids: string[]) => {
   await useHandleData(deleteProjects, { ids }, "Delete the selected projects(s)");
-  proTree.value.refresh();
+  proTree.value.getTableList();
 };
 
 // Export component list
@@ -203,7 +203,7 @@ const batchAdd = () => {
     title: "component",
     // tempApi: exportUserInfo,
     // importApi: BatchAddUser,
-    getTableList: proTable.value.refresh
+    getTableList: proTable.value.getTableList
   };
   dialogRef.value!.acceptParams(params);
 };
@@ -219,7 +219,7 @@ const openComponentDrawer = (title: string, rowData: Partial<ProjectComponents.R
     rowData: { ...rowData, _ofProjectID: initParam.projectID },
     isView: title === "View",
     apiUrl: title === "New" ? postProjectComponentAdd : title === "Edit" ? postProjectComponentUpdate : "",
-    updateTable: proTable.value.refresh
+    updateTable: proTable.value.getTableList
   };
   drawerRefComponent.value!.acceptParams(params);
 };
@@ -231,7 +231,7 @@ const openProjectDrawer = (title: string, rowData: Partial<Project.ResGetProject
     rowData: { ...rowData },
     isView: title === "View",
     apiUrl: title === "New" ? postProjectCreate : title === "Edit" ? patchProjectUpdate : "",
-    updateTable: proTree.value.refresh
+    updateTable: proTree.value.getTableList
   };
   drawerRefProject.value!.acceptParams(params);
 };

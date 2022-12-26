@@ -33,7 +33,7 @@ import { loginApi } from "@/api/modules/login";
 import { GlobalStore } from "@/stores";
 import { TabsStore } from "@/stores/modules/tabs";
 // import { getTimeState } from "@/utils/util";
-import { HOME_URL } from "@/config/config";
+// import { HOME_URL } from "@/config/config";
 import { initDynamicRouter } from "@/routers/modules/dynamicRouter";
 import { CircleClose, UserFilled } from "@element-plus/icons-vue";
 import type { ElForm } from "element-plus";

@@ -86,7 +86,7 @@ router.afterEach(() => {
  * */
 router.onError(error => {
   NProgress.done();
-  console.warn("路由错误", error.message);
+  console.warn("Routing error", error.message);
 });
 
 export default router;

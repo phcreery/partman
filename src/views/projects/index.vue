@@ -144,6 +144,13 @@ const columns: ColumnProps[] = [
     sortable: true
   },
   {
+    prop: "names",
+    label: "Names",
+    width: 80,
+    align: "left",
+    search: { el: "input" }
+  },
+  {
     prop: "_mpn",
     label: "MPN",
     width: 130,

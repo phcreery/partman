@@ -226,6 +226,7 @@ export namespace ProjectComponents {
   type ProjectComponentColumns = {
     component: string;
     quantity: number;
+    names: string;
     _id: string;
     _mpn: string;
     _description: string;

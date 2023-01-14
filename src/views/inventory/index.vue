@@ -118,7 +118,8 @@ const columns: ColumnProps[] = [
       props: {
         props: { value: "id", label: "name" },
         filterable: true,
-        filterNodeMethod: (v: any, d: any) => filterNodeMethod(v, d["_fullName"])
+        filterNodeMethod: (v: any, d: any) => filterNodeMethod(v, d["_fullName"]),
+        multiple: true
       }
     },
     isShow: false
@@ -154,22 +155,22 @@ const columns: ColumnProps[] = [
     search: { el: "input" },
     isShow: false
   },
-  {
-    prop: "supplier",
-    label: "Supplier",
-    width: 130,
-    sortable: true,
-    search: { el: "input" },
-    isShow: false
-  },
-  {
-    prop: "spn",
-    label: "SPN",
-    width: 130,
-    sortable: true,
-    search: { el: "input" },
-    isShow: false
-  },
+  // {
+  //   prop: "supplier",
+  //   label: "Supplier",
+  //   width: 130,
+  //   sortable: true,
+  //   search: { el: "input" },
+  //   isShow: false
+  // },
+  // {
+  //   prop: "spn",
+  //   label: "SPN",
+  //   width: 130,
+  //   sortable: true,
+  //   search: { el: "input" },
+  //   isShow: false
+  // },
   {
     prop: "description",
     label: "Description",
@@ -196,13 +197,13 @@ const columns: ColumnProps[] = [
     isShow: false
   },
   { prop: "stock", label: "Stock", width: 80 },
-  {
-    prop: "ipn",
-    label: "IPN",
-    width: 60,
-    search: { el: "input" },
-    isShow: false
-  },
+  // {
+  //   prop: "ipn",
+  //   label: "IPN",
+  //   width: 60,
+  //   search: { el: "input" },
+  //   isShow: false
+  // },
   // {
   //   prop: "storage_location",
   //   label: "Short Location",
@@ -232,7 +233,8 @@ const columns: ColumnProps[] = [
       props: {
         props: { value: "id", label: "name", disabled: "disabled" },
         filterable: true,
-        filterNodeMethod: (v: any, d: any) => filterNodeMethod(v, d["_fullName"])
+        filterNodeMethod: (v: any, d: any) => filterNodeMethod(v, d["_fullName"]),
+        multiple: true
       }
     },
     // render: (scope: { row: Component.ResGetComponentRecord }) => {
@@ -264,11 +266,6 @@ const columns: ColumnProps[] = [
   }
 ];
 
-// Delete user information
-// const deleteComponent = async (params: Component.ResGetComponentRecord) => {
-// 	await useHandleData(deleteComponents, { ids: [params.id] }, `Delete [${params.name}] component`);
-// 	proTable.value.getTableList();
-// };
 // Batch delete components
 const batchDelete = async (ids: string[]) => {
   await useHandleData(deleteComponents, { ids }, "Delete the selected component(s)");

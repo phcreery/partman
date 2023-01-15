@@ -496,7 +496,7 @@ export const getProjectComponentsListForExport = async (params: ProjectComponent
 export const postProjectComponentAdd = async (params: ProjectComponents.ReqAddProjectComponentParams) => {
   let res_project_components = await client
     .collection("project_components")
-    .create({ component: params._id, quantity: params.quantity });
+    .create({ component: params._id, quantity: params.quantity, refdesignators: params.refdesignators });
 
   let res_project = (await client
     .collection("projects")
@@ -514,7 +514,7 @@ export const postProjectComponentAdd = async (params: ProjectComponents.ReqAddPr
 export const postProjectComponentUpdate = async (params: ProjectComponents.ReqUpdateProjectComponentParams) => {
   const record = await client
     .collection("project_components")
-    .update(params.id, { component: params._id, quantity: params.quantity });
+    .update(params.id, { component: params._id, quantity: params.quantity, refdesignators: params.refdesignators });
   return { data: record } as unknown as APIdata<ProjectComponents.ResGetProjectComponentRecord>;
 };
 

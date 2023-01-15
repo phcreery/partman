@@ -145,7 +145,7 @@ const columns: ColumnProps[] = [
   },
   {
     prop: "refdesignators",
-    label: "Reference Designators",
+    label: "Ref. Designators",
     width: 80,
     align: "left",
     search: { el: "input" }

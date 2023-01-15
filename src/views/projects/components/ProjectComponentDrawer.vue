@@ -51,6 +51,9 @@
         <el-form-item label="Quantity" prop="quantity">
           <el-input-number v-model="drawerData.rowData!.quantity" />
         </el-form-item>
+        <el-form-item label="Ref. Designators" prop="refdesignators">
+          <el-input v-model="drawerData.rowData!.refdesignators" placeholder="Reference Designators" clearable></el-input>
+        </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="drawerVisible = false">Cancel</el-button>

@@ -27,7 +27,7 @@
         {{ scope.row }}
       </template>
       <!-- Table operation -->
-      <template #action="scope">
+      <template #operation="scope">
         <el-button type="primary" link :icon="EditPen" @click="openDrawer('Edit', scope.row)">Edit</el-button>
       </template>
     </ProTable>

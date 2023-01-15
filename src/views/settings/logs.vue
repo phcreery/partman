@@ -30,7 +30,7 @@
         <CompareComponentDetails :componentA="scope.row.old_value" :componentB="scope.row.new_value" :isView="true" />
       </template>
       <!-- Table operation -->
-      <template #action="scope">
+      <template #operation="scope">
         <el-button type="primary" link :icon="ZoomIn" @click="openDrawer('View', scope.row)">View</el-button>
       </template>
     </ProTable>

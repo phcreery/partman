@@ -106,7 +106,7 @@ var Schema string = `
                 "type": "text",
                 "system": false,
                 "required": false,
-                "unique": true,
+                "unique": false,
                 "options": {
                     "min": null,
                     "max": null,
@@ -159,6 +159,26 @@ var Schema string = `
                     "min": null,
                     "max": null,
                     "pattern": ""
+                }
+            },
+            {
+                "id": "rslzp7cs",
+                "name": "image",
+                "type": "file",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "maxSelect": 1,
+                    "maxSize": 5242880,
+                    "mimeTypes": [
+                        "image/jpg",
+                        "image/jpeg",
+                        "image/png",
+                        "image/svg+xml",
+                        "image/gif"
+                    ],
+                    "thumbs": []
                 }
             }
         ],
@@ -744,6 +764,19 @@ var Schema string = `
                 "options": {
                     "min": 0,
                     "max": null
+                }
+            },
+            {
+                "id": "fqubwz9b",
+                "name": "refdesignators",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
                 }
             }
         ],

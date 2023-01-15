@@ -447,7 +447,7 @@ export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) =>
 
 export const getProjectComponentsList = async (
   params: ProjectComponents.ReqGetProjectComponentListParams & {
-    filter?: { names: string; _mpn?: string; _description?: string };
+    filter?: { refdesignators?: string; _mpn?: string; _description?: string };
   }
 ) => {
   if (params.projectID === "")
@@ -457,7 +457,7 @@ export const getProjectComponentsList = async (
   if (res_project.components.length === 0) res_project.components = ["none"];
 
   let filter: object = {};
-  nestedObjectAssign(filter, params.filter?.names ? { names: params.filter?.names } : {});
+  nestedObjectAssign(filter, params.filter?.refdesignators ? { refdesignators: params.filter?.refdesignators } : {});
   nestedObjectAssign(filter, res_project.components ? { id: res_project.components } : {});
   nestedObjectAssign(filter, params.filter?._mpn ? { "component.mpn": params.filter?._mpn } : {});
   nestedObjectAssign(filter, params.filter?._description ? { "component.description": params.filter?._description } : {});

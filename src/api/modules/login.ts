@@ -59,7 +59,8 @@ export const getAuthButtonListApi = (): Login.ResAuthButtons => {
         view: true,
         edit: true,
         reset: true,
-        delete: true
+        delete: true,
+        merge: true
       },
       footprints: {
         add: true,

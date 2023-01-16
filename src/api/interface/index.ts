@@ -81,6 +81,7 @@ export namespace Component {
     spn: string;
     ipn: string;
     specs: spec[];
+    image: string;
   };
   // Requests
   export type ReqGetComponentListParams = ReqList;

@@ -11,8 +11,6 @@
       <!-- Table header button -->
       <template #tableHeader="scope">
         <el-button type="primary" :icon="CirclePlus" @click="openDrawer('New')" v-if="BUTTONS.add">New Component</el-button>
-        <el-button type="primary" :icon="Upload" plain @click="batchAdd" v-if="BUTTONS.batchAdd">Import</el-button>
-        <el-button type="primary" :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button>
         <el-button
           type="danger"
           :icon="Delete"
@@ -22,6 +20,17 @@
           v-if="BUTTONS.batchDelete"
         >
           Delete
+        </el-button>
+        <el-button :icon="Upload" plain @click="batchAdd" v-if="BUTTONS.batchAdd">Import</el-button>
+        <el-button :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button>
+        <el-button
+          :icon="Switch"
+          plain
+          :disabled="scope.selectedListIds.length !== 2"
+          @click="openMergeDialog(scope.selectedListIds, scope.selectList)"
+          v-if="BUTTONS.merge"
+        >
+          Merge
         </el-button>
       </template>
       <!-- Expand -->
@@ -42,12 +51,13 @@
     <ComponentDrawer ref="drawerRef"></ComponentDrawer>
     <ComponentStockEdit ref="drawerRefComponentStockEdit"></ComponentStockEdit>
     <ImportExcel ref="dialogRefImport"></ImportExcel>
+    <MergeComponents ref="dialogRefMerge"></MergeComponents>
   </div>
 </template>
 
 <script setup lang="tsx" name="useComponent">
 import { ref, reactive } from "vue";
-import { CirclePlus, Delete, EditPen, Download, Upload, DCaret } from "@element-plus/icons-vue";
+import { CirclePlus, Delete, EditPen, Download, Upload, DCaret, Switch } from "@element-plus/icons-vue";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useDownload } from "@/hooks/useDownload";
@@ -59,6 +69,7 @@ import ImportExcel from "@/components/ImportExcel/index.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 import ComponentStockEdit from "@/views/inventory/components/ComponentStockEdit.vue";
 import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
+import MergeComponents from "./components/MergeComponents.vue";
 import {
   ResList,
   Component
@@ -306,6 +317,19 @@ const batchAdd = () => {
     getTableList: proTable.value.getTableList
   };
   dialogRefImport.value!.acceptParams(params);
+};
+
+const dialogRefMerge = ref<DialogExpose>();
+const openMergeDialog = (ids: string[], selectList: Component.ResGetComponentRecord[]) => {
+  let params = {
+    title: "Merge Components",
+    // ids,
+    leftComponent: JSON.parse(JSON.stringify(selectList[0])), // selectList[0]
+    rightComponent: JSON.parse(JSON.stringify(selectList[1])), // selectList[1],
+    enumMap: proTable.value.enumMap,
+    updateTable: proTable.value.getTableList
+  };
+  dialogRefMerge.value!.acceptParams(params);
 };
 
 // Open the drawer (new, view, edit)

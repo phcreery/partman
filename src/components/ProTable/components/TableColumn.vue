@@ -10,7 +10,7 @@ import { ColumnProps } from "@/components/ProTable/interface";
 const slots = useSlots();
 defineProps<{ column: ColumnProps }>();
 const enumMap = inject("enumMap", ref(new Map()));
-// 渲染表格数据
+// Rendering table data
 const renderCellData = (item: ColumnProps, scope: { [key: string]: any }) => {
   return enumMap.value.get(item.prop) && item.isFilterEnum
     ? filterEnum(handleRowAccordingToProp(scope.row, item.prop!), enumMap.value.get(item.prop)!, item.fieldNames)

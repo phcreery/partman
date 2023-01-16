@@ -1,17 +1,27 @@
 <template>
   <div>
     <el-dialog v-model="drawerVisible" :title="drawerData.title" width="80%" draggable>
+      <el-row :gutter="20" justify="space-between">
+        <el-col :span="12">
+          <p style="margin-top: 0">
+            Merge <b>{{ leftComponent?.mpn }}</b> into <b>{{ rightComponent?.mpn }}</b>
+          </p>
+        </el-col>
+        <el-col :span="12" style="text-align: right">
+          <el-button @click="intelligentCheck">Refresh</el-button>
+        </el-col>
+      </el-row>
       <el-row v-for="(column, index) in mergeColumns" :key="index" :gutter="20">
         <el-col :span="4">
           <p style="display: inline-flex; align-items: center">{{ column.label }}</p>
         </el-col>
         <el-col :span="10">
           <el-checkbox
-            v-model="column.checked0"
+            v-model="column.checkedLeft"
             v-if="leftComponent![column.prop]"
             :label="0"
             border
-            @change="(e: boolean) => (column.single && e) ? column.checked1 = false : ''"
+            @change="column.checkLeft"
             style="height: auto"
           >
             <p style="white-space: normal">{{ leftComponent![column.prop] }}</p>
@@ -19,18 +29,18 @@
         </el-col>
         <el-col :span="10">
           <el-checkbox
-            v-model="column.checked1"
+            v-model="column.checkedRight"
             v-if="rightComponent![column.prop]"
             :label="1"
             border
-            @change="(e: boolean) => (column.single && e) ? column.checked0 = false : ''"
+            @change="column.checkRight"
             style="height: auto"
           >
             <p style="white-space: normal">{{ rightComponent![column.prop] }}</p>
           </el-checkbox>
         </el-col>
       </el-row>
-      <ComponentDetails title="asdf" :isView="true" :rowData="(mergedComponent as Component.ResGetComponentRecord)" />
+      <ComponentDetails title="" :isView="true" :rowData="(mergedComponent as Component.ResGetComponentRecord)" />
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="drawerVisible = false">Cancel</el-button>
@@ -54,7 +64,6 @@ interface DrawerProps {
   leftComponent?: Component.ResGetComponentRecord;
   rightComponent?: Component.ResGetComponentRecord;
   enumMap?: any;
-  // mergedComponent?: Component.ResGetComponentRecord[];
   // apiUrl?: (params: any) => Promise<any>;
   updateTable?: () => Promise<any>;
 }
@@ -79,16 +88,19 @@ const acceptParams = (params: DrawerProps): void => {
 interface MergeColumnOptions {
   prop: keyof Component.ResGetComponentRecord;
   label: string;
-  checked0?: boolean;
-  checked1?: boolean;
+  checkedLeft?: boolean;
+  checkedRight?: boolean;
+  checkLeft?: (e: Event) => void;
+  checkRight?: (e: Event) => void;
   single?: boolean;
+  required?: boolean;
 }
 
 const mergeColumnOptions: MergeColumnOptions[] = [
   { prop: "manufacturer", label: "Manufacturer" },
-  // { prop: "mpn", label: "MPN", checked0: false, checked1: true, single: true },
+  // { prop: "mpn", label: "MPN", checkedLeft: false, checkedRight: true, single: true },
   { prop: "description", label: "Description" },
-  { prop: "stock", label: "Stock" },
+  { prop: "stock", label: "Stock", required: true },
   { prop: "comment", label: "Comment" },
   // { prop: "supplier", label: "Supplier"true, single: true },
   // { prop: "spn", label: "SPN"true, single: true },
@@ -97,7 +109,7 @@ const mergeColumnOptions: MergeColumnOptions[] = [
   { prop: "storage_location", label: "Storage Location", single: true },
   { prop: "footprint", label: "Footprint", single: true },
   { prop: "specs", label: "Specs", single: true }
-  // { prop: "image", label: "Image", checked0: false, checked1: true, single: true }
+  // { prop: "image", label: "Image", single: true }
 ];
 
 // namespace Merger {
@@ -130,31 +142,39 @@ const useMerger = (mergeColumnOptions: MergeColumnOptions[]) => {
       console.log("column", column, column.prop, state.leftComponent, state.leftComponent === undefined);
       if (column.prop === "stock") {
         // check both stock to add quantities together
-        column.checked0 = true;
-        column.checked1 = true;
+        column.checkedLeft = true;
+        column.checkedRight = true;
       } else if ((state.rightComponent && !state.leftComponent) || (state.leftComponent && !state.leftComponent[column.prop])) {
         // use second component value
-        column.checked0 = false;
-        column.checked1 = true;
+        column.checkedLeft = false;
+        column.checkedRight = true;
       } else if ((state.leftComponent && !state.rightComponent) || (state.rightComponent && !state.rightComponent[column.prop])) {
         // use first component value
-        column.checked0 = true;
-        column.checked1 = false;
+        column.checkedLeft = true;
+        column.checkedRight = false;
       } else {
         // use second component value
-        column.checked0 = false;
-        column.checked1 = true;
+        column.checkedLeft = false;
+        column.checkedRight = true;
       }
+      column.checkLeft = (e: Event) => {
+        column.single && e ? (column.checkedRight = false) : "";
+        !e && column.required ? (column.checkedRight = true) : "";
+      };
+      column.checkRight = (e: Event) => {
+        column.single && e ? (column.checkedLeft = false) : "";
+        !e && column.required ? (column.checkedLeft = true) : "";
+      };
     });
   };
 
   const mergedComponent = computed(() => {
-    let mergedComponent: Partial<Component.ResGetComponentRecord> = {}; // drawerData.value.leftComponent ?? {};
+    let mergedComponent: Partial<Component.ResGetComponentRecord> = {};
     mergedComponent.id = state.leftComponent?.id;
     for (const column of state.mergeColumns) {
       let leftValue = state.leftComponent![column.prop];
       let rightValue = state.rightComponent![column.prop];
-      if (column.checked0 && column.checked1) {
+      if (column.checkedLeft && column.checkedRight) {
         if (typeof leftValue === "string") {
           Object.assign(mergedComponent, {
             [column.prop]: leftValue + ", " + rightValue
@@ -164,9 +184,9 @@ const useMerger = (mergeColumnOptions: MergeColumnOptions[]) => {
             [column.prop]: Number(leftValue) + Number(rightValue)
           });
         }
-      } else if (column.checked0) {
+      } else if (column.checkedLeft) {
         Object.assign(mergedComponent, { [column.prop]: leftValue });
-      } else if (column.checked1) {
+      } else if (column.checkedRight) {
         Object.assign(mergedComponent, { [column.prop]: rightValue });
       }
     }
@@ -185,21 +205,18 @@ const useMerger = (mergeColumnOptions: MergeColumnOptions[]) => {
 const { mergeColumns, leftComponent, rightComponent, setLeftComponent, setRightComponent, intelligentCheck, mergedComponent } =
   useMerger(mergeColumnOptions);
 
-// console.log("mergeColumns", mergeColumns);
-// console.log("mergedComponent", mergedComponent);
-
 // const ruleFormRef = ref<FormInstance>();
 // Submit data (new/edit)
-// const handleSubmit = async () => {
-//   try {
-//     await drawerData.value.apiUrl!(drawerData.value.rowData);
-//     ElMessage.success({ message: `${drawerData.value.title} component success!` });
-//     drawerData.value.updateTable!();
-//     drawerVisible.value = false;
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
+const handleSubmit = async () => {
+  try {
+    await drawerData.value.apiUrl!(drawerData.value.rowData);
+    ElMessage.success({ message: `${drawerData.value.title} component success!` });
+    drawerData.value.updateTable!();
+    drawerVisible.value = false;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const log = (e: any) => {
   console.log(e);

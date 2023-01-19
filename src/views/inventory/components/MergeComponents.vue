@@ -1,13 +1,13 @@
 <template>
   <div>
-    <el-dialog v-model="drawerVisible" :title="drawerData.title" width="80%" draggable>
+    <el-dialog v-model="drawerVisible" :title="drawerData.title" width="80%">
       <el-row :gutter="20" justify="space-between">
-        <el-col :span="12">
+        <el-col :span="20">
           <p style="margin-top: 0">
             Merge <b>{{ leftComponent?.mpn }}</b> into <b>{{ rightComponent?.mpn }}</b>
           </p>
         </el-col>
-        <el-col :span="12" style="text-align: right">
+        <el-col :span="4" style="text-align: right">
           <el-button @click="intelligentCheck">Refresh</el-button>
         </el-col>
       </el-row>
@@ -24,7 +24,7 @@
             @change="column.checkLeft"
             style="height: auto"
           >
-            <p style="white-space: normal">{{ leftComponent![column.prop] }}</p>
+            <p style="white-space: normal">{{ enumRender(column.prop, leftComponent![column.prop]) }}</p>
           </el-checkbox>
         </el-col>
         <el-col :span="10">
@@ -36,7 +36,7 @@
             @change="column.checkRight"
             style="height: auto"
           >
-            <p style="white-space: normal">{{ rightComponent![column.prop] }}</p>
+            <p style="white-space: normal">{{ enumRender(column.prop, rightComponent![column.prop]) }}</p>
           </el-checkbox>
         </el-col>
       </el-row>
@@ -52,17 +52,18 @@
 </template>
 
 <script setup lang="ts" name="MergeComponentDrawer">
-import { ref, reactive, Ref, toRefs, watch, computed } from "vue";
-import { ElMessage, FormInstance } from "element-plus";
+import { ref, reactive, toRefs, computed } from "vue";
+import { ElMessage } from "element-plus";
 import { Component } from "@/api/interface";
 // import { nestedObjectAssign } from "@/utils/nestedObjectAssign";
 import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
+import { filterEnum } from "@/utils/util";
 
 interface DrawerProps {
-  title: string;
+  title: String;
   leftComponent?: Component.ResGetComponentRecord;
   rightComponent?: Component.ResGetComponentRecord;
-  enumMap?: any;
+  enumMap?: Map<string, { [key: string]: any }[]>;
   apiUrlUpdate?: (params: Component.ReqUpdateComponentParams) => Promise<any>;
   apiUrlDelete?: (params: Component.ReqDeleteComponentsParams) => Promise<any>;
   updateTable?: () => Promise<any>;
@@ -79,10 +80,17 @@ const acceptParams = (params: DrawerProps): void => {
   drawerData.value = params;
   drawerVisible.value = true;
 
-  console.log("enumMap", drawerData.value.enumMap);
   setLeftComponent(drawerData.value.leftComponent!);
   setRightComponent(drawerData.value.rightComponent!);
-  console.log("mergedComponent", mergedComponent);
+};
+
+const enumRender = (prop: string, value: any) => {
+  if (!drawerData.value.enumMap) return value;
+  if (drawerData.value.enumMap.has(prop)) {
+    return filterEnum(value, drawerData.value.enumMap.get(prop), { value: "id", label: "name" });
+  } else {
+    return value;
+  }
 };
 
 interface MergeColumnOptions {
@@ -139,7 +147,6 @@ const useMerger = (mergeColumnOptions: MergeColumnOptions[]) => {
 
   const intelligentCheck = () => {
     state.mergeColumns.map((column: MergeColumnOptions) => {
-      console.log("column", column, column.prop, state.leftComponent, state.leftComponent === undefined);
       if (column.prop === "stock") {
         // check both stock to add quantities together
         column.checkedLeft = true;
@@ -217,10 +224,6 @@ const handleSubmit = async () => {
   } catch (error) {
     console.error(error);
   }
-};
-
-const log = (e: any) => {
-  console.log(e);
 };
 
 defineExpose({

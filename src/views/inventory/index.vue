@@ -208,13 +208,13 @@ const columns: ColumnProps[] = [
     isShow: false
   },
   { prop: "stock", label: "Stock", width: 80 },
-  // {
-  //   prop: "ipn",
-  //   label: "IPN",
-  //   width: 60,
-  //   search: { el: "input" },
-  //   isShow: false
-  // },
+  {
+    prop: "ipn",
+    label: "IPN",
+    width: 60,
+    search: { el: "input" },
+    isShow: false
+  },
   // {
   //   prop: "storage_location",
   //   label: "Short Location",

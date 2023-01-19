@@ -36,7 +36,12 @@
       <!-- Expand -->
       <template #expand="scope">
         <!-- {{ scope.row }} -->
-        <ComponentDetails :title="scope.row.name" :isView="true" :rowData="scope.row"></ComponentDetails>
+        <ComponentDetails
+          :title="scope.row.name"
+          :isView="true"
+          :rowData="scope.row"
+          :enum-map="proTable.enumMap"
+        ></ComponentDetails>
       </template>
       <template #stock="scope">
         {{ scope.row.stock }}

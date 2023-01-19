@@ -3,11 +3,16 @@
     <el-descriptions-item label="Manufacturer" label-align="right">{{ props.rowData?.manufacturer }}</el-descriptions-item>
     <el-descriptions-item label="Manufacturer Part Number" label-align="right">{{ props.rowData?.mpn }}</el-descriptions-item>
     <el-descriptions-item label="Description" label-align="right">{{ props.rowData?.description }}</el-descriptions-item>
+    <el-descriptions-item label="Category" label-align="right">{{
+      enumRender("category", props.rowData?.category)
+    }}</el-descriptions-item>
     <el-descriptions-item label="Stock" label-align="right">{{ props.rowData?.stock }}</el-descriptions-item>
     <el-descriptions-item label="Storage Location" label-align="right">{{
-      props.rowData?.storage_location
+      enumRender("storage_location", props.rowData?.storage_location)
     }}</el-descriptions-item>
-    <el-descriptions-item label="Footprint" label-align="right">{{ props.rowData?.footprint }}</el-descriptions-item>
+    <el-descriptions-item label="Footprint" label-align="right">{{
+      enumRender("footprint", props.rowData?.footprint)
+    }}</el-descriptions-item>
     <el-descriptions-item label="Supplier" label-align="right">{{ props.rowData?.supplier }}</el-descriptions-item>
     <el-descriptions-item label="Supplier Part Number" label-align="right">{{ props.rowData?.spn }}</el-descriptions-item>
     <el-descriptions-item label="Internal Part Number" label-align="right">{{ props.rowData?.ipn }}</el-descriptions-item>
@@ -27,29 +32,26 @@
 </template>
 
 <script setup lang="ts" name="ComponentDetails">
-import { ref, reactive, watch } from "vue";
-import { Refresh, Plus, Search, Delete } from "@element-plus/icons-vue";
-import { ElMessage, FormInstance } from "element-plus";
-// import { genderType } from "@/utils/serviceDict";
-import { Component, ComponentCategory, Footprint, Storage, StorageCategory } from "@/api/interface";
-import {
-  getFootprintsEnum,
-  getComponentStorageLocationEnum,
-  getStorageLocationPathEnumTree,
-  getComponentCategoryEnumTree,
-  postFootprintCreate,
-  postStorageCreate,
-  postComponentCategoryCreate
-} from "@/api/modules/components";
-import { nestedObjectAssign } from "@/utils/nestedObjectAssign";
+import { Component } from "@/api/interface";
+import { filterEnum } from "@/utils/util";
 
 interface DetailsProps {
   title: string;
   isView: boolean;
   rowData?: Component.ResGetComponentRecord;
+  enumMap?: Map<string, { [key: string]: any }[]>;
 }
 
 const props = defineProps<DetailsProps>();
+
+const enumRender = (prop: string, value: any) => {
+  if (!props.enumMap) return value;
+  if (props.enumMap.has(prop)) {
+    return filterEnum(value, props.enumMap.get(prop), { value: "id", label: "name" });
+  } else {
+    return value;
+  }
+};
 </script>
 
 <style lang="scss"></style>

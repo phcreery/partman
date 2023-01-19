@@ -327,6 +327,8 @@ const openMergeDialog = (ids: string[], selectList: Component.ResGetComponentRec
     leftComponent: JSON.parse(JSON.stringify(selectList[0])), // selectList[0]
     rightComponent: JSON.parse(JSON.stringify(selectList[1])), // selectList[1],
     enumMap: proTable.value.enumMap,
+    apiUrlUpdate: patchComponentUpdate,
+    apiUrlDelete: deleteComponents,
     updateTable: proTable.value.getTableList
   };
   dialogRefMerge.value!.acceptParams(params);

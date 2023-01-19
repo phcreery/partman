@@ -52,9 +52,8 @@
 </template>
 
 <script setup lang="ts" name="MergeComponentDrawer">
-import { ref, reactive, Ref, toRefs, watch, inject, computed } from "vue";
-import { Refresh, Plus, Search, Delete } from "@element-plus/icons-vue";
-import { Column, ElMessage, FormInstance } from "element-plus";
+import { ref, reactive, Ref, toRefs, watch, computed } from "vue";
+import { ElMessage, FormInstance } from "element-plus";
 import { Component } from "@/api/interface";
 // import { nestedObjectAssign } from "@/utils/nestedObjectAssign";
 import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
@@ -64,7 +63,8 @@ interface DrawerProps {
   leftComponent?: Component.ResGetComponentRecord;
   rightComponent?: Component.ResGetComponentRecord;
   enumMap?: any;
-  // apiUrl?: (params: any) => Promise<any>;
+  apiUrlUpdate?: (params: Component.ReqUpdateComponentParams) => Promise<any>;
+  apiUrlDelete?: (params: Component.ReqDeleteComponentsParams) => Promise<any>;
   updateTable?: () => Promise<any>;
 }
 
@@ -98,7 +98,7 @@ interface MergeColumnOptions {
 
 const mergeColumnOptions: MergeColumnOptions[] = [
   { prop: "manufacturer", label: "Manufacturer" },
-  // { prop: "mpn", label: "MPN", checkedLeft: false, checkedRight: true, single: true },
+  { prop: "mpn", label: "MPN", required: true },
   { prop: "description", label: "Description" },
   { prop: "stock", label: "Stock", required: true },
   { prop: "comment", label: "Comment" },
@@ -209,8 +209,9 @@ const { mergeColumns, leftComponent, rightComponent, setLeftComponent, setRightC
 // Submit data (new/edit)
 const handleSubmit = async () => {
   try {
-    await drawerData.value.apiUrl!(drawerData.value.rowData);
+    await drawerData.value.apiUrlUpdate!(mergedComponent.value as Component.ResGetComponentRecord);
     ElMessage.success({ message: `${drawerData.value.title} component success!` });
+    leftComponent.value ? await drawerData.value.apiUrlDelete!({ ids: [leftComponent.value.id] }) : "";
     drawerData.value.updateTable!();
     drawerVisible.value = false;
   } catch (error) {

@@ -40,7 +40,12 @@
           </el-checkbox>
         </el-col>
       </el-row>
-      <ComponentDetails title="" :isView="true" :rowData="(mergedComponent as Component.ResGetComponentRecord)" />
+      <ComponentDetails
+        title=""
+        :isView="true"
+        :rowData="(mergedComponent as Component.ResGetComponentRecord)"
+        :enum-map="drawerData.enumMap"
+      />
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="drawerVisible = false">Cancel</el-button>

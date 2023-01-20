@@ -37,7 +37,7 @@
       <template #expand="scope">
         <!-- {{ scope.row }} -->
         <ComponentDetails
-          :title="scope.row.name"
+          :title="scope.row.name ?? ''"
           :isView="true"
           :rowData="scope.row"
           :enum-map="proTable.enumMap"

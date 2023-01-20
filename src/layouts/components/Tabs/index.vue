@@ -45,10 +45,8 @@ onMounted(() => {
 
 // Tab drag and drop sorting
 const tabsDrop = () => {
-  Sortable.create(document.querySelector(".el-tabs__nav") as HTMLElement, {
-    draggable: ".el-tabs__item",
-    animation: 300
-  });
+  let tabEl = document.querySelector(".el-tabs__nav") as HTMLElement | null;
+  tabEl ? Sortable.create(tabEl, { draggable: ".el-tabs__item", animation: 300 }) : "";
 };
 
 // Initialization requires a fixed label

@@ -461,10 +461,10 @@ export const getProjectComponentsList = async (
   nestedObjectAssign(filter, res_project.components ? { id: res_project.components } : {});
   nestedObjectAssign(filter, params.filter?._mpn ? { "component.mpn": params.filter?._mpn } : {});
   nestedObjectAssign(filter, params.filter?._description ? { "component.description": params.filter?._description } : {});
-  let res_project_components = (await client.collection("project_components").getList(1, 99999, {
+  let res_project_components = (await client.collection("project_components").getList(params.page, params.perPage, {
     filter: filterToPBString(filter),
     sort: params.sort ?? "",
-    expand: "component" // params.expand ?? ""
+    expand: "component" // params.expand ?? "",
   })) as unknown as ResList<ProjectComponents.ResGetProjectComponentRecord>;
 
   // anchor expand.component.mpn and description into each res_project_components.items

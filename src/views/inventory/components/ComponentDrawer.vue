@@ -340,5 +340,21 @@ defineExpose({
 </script>
 
 <style lang="scss">
-@import "./componentDrawer.scss";
+.form-item-with-buttons {
+  width: 100%;
+  .el-space {
+    width: 100%;
+    .el-space__item {
+      &:first-child {
+        width: 100%;
+      }
+      &:last-child {
+        margin-right: 0 !important;
+      }
+      & > .el-button-group {
+        width: max-content;
+      }
+    }
+  }
+}
 </style>

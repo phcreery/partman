@@ -41,7 +41,8 @@
     "vue-i18n": "^9.1.9",
     "vue-router": "^4.0.12",
     "vue3-seamless-scroll": "^1.2.0",
-    "vuedraggable": "^2.24.3"
+    "vuedraggable": "^2.24.3",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.2/xlsx-0.19.2.tgz"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.1",

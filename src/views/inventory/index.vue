@@ -21,8 +21,6 @@
         >
           Delete
         </el-button>
-        <el-button :icon="Upload" plain @click="batchAdd" v-if="BUTTONS.batchAdd">Import</el-button>
-        <el-button :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button>
         <el-button
           :icon="Switch"
           plain
@@ -32,6 +30,8 @@
         >
           Merge
         </el-button>
+        <el-button :icon="Upload" plain @click="batchAdd" v-if="BUTTONS.batchAdd">Import</el-button>
+        <el-button :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button>
       </template>
       <!-- Expand -->
       <template #expand="scope">
@@ -70,7 +70,8 @@ import { useAuthButtons } from "@/hooks/useAuthButtons";
 import { JSON2CSV } from "@/hooks/useDataTransform";
 import { filterNodeMethod } from "@/utils/filterNodeMethod";
 import ProTable from "@/components/ProTable/index.vue";
-import ImportExcel from "@/components/ImportExcel/index.vue";
+// import ImportExcel from "@/components/ImportExcel/index.vue";
+import ImportExcel from "./components/ImportExcel.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 import ComponentStockEdit from "@/views/inventory/components/ComponentStockEdit.vue";
 import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
@@ -295,7 +296,7 @@ const downloadFile = async () => {
     filter: proTable.value.searchParam
   });
 
-  let columns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "");
+  let columns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "").filter((c: string) => c);
   // remove specific columns from array
   let badColumns = ["operation", "expand", "selection", "footprint", "name"];
   columns = columns.filter((c: string) => !badColumns.includes(c));
@@ -309,17 +310,24 @@ interface DialogExpose {
 }
 const dialogRefImport = ref<DialogExpose>();
 const batchAdd = () => {
-  // console.log(proTable.value.printData);
-  let templateColumns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "");
   // remove specific columns from array
-  let badColumns = ["operation", "expand", "selection", "footprint", "name"];
-  templateColumns = templateColumns.filter((c: string) => !badColumns.includes(c));
-  let templateCSV = JSON2CSV({}, templateColumns);
+  let badColumns = ["operation", "expand", "selection", "footprint", "name", "created", "updated"];
+  let templateColumns = columns
+    .filter((c: Partial<ColumnProps>) => c.hasOwnProperty("prop"))
+    .map((c: Partial<ColumnProps>) => {
+      return {
+        prop: c.prop,
+        label: c.label
+      };
+    })
+    .filter((c: Partial<ColumnProps>) => !badColumns.includes(c.prop ?? ""));
+  console.log(templateColumns);
   let params = {
-    title: "component",
-    tempApi: () => templateCSV,
+    title: "Component",
+    // tempApi: () => templateCSV,
+    columns: templateColumns,
     importApi: postComponentCreateBatch_Client,
-    getTableList: proTable.value.getTableList
+    refresh: proTable.value.getTableList
   };
   dialogRefImport.value!.acceptParams(params);
 };

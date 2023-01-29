@@ -209,7 +209,38 @@ export const getAuthMenuListApi = () => {
           isAffix: false,
           isKeepAlive: true
         },
-        children: []
+        children: [
+          {
+            path: "/settings",
+            name: "settings",
+            component: "/settings/general",
+            meta: {
+              icon: "setting",
+              title: "Settings",
+              isLink: "",
+              isHide: false,
+              isFull: false,
+              isAffix: false,
+              isKeepAlive: true
+            },
+            children: []
+          },
+          {
+            path: "/logs",
+            name: "logs",
+            component: "/settings/logs",
+            meta: {
+              icon: "DataAnalysis",
+              title: "Logs",
+              isLink: "",
+              isHide: false,
+              isFull: false,
+              isAffix: false,
+              isKeepAlive: true
+            },
+            children: []
+          }
+        ]
       }
       // {
       //   title: "Settings",

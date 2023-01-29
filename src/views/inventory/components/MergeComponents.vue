@@ -101,12 +101,12 @@ const enumRender = (prop: string, value: any) => {
 interface MergeColumnOptions {
   prop: keyof Component.ResGetComponentRecord;
   label: string;
+  single?: boolean;
+  required?: boolean;
   checkedLeft?: boolean;
   checkedRight?: boolean;
   checkLeft?: (e: Event) => void;
   checkRight?: (e: Event) => void;
-  single?: boolean;
-  required?: boolean;
 }
 
 const mergeColumnOptions: MergeColumnOptions[] = [

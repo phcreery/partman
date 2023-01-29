@@ -2,7 +2,6 @@
   <div class="main-box">
     <ProTree
       ref="proTree"
-      title="Projects"
       :requestApi="getProjectsEnum"
       :initParam="initParamProject"
       :dataCallback="dataCallbackTree"

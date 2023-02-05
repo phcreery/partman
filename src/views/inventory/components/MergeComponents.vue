@@ -125,13 +125,11 @@ const mergeColumnOptions: MergeColumnOptions[] = [
   // { prop: "image", label: "Image", single: true }
 ];
 
-// namespace Merger {
 interface MergerStateProps {
   mergeColumns: MergeColumnOptions[];
   leftComponent: Component.ResGetComponentRecord | undefined;
   rightComponent: Component.ResGetComponentRecord | undefined;
 }
-// }
 
 const useMerger = (mergeColumnOptions: MergeColumnOptions[]) => {
   const state = reactive<MergerStateProps>({
@@ -217,7 +215,6 @@ const useMerger = (mergeColumnOptions: MergeColumnOptions[]) => {
 const { mergeColumns, leftComponent, rightComponent, setLeftComponent, setRightComponent, intelligentCheck, mergedComponent } =
   useMerger(mergeColumnOptions);
 
-// const ruleFormRef = ref<FormInstance>();
 // Submit data (new/edit)
 const handleSubmit = async () => {
   try {

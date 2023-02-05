@@ -97,7 +97,9 @@ import {
   getStorageLocationPathEnumTree,
   // getStorageCategoryEnum,
   // getStorageCategoryEnumTree,
-  postComponentCreateBatch_Client
+  // postComponentCreateBatch_Client,
+  postComponentCategoryCreate,
+  postStorageCreate
 } from "@/api/modules/components";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
@@ -311,22 +313,33 @@ interface DialogExpose {
 const dialogRefImport = ref<DialogExpose>();
 const batchAdd = () => {
   // remove specific columns from array
-  let badColumns = ["operation", "expand", "selection", "footprint", "name", "created", "updated"];
-  let templateColumns = columns
-    .filter((c: Partial<ColumnProps>) => c.hasOwnProperty("prop"))
-    .map((c: Partial<ColumnProps>) => {
-      return {
-        prop: c.prop,
-        label: c.label
-      };
-    })
-    .filter((c: Partial<ColumnProps>) => !badColumns.includes(c.prop ?? ""));
+  // let badColumns = ["operation", "expand", "selection", "footprint", "name", "created", "updated"];
+  // let templateColumns = columns
+  //   .filter((c: Partial<ColumnProps>) => c.hasOwnProperty("prop"))
+  //   .map((c: Partial<ColumnProps>) => {
+  //     return {
+  //       prop: c.prop,
+  //       label: c.label
+  //     };
+  //   })
+  //   .filter((c: Partial<ColumnProps>) => !badColumns.includes(c.prop ?? ""));
+  let templateColumns = [
+    { prop: "mpn", label: "MPN" },
+    { prop: "manufacturer", label: "Manufacturer" },
+    { prop: "description", label: "Description" },
+    { prop: "category", label: "Category", apiCreate: postComponentCategoryCreate },
+    { prop: "stock", label: "Stock" },
+    // { prop: "footprint", label: "Footprint" },
+    { prop: "ipn", label: "IPN" },
+    { prop: "storage_location", label: "Location", apiCreate: postStorageCreate }
+  ];
   console.log(templateColumns);
   let params = {
-    title: "Component",
+    title: "Components",
     // tempApi: () => templateCSV,
     columns: templateColumns,
-    importApi: postComponentCreateBatch_Client,
+    enumMap: proTable.value.enumMap,
+    // importApi: postComponentCreate,
     refresh: proTable.value.getTableList
   };
   dialogRefImport.value!.acceptParams(params);

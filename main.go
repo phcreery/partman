@@ -62,7 +62,8 @@ func main() {
 		Use:   "init",
 		Short: "Initialize the database and create the schema (WARNING: this will delete all data in the database)",
 		Run: func(cmd *cobra.Command, args []string) {
-			err := app.Bootstrap()
+			// app.IsBootstrapped()
+      err := app.Bootstrap()
 			if err != nil {
 				log.Fatal(err)
 				fmt.Println("Error Bootstrapping: ", err)

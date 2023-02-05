@@ -454,11 +454,11 @@ export const getProjectComponentsList = async (
     return { data: emptyData(params) } as unknown as APIdata<ResList<ProjectComponents.ResGetProjectComponentRecord>>;
   let res_project = (await client.collection("projects").getOne(params.projectID, {})) as unknown as Project.ResGetProjectRecord;
 
-  if (res_project.components.length === 0) res_project.components = ["none"];
+  if (res_project.components.length === 0) res_project.components = ["none"]; // TODO: should be `= []` ?
 
   let filter: object = {};
-  nestedObjectAssign(filter, params.filter?.refdesignators ? { refdesignators: params.filter?.refdesignators } : {});
   nestedObjectAssign(filter, res_project.components ? { id: res_project.components } : {});
+  nestedObjectAssign(filter, params.filter?.refdesignators ? { refdesignators: params.filter?.refdesignators } : {});
   nestedObjectAssign(filter, params.filter?._mpn ? { "component.mpn": params.filter?._mpn } : {});
   nestedObjectAssign(filter, params.filter?._description ? { "component.description": params.filter?._description } : {});
   let res_project_components = (await client.collection("project_components").getList(params.page, params.perPage, {

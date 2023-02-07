@@ -67,7 +67,9 @@
                 <div>{{ scope.row }}</div>
               </template>
               <template #reference>
-                <el-tag>{{ scope.row._action }}</el-tag>
+                <el-tag v-if="scope.row._action === 'new'">{{ scope.row._action }}</el-tag>
+                <el-tag v-if="scope.row._action === 'update'" type="warning">{{ scope.row._action }}</el-tag>
+                <el-tag v-else type="warning">{{ scope.row._action }}</el-tag>
               </template>
             </el-popover>
           </template>
@@ -84,39 +86,16 @@ import { useDownload } from "@/hooks/useDownload";
 import { Download, Upload, View } from "@element-plus/icons-vue";
 import { ElNotification } from "element-plus";
 import { JSON2CSV, CSV2JSON } from "@/hooks/useDataTransform";
-import { ColumnProps } from "@/components/ProTable/interface/index";
-import { filterEnum } from "@/utils/util";
+// import { filterEnum } from "@/utils/util";
 
-import {
-  // getComponentList,
-  getComponentsListForExport,
-  postComponentCreate,
-  patchComponentUpdate
-  // deleteComponents,
-  // getFootprintsEnum,
-  // getComponentStorageLocationEnum,
-  // getComponentCategoryEnum,
-  // getComponentCategoryEnumTree,
-  // getStorageLocationPathEnum,
-  // getStorageLocationPathEnumTree,
-  // getStorageCategoryEnum,
-  // getStorageCategoryEnumTree,
-  // postComponentCreateBatch_Client
-} from "@/api/modules/components";
-import {
-  // ResList,
-  Component
-  // ComponentCategory,
-  // Footprint,
-  // Storage
-} from "@/api/interface";
-
-export interface ExcelParameterProps {
+export interface DrawerProps {
   title: string; // Title
-  // tempApi: (params: any) => Promise<any>; // Download the template ofApi
+  // tempApi: (params: any) => Promise<any>; // Download the template
   columns: any; // Table column
+  uniqueKey: string; // Unique key
   // importApi: (params: any) => Promise<any>; // Batch ImportedApi
   enumMap: Map<string, { [key: string]: any }[]>;
+  apiExistingEntries: () => Promise<any[]>; // Existing entriesApi
   refresh?: () => Promise<any>; // Get table data forApi
 }
 
@@ -126,7 +105,7 @@ const excelLimit = ref(1);
 // dialogStatus
 const dialogVisible = ref(false);
 // Parameters passed from the parent component
-const parameter = ref<Partial<ExcelParameterProps>>({});
+const parameter = ref<Partial<DrawerProps>>({});
 
 // const reviewTableData = ref();
 
@@ -134,48 +113,63 @@ const parameter = ref<Partial<ExcelParameterProps>>({});
 const acceptParams = (params?: any): void => {
   console.log("params", params);
   parameter.value = params;
-  setColumns(params.columns);
-  setEnumMap(params.enumMap);
+  acceptProps({
+    columns: params.columns,
+    uniqueKey: params.uniqueKey,
+    enumMap: params.enumMap,
+    apiExistingEntries: params.apiExistingEntries
+  });
   dialogVisible.value = true;
 };
 
 interface ImportColumns {
-  prop: string; // keyof Component.ResGetComponentRecord
+  prop: string;
   label: string;
   apiCreate?: (params: any) => Promise<any>;
+  uniqueKey?: string;
 }
 
 interface ImporterStateProps {
   columns: ImportColumns[] | undefined;
+  uniqueKey: string | undefined;
   enumMap: Map<string, { [key: string]: any }[]> | undefined;
-  existingComponents: Component.ResGetComponentRecord[];
+  existingEntries: any[] | undefined;
   reviewTableData: any[];
 }
 
-const useImporter = (columns: ImportColumns[] | undefined, enumMap: Map<string, { [key: string]: any }[]> | undefined) => {
+const useImporter = (
+  columns: ImportColumns[] | undefined,
+  uniqueKey: string | undefined,
+  enumMap: Map<string, { [key: string]: any }[]> | undefined
+) => {
+  let apiExistingEntries: () => Promise<any[]> = async () => [];
   const state = reactive<ImporterStateProps>({
-    columns: columns, //JSON.parse(JSON.stringify(columns)),
+    columns: columns,
+    uniqueKey: uniqueKey,
     enumMap: enumMap,
-    existingComponents: [],
+    existingEntries: [],
     reviewTableData: []
   });
 
-  const getExistingComponents = async () => {
-    let existingComponents = await getComponentsListForExport({ filter: {} });
-    state.existingComponents = existingComponents;
+  const getExistingEntries = async () => {
+    // if (!apiExistingEntries) return;
+    state.existingEntries = await apiExistingEntries();
+    console.log("state.existingEntries", typeof existingEntries, state.existingEntries);
   };
 
-  const setColumns = (columns: ImportColumns[]) => {
-    state.columns = columns;
-  };
-
-  const setEnumMap = (enumMap: Map<string, { [key: string]: any }[]>) => {
-    state.enumMap = enumMap;
+  const acceptProps = (props: Partial<ImporterStateProps> & { apiExistingEntries: () => Promise<any[]> }) => {
+    state.columns = props.columns;
+    state.uniqueKey = props.uniqueKey;
+    state.enumMap = props.enumMap;
+    state.existingEntries = props.existingEntries;
+    apiExistingEntries = props.apiExistingEntries;
   };
 
   const findExistingComponent = (component: any) => {
-    let existingComponent = state.existingComponents.find((c: any) => {
-      return c.mpn === component.mpn;
+    if (!state.uniqueKey) return;
+    if (!state.existingEntries) return;
+    let existingComponent = state.existingEntries.find((c: any) => {
+      return c[state.uniqueKey!] === component[state.uniqueKey!];
     });
     return existingComponent;
   };
@@ -211,13 +205,10 @@ const useImporter = (columns: ImportColumns[] | undefined, enumMap: Map<string, 
     // go through and add _action of "new" to each row
     sanitizedTableData.forEach((row: any) => {
       row._action = "new";
-      // row._action_component = "new";
-      // row._action_category = "new";
-      // row._action_storage_location = "new";
     });
 
     // see if component already exists
-    await getExistingComponents();
+    await getExistingEntries();
     sanitizedTableData.forEach((row: any) => {
       let existingComponent = findExistingComponent(row);
       if (existingComponent) {
@@ -230,36 +221,41 @@ const useImporter = (columns: ImportColumns[] | undefined, enumMap: Map<string, 
   };
 
   const evaluateEnum = async (row: any) => {
-    console.log("enumMap", state.enumMap);
     if (!state.columns) return row;
     if (!state.enumMap) return row;
 
     for (let col in row) {
-      console.log("col", col, row[col]);
+      // skip loop if there is no data
       if (row[col] === undefined || row[col] === "") continue;
 
-      let apiCreateFunc = state.columns.find((c: any) => c.prop === col)?.apiCreate;
+      let colUniqueKey = state.columns.find((c: any) => c.prop === col)?.uniqueKey;
+      if (!colUniqueKey) continue;
+      let colApiCreateFunc = state.columns.find((c: any) => c.prop === col)?.apiCreate;
+
       // does this value exist in the enumMap?
       if (!state.enumMap.get(col)) {
-        console.log("no enumMap found for", col);
+        // console.log("no enumMap found for", col);
         continue;
       }
-      let value = state.enumMap.get(col)?.find((e: any) => e.name === row[col])?.value;
-      console.log("enum value", value);
-      if (!value) {
+      let enumValue = state.enumMap.get(col)?.find((e: any) => {
+        // console.log("looking...", e[colUniqueKey!], row[col], e[colUniqueKey!].trim() == row[col].trim());
+        return e[colUniqueKey!].trim() == row[col].trim();
+      })?.id;
+      if (!enumValue) {
         // no enum value found
         console.log("no enum value found, gotta create one for", row[col]);
-        if (apiCreateFunc) {
-          console.log("creating with apiCreateFunc", apiCreateFunc);
-          // let res = await apiCreateFunc({name: row[col]});
+        if (colApiCreateFunc) {
+          console.log("creating with apiCreateFunc", colApiCreateFunc);
+          // let res = await colApiCreateFunc({name: row[col]});
           // console.log("res", res); // TODO: get id from res
           // row[col] = res.id;
         } else {
-          console.log("no apiCreateFunc found, defaulting to empty string");
+          console.log("no colApiCreateFunc found, defaulting to empty string");
           row[col] = "";
         }
       } else {
-        row[col] = value;
+        // enum value found
+        row[col] = enumValue;
       }
     }
     return row;
@@ -276,7 +272,7 @@ const useImporter = (columns: ImportColumns[] | undefined, enumMap: Map<string, 
       return obj;
     };
     let tableData = JSON.parse(JSON.stringify(state.reviewTableData));
-    let component: Component.ComponentColumns;
+    let component;
     for (let row of tableData) {
       if (row._action === "new") {
         component = removeInternalKeys(row);
@@ -286,8 +282,10 @@ const useImporter = (columns: ImportColumns[] | undefined, enumMap: Map<string, 
         // console.log(res);
       } else if (row._action === "update") {
         component = removeInternalKeys(row);
+        component = await evaluateEnum(component);
         Object.assign(component, { id: row.id });
         console.log("updating", component);
+        // useMerger
         // let res = await patchComponentUpdate(component as Component.ReqUpdateComponentParams);
       } else {
         console.log("skipping", row);
@@ -298,29 +296,31 @@ const useImporter = (columns: ImportColumns[] | undefined, enumMap: Map<string, 
     dialogVisible.value = false;
   };
 
-  getExistingComponents();
+  getExistingEntries();
 
   return {
     ...toRefs(state),
-    setColumns,
-    setEnumMap,
+    acceptProps,
     downloadTemplate,
     uploadExcel,
     importTableData
   };
 };
 
+// technically the parameters here are unused since they are passed in via the useImporter hook
 const {
   columns,
+  uniqueKey,
   enumMap,
-  existingComponents,
+  existingEntries,
   reviewTableData,
-  setColumns,
-  setEnumMap,
+  acceptProps,
   downloadTemplate,
   uploadExcel,
   importTableData
-} = useImporter(parameter.value.columns, parameter.value.enumMap);
+} = useImporter(parameter.value.columns, parameter.value.uniqueKey, parameter.value.enumMap);
+
+console.log(uniqueKey, enumMap); // just to get rid of unused variable warnings
 
 /**
  * @description Judgment before file upload

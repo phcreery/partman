@@ -102,6 +102,7 @@ interface MergeColumnOptions {
   prop: keyof Component.ResGetComponentRecord;
   label: string;
   single?: boolean;
+  defaultBoth?: boolean;
   required?: boolean;
   checkedLeft?: boolean;
   checkedRight?: boolean;
@@ -113,7 +114,7 @@ const mergeColumnOptions: MergeColumnOptions[] = [
   { prop: "manufacturer", label: "Manufacturer" },
   { prop: "mpn", label: "MPN", required: true },
   { prop: "description", label: "Description" },
-  { prop: "stock", label: "Stock", required: true },
+  { prop: "stock", label: "Stock", required: true, defaultBoth: true },
   { prop: "comment", label: "Comment" },
   // { prop: "supplier", label: "Supplier"true, single: true },
   // { prop: "spn", label: "SPN"true, single: true },
@@ -150,7 +151,7 @@ const useMerger = (mergeColumnOptions: MergeColumnOptions[]) => {
 
   const intelligentCheck = () => {
     state.mergeColumns.map((column: MergeColumnOptions) => {
-      if (column.prop === "stock") {
+      if (column.defaultBoth) {
         // check both stock to add quantities together
         column.checkedLeft = true;
         column.checkedRight = true;

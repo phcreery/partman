@@ -311,7 +311,7 @@ interface DialogExpose {
   acceptParams: (params: any) => void;
 }
 const dialogRefImport = ref<DialogExpose>();
-const batchAdd = () => {
+const batchAdd = async () => {
   // remove specific columns from array
   // let badColumns = ["operation", "expand", "selection", "footprint", "name", "created", "updated"];
   // let templateColumns = columns
@@ -327,18 +327,20 @@ const batchAdd = () => {
     { prop: "mpn", label: "MPN" },
     { prop: "manufacturer", label: "Manufacturer" },
     { prop: "description", label: "Description" },
-    { prop: "category", label: "Category", apiCreate: postComponentCategoryCreate },
+    { prop: "category", label: "Category", apiCreate: postComponentCategoryCreate, uniqueKey: "name" },
     { prop: "stock", label: "Stock" },
     // { prop: "footprint", label: "Footprint" },
     { prop: "ipn", label: "IPN" },
-    { prop: "storage_location", label: "Location", apiCreate: postStorageCreate }
+    { prop: "storage_location", label: "Location", apiCreate: postStorageCreate, uniqueKey: "name" }
   ];
   console.log(templateColumns);
   let params = {
     title: "Components",
     // tempApi: () => templateCSV,
     columns: templateColumns,
+    uniqueKey: "mpn",
     enumMap: proTable.value.enumMap,
+    apiExistingEntries: async () => await getComponentsListForExport({ filter: {} }), // existingEntries,
     // importApi: postComponentCreate,
     refresh: proTable.value.getTableList
   };

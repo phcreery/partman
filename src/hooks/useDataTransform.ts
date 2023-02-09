@@ -1,5 +1,5 @@
 import * as json2csv from "json2csv";
-import { read, writeFileXLSX } from "xlsx";
+// import { read, writeFileXLSX } from "xlsx";
 import XLSX from "xlsx";
 
 /**
@@ -45,12 +45,12 @@ export const JSON2CSV = async (json: any = {}, fields: Array<string>) => {
 // }
 
 function getBuffer(fileData: File): Promise<ArrayBuffer> {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     let reader = new FileReader();
     reader.onload = function (e) {
       let arrayBuffer = e.target?.result;
       // let arrayBuffer = reader.result
-      resolve(arrayBuffer);
+      resolve(arrayBuffer as ArrayBuffer);
     };
     reader.readAsArrayBuffer(fileData);
   });

@@ -129,68 +129,6 @@ export const getComponentEnum = async () => {
   return { data: res.items } as unknown as APIdata<Component.ResGetComponentRecord[]>;
 };
 
-// TODO: convert this to a backend function
-export const postComponentCreateBatch_Client = async (fd: FormData) => {
-  // iterate over the parameter FormData file entries and create a new component using postComponentCreate for each entry
-  for (let newfile of fd.getAll("file")) {
-    let file = newfile as File;
-    // read file if csv
-    if (file.type === "text/csv") {
-      // iterate over csv lines
-      let text = await file.text();
-      let lines = text.split("\n");
-      for (let i = 1; i < lines.length; i++) {
-        let line = lines[i];
-        // let values = line.split(",");
-        let values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-        // let values = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-        values = values || [];
-        let component: Component.ComponentColumns = {
-          category: "", // values[0],
-          manufacturer: values[1],
-          mpn: values[2],
-          supplier: "",
-          spn: "",
-          description: values[5],
-          stock: Number(values[6]),
-          ipn: "", // values[7],
-          storage_location: "", // values[8],
-          comment: "",
-          footprint: "",
-          specs: []
-        };
-        // exit if no mpn
-        if (!component.mpn) continue;
-
-        // find storage location id with getComponentStorageLocationEnum
-        if (values[8]) {
-          let storageLocationEnum = await getComponentStorageLocationEnum();
-          let storageLocation = storageLocationEnum.data.find((storageLocation: Storage.ResGetStorageRecord) => {
-            return storageLocation.name === values[8];
-          });
-          // if storage location found, set component storage location to id
-          // if not found, create new storage location and set component storage location to id
-          component.storage_location = storageLocation
-            ? storageLocation.id
-            : (await postStorageCreate({ name: values[8], description: "", category: "" })).data.id;
-        }
-        // do the same for category
-        if (values[0]) {
-          let categoryEnum = await getComponentCategoryEnum();
-          let category = categoryEnum.data.find((category: ComponentCategory.ResGetComponentCategoryRecord) => {
-            return category.name === values[0];
-          });
-          component.category = category
-            ? category.id
-            : (await postComponentCategoryCreate({ name: values[0], description: "", parent: "" })).data.id;
-        }
-
-        await postComponentCreate(component);
-      }
-    }
-  }
-};
-
 export const getComponent = async (id: string) => {
   let res = await client.collection("components").getOne(id);
   return { data: res } as unknown as APIdata<Component.ResGetComponentRecord>;

@@ -68,7 +68,7 @@ export const useMerger = (mergeColumnOptions: MergeColumnOptions[]) => {
 
   const mergedComponent = computed(() => {
     let mergedComponent: Partial<Component.ResGetComponentRecord> = {};
-    mergedComponent.id = state.leftComponent?.id;
+    mergedComponent.id = state.rightComponent?.id;
     for (const column of state.mergeColumns) {
       let leftValue = state.leftComponent![column.prop];
       let rightValue = state.rightComponent![column.prop];

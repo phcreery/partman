@@ -312,17 +312,6 @@ interface DialogExpose {
 }
 const dialogRefImport = ref<DialogExpose>();
 const batchAdd = async () => {
-  // remove specific columns from array
-  // let badColumns = ["operation", "expand", "selection", "footprint", "name", "created", "updated"];
-  // let templateColumns = columns
-  //   .filter((c: Partial<ColumnProps>) => c.hasOwnProperty("prop"))
-  //   .map((c: Partial<ColumnProps>) => {
-  //     return {
-  //       prop: c.prop,
-  //       label: c.label
-  //     };
-  //   })
-  //   .filter((c: Partial<ColumnProps>) => !badColumns.includes(c.prop ?? ""));
   let templateColumns = [
     { prop: "mpn", label: "MPN" },
     { prop: "manufacturer", label: "Manufacturer" },
@@ -336,7 +325,6 @@ const batchAdd = async () => {
   console.log(templateColumns);
   let params = {
     title: "Components",
-    // tempApi: () => templateCSV,
     columns: templateColumns,
     uniqueKey: "mpn",
     enumMap: proTable.value.enumMap,

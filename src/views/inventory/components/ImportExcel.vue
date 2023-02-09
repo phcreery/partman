@@ -59,7 +59,7 @@
     </div>
 
     <div v-if="activeStep === 2">
-      <el-table :data="reviewTableData" border style="width: 100%" height="450">
+      <el-table :data="tableDataReviewed" border style="width: 100%" height="450">
         <el-table-column label="Action">
           <template #default="scope">
             <el-popover effect="light" trigger="hover" placement="top" width="auto">
@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts" name="ImportExcel">
-import { ref, reactive, toRefs } from "vue";
+import { ref, reactive, toRefs, watch } from "vue";
 import { useDownload } from "@/hooks/useDownload";
 import { Download, Upload, View } from "@element-plus/icons-vue";
 import { ElNotification } from "element-plus";
@@ -90,7 +90,6 @@ import { JSON2CSV, CSV2JSON } from "@/hooks/useDataTransform";
 
 export interface DrawerProps {
   title: string; // Title
-  // tempApi: (params: any) => Promise<any>; // Download the template
   columns: any; // Table column
   uniqueKey: string; // Unique key
   // importApi: (params: any) => Promise<any>; // Batch ImportedApi
@@ -107,7 +106,7 @@ const dialogVisible = ref(false);
 // Parameters passed from the parent component
 const parameter = ref<Partial<DrawerProps>>({});
 
-// const reviewTableData = ref();
+// const tableDataReviewed = ref();
 
 // Receive parent component parameters
 const acceptParams = (params?: any): void => {
@@ -119,6 +118,7 @@ const acceptParams = (params?: any): void => {
     enumMap: params.enumMap,
     apiExistingEntries: params.apiExistingEntries
   });
+  activeStep.value = 0;
   dialogVisible.value = true;
 };
 
@@ -134,7 +134,8 @@ interface ImporterStateProps {
   uniqueKey: string | undefined;
   enumMap: Map<string, { [key: string]: any }[]> | undefined;
   existingEntries: any[] | undefined;
-  reviewTableData: any[];
+  tableData: any[];
+  tableDataReviewed: any[];
 }
 
 const useImporter = (
@@ -148,13 +149,19 @@ const useImporter = (
     uniqueKey: uniqueKey,
     enumMap: enumMap,
     existingEntries: [],
-    reviewTableData: []
+    tableData: [],
+    tableDataReviewed: []
   });
 
   const getExistingEntries = async () => {
     // if (!apiExistingEntries) return;
     state.existingEntries = await apiExistingEntries();
-    console.log("state.existingEntries", typeof existingEntries, state.existingEntries);
+    // console.log("state.existingEntries", typeof existingEntries, state.existingEntries);
+  };
+
+  const addToExistingEntries = (newEntry: any) => {
+    if (!state.existingEntries) return;
+    state.existingEntries.push(newEntry);
   };
 
   const acceptProps = (props: Partial<ImporterStateProps> & { apiExistingEntries: () => Promise<any[]> }) => {
@@ -186,8 +193,7 @@ const useImporter = (
   const uploadExcel = async (param: any) => {
     let json = await CSV2JSON(param.file);
     let tableData = json.Sheet1;
-    let newTableData = await initializeTableData(tableData);
-    newTableData ? (state.reviewTableData = newTableData) : (state.reviewTableData = []);
+    tableData ? (state.tableData = tableData) : (state.tableData = []);
   };
 
   const initializeTableData = async (tableData: any) => {
@@ -202,11 +208,6 @@ const useImporter = (
       sanitizedTableData.push(cleanRow);
     });
 
-    // go through and add _action of "new" to each row
-    sanitizedTableData.forEach((row: any) => {
-      row._action = "new";
-    });
-
     // see if component already exists
     await getExistingEntries();
     sanitizedTableData.forEach((row: any) => {
@@ -214,6 +215,10 @@ const useImporter = (
       if (existingComponent) {
         row._action = "update";
         row.id = existingComponent.id;
+      } else {
+        row._action = "new";
+        // add to existingEntries so that we don't create duplicates
+        addToExistingEntries(row);
       }
     });
 
@@ -243,12 +248,18 @@ const useImporter = (
       })?.id;
       if (!enumValue) {
         // no enum value found
-        console.log("no enum value found, gotta create one for", row[col]);
+        console.log("no enum value found for , gotta create one for", col, row[col]);
+        console.log(state.enumMap);
         if (colApiCreateFunc) {
-          console.log("creating with apiCreateFunc", colApiCreateFunc);
+          console.log("creating with apiCreateFunc and adding to internal enumMap", colApiCreateFunc);
+          let res = { id: "fakeid" };
           // let res = await colApiCreateFunc({name: row[col]});
           // console.log("res", res); // TODO: get id from res
-          // row[col] = res.id;
+          row[col] = res.id;
+          // add to enumMap
+          let arr = state.enumMap.get(col);
+          arr?.push({ id: res.id, [colUniqueKey!]: row[col] });
+          state.enumMap.set(col, arr!);
         } else {
           console.log("no colApiCreateFunc found, defaulting to empty string");
           row[col] = "";
@@ -271,7 +282,7 @@ const useImporter = (
       });
       return obj;
     };
-    let tableData = JSON.parse(JSON.stringify(state.reviewTableData));
+    let tableData = JSON.parse(JSON.stringify(state.tableDataReviewed));
     let component;
     for (let row of tableData) {
       if (row._action === "new") {
@@ -303,6 +314,7 @@ const useImporter = (
     acceptProps,
     downloadTemplate,
     uploadExcel,
+    initializeTableData,
     importTableData
   };
 };
@@ -313,14 +325,28 @@ const {
   uniqueKey,
   enumMap,
   existingEntries,
-  reviewTableData,
+  tableData,
+  tableDataReviewed,
   acceptProps,
   downloadTemplate,
   uploadExcel,
+  initializeTableData,
   importTableData
 } = useImporter(parameter.value.columns, parameter.value.uniqueKey, parameter.value.enumMap);
 
-console.log(uniqueKey, enumMap); // just to get rid of unused variable warnings
+console.log(uniqueKey, enumMap, existingEntries); // just to get rid of unused variable warnings
+
+// watch changes in currentstep and update the table data
+watch(
+  () => activeStep.value,
+  async () => {
+    if (activeStep.value === 2) {
+      // console.log("currentStep changed to 2, updating table data");
+      let newTableData = await initializeTableData(tableData.value);
+      newTableData ? (tableDataReviewed.value = newTableData) : (tableDataReviewed.value = []);
+    }
+  }
+);
 
 /**
  * @description Judgment before file upload

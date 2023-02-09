@@ -81,12 +81,13 @@
 </template>
 
 <script setup lang="ts" name="ImportExcel">
-import { ref, reactive, toRefs, watch } from "vue";
+import { ref, reactive, toRef, watch, computed } from "vue";
 import { useDownload } from "@/hooks/useDownload";
 import { Download, Upload, View } from "@element-plus/icons-vue";
 import { ElNotification } from "element-plus";
 import { JSON2CSV, CSV2JSON } from "@/hooks/useDataTransform";
 // import { filterEnum } from "@/utils/util";
+import { MergeColumnOptions, useMerger } from "./useMerger";
 
 export interface DrawerProps {
   title: string; // Title
@@ -94,7 +95,7 @@ export interface DrawerProps {
   uniqueKey: string; // Unique key
   // importApi: (params: any) => Promise<any>; // Batch ImportedApi
   enumMap: Map<string, { [key: string]: any }[]>;
-  apiExistingEntries: () => Promise<any[]>; // Existing entriesApi
+  apiGetExistingEntries: () => Promise<any[]>; // Existing entriesApi
   refresh?: () => Promise<any>; // Get table data forApi
 }
 
@@ -116,7 +117,7 @@ const acceptParams = (params?: any): void => {
     columns: params.columns,
     uniqueKey: params.uniqueKey,
     enumMap: params.enumMap,
-    apiExistingEntries: params.apiExistingEntries
+    apiGetExistingEntries: params.apiGetExistingEntries
   });
   activeStep.value = 0;
   dialogVisible.value = true;
@@ -127,6 +128,7 @@ interface ImportColumns {
   label: string;
   apiCreate?: (params: any) => Promise<any>;
   uniqueKey?: string;
+  mergeOptions: Partial<MergeColumnOptions>;
 }
 
 interface ImporterStateProps {
@@ -143,7 +145,7 @@ const useImporter = (
   uniqueKey: string | undefined,
   enumMap: Map<string, { [key: string]: any }[]> | undefined
 ) => {
-  let apiExistingEntries: () => Promise<any[]> = async () => [];
+  let apiGetExistingEntries: () => Promise<any[]> = async () => [];
   const state = reactive<ImporterStateProps>({
     columns: columns,
     uniqueKey: uniqueKey,
@@ -153,9 +155,21 @@ const useImporter = (
     tableDataReviewed: []
   });
 
+  // set mergeColumns as computed from columns
+  const mergeColumnOptions = computed(() => {
+    if (!state.columns) return;
+    return state.columns.map(column => {
+      return {
+        prop: column.prop,
+        label: column.label,
+        ...column.mergeOptions
+      };
+    });
+  });
+
   const getExistingEntries = async () => {
-    // if (!apiExistingEntries) return;
-    state.existingEntries = await apiExistingEntries();
+    if (!apiGetExistingEntries) return;
+    state.existingEntries = await apiGetExistingEntries();
     // console.log("state.existingEntries", typeof existingEntries, state.existingEntries);
   };
 
@@ -164,12 +178,12 @@ const useImporter = (
     state.existingEntries.push(newEntry);
   };
 
-  const acceptProps = (props: Partial<ImporterStateProps> & { apiExistingEntries: () => Promise<any[]> }) => {
+  const acceptProps = (props: Partial<ImporterStateProps> & { apiGetExistingEntries: () => Promise<any[]> }) => {
     state.columns = props.columns;
     state.uniqueKey = props.uniqueKey;
     state.enumMap = props.enumMap;
     state.existingEntries = props.existingEntries;
-    apiExistingEntries = props.apiExistingEntries;
+    apiGetExistingEntries = props.apiGetExistingEntries;
   };
 
   const findExistingComponent = (component: any) => {
@@ -215,6 +229,7 @@ const useImporter = (
       if (existingComponent) {
         row._action = "update";
         row.id = existingComponent.id;
+        row._existingComponent = existingComponent;
       } else {
         row._action = "new";
         // add to existingEntries so that we don't create duplicates
@@ -292,11 +307,28 @@ const useImporter = (
         // let res = await postComponentCreate(component);
         // console.log(res);
       } else if (row._action === "update") {
+        let existingComponent = row._existingComponent;
         component = removeInternalKeys(row);
         component = await evaluateEnum(component);
-        Object.assign(component, { id: row.id });
+        // Object.assign(component, { id: row.id }); // is this needed?
         console.log("updating", component);
-        // useMerger
+        console.log("merging", component);
+        // TODO: useMerger
+        let {
+          mergeColumns,
+          leftComponent,
+          rightComponent,
+          setLeftComponent,
+          setRightComponent,
+          intelligentCheck,
+          mergedComponent
+        } = useMerger(mergeColumnOptions.value as MergeColumnOptions[]);
+        console.log(mergeColumns, leftComponent, rightComponent);
+        setLeftComponent(component);
+        setRightComponent(existingComponent);
+        intelligentCheck();
+        console.log("merged to ", mergedComponent.value);
+
         // let res = await patchComponentUpdate(component as Component.ReqUpdateComponentParams);
       } else {
         console.log("skipping", row);
@@ -310,7 +342,10 @@ const useImporter = (
   getExistingEntries();
 
   return {
-    ...toRefs(state),
+    // ...toRefs(state),
+    columns: toRef(state, "columns"),
+    tableData: toRef(state, "tableData"),
+    tableDataReviewed: toRef(state, "tableDataReviewed"),
     acceptProps,
     downloadTemplate,
     uploadExcel,
@@ -322,9 +357,6 @@ const useImporter = (
 // technically the parameters here are unused since they are passed in via the useImporter hook
 const {
   columns,
-  uniqueKey,
-  enumMap,
-  existingEntries,
   tableData,
   tableDataReviewed,
   acceptProps,
@@ -334,7 +366,7 @@ const {
   importTableData
 } = useImporter(parameter.value.columns, parameter.value.uniqueKey, parameter.value.enumMap);
 
-console.log(uniqueKey, enumMap, existingEntries); // just to get rid of unused variable warnings
+// console.log(uniqueKey, enumMap, existingEntries); // just to get rid of unused variable warnings
 
 // watch changes in currentstep and update the table data
 watch(

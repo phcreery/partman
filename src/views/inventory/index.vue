@@ -316,11 +316,23 @@ const batchAdd = async () => {
     { prop: "mpn", label: "MPN" },
     { prop: "manufacturer", label: "Manufacturer" },
     { prop: "description", label: "Description" },
-    { prop: "category", label: "Category", apiCreate: postComponentCategoryCreate, uniqueKey: "name" },
-    { prop: "stock", label: "Stock" },
-    // { prop: "footprint", label: "Footprint" },
-    { prop: "ipn", label: "IPN" },
-    { prop: "storage_location", label: "Location", apiCreate: postStorageCreate, uniqueKey: "name" }
+    {
+      prop: "category",
+      label: "Category",
+      apiCreate: postComponentCategoryCreate,
+      uniqueKey: "name",
+      mergeOptions: { single: true }
+    },
+    { prop: "stock", label: "Stock", mergeOptions: { required: true, defaultBoth: true } },
+    // { prop: "footprint", label: "Footprint", apiCreate: postFootprintCreate, mergeOptions: { single: true } },
+    { prop: "ipn", label: "IPN", mergeOptions: { single: true } },
+    {
+      prop: "storage_location",
+      label: "Location",
+      apiCreate: postStorageCreate,
+      uniqueKey: "name",
+      mergeOptions: { single: true }
+    }
   ];
   console.log(templateColumns);
   let params = {
@@ -328,7 +340,7 @@ const batchAdd = async () => {
     columns: templateColumns,
     uniqueKey: "mpn",
     enumMap: proTable.value.enumMap,
-    apiExistingEntries: async () => await getComponentsListForExport({ filter: {} }), // existingEntries,
+    apiGetExistingEntries: async () => await getComponentsListForExport({ filter: {} }), // existingEntries,
     // importApi: postComponentCreate,
     refresh: proTable.value.getTableList
   };

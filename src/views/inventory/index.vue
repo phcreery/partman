@@ -341,7 +341,8 @@ const batchAdd = async () => {
     uniqueKey: "mpn",
     enumMap: proTable.value.enumMap,
     apiGetExistingEntries: async () => await getComponentsListForExport({ filter: {} }), // existingEntries,
-    // importApi: postComponentCreate,
+    apiCreate: postComponentCreate,
+    apiUpdate: patchComponentUpdate,
     refresh: proTable.value.getTableList
   };
   dialogRefImport.value!.acceptParams(params);

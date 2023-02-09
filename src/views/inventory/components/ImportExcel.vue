@@ -93,9 +93,10 @@ export interface DrawerProps {
   title: string; // Title
   columns: any; // Table column
   uniqueKey: string; // Unique key
-  // importApi: (params: any) => Promise<any>; // Batch ImportedApi
   enumMap: Map<string, { [key: string]: any }[]>;
   apiGetExistingEntries: () => Promise<any[]>; // Existing entriesApi
+  apiCreate: (params: any) => Promise<any>;
+  apiUpdate: (params: any) => Promise<any>;
   refresh?: () => Promise<any>; // Get table data forApi
 }
 
@@ -118,6 +119,9 @@ const acceptParams = (params?: any): void => {
     uniqueKey: params.uniqueKey,
     enumMap: params.enumMap,
     apiGetExistingEntries: params.apiGetExistingEntries
+    // apiCreate: params.apiCreate,
+    // apiUpdate: params.apiUpdate,
+    // refresh: params.refresh
   });
   activeStep.value = 0;
   dialogVisible.value = true;
@@ -144,6 +148,8 @@ const useImporter = (
   columns: ImportColumns[] | undefined,
   uniqueKey: string | undefined,
   enumMap: Map<string, { [key: string]: any }[]> | undefined
+  // apiCreate: ((params: any) => Promise<any>) | undefined,
+  // apiUpdate: ((params: any) => Promise<any>) | undefined
 ) => {
   let apiGetExistingEntries: () => Promise<any[]> = async () => [];
   const state = reactive<ImporterStateProps>({
@@ -170,12 +176,21 @@ const useImporter = (
   const getExistingEntries = async () => {
     if (!apiGetExistingEntries) return;
     state.existingEntries = await apiGetExistingEntries();
-    // console.log("state.existingEntries", typeof existingEntries, state.existingEntries);
   };
 
   const addToExistingEntries = (newEntry: any) => {
     if (!state.existingEntries) return;
     state.existingEntries.push(newEntry);
+  };
+
+  const updateExistingEntries = (updatedEntry: any) => {
+    if (!state.existingEntries) return;
+    let existingEntry = state.existingEntries.find((c: any) => {
+      return c[state.uniqueKey!] === updatedEntry[state.uniqueKey!];
+    });
+    if (existingEntry) {
+      Object.assign(existingEntry, updatedEntry);
+    }
   };
 
   const acceptProps = (props: Partial<ImporterStateProps> & { apiGetExistingEntries: () => Promise<any[]> }) => {
@@ -229,7 +244,7 @@ const useImporter = (
       if (existingComponent) {
         row._action = "update";
         row.id = existingComponent.id;
-        row._existingComponent = existingComponent;
+        row._existingComponent = existingComponent; // is this needed?
       } else {
         row._action = "new";
         // add to existingEntries so that we don't create duplicates
@@ -258,23 +273,28 @@ const useImporter = (
         continue;
       }
       let enumValue = state.enumMap.get(col)?.find((e: any) => {
-        // console.log("looking...", e[colUniqueKey!], row[col], e[colUniqueKey!].trim() == row[col].trim());
         return e[colUniqueKey!].trim() == row[col].trim();
       })?.id;
       if (!enumValue) {
         // no enum value found
         console.log("no enum value found for , gotta create one for", col, row[col]);
-        console.log(state.enumMap);
         if (colApiCreateFunc) {
           console.log("creating with apiCreateFunc and adding to internal enumMap", colApiCreateFunc);
-          let res = { id: "fakeid" };
-          // let res = await colApiCreateFunc({name: row[col]});
-          // console.log("res", res); // TODO: get id from res
-          row[col] = res.id;
+          let res; // = {data: { id: "fakeID" }};
+          try {
+            res = await colApiCreateFunc({ [colUniqueKey]: row[col] });
+          } catch (e) {
+            console.error("error creating enum value", e);
+            return;
+          }
+          console.log("res", res); // TODO: get id from res
+          enumValue = res.data.id;
+          row[col] = enumValue;
           // add to enumMap
           let arr = state.enumMap.get(col);
-          arr?.push({ id: res.id, [colUniqueKey!]: row[col] });
+          arr?.push({ id: enumValue, [colUniqueKey!]: row[col] });
           state.enumMap.set(col, arr!);
+          console.log(state.enumMap);
         } else {
           console.log("no colApiCreateFunc found, defaulting to empty string");
           row[col] = "";
@@ -304,16 +324,23 @@ const useImporter = (
         component = removeInternalKeys(row);
         component = await evaluateEnum(component);
         console.log("creating", component);
-        // let res = await postComponentCreate(component);
-        // console.log(res);
+
+        // console.log("apiCreate", parameter.value.apiCreate);
+        if (!parameter.value.apiCreate) return;
+        try {
+          let res = await parameter.value.apiCreate(component);
+          console.log(res);
+          updateExistingEntries(res.data);
+        } catch (e) {
+          console.error("error creating component", e);
+        }
       } else if (row._action === "update") {
-        let existingComponent = row._existingComponent;
+        let existingComponent = findExistingComponent(row);
         component = removeInternalKeys(row);
         component = await evaluateEnum(component);
-        // Object.assign(component, { id: row.id }); // is this needed?
         console.log("updating", component);
         console.log("merging", component);
-        // TODO: useMerger
+
         let {
           mergeColumns,
           leftComponent,
@@ -329,7 +356,13 @@ const useImporter = (
         intelligentCheck();
         console.log("merged to ", mergedComponent.value);
 
-        // let res = await patchComponentUpdate(component as Component.ReqUpdateComponentParams);
+        if (!parameter.value.apiUpdate) return;
+        try {
+          let res = await parameter.value.apiUpdate(mergedComponent.value);
+          console.log(res);
+        } catch (e) {
+          console.error("error updating component", e);
+        }
       } else {
         console.log("skipping", row);
       }

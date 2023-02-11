@@ -504,7 +504,7 @@ var Schema string = `
                 "unique": false,
                 "options": {
                     "collectionId": "rf9e9a5xllc0fdx",
-                    "cascadeDelete": true,
+                    "cascadeDelete": false,
                     "maxSelect": null,
                     "displayFields": null
                 }

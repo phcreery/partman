@@ -149,7 +149,7 @@ const columns: ColumnProps[] = [
   },
   {
     prop: "component",
-    label: "MPN2",
+    label: "MPN",
     width: 120,
     align: "left",
     enum: getComponentEnum,
@@ -247,7 +247,7 @@ const batchAdd = async () => {
   let templateColumns = [
     { prop: "bom_id", label: "BOM ID", mergeOptions: { single: true, required: true } },
     { prop: "component", label: "MPN", apiCreate: postComponentCreate, uniqueKey: "mpn", mergeOptions: { single: true } },
-    { prop: "qty", label: "Quantity", mergeOptions: { required: true, defaultBoth: true } },
+    { prop: "quantity", label: "Quantity", mergeOptions: { required: true, defaultBoth: true } },
     { prop: "refdesignators", label: "Ref. Designators", mergeOptions: { defaultBoth: true } },
     { prop: "comment", label: "Comment", mergeOptions: { defaultBoth: true } }
   ];

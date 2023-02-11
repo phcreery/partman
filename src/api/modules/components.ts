@@ -383,11 +383,7 @@ export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) =>
 
 // ---- PROJECT COMPONENTS ----
 
-export const getProjectComponentsList = async (
-  params: ProjectComponents.ReqGetProjectComponentListParams & {
-    filter?: { refdesignators?: string; _mpn?: string; _description?: string };
-  }
-) => {
+export const getProjectComponentsList = async (params: ProjectComponents.ReqGetProjectComponentListParams) => {
   if (params.projectID === "")
     return { data: emptyData(params) } as unknown as APIdata<ResList<ProjectComponents.ResGetProjectComponentRecord>>;
   let res_project = (await client.collection("projects").getOne(params.projectID, {})) as unknown as Project.ResGetProjectRecord;
@@ -396,6 +392,7 @@ export const getProjectComponentsList = async (
 
   let filter: object = {};
   nestedObjectAssign(filter, res_project.components ? { id: res_project.components } : {});
+  nestedObjectAssign(filter, params.filter?.bom_id ? { bom_id: params.filter?.bom_id } : {});
   nestedObjectAssign(filter, params.filter?.refdesignators ? { refdesignators: params.filter?.refdesignators } : {});
   nestedObjectAssign(filter, params.filter?._mpn ? { "component.mpn": params.filter?._mpn } : {});
   nestedObjectAssign(filter, params.filter?._description ? { "component.description": params.filter?._description } : {});
@@ -423,7 +420,7 @@ export const getProjectComponentsListForExport = async (params: ProjectComponent
   let res = await getProjectComponentsList({
     page: 1,
     perPage: 9999,
-    filter: params.filter,
+    filter: params.filter ? params.filter : {},
     expand: "",
     sort: "",
     projectID: params.projectID

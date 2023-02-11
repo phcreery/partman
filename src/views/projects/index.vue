@@ -137,6 +137,21 @@ const columns: ColumnProps[] = [
   { type: "selection", width: 40, fixed: "left" },
   // { type: "expand", label: "" },
   {
+    prop: "bom_id",
+    label: "ID",
+    width: 80,
+    sortable: true,
+    search: { el: "input" }
+  },
+  {
+    prop: "_mpn",
+    label: "MPN",
+    width: 130,
+    align: "left",
+    sortable: true,
+    search: { el: "input" }
+  },
+  {
     prop: "quantity",
     label: "Qty.",
     width: 80,
@@ -147,13 +162,6 @@ const columns: ColumnProps[] = [
     label: "Ref. Designators",
     width: 80,
     align: "left",
-    search: { el: "input" }
-  },
-  {
-    prop: "_mpn",
-    label: "MPN",
-    width: 130,
-    sortable: true,
     search: { el: "input" }
   },
   {

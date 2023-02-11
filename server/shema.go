@@ -69,9 +69,10 @@ var Schema string = `
                 "required": false,
                 "unique": false,
                 "options": {
-                    "maxSelect": 1,
                     "collectionId": "AZPyYgFSyUPXw0F",
-                    "cascadeDelete": false
+                    "cascadeDelete": false,
+                    "maxSelect": 1,
+                    "displayFields": null
                 }
             },
             {
@@ -82,9 +83,10 @@ var Schema string = `
                 "required": false,
                 "unique": false,
                 "options": {
-                    "maxSelect": 1,
                     "collectionId": "66i7hRx2SIiCgmh",
-                    "cascadeDelete": false
+                    "cascadeDelete": false,
+                    "maxSelect": 1,
+                    "displayFields": null
                 }
             },
             {
@@ -95,9 +97,10 @@ var Schema string = `
                 "required": false,
                 "unique": false,
                 "options": {
-                    "maxSelect": 1,
                     "collectionId": "BOjtTDeCj7NQRAJ",
-                    "cascadeDelete": false
+                    "cascadeDelete": false,
+                    "maxSelect": 1,
+                    "displayFields": null
                 }
             },
             {
@@ -143,9 +146,10 @@ var Schema string = `
                 "required": false,
                 "unique": false,
                 "options": {
-                    "maxSelect": 5,
                     "collectionId": "al6ner5vsc3vhnn",
-                    "cascadeDelete": false
+                    "cascadeDelete": false,
+                    "maxSelect": 5,
+                    "displayFields": null
                 }
             },
             {
@@ -201,7 +205,7 @@ var Schema string = `
                 "type": "text",
                 "system": false,
                 "required": true,
-                "unique": false,
+                "unique": true,
                 "options": {
                     "min": null,
                     "max": null,
@@ -229,9 +233,10 @@ var Schema string = `
                 "required": false,
                 "unique": false,
                 "options": {
-                    "maxSelect": 1,
                     "collectionId": "u5hDISrpBElJcpS",
-                    "cascadeDelete": false
+                    "cascadeDelete": false,
+                    "maxSelect": 1,
+                    "displayFields": null
                 }
             }
         ],
@@ -254,7 +259,7 @@ var Schema string = `
                 "type": "text",
                 "system": false,
                 "required": true,
-                "unique": false,
+                "unique": true,
                 "options": {
                     "min": null,
                     "max": null,
@@ -269,9 +274,10 @@ var Schema string = `
                 "required": false,
                 "unique": false,
                 "options": {
-                    "maxSelect": 1,
                     "collectionId": "66i7hRx2SIiCgmh",
-                    "cascadeDelete": false
+                    "cascadeDelete": false,
+                    "maxSelect": 1,
+                    "displayFields": null
                 }
             },
             {
@@ -307,7 +313,7 @@ var Schema string = `
                 "type": "text",
                 "system": false,
                 "required": true,
-                "unique": false,
+                "unique": true,
                 "options": {
                     "min": null,
                     "max": null,
@@ -335,9 +341,10 @@ var Schema string = `
                 "required": false,
                 "unique": false,
                 "options": {
-                    "maxSelect": 1,
                     "collectionId": "06ULXCMWwKzFwaD",
-                    "cascadeDelete": false
+                    "cascadeDelete": false,
+                    "maxSelect": 1,
+                    "displayFields": null
                 }
             }
         ],
@@ -359,8 +366,8 @@ var Schema string = `
                 "name": "name",
                 "type": "text",
                 "system": false,
-                "required": false,
-                "unique": false,
+                "required": true,
+                "unique": true,
                 "options": {
                     "min": null,
                     "max": null,
@@ -375,9 +382,10 @@ var Schema string = `
                 "required": false,
                 "unique": false,
                 "options": {
-                    "maxSelect": 1,
                     "collectionId": "06ULXCMWwKzFwaD",
-                    "cascadeDelete": false
+                    "cascadeDelete": false,
+                    "maxSelect": 1,
+                    "displayFields": null
                 }
             },
             {
@@ -413,7 +421,7 @@ var Schema string = `
                 "type": "text",
                 "system": false,
                 "required": true,
-                "unique": false,
+                "unique": true,
                 "options": {
                     "min": null,
                     "max": null,
@@ -441,9 +449,10 @@ var Schema string = `
                 "required": false,
                 "unique": false,
                 "options": {
-                    "maxSelect": 1,
                     "collectionId": "u5hDISrpBElJcpS",
-                    "cascadeDelete": false
+                    "cascadeDelete": false,
+                    "maxSelect": 1,
+                    "displayFields": null
                 }
             }
         ],
@@ -466,7 +475,7 @@ var Schema string = `
                 "type": "text",
                 "system": false,
                 "required": true,
-                "unique": false,
+                "unique": true,
                 "options": {
                     "min": null,
                     "max": null,
@@ -494,9 +503,10 @@ var Schema string = `
                 "required": false,
                 "unique": false,
                 "options": {
-                    "maxSelect": null,
                     "collectionId": "rf9e9a5xllc0fdx",
-                    "cascadeDelete": true
+                    "cascadeDelete": true,
+                    "maxSelect": null,
+                    "displayFields": null
                 }
             }
         ],
@@ -518,8 +528,8 @@ var Schema string = `
                 "name": "name",
                 "type": "text",
                 "system": false,
-                "required": false,
-                "unique": false,
+                "required": true,
+                "unique": true,
                 "options": {
                     "min": null,
                     "max": null,
@@ -558,7 +568,7 @@ var Schema string = `
                 "type": "text",
                 "system": false,
                 "required": true,
-                "unique": false,
+                "unique": true,
                 "options": {
                     "min": null,
                     "max": null,
@@ -742,6 +752,19 @@ var Schema string = `
         "system": false,
         "schema": [
             {
+                "id": "oubdrbgj",
+                "name": "bom_id",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "unique": true,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
                 "id": "hmqb0yhc",
                 "name": "component",
                 "type": "relation",
@@ -749,9 +772,10 @@ var Schema string = `
                 "required": false,
                 "unique": false,
                 "options": {
-                    "maxSelect": 1,
                     "collectionId": "4cKEGHHm79jmqFg",
-                    "cascadeDelete": false
+                    "cascadeDelete": false,
+                    "maxSelect": 1,
+                    "displayFields": null
                 }
             },
             {
@@ -769,6 +793,19 @@ var Schema string = `
             {
                 "id": "fqubwz9b",
                 "name": "refdesignators",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "qjmpwj3j",
+                "name": "comment",
                 "type": "text",
                 "system": false,
                 "required": false,

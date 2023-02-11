@@ -11,6 +11,9 @@
         label-suffix=" :"
         :append-to-body="true"
       >
+      <el-form-item label="ID" prop="bom_id">
+        <el-input v-model="drawerData.rowData!.bom_id" placeholder="Please fill in the BOM ID" clearable> </el-input>
+      </el-form-item>
         <el-form-item label="MPN" prop="_id" v-loading="components === undefined">
           <!-- <el-input
 						v-model="drawerData.rowData!.mpn"
@@ -74,6 +77,7 @@ import { getComponentEnum, postComponentCreate, patchComponentUpdate } from "@/a
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 
 const rules = reactive({
+  bom_id: [{ required: true, message: "Please enter the BOM ID", trigger: "change" }],
   _id: [{ required: true, message: "Please enter the component", trigger: "change" }],
   quantity: [{ required: false, message: "Please enter project description", trigger: "change" }]
 });

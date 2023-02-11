@@ -225,6 +225,7 @@ export namespace Project {
 
 export namespace ProjectComponents {
   type ProjectComponentColumns = {
+    bom_id: string;
     component: string;
     quantity: number;
     refdesignators: string;
@@ -236,6 +237,7 @@ export namespace ProjectComponents {
   // Requests
   export interface ReqGetProjectComponentListParams extends ReqList {
     projectID: string;
+    filter: Partial<ProjectComponentColumns>;
   }
   export type ReqGetProjectComponentListForExportParams = { filter: ReqList["filter"]; projectID: string };
   export interface ReqAddProjectComponentParams extends ProjectComponentColumns {

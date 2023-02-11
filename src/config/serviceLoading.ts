@@ -4,15 +4,18 @@ import { ElLoading } from "element-plus";
 let loadingInstance: ReturnType<typeof ElLoading.service>;
 
 const startLoading = () => {
-	loadingInstance = ElLoading.service({
-		fullscreen: true,
-		lock: true,
-		text: "Loading",
-		background: "rgba(0, 0, 0, 0.7)"
-	});
+  if (loadingInstance && !loadingInstance.closed) {
+    return;
+  }
+  loadingInstance = ElLoading.service({
+    fullscreen: true,
+    lock: true,
+    text: "Loading",
+    background: "rgba(0, 0, 0, 0.7)"
+  });
 };
 const endLoading = () => {
-	loadingInstance.close();
+  loadingInstance.close();
 };
 
 // Then showFullScreenLoading() tryHideFullScreenLoading() The thing to do is to merge the requests at the same moment。
@@ -20,16 +23,18 @@ const endLoading = () => {
 // 调用tryHideFullScreenLoading()Methods，needLoadingRequestCount - 1。needLoadingRequestCountfor 0 Time，End loading。
 let needLoadingRequestCount = 0;
 export const showFullScreenLoading = () => {
-	if (needLoadingRequestCount === 0) {
-		startLoading();
-	}
-	needLoadingRequestCount++;
+  if (needLoadingRequestCount === 0) {
+    needLoadingRequestCount++;
+    startLoading();
+  } else {
+    needLoadingRequestCount++;
+  }
 };
 
 export const tryHideFullScreenLoading = () => {
-	if (needLoadingRequestCount <= 0) return;
-	needLoadingRequestCount--;
-	if (needLoadingRequestCount === 0) {
-		endLoading();
-	}
+  if (needLoadingRequestCount <= 0) return;
+  needLoadingRequestCount--;
+  if (needLoadingRequestCount === 0) {
+    endLoading();
+  }
 };

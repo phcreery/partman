@@ -3,22 +3,32 @@
     <el-row>
       <el-col :span="24"> What changed: {{ prettyPrint(compareObj(componentA, componentB)) }} </el-col>
     </el-row>
-    <el-row>
+    <el-row justify="space-around">
       <el-col :span="12">
-        Before
-        <div style="white-space: pre-wrap">{{ prettyPrint(props.componentA) }}</div>
+        Before:
+        <!-- <div style="white-space: pre-wrap">{{ prettyPrint(props.componentA) }}</div> -->
+        <ComponentDetails
+          :title="props.componentA?.mpn ?? '[empty]'"
+          :isView="true"
+          :rowData="props.componentA"
+        ></ComponentDetails>
       </el-col>
       <el-col :span="12">
-        After
-        <div style="white-space: pre-wrap">{{ prettyPrint(props.componentB) }}</div>
+        After:
+        <!-- <div style="white-space: pre-wrap">{{ prettyPrint(props.componentB) }}</div> -->
+        <ComponentDetails
+          :title="props.componentB?.mpn ?? '[empty]'"
+          :isView="true"
+          :rowData="props.componentB"
+        ></ComponentDetails>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script setup lang="ts" name="CompareComponentDetails">
-// import { genderType } from "@/utils/serviceDict";
 import { Component } from "@/api/interface";
+import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
 
 interface DetailsProps {
   isView: boolean;
@@ -39,7 +49,7 @@ function isEmpty(value: any) {
 function compareObj(obj1: any, obj2: any): { [key: string]: any } {
   let ret: { [key: string]: any } = {};
   let rett: { [key: string]: any } = {};
-  for (var i in obj2) {
+  for (let i in obj2) {
     rett = {};
     if (obj1 === null) continue;
     if (typeof obj2[i] === "object") {
@@ -57,4 +67,8 @@ function compareObj(obj1: any, obj2: any): { [key: string]: any } {
 }
 </script>
 
-<style lang="scss"></style>
+<style scoped lang="scss">
+.el-row {
+  margin-bottom: 12px;
+}
+</style>

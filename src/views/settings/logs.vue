@@ -10,7 +10,7 @@
     >
       <!-- Table header button -->
       <template #tableHeader>
-        <el-button type="primary" :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button> -->
+        <el-button :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button>
       </template>
       <!-- Expand -->
       <template #expand="scope">
@@ -41,7 +41,7 @@ import {
   getComponent,
   // getComponentList,
   getComponentLogsListForExport,
-  getComponentEnum,
+  // getComponentEnum,
   postComponentCreate,
   patchComponentUpdate,
   getComponentLogsList
@@ -79,15 +79,16 @@ const columns: Partial<ColumnProps>[] = [
     // isShow: false
   },
   {
-    prop: "component",
+    prop: "__mpn__",
     label: "Component MPN",
     width: 260,
     align: "left",
-    search: { el: "input", props: { value: "id", label: "mpn" } },
-    enum: getComponentEnum,
-    fieldNames: { value: "id", label: "component" },
-    sortable: false
-    // renderText: (data: Component.ResGetComponentRecord) => `${data.manufacturer} - ${data.mpn}`
+    // search: { el: "input", props: { props: { value: "id", label: "mpn" } } },
+    // enum: getComponentEnum,
+    // fieldNames: { value: "id", label: "component" },
+    sortable: false,
+    render: (scope: { row: ComponentLog.ResGetComponentLogRecord }) =>
+      `${scope.row.old_value?.mpn ?? ""} | ${scope.row.new_value?.mpn ?? ""}`
     // isShow: false
   },
   {

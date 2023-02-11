@@ -11,8 +11,8 @@
     "build:client:test": "vue-tsc --noEmit && vite build --mode test",
     "build:client:pro": "vue-tsc --noEmit && vite build --mode production",
     "build:server": "cross-env CGO_ENABLED=0 go build",
-    "build:server:all": "goreleaser release --rm-dist --snapshot",
-    "release:build": "vue-tsc --noEmit && vite build --mode production && goreleaser release --rm-dist --snapshot",
+    "build:server:all": "goreleaser release --clean --snapshot",
+    "release:build": "vue-tsc --noEmit && vite build --mode production && goreleaser release --clean --snapshot",
     "release:publish": "standard-version",
     "commit": "git pull && git add -A && git-cz && git push --follow-tags"
   },

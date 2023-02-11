@@ -261,8 +261,8 @@ export namespace ComponentLog {
   type ComponentLogColumns = {
     component: string;
     description: string;
-    new_value: string;
-    old_value: string;
+    new_value: any;
+    old_value: any;
   };
   // Requests
   export type ReqGetComponentLogListParams = ReqList;

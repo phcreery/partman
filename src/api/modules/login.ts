@@ -87,6 +87,9 @@ export const getAuthButtonListApi = (): Login.ResAuthButtons => {
         edit: true,
         batchAdd: true,
         export: true
+      },
+      logs: {
+        export: true
       }
       // users: {
       //   add: true,

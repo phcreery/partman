@@ -52,8 +52,8 @@
           >
             Delete
           </el-button>
-          <el-button type="primary" :icon="Upload" plain @click="batchAdd" v-if="BUTTONS.batchAdd">Import BOM</el-button>
-          <el-button type="primary" :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button>
+          <el-button :icon="Upload" plain @click="batchAdd" v-if="BUTTONS.batchAdd">Import BOM</el-button>
+          <el-button :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button>
         </template>
         <!-- Expand -->
         <template #expand="scope">
@@ -67,12 +67,13 @@
     </div>
     <ProjectDrawer ref="drawerRefProject"></ProjectDrawer>
     <ProjectComponentDrawer ref="drawerRefComponent"></ProjectComponentDrawer>
-    <ImportExcel ref="dialogRef"></ImportExcel>
+    <ImportExcel ref="dialogRefImport"></ImportExcel>
   </div>
 </template>
 
 <script setup lang="tsx" name="useComponent">
 import { ref, reactive } from "vue";
+import { ElNotification } from "element-plus";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useDownload } from "@/hooks/useDownload";
@@ -81,17 +82,20 @@ import { JSON2CSV } from "@/hooks/useDataTransform";
 import ProTable from "@/components/ProTable/index.vue";
 import ProTree from "@/components/ProTree/index.vue";
 // import TreeFilter from "@/components/TreeFilter/index.vue";
-import ImportExcel from "@/components/ImportExcel/index.vue";
+// import ImportExcel from "@/components/ImportExcel/index.vue";
+import ImportExcel from "../inventory/components/ImportExcel.vue";
 import ProjectComponentDrawer from "@/views/projects/components/ProjectComponentDrawer.vue";
 import ProjectDrawer from "@/views/projects/components/ProjectDrawer.vue";
 import { CirclePlus, Delete, EditPen, Upload, Download } from "@element-plus/icons-vue";
 import { ResList, Project, ProjectComponents } from "@/api/interface";
 import {
+  getComponentEnum,
+  postComponentCreate,
   getProjectsEnum,
   getProjectComponentsList,
   getProjectComponentsListForExport,
   postProjectComponentAdd,
-  postProjectComponentUpdate,
+  patchProjectComponentUpdate,
   deleteProjectComponents,
   postProjectCreate,
   patchProjectUpdate,
@@ -144,12 +148,22 @@ const columns: ColumnProps[] = [
     search: { el: "input" }
   },
   {
-    prop: "_mpn",
-    label: "MPN",
-    width: 130,
+    prop: "component",
+    label: "MPN2",
+    width: 120,
     align: "left",
+    enum: getComponentEnum,
+    fieldNames: { value: "id", label: "mpn" },
     sortable: true,
-    search: { el: "input" }
+    search: {
+      el: "select",
+      props: {
+        value: "id",
+        label: "mpn",
+        multiple: true,
+        filterable: true
+      }
+    }
   },
   {
     prop: "quantity",
@@ -165,8 +179,8 @@ const columns: ColumnProps[] = [
     search: { el: "input" }
   },
   {
-    prop: "_description",
-    label: "Description",
+    prop: "comment",
+    label: "Comment",
     align: "left",
     search: { el: "input" }
   },
@@ -211,15 +225,47 @@ const downloadFile = async () => {
 interface DialogExpose {
   acceptParams: (params: any) => void;
 }
-const dialogRef = ref<DialogExpose>();
-const batchAdd = () => {
+const dialogRefImport = ref<DialogExpose>();
+// const batchAdd = () => {
+//   let params = {
+//     title: "component",
+//     // tempApi: exportUserInfo,
+//     // importApi: BatchAddUser,
+//     getTableList: proTable.value.getTableList
+//   };
+//   dialogRef.value!.acceptParams(params);
+// };
+const batchAdd = async () => {
+  if (!initParam.projectID) {
+    ElNotification({
+      title: "Notification",
+      message: "Please select a project first",
+      type: "error"
+    });
+    return;
+  }
+  let templateColumns = [
+    { prop: "bom_id", label: "BOM ID", mergeOptions: { single: true, required: true } },
+    { prop: "component", label: "MPN", apiCreate: postComponentCreate, uniqueKey: "mpn", mergeOptions: { single: true } },
+    { prop: "qty", label: "Quantity", mergeOptions: { required: true, defaultBoth: true } },
+    { prop: "refdesignators", label: "Ref. Designators", mergeOptions: { defaultBoth: true } },
+    { prop: "comment", label: "Comment", mergeOptions: { defaultBoth: true } }
+  ];
+  console.log(templateColumns);
+  console.log(proTable.value.enumMap);
   let params = {
-    title: "component",
-    // tempApi: exportUserInfo,
-    // importApi: BatchAddUser,
-    getTableList: proTable.value.getTableList
+    title: "Project Components",
+    columns: templateColumns,
+    uniqueKey: "bom_id",
+    enumMap: proTable.value.enumMap,
+    apiGetExistingEntries: async () => await getProjectComponentsListForExport({ filter: {}, projectID: initParam.projectID! }), // existingEntries,
+    apiCreate: (params: ProjectComponents.ReqAddProjectComponentParams) =>
+      postProjectComponentAdd({ ...params, _ofProjectID: initParam.projectID! }),
+    apiUpdate: (params: ProjectComponents.ReqUpdateProjectComponentParams) =>
+      patchProjectComponentUpdate({ ...params, _ofProjectID: initParam.projectID! }),
+    refresh: proTable.value.getTableList
   };
-  dialogRef.value!.acceptParams(params);
+  dialogRefImport.value!.acceptParams(params);
 };
 
 // Open the drawer (new, view, edit)
@@ -232,7 +278,7 @@ const openComponentDrawer = (title: string, rowData: Partial<ProjectComponents.R
     title,
     rowData: { ...rowData, _ofProjectID: initParam.projectID },
     isView: title === "View",
-    apiUrl: title === "New" ? postProjectComponentAdd : title === "Edit" ? postProjectComponentUpdate : "",
+    apiUrl: title === "New" ? postProjectComponentAdd : title === "Edit" ? patchProjectComponentUpdate : "",
     updateTable: proTable.value.getTableList
   };
   drawerRefComponent.value!.acceptParams(params);

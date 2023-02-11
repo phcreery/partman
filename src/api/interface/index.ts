@@ -229,9 +229,6 @@ export namespace ProjectComponents {
     component: string;
     quantity: number;
     refdesignators: string;
-    _id: string;
-    _mpn: string;
-    _description: string;
   };
   // Project Components
   // Requests

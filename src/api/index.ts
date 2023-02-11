@@ -18,7 +18,8 @@ import PocketBase from "pocketbase";
  */
 // const globalStore = GlobalStore();
 
-// console.log("import.meta.env.VITE_API_URL", import.meta.env.VITE_API_URL);
+console.log("import.meta.env.VITE_API_URL", import.meta.env.VITE_API_URL);
+console.log("window.location.origin", window.location.origin);
 
 const config = {
   // The default address request address can be modified in the file of the beginning of .env

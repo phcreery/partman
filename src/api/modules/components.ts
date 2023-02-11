@@ -393,21 +393,14 @@ export const getProjectComponentsList = async (params: ProjectComponents.ReqGetP
   let filter: object = {};
   nestedObjectAssign(filter, res_project.components ? { id: res_project.components } : {});
   nestedObjectAssign(filter, params.filter?.bom_id ? { bom_id: params.filter?.bom_id } : {});
+  nestedObjectAssign(filter, params.filter?.component ? { component: params.filter?.component } : {});
   nestedObjectAssign(filter, params.filter?.refdesignators ? { refdesignators: params.filter?.refdesignators } : {});
-  nestedObjectAssign(filter, params.filter?._mpn ? { "component.mpn": params.filter?._mpn } : {});
-  nestedObjectAssign(filter, params.filter?._description ? { "component.description": params.filter?._description } : {});
+
   let res_project_components = (await client.collection("project_components").getList(params.page, params.perPage, {
     filter: filterToPBString(filter),
     sort: params.sort ?? "",
     expand: "component" // params.expand ?? "",
   })) as unknown as ResList<ProjectComponents.ResGetProjectComponentRecord>;
-
-  // anchor expand.component.mpn and description into each res_project_components.items
-  res_project_components.items.forEach(function (cInProj, index, theArray) {
-    theArray[index]._id = cInProj.expand.component.id;
-    theArray[index]._mpn = cInProj.expand.component.mpn;
-    theArray[index]._description = cInProj.expand.component.description;
-  });
 
   let res = res_project_components;
 
@@ -429,9 +422,12 @@ export const getProjectComponentsListForExport = async (params: ProjectComponent
 };
 
 export const postProjectComponentAdd = async (params: ProjectComponents.ReqAddProjectComponentParams) => {
-  let res_project_components = await client
-    .collection("project_components")
-    .create({ component: params._id, quantity: params.quantity, refdesignators: params.refdesignators });
+  let res_project_components = await client.collection("project_components").create({
+    bom_id: params.bom_id,
+    component: params.component,
+    quantity: params.quantity,
+    refdesignators: params.refdesignators
+  });
 
   let res_project = (await client
     .collection("projects")
@@ -446,10 +442,13 @@ export const postProjectComponentAdd = async (params: ProjectComponents.ReqAddPr
   return { data: record } as unknown as APIdata<ProjectComponents.ResGetProjectComponentRecord>;
 };
 
-export const postProjectComponentUpdate = async (params: ProjectComponents.ReqUpdateProjectComponentParams) => {
-  const record = await client
-    .collection("project_components")
-    .update(params.id, { component: params._id, quantity: params.quantity, refdesignators: params.refdesignators });
+export const patchProjectComponentUpdate = async (params: ProjectComponents.ReqUpdateProjectComponentParams) => {
+  const record = await client.collection("project_components").update(params.id, {
+    bom_id: params.bom_id,
+    component: params.component,
+    quantity: params.quantity,
+    refdesignators: params.refdesignators
+  });
   return { data: record } as unknown as APIdata<ProjectComponents.ResGetProjectComponentRecord>;
 };
 

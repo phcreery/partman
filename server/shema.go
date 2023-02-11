@@ -757,7 +757,7 @@ var Schema string = `
                 "type": "text",
                 "system": false,
                 "required": true,
-                "unique": true,
+                "unique": false,
                 "options": {
                     "min": null,
                     "max": null,

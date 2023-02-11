@@ -11,10 +11,10 @@
         label-suffix=" :"
         :append-to-body="true"
       >
-      <el-form-item label="ID" prop="bom_id">
-        <el-input v-model="drawerData.rowData!.bom_id" placeholder="Please fill in the BOM ID" clearable> </el-input>
-      </el-form-item>
-        <el-form-item label="MPN" prop="_id" v-loading="components === undefined">
+        <el-form-item label="ID" prop="bom_id">
+          <el-input v-model="drawerData.rowData!.bom_id" placeholder="Please fill in the BOM ID" clearable> </el-input>
+        </el-form-item>
+        <el-form-item label="MPN" prop="component" v-loading="components === undefined">
           <!-- <el-input
 						v-model="drawerData.rowData!.mpn"
 						placeholder="Please fill in the component"
@@ -26,7 +26,7 @@
 					</el-input> -->
           <div class="form-item-with-buttons">
             <el-space>
-              <el-select v-model="drawerData.rowData!._id" placeholder="" clearable filterable style="width: max-content">
+              <el-select v-model="drawerData.rowData!.component" placeholder="" clearable filterable style="width: max-content">
                 <el-option v-for="item in components" :key="item.id" :label="item.mpn" :value="item.id">
                   <span style="float: left">{{ item.mpn }}</span>
                   <span style="float: right; font-size: 13px; color: var(--el-text-color-secondary)">
@@ -38,11 +38,11 @@
                 <el-button :icon="Refresh" @click="refreshComponents" />
                 <el-button
                   :icon="EditPen"
-                  :disabled="!drawerData.rowData!._id || drawerData.rowData!._id === ''"
+                  :disabled="!drawerData.rowData!.component || drawerData.rowData!.component === ''"
                   @click="
                     openCreateComponentDrawer(
                       'Edit',
-                      components?.find(c => c.id === drawerData.rowData!._id)
+                      components?.find(c => c.id === drawerData.rowData!.component)
                     )
                   "
                 />
@@ -78,7 +78,8 @@ import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 
 const rules = reactive({
   bom_id: [{ required: true, message: "Please enter the BOM ID", trigger: "change" }],
-  _id: [{ required: true, message: "Please enter the component", trigger: "change" }],
+  // _id: [{ required: true, message: "Please enter the component", trigger: "change" }],
+  component: [{ required: true, message: "Please enter the component", trigger: "change" }],
   quantity: [{ required: false, message: "Please enter project description", trigger: "change" }]
 });
 

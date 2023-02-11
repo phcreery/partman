@@ -8,7 +8,16 @@ const srcTemplateFilesToRemove = [
 // const srcTemplateFoldersToRemove = [];
 
 // these file are the ones to keep untouched in the src directory
-const srcMyFilesToKeep = ["hooks/useDataTransform.ts", "hooks/useDownload.ts", "utils/nestedObjectAssign.ts"];
+const srcMyFilesToKeep = [
+  "hooks/useDataTransform.ts",
+  "hooks/useDownload.ts",
+  "utils/nestedObjectAssign.ts",
+  "hooks/useTable.ts", // TODO: update pageParam() => page & perPage
+  "hooks/useMerger.ts", // Object.assign(state.totalParam, { filter: nowSearchParam }, isPageable ? pageParam.value : {});
+  "utils/util.ts", // implement findItemNested for tree-select enum
+  "utils/filterNodeMethod.ts", // filterNodeMethod for filterable tree-select inputs
+  "layouts/components/Header/ToolBarRight.vue" // my custom toolbar with removed items
+];
 
 // these folders are the ones to keep untouched in the src directory
 const srcMyFoldersToKeep = [
@@ -20,13 +29,7 @@ const srcMyFoldersToKeep = [
   // remove "item.isShow &&" from colSetting
   // change default pageSize: 25,
   // add { printData, tableColumns } to export
-  "hooks/useTable.ts", // TODO: update pageParam() => page & perPage
-  // Object.assign(state.totalParam, { filter: nowSearchParam }, isPageable ? pageParam.value : {});
-  "utils/util.ts",
-  // implement findItemNested for tree-select enum
-  "utils/filterNodeMethod.ts", // filterNodeMethod for filterable tree-select inputs
-  "components/ProTree", // TODO: use new tree filter component found in the template
-  "layouts/components/Header/ToolBarRight.vue" // my custom toolbar with removed items
+  "components/ProTree" // this is my tree component TODO: use new tree filter component found in the template
 ];
 
 // backup src directory to src_backup

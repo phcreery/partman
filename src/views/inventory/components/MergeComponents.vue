@@ -63,7 +63,7 @@ import { Component } from "@/api/interface";
 // import { nestedObjectAssign } from "@/utils/nestedObjectAssign";
 import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
 import { filterEnum } from "@/utils/util";
-import { useMerger, MergeColumnOptions } from "./useMerger";
+import { useMerger, MergeColumnOptions } from "@/hooks/useMerger";
 
 interface DrawerProps {
   title: String;

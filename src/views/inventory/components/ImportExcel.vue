@@ -33,6 +33,11 @@
 
     <div v-if="activeStep === 1">
       <el-row justify="center">
+        <el-col>
+          <el-switch v-model="mergeComponents" active-text="Merge items if possible" inactive-text="Only create new items" />
+        </el-col>
+      </el-row>
+      <el-row justify="center">
         <el-col :span="24">
           <el-upload
             action="string"
@@ -109,6 +114,7 @@ const dialogVisible = ref(false);
 const parameter = ref<Partial<DrawerProps>>({});
 
 // const tableDataReviewed = ref();
+const mergeComponents = ref(true);
 
 // Receive parent component parameters
 const acceptParams = (params?: any): void => {
@@ -241,7 +247,7 @@ const useImporter = (
     await getExistingEntries();
     sanitizedTableData.forEach((row: any) => {
       let existingComponent = findExistingComponent(row);
-      if (existingComponent) {
+      if (existingComponent && mergeComponents.value) {
         row._action = "update";
         row.id = existingComponent.id;
         row._existingComponent = existingComponent; // is this needed?

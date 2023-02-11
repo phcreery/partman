@@ -21,6 +21,7 @@ module.exports = {
    * null  => Turn off the rule
    */
   rules: {
+    "value-keyword-case": null, // 在 css 中使用 v-bind，不报错
     "no-descending-specificity": null, // It is forbidden to appear a lower priority selection device that is covered with a high priority selectioner
     "function-url-quotes": "always", // Require or prohibit URL's quotes "Always (must be added with quotes)" | NEVER (no quoted) "
     "string-quotes": "double", // Specify a string to use a single quotation number or dual quotation number

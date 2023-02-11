@@ -16,7 +16,7 @@
           :icon="Delete"
           plain
           :disabled="!scope.isSelected"
-          @click="batchDelete(scope.ids)"
+          @click="batchDelete(scope.selectedListIds)"
           v-if="BUTTONS.batchDelete"
         >
           Delete
@@ -43,8 +43,14 @@ import { useAuthButtons } from "@/hooks/useAuthButtons";
 import ProTable from "@/components/ProTable/index.vue";
 import UserDrawer from "@/views/users/components/UserDrawer.vue";
 import { ResList, User } from "@/api/interface";
-import { CirclePlus, Delete, EditPen, Download, Upload, DCaret } from "@element-plus/icons-vue";
-import { getUserList, postUserCreate, patchUserUpdate, deleteUsers, getUserEnum } from "@/api/modules/components";
+import { CirclePlus, Delete, EditPen } from "@element-plus/icons-vue";
+import {
+  getUserList,
+  postUserCreate,
+  patchUserUpdate,
+  deleteUsers
+  //getUserEnum
+} from "@/api/modules/components";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
 const proTable = ref();
@@ -72,18 +78,14 @@ const columns: Partial<ColumnProps>[] = [
     label: "Name",
     // width: 130,
     sortable: true,
-    search: true,
-    searchType: "text"
-    // searchProps: { disabled: true }
+    search: { el: "input" }
   },
   {
     prop: "email",
     label: "Email",
     // width: 130,
     sortable: true,
-    search: true,
-    searchType: "text"
-    // searchProps: { disabled: true }
+    search: { el: "input" }
   },
   // {
   // 	prop: "created",
@@ -113,21 +115,11 @@ const columns: Partial<ColumnProps>[] = [
   }
 ];
 
-// Delete user information
-// const deleteComponent = async (params: Component.ResGetComponentRecord) => {
-// 	await useHandleData(deleteUsers, { ids: [params.id] }, `Delete [${params.name}] component`);
-// 	proTable.value.refresh();
-// };
 // Batch delete components
 const batchDelete = async (ids: string[]) => {
   await useHandleData(deleteUsers, { ids }, "Delete the selected component(s)");
   proTable.value.refresh();
 };
-// Add components in batches
-interface DialogExpose {
-  acceptParams: (params: any) => void;
-}
-const dialogRef = ref<DialogExpose>();
 
 // Open the drawer (new, view, edit)
 interface DrawerExpose {

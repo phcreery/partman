@@ -27,6 +27,13 @@ export interface ResList<T> {
 // 	data?: T;
 // }
 
+// * 文件上传模块
+export namespace Upload {
+  export interface ResFileUrl {
+    fileUrl: string;
+  }
+}
+
 export type APIdata<T> = { data: T };
 
 // * Login module
@@ -259,6 +266,7 @@ export namespace ComponentLog {
   };
   // Requests
   export type ReqGetComponentLogListParams = ReqList;
+  export type ReqGetComponentLogListForExportParams = { filter: ReqList["filter"] };
   export type ReqCreateComponentLogParams = ComponentLogColumns;
   export interface ReqUpdateComponentLogParams extends ReqRecord, ComponentLogColumns {}
   export type ReqDeleteStorageCategoriesParams = { ids: string[] };

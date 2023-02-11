@@ -85,7 +85,7 @@ export const getComponentList = async (params: Component.ReqGetComponentListPara
 export const getComponentsListForExport = async (params: Component.ReqGetComponentListForExportParams) => {
   let res = await getComponentList({
     page: 1,
-    perPage: 999,
+    perPage: 9999,
     filter: params.filter,
     expand: "",
     sort: ""
@@ -476,6 +476,17 @@ export const getComponentLogsList = async (params: ComponentLog.ReqGetComponentL
   return { data: res } as unknown as APIdata<ResList<ComponentLog.ResGetComponentLogRecord>>;
 };
 
+export const getComponentLogsListForExport = async (params: ComponentLog.ReqGetComponentLogListForExportParams) => {
+  let res = await getComponentLogsList({
+    page: 1,
+    perPage: 9999,
+    filter: params.filter,
+    expand: "",
+    sort: ""
+  });
+  return res.data.items as unknown as ComponentLog.ResGetComponentLogRecord[];
+};
+
 // ---- USERS ----
 
 export const getUserList = async (params: User.ReqGetUserListParams) => {
@@ -490,7 +501,7 @@ export const getUserList = async (params: User.ReqGetUserListParams) => {
 export const getUsersListForExport = async (params: User.ReqGetUserListForExportParams) => {
   let res = await getUserList({
     page: 1,
-    perPage: 999,
+    perPage: 9999,
     filter: params.filter,
     expand: "",
     sort: ""

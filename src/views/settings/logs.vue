@@ -9,20 +9,8 @@
       :dataCallback="dataCallback"
     >
       <!-- Table header button -->
-      <template #tableHeader="scope">
-        <!-- <el-button type="primary" :icon="CirclePlus" @click="openDrawer('New')" v-if="BUTTONS.add">New Component</el-button>
-        <el-button type="primary" :icon="Upload" plain @click="batchAdd" v-if="BUTTONS.batchAdd">Import</el-button>
+      <template #tableHeader>
         <el-button type="primary" :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button> -->
-        <!-- <el-button
-          type="danger"
-          :icon="Delete"
-          plain
-          :disabled="!scope.isSelected"
-          @click="batchDelete(scope.ids)"
-          v-if="BUTTONS.batchDelete"
-        >
-          Delete
-        </el-button> -->
       </template>
       <!-- Expand -->
       <template #expand="scope">
@@ -40,16 +28,19 @@
 
 <script setup lang="tsx" name="useComponent">
 import { ref, reactive } from "vue";
-import { CirclePlus, Delete, EditPen, Download, Upload, DCaret, ZoomIn } from "@element-plus/icons-vue";
+import { ZoomIn, Download } from "@element-plus/icons-vue";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import ProTable from "@/components/ProTable/index.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 import CompareComponentDetails from "@/views/settings/components/CompareComponentDetails.vue";
 import { ResList, Component, ComponentLog } from "@/api/interface";
+import { useDownload } from "@/hooks/useDownload";
+import { JSON2CSV } from "@/hooks/useDataTransform";
 import {
   getComponent,
-  getComponentList,
+  // getComponentList,
+  getComponentLogsListForExport,
   getComponentEnum,
   postComponentCreate,
   patchComponentUpdate,
@@ -83,8 +74,7 @@ const columns: Partial<ColumnProps>[] = [
     label: "Component ID",
     // width: 260,
     align: "left",
-    search: true,
-    searchType: "text",
+    search: { el: "input" },
     sortable: false
     // isShow: false
   },
@@ -93,10 +83,9 @@ const columns: Partial<ColumnProps>[] = [
     label: "Component MPN",
     width: 260,
     align: "left",
-    search: true,
-    searchType: "text",
-    enumFunction: getComponentEnum,
-    searchProps: { value: "id", label: "mpn" },
+    search: { el: "input", props: { value: "id", label: "mpn" } },
+    enum: getComponentEnum,
+    fieldNames: { value: "id", label: "component" },
     sortable: false
     // renderText: (data: Component.ResGetComponentRecord) => `${data.manufacturer} - ${data.mpn}`
     // isShow: false
@@ -106,20 +95,14 @@ const columns: Partial<ColumnProps>[] = [
     label: "Description",
     // width: 220,
     align: "left",
-    search: true,
-    searchType: "text"
+    search: { el: "input" }
   },
   {
     prop: "created",
     label: "Timestamp",
     width: 200,
     sortable: true,
-    search: true,
-    searchType: "datetimerange",
-    searchProps: {
-      // disabledDate: (time: Date) => time.getTime() < Date.now() - 8.64e7
-    },
-    // searchInitParam: ["2000-09-30 00:00:00", "2042-09-20 23:59:59"],
+    search: { el: "date-picker", span: 1, props: { type: "datetimerange" } },
     isShow: true
   },
   // {
@@ -143,6 +126,23 @@ const columns: Partial<ColumnProps>[] = [
   }
 ];
 
+// Export component list
+const downloadFile = async () => {
+  // useDownload(exportUserInfo, "user list", proTable.value.searchParam);
+  let name = "all";
+  let json = await getComponentLogsListForExport({
+    filter: proTable.value.searchParam
+  });
+
+  let columns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "").filter((c: string) => c);
+  // remove specific columns from array
+  let badColumns = ["operation", "expand", "selection", "footprint", "name"];
+  columns = columns.filter((c: string) => !badColumns.includes(c));
+
+  let csv = JSON2CSV(json, columns);
+  useDownload(() => csv, `${name}_component_list`, {}, true, ".csv");
+};
+
 // Open the drawer (new, view, edit)
 interface DrawerExpose {
   acceptParams: (params: any) => void;
@@ -152,7 +152,7 @@ const openDrawer = (title: string, rowData: Partial<ComponentLog.ResGetComponent
   let referenceComponentRowData: Partial<Component.ResGetComponentRecord> = {};
   getComponent(String(rowData.component)).then(res => {
     referenceComponentRowData = res.data;
-
+    /*eslint indent: ["error", 2, { "ignoredNodes": ["ConditionalExpression"] }]*/
     let params = {
       title,
       rowData: referenceComponentRowData, //{ ...referenceComponentRowData },

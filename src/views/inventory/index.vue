@@ -65,8 +65,8 @@ import { ref, reactive } from "vue";
 import { CirclePlus, Delete, EditPen, Download, Upload, DCaret, Switch } from "@element-plus/icons-vue";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
-import { useDownload } from "@/hooks/useDownload";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
+import { useDownload } from "@/hooks/useDownload";
 import { JSON2CSV } from "@/hooks/useDataTransform";
 import { filterNodeMethod } from "@/utils/filterNodeMethod";
 import ProTable from "@/components/ProTable/index.vue";
@@ -266,7 +266,7 @@ const columns: ColumnProps[] = [
     label: "Created",
     width: 200,
     sortable: true,
-    search: { el: "date-picker", span: 1, props: { type: "datetimerange" } }, // true,
+    search: { el: "date-picker", span: 1, props: { type: "datetimerange" } },
     isShow: false
   },
   {
@@ -274,7 +274,7 @@ const columns: ColumnProps[] = [
     label: "Updated",
     width: 200,
     sortable: true,
-    search: { el: "date-picker", span: 1, props: { type: "datetimerange" } }, // true,
+    search: { el: "date-picker", span: 1, props: { type: "datetimerange" } },
     isShow: false
   },
   {

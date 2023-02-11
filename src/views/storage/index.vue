@@ -171,7 +171,7 @@ const batchDelete = async (ids: string[]) => {
 // Batch delete footprints
 const batchDeleteCategory = async (ids: string[]) => {
   await useHandleData(deleteStorageCategories, { ids }, "Delete the selected footprint categories(s)");
-  proTree.value.getTableList();
+  proTree.value.refresh();
 };
 
 // Open the drawer (new, view, edit)
@@ -197,7 +197,7 @@ const openStorageCategoryDrawer = (title: string, rowData: Partial<StorageCatego
     rowData: { ...rowData },
     isView: title === "View",
     apiUrl: title === "New" ? postStorageCategoryCreate : title === "Edit" ? patchStorageCategoryUpdate : "",
-    updateTable: proTree.value.getTableList
+    updateTable: proTree.value.refresh
   };
   drawerRefStorageCategory.value!.acceptParams(params);
 };

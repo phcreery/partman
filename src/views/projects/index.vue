@@ -131,6 +131,7 @@ const dataCallbackTable = (data: ResList<ProjectComponents.ReqGetProjectComponen
 // what binds the category tree to the table filter
 const handleProjectSelect = (data: any) => {
   initParam.projectID = data.id;
+  proTable.value.clearSelection();
 };
 
 // Page button permission
@@ -205,7 +206,8 @@ const batchDelete = async (ids: string[]) => {
 // Batch delete footprints
 const batchDeleteProject = async (ids: string[]) => {
   await useHandleData(deleteProjects, { ids }, "Delete the selected projects(s)");
-  proTree.value.getTableList();
+  proTree.value.refresh();
+  proTable.value.clearSelection();
 };
 
 // Export component list
@@ -291,7 +293,7 @@ const openProjectDrawer = (title: string, rowData: Partial<Project.ResGetProject
     rowData: { ...rowData },
     isView: title === "View",
     apiUrl: title === "New" ? postProjectCreate : title === "Edit" ? patchProjectUpdate : "",
-    updateTable: proTree.value.getTableList
+    updateTable: proTree.value.refresh
   };
   drawerRefProject.value!.acceptParams(params);
 };

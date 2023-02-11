@@ -223,7 +223,7 @@ const batchDelete = async (ids: string[]) => {
 // Batch delete footprints
 const batchDeleteCategory = async (ids: string[]) => {
   await useHandleData(deleteComponentCategories, { ids }, "Delete the selected footprint categories(s)");
-  proTree.value.getTableList();
+  proTree.value.refresh();
 };
 
 // Open the drawer (new, view, edit)
@@ -249,7 +249,7 @@ const openComponentCategoryDrawer = (title: string, rowData: Partial<ComponentCa
     rowData: { ...rowData },
     isView: title === "View",
     apiUrl: title === "New" ? postComponentCategoryCreate : title === "Edit" ? patchComponentCategoryUpdate : "",
-    updateTable: proTree.value.getTableList
+    updateTable: proTree.value.refresh
   };
   drawerRefComponentCategory.value!.acceptParams(params);
 };

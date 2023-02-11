@@ -20,7 +20,16 @@
       </div>
       <div class="header-button-ri" v-if="toolButton">
         <el-button-group>
-          <el-button :icon="Refresh" @click="getTableList"> </el-button>
+          <el-button
+            :icon="Refresh"
+            @click="
+              () => {
+                clearSelection();
+                getTableList();
+              }
+            "
+          >
+          </el-button>
           <el-button :icon="Printer" v-if="columns.length" @click="handlePrint"> </el-button>
           <el-button :icon="Operation" v-if="columns.length" @click="openColSetting"> </el-button>
           <el-button :icon="Search" v-if="searchColumns.length" @click="isShowSearch = !isShowSearch"> </el-button>

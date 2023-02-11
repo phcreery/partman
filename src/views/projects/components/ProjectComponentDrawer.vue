@@ -78,7 +78,6 @@ import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 
 const rules = reactive({
   bom_id: [{ required: true, message: "Please enter the BOM ID", trigger: "change" }],
-  // _id: [{ required: true, message: "Please enter the component", trigger: "change" }],
   component: [{ required: true, message: "Please enter the component", trigger: "change" }],
   quantity: [{ required: false, message: "Please enter project description", trigger: "change" }]
 });

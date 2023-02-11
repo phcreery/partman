@@ -178,7 +178,7 @@ const batchDelete = async (ids: string[]) => {
 // Batch delete footprints
 const batchDeleteCategory = async (ids: string[]) => {
   await useHandleData(deleteFootprintCategories, { ids }, "Delete the selected footprint categories(s)");
-  proTree.value.getTableList();
+  proTree.value.refresh();
 };
 
 // Open the drawer (new, view, edit)
@@ -204,7 +204,7 @@ const openFootprintCategoryDrawer = (title: string, rowData: Partial<FootprintCa
     rowData: { ...rowData },
     isView: title === "View",
     apiUrl: title === "New" ? postFootprintCategoryCreate : title === "Edit" ? patchFootprintCategoryUpdate : "",
-    updateTable: proTree.value.getTableList
+    updateTable: proTree.value.refresh
   };
   drawerRefFootprintCategory.value!.acceptParams(params);
 };

@@ -13,8 +13,7 @@ export const JSON2CSV = async (json: any = {}, fields: Array<string>) => {
     const opts: json2csv.Options<unknown> = { fields };
     const parser = new json2csv.Parser(opts);
     const csv = parser.parse(json);
-    // const csv = parse(json);
-    console.log(csv);
+    // console.log(csv);
     return csv;
   } catch (err) {
     console.error(err);

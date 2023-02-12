@@ -1,22 +1,19 @@
 <template>
   <div>
-    <!-- <div class="home flx-center">
-    Dashboard
-  </div> -->
     <el-row :gutter="12">
       <el-col :span="6">
         <el-card shadow="hover">
-          Components: <b>{{ qty.total_components }}</b>
+          <b>{{ qty.total_components }}</b> Total Components
         </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="hover">
-          Unique Components: <b>{{ qty.unique_components }}</b>
+          <b>{{ qty.unique_components }}</b> Unique Components
         </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="hover">
-          Storage Locations: <b>{{ qty.total_storage_locations }}</b>
+          <b>{{ qty.total_storage_locations }}</b> Storage Locations
         </el-card>
       </el-col>
       <!-- <el-col :span="6">
@@ -26,15 +23,15 @@
       </el-col> -->
       <el-col :span="6">
         <el-card shadow="hover">
-          Projects: <b>{{ qty.total_projects }}</b></el-card
-        >
+          <b>{{ qty.total_projects }}</b> Projects
+        </el-card>
       </el-col>
     </el-row>
 
     <el-row :gutter="12">
       <el-col :span="12">
         <el-card shadow="never">
-          <div ref="componentStorageTree" style="width: 100%; height: 400px"></div>
+          <div ref="componentStorageTreeRef" style="width: 100%; height: 400px"></div>
         </el-card>
       </el-col>
     </el-row>
@@ -42,13 +39,18 @@
 </template>
 
 <script setup lang="ts" name="dashboard">
-import { ref, reactive, onMounted } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import * as echarts from "echarts";
 import echartsThemeWonderland from "./echarts-theme-wonderland.json";
-// import { Component, ComponentCategory, Footprint, Storage, StorageCategory } from "@/api/interface";
+import echartsThemeWonderlandDark from "./echarts-theme-wonderland-dark.json";
 import { getDashboardInfo } from "@/api/modules/components";
+import { GlobalStore } from "@/stores";
+import { useEcharts } from "@/hooks/useEcharts";
 
-const componentStorageTree = ref(null);
+const componentStorageTreeRef = ref(null);
+
+const globalStore = GlobalStore();
+const themeConfig = computed(() => globalStore.themeConfig);
 
 const qty = ref({
   total_components: 0,
@@ -59,7 +61,9 @@ const qty = ref({
 });
 const storageLocationTreeData = ref([{}]);
 
-const storageLocationTreeOption = {
+let storageLocationTreeChart: echarts.ECharts;
+
+const storageLocationTreeOption: echarts.EChartsOption = {
   title: {
     text: "STORAGE LOCATION DISTRIBUTION",
     subtext: "",
@@ -94,10 +98,10 @@ const storageLocationTreeOption = {
 };
 
 echarts.registerTheme("wonderland", echartsThemeWonderland);
+echarts.registerTheme("wonderland-dark", echartsThemeWonderlandDark);
 
 const getQty = async () => {
   const res = await getDashboardInfo();
-  // qty.value = res.data.component_qty;
   qty.value.total_components = Number(res.data.totalComponents);
   qty.value.unique_components = res.data.uniqueComponents;
   qty.value.total_projects = res.data.totalProjects;
@@ -107,13 +111,28 @@ const getQty = async () => {
   storageLocationTreeData.value = res.data.storageLocationsTree;
 };
 
+const drawChart = () => {
+  storageLocationTreeChart && storageLocationTreeChart.dispose ? storageLocationTreeChart.dispose() : null;
+  storageLocationTreeChart = echarts.init(
+    componentStorageTreeRef.value as unknown as HTMLElement,
+    themeConfig.value.isDark ? "wonderland-dark" : "wonderland"
+  );
+  (storageLocationTreeOption.series! as echarts.PieSeriesOption).data = storageLocationTreeData.value;
+  useEcharts(storageLocationTreeChart, storageLocationTreeOption);
+};
+
 onMounted(async () => {
   await getQty();
-
-  let storageLocationTreeChart = echarts.init(componentStorageTree.value as unknown as HTMLElement, "wonderland");
-  storageLocationTreeOption.series.data = storageLocationTreeData.value;
-  storageLocationTreeChart.setOption(storageLocationTreeOption);
+  drawChart();
 });
+
+// watch themeConfig.isDark, update theme
+watch(
+  () => themeConfig.value.isDark,
+  () => {
+    drawChart();
+  }
+);
 </script>
 
 <style scoped lang="scss">

@@ -1,6 +1,6 @@
 {
   "color": ["#1e5f4c", "#2a856a", "#42d1a6", "#d0648a", "#f58db2", "#f2b3c9"],
-  "backgroundColor": "rgba(0,0,0,0)",
+  "backgroundColor": "rgb(29, 30, 31)",
   "textStyle": {},
   "title": {
     "textStyle": {

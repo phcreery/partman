@@ -257,6 +257,20 @@ export namespace ProjectComponents {
   }
 }
 
+export namespace ProjectBuilds {
+  type ProjectBuildColumns = {
+    project: string;
+    qty: number;
+    comment: string;
+  };
+  // Requests
+  export type ReqGetProjectBuildListParams = ReqList;
+  export type ReqCreateProjectBuildParams = ProjectBuildColumns;
+  export type ReqGetProjectBuildListForExportParams = { filter: ReqList["filter"] };
+  // Responses
+  export interface ResGetProjectBuildRecord extends ResGetRecord, ProjectBuildColumns {}
+}
+
 export namespace ComponentLog {
   type ComponentLogColumns = {
     component: string;

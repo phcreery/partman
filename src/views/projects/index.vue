@@ -144,7 +144,7 @@ const columns: ColumnProps[] = [
   {
     prop: "bom_id",
     label: "ID",
-    width: 80,
+    width: 60,
     sortable: true,
     search: { el: "input" }
   },
@@ -175,7 +175,6 @@ const columns: ColumnProps[] = [
   {
     prop: "refdesignators",
     label: "Ref. Designators",
-    width: 80,
     align: "left",
     search: { el: "input" }
   },

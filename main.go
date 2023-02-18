@@ -63,7 +63,7 @@ func main() {
 		Short: "Initialize the database and create the schema (WARNING: this will delete all data in the database)",
 		Run: func(cmd *cobra.Command, args []string) {
 			// app.IsBootstrapped()
-      err := app.Bootstrap()
+			err := app.Bootstrap()
 			if err != nil {
 				log.Fatal(err)
 				fmt.Println("Error Bootstrapping: ", err)
@@ -77,7 +77,7 @@ func main() {
 			}
 
 			// app.RefreshSettings()
-			
+
 			err = server.TryImportCollectionsFromJSON(app, server.SchemaAsForm)
 			// err = server.TryImportCollectionsFromJSON2(app, server.Schema)
 			if err != nil {
@@ -90,10 +90,12 @@ func main() {
 	})
 
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
-		
+
 		server.AddProxyRequests(app, e)
 
 		server.AddDashboardRequests(app, e)
+
+		server.AddProjectBuildRoute(app, e)
 
 		bindStaticAdminUI(app, e)
 

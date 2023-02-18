@@ -72,7 +72,7 @@
       <template #empty>
         <div class="table-empty">
           <img src="@/assets/images/notData.png" alt="notData" />
-          <div>暂无数据</div>
+          <div>No data</div>
         </div>
       </template>
     </el-table>

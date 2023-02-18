@@ -21,38 +21,24 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent) {
 		Path:   "/api/custom/dashboard/info",
 		Handler: func(c echo.Context) error {
 
-			// collection, err := app.Dao().FindCollectionByNameOrId("components")
-			// if err != nil {
-			// 	return c.JSON(http.StatusUnauthorized, rest.NewNotFoundError("collection not found", nil))
-			// }
-			// expr := dbx.HashExp{"id": "*"}
-			// records, err := app.Dao().FindRecordsByExpr(collection, expr)
-			// if err != nil {
-			// 	return c.JSON(http.StatusUnauthorized, rest.NewBadRequestError("cant query records", nil))
-			// }
-			// if len(records) == 0 {
-			// 	return c.JSON(http.StatusUnauthorized, rest.NewBadRequestError("no records", nil))
-			// }
-
 			// extend the models.Record{} type with additional fields of stock
 			type ComponentRecord struct {
 				// models.Record
-				Id		  				string `json:"id"`
+				Id string `json:"id"`
 				// MPN 					string `json:"mpn"`
 				// Description 			string `json:"description"`
-				Stock 					string `json:"stock"`
+				Stock string `json:"stock"`
 				// Comment 				string `json:"comment"`'
-				Storage_location 		string `json:"storage_location"`
-
+				Storage_location string `json:"storage_location"`
 			}
 			type ProjectRecord struct {
 				// models.Record
-				Id		  				string `json:"id"`
+				Id string `json:"id"`
 			}
 			type StorageLocationRecord struct {
 				// models.Record
-				Id		  				string `json:"id"`
-				Number_of_components 	string `json:"number_of_components"`
+				Id                   string `json:"id"`
+				Number_of_components string `json:"number_of_components"`
 			}
 
 			componentsRecords := []ComponentRecord{}
@@ -62,16 +48,16 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent) {
 			db := app.Dao().DB()
 
 			db.
-			NewQuery("SELECT `id`, `stock`, `storage_location` FROM `components`").
-			All(&componentsRecords)
+				NewQuery("SELECT `id`, `stock`, `storage_location` FROM `components`").
+				All(&componentsRecords)
 
 			db.
-			NewQuery("SELECT * FROM `projects`").
-			All(&projectRecords)
+				NewQuery("SELECT * FROM `projects`").
+				All(&projectRecords)
 
 			db.
-			NewQuery("SELECT * FROM `storage_locations`").
-			All(&storageLocationRecords)
+				NewQuery("SELECT * FROM `storage_locations`").
+				All(&storageLocationRecords)
 
 			// add up all records stock
 			totalComponents := 0
@@ -80,7 +66,6 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent) {
 				stock := record.Stock
 				// convert to int
 				stockInt, err := strconv.Atoi(stock)
-				// stockInt := stock.(int)
 				if err != nil {
 					// handle error
 					fmt.Println(err)
@@ -129,23 +114,23 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent) {
 
 			// create type DashboardInfo struct
 			type DashboardInfo struct {
-				UniqueComponents int `json:"uniqueComponents"`
-				TotalComponents int `json:"totalComponents"`
-				TotalProjects int `json:"totalProjects"`
+				UniqueComponents      int `json:"uniqueComponents"`
+				TotalComponents       int `json:"totalComponents"`
+				TotalProjects         int `json:"totalProjects"`
 				TotalStorageLocations int `json:"totalStorageLocations"`
 				// StorageLocationTree []models.StorageLocation `json:"storageLocationTree"`
-				Components []ComponentRecord `json:"components"`
+				Components       []ComponentRecord       `json:"components"`
 				StorageLocations []StorageLocationRecord `json:"storageLocations"`
 			}
 
 			// get dashboard info
 			dashboardInfo := DashboardInfo{
-				UniqueComponents: len(componentsRecords),
-				TotalComponents: totalComponents,
-				TotalProjects: len(projectRecords),
+				UniqueComponents:      len(componentsRecords),
+				TotalComponents:       totalComponents,
+				TotalProjects:         len(projectRecords),
 				TotalStorageLocations: len(storageLocationRecords),
 				// StorageLocationTree: storageLocationTree,
-				Components: componentsRecords,
+				Components:       componentsRecords,
 				StorageLocations: storageLocationRecords,
 			}
 

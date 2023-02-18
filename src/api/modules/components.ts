@@ -14,6 +14,7 @@ import {
   StorageCategory,
   Project,
   ProjectComponents,
+  ProjectBuilds,
   ComponentLog,
   User,
   Config
@@ -464,6 +465,48 @@ export const deleteProjectComponents = async (params: ProjectComponents.ReqRemov
   const record = await client.collection("projects").update(params.projectID, res_project);
   return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
 };
+
+// ---- PROJECT BUILDS ----
+
+export const getProjectBuildsList = async (params: ProjectBuilds.ReqGetProjectBuildListParams) => {
+  let res = (await client.collection("project_builds").getList(params.page, params.perPage, {
+    filter: params.filter ? filterToPBString(params.filter) : "",
+    sort: params.sort ?? "",
+    expand: params.expand ?? ""
+  })) as unknown as ResList<ProjectBuilds.ResGetProjectBuildRecord>;
+  return { data: res } as unknown as APIdata<ResList<ProjectBuilds.ResGetProjectBuildRecord>>;
+};
+
+export const getProjectBuildsListForExport = async (params: ProjectBuilds.ReqGetProjectBuildListForExportParams) => {
+  let res = await getProjectBuildsList({
+    page: 1,
+    perPage: 9999,
+    filter: params.filter,
+    expand: "",
+    sort: ""
+  });
+  return res.data.items as unknown as ProjectBuilds.ResGetProjectBuildRecord[];
+};
+
+export const postProjectBuildsCreate = async (params: ProjectBuilds.ReqCreateProjectBuildParams) => {
+  let res = await client.collection("project_builds").create(params);
+  await client.send(
+    "/api/custom/projectbuilds/new?" +
+      new URLSearchParams({
+        project_id: params.project,
+        qty: params.qty.toString()
+      }),
+    {
+      method: "POST"
+    }
+  );
+  return { data: res } as unknown as APIdata<ProjectBuilds.ResGetProjectBuildRecord>;
+};
+
+// export const postProjectBuildsRun = async (params: ProjectBuilds.ReqCreateProjectBuildParams) => {
+//   let res = await client.collection("project_builds").create(params);
+//   return { data: res } as unknown as APIdata<ProjectBuilds.ResGetProjectBuildRecord>;
+// };
 
 // ---- COMPONENT LOGS ----
 

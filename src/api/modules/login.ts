@@ -88,6 +88,11 @@ export const getAuthButtonListApi = (): Login.ResAuthButtons => {
         batchAdd: true,
         export: true
       },
+      builds: {
+        add: true,
+        view: true,
+        export: true
+      },
       logs: {
         export: true
       }
@@ -191,6 +196,21 @@ export const getAuthMenuListApi = () => {
         meta: {
           icon: "odometer",
           title: "Projects",
+          isLink: "",
+          isHide: false,
+          isFull: false,
+          isAffix: false,
+          isKeepAlive: true
+        },
+        children: []
+      },
+      {
+        path: "/builds",
+        name: "builds",
+        component: "/builds/index",
+        meta: {
+          icon: "promotion",
+          title: "Builds",
           isLink: "",
           isHide: false,
           isFull: false,

@@ -113,7 +113,7 @@
                 <el-option v-for="item in componentFootprints" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
               <el-button-group>
-                <el-button :icon="Refresh" @click="refreshCategories" />
+                <el-button :icon="Refresh" @click="refreshFootprints" />
                 <el-button :icon="Plus" @click="openFootprintDrawer('New')" />
               </el-button-group>
             </el-space>

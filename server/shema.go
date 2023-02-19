@@ -735,14 +735,14 @@ var Schema string = `
         "updateRule": "id = @request.auth.id",
         "deleteRule": null,
         "options": {
-            "allowEmailAuth": true,
-            "allowOAuth2Auth": true,
+            "allowEmailAuth": false,
+            "allowOAuth2Auth": false,
             "allowUsernameAuth": true,
             "exceptEmailDomains": null,
             "manageRule": null,
             "minPasswordLength": 8,
             "onlyEmailDomains": null,
-            "requireEmail": true
+            "requireEmail": false
         }
     },
     {
@@ -822,6 +822,59 @@ var Schema string = `
         "createRule": "",
         "updateRule": "",
         "deleteRule": "",
+        "options": {}
+    },
+    {
+        "id": "7b9ap40dd7w0yd5",
+        "name": "project_builds",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "dnfto6ly",
+                "name": "project",
+                "type": "relation",
+                "system": false,
+                "required": true,
+                "unique": false,
+                "options": {
+                    "collectionId": "kI0bAn7Cl6PVZYH",
+                    "cascadeDelete": false,
+                    "maxSelect": 1,
+                    "displayFields": []
+                }
+            },
+            {
+                "id": "qbceylux",
+                "name": "qty",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "min": 1,
+                    "max": null
+                }
+            },
+            {
+                "id": "skg2i4ry",
+                "name": "comment",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            }
+        ],
+        "listRule": "",
+        "viewRule": "",
+        "createRule": "",
+        "updateRule": "",
+        "deleteRule": null,
         "options": {}
     }
 ]

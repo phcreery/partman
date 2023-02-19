@@ -278,10 +278,10 @@ const useImporter = (
         // console.log("no enumMap found for", col);
         continue;
       }
-      let enumValue = state.enumMap.get(col)?.find((e: any) => {
+      let enumID = state.enumMap.get(col)?.find((e: any) => {
         return e[colUniqueKey!].trim() == row[col].trim();
       })?.id;
-      if (!enumValue) {
+      if (!enumID) {
         // no enum value found
         console.log("no enum value found for , gotta create one for", col, row[col]);
         if (colApiCreateFunc) {
@@ -294,11 +294,12 @@ const useImporter = (
             return;
           }
           console.log("res", res); // TODO: get id from res
-          enumValue = res.data.id;
-          row[col] = enumValue;
+          enumID = res.data.id;
+          // set row[col] to enumID
+          row[col] = enumID;
           // add to enumMap
           let arr = state.enumMap.get(col);
-          arr?.push({ id: enumValue, [colUniqueKey!]: row[col] });
+          arr?.push({ id: enumID, [colUniqueKey!]: res.data[colUniqueKey!] });
           state.enumMap.set(col, arr!);
           console.log(state.enumMap);
         } else {
@@ -307,7 +308,7 @@ const useImporter = (
         }
       } else {
         // enum value found
-        row[col] = enumValue;
+        row[col] = enumID;
       }
     }
     return row;

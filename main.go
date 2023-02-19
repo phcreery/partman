@@ -11,7 +11,9 @@ import (
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
+	"github.com/pocketbase/pocketbase/models"
 	"github.com/spf13/cobra"
+	"golang.org/x/crypto/bcrypt"
 
 	"phcreery/partman/server"
 )
@@ -85,6 +87,35 @@ func main() {
 				fmt.Println("Error Importing Collections: ", err)
 			} else {
 				fmt.Println("Collections Imported")
+			}
+
+			// create a default user
+			var name string
+			var username string
+			var password string
+
+			fmt.Println("Enter partman UI Name: ")
+			fmt.Scanln(&name)
+			fmt.Println("Enter partman UI Username: ")
+			fmt.Scanln(&username)
+			fmt.Println("Enter partman UI Password: ")
+			fmt.Scanln(&password)
+
+			collection, err := app.Dao().FindCollectionByNameOrId("users")
+			if err != nil {
+				fmt.Println("Error finding Users collection: ", err)
+			}
+
+			record := models.NewRecord(collection)
+			// hash the password
+			hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 13)
+			// record.Set("email", "test@partman.com")
+			record.Set("passwordHash", hashedPassword)
+			record.Set("username", username)
+			record.Set("name", name)
+
+			if err := app.Dao().SaveRecord(record); err != nil {
+				fmt.Println("Error creating default user: ", err)
 			}
 		},
 	})

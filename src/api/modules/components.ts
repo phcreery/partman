@@ -533,7 +533,7 @@ export const getComponentLogsListForExport = async (params: ComponentLog.ReqGetC
 // ---- USERS ----
 
 export const getUserList = async (params: User.ReqGetUserListParams) => {
-  let res = await client.collection("profiles").getList(params.page, params.perPage, {
+  let res = await client.collection("users").getList(params.page, params.perPage, {
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? "" // Default expand all???
@@ -552,30 +552,36 @@ export const getUsersListForExport = async (params: User.ReqGetUserListForExport
   return res.data.items as unknown as User.ResGetUserRecord[];
 };
 
+export const getUser = async (params: User.ReqGetUserParams) => {
+  let res = await client.collection("users").getOne(params.id);
+  return { data: res } as unknown as APIdata<User.ResGetUserRecord>;
+};
+
 export const deleteUser = async (params: User.ReqDeleteUserParams) => {
-  await client.collection("profiles").delete(params.id);
+  await client.collection("users").delete(params.id);
 };
 
 export const postUserCreate = async (params: User.ReqCreateUserParams) => {
-  let record = await client.collection("profiles").create(params);
+  let record = await client.collection("users").create(params);
   return { data: record } as unknown as APIdata<User.ResGetUserRecord>;
 };
 
 export const patchUserUpdate = async (params: User.ReqUpdateUserParams) => {
-  const record = await client.collection("profiles").update(params.id, params);
+  console.log("patchUserUpdate", params);
+  const record = await client.collection("users").update(params.id, params);
   return { data: record } as unknown as APIdata<User.ResGetUserRecord>;
 };
 
 export const deleteUsers = async (params: User.ReqDeleteUsersParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.collection("profiles").delete(id);
+    await client.collection("users").delete(id);
   }
   return true;
 };
 
 export const getUserEnum = async () => {
-  let [res, err] = await tryCatchAsync(() => client.collection("profiles").getList(1, 99999, { $autoCancel: false }));
+  let [res, err] = await tryCatchAsync(() => client.collection("users").getList(1, 99999, { $autoCancel: false }));
   if (err) {
     console.error("getUserEnum res err", res, err);
     // return false;

@@ -5,6 +5,62 @@ package server
 var Schema string = `
 [
     {
+        "id": "2K6tASoFfJIsf9K",
+        "name": "users",
+        "type": "auth",
+        "system": false,
+        "schema": [
+            {
+                "id": "yr471swz",
+                "name": "name",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "v7zfv7jk",
+                "name": "avatar",
+                "type": "file",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "maxSelect": 1,
+                    "maxSize": 5242880,
+                    "mimeTypes": [
+                        "image/jpg",
+                        "image/jpeg",
+                        "image/png",
+                        "image/svg+xml",
+                        "image/gif"
+                    ],
+                    "thumbs": null
+                }
+            }
+        ],
+        "listRule": null,
+        "viewRule": null,
+        "createRule": "",
+        "updateRule": "id = @request.auth.id",
+        "deleteRule": null,
+        "options": {
+            "allowEmailAuth": false,
+            "allowOAuth2Auth": false,
+            "allowUsernameAuth": true,
+            "exceptEmailDomains": null,
+            "manageRule": null,
+            "minPasswordLength": 8,
+            "onlyEmailDomains": null,
+            "requireEmail": false
+        }
+    },
+    {
         "id": "4cKEGHHm79jmqFg",
         "name": "components",
         "type": "base",
@@ -194,60 +250,6 @@ var Schema string = `
         "options": {}
     },
     {
-        "id": "AZPyYgFSyUPXw0F",
-        "name": "storage_locations",
-        "type": "base",
-        "system": false,
-        "schema": [
-            {
-                "id": "rgaovqsm",
-                "name": "name",
-                "type": "text",
-                "system": false,
-                "required": true,
-                "unique": true,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "3qoh3vjk",
-                "name": "description",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "jhpabp2g",
-                "name": "category",
-                "type": "relation",
-                "system": false,
-                "required": false,
-                "unique": false,
-                "options": {
-                    "collectionId": "u5hDISrpBElJcpS",
-                    "cascadeDelete": false,
-                    "maxSelect": 1,
-                    "displayFields": null
-                }
-            }
-        ],
-        "listRule": "",
-        "viewRule": "",
-        "createRule": "",
-        "updateRule": "",
-        "deleteRule": "",
-        "options": {}
-    },
-    {
         "id": "66i7hRx2SIiCgmh",
         "name": "component_categories",
         "type": "base",
@@ -282,114 +284,6 @@ var Schema string = `
             },
             {
                 "id": "tvvoskkg",
-                "name": "description",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            }
-        ],
-        "listRule": "",
-        "viewRule": "",
-        "createRule": "",
-        "updateRule": "",
-        "deleteRule": "",
-        "options": {}
-    },
-    {
-        "id": "BOjtTDeCj7NQRAJ",
-        "name": "footprints",
-        "type": "base",
-        "system": false,
-        "schema": [
-            {
-                "id": "jbghdwms",
-                "name": "name",
-                "type": "text",
-                "system": false,
-                "required": true,
-                "unique": true,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "bpsvhzqj",
-                "name": "description",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "vczmw3yv",
-                "name": "category",
-                "type": "relation",
-                "system": false,
-                "required": false,
-                "unique": false,
-                "options": {
-                    "collectionId": "06ULXCMWwKzFwaD",
-                    "cascadeDelete": false,
-                    "maxSelect": 1,
-                    "displayFields": null
-                }
-            }
-        ],
-        "listRule": "",
-        "viewRule": "",
-        "createRule": "",
-        "updateRule": "",
-        "deleteRule": "",
-        "options": {}
-    },
-    {
-        "id": "06ULXCMWwKzFwaD",
-        "name": "footprint_categories",
-        "type": "base",
-        "system": false,
-        "schema": [
-            {
-                "id": "clwl2uza",
-                "name": "name",
-                "type": "text",
-                "system": false,
-                "required": true,
-                "unique": true,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "aiolgfxq",
-                "name": "parent",
-                "type": "relation",
-                "system": false,
-                "required": false,
-                "unique": false,
-                "options": {
-                    "collectionId": "06ULXCMWwKzFwaD",
-                    "cascadeDelete": false,
-                    "maxSelect": 1,
-                    "displayFields": null
-                }
-            },
-            {
-                "id": "avn8npib",
                 "name": "description",
                 "type": "text",
                 "system": false,
@@ -464,6 +358,168 @@ var Schema string = `
         "options": {}
     },
     {
+        "id": "AZPyYgFSyUPXw0F",
+        "name": "storage_locations",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "rgaovqsm",
+                "name": "name",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "unique": true,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "3qoh3vjk",
+                "name": "description",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "jhpabp2g",
+                "name": "category",
+                "type": "relation",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "collectionId": "u5hDISrpBElJcpS",
+                    "cascadeDelete": false,
+                    "maxSelect": 1,
+                    "displayFields": null
+                }
+            }
+        ],
+        "listRule": "",
+        "viewRule": "",
+        "createRule": "",
+        "updateRule": "",
+        "deleteRule": "",
+        "options": {}
+    },
+    {
+        "id": "06ULXCMWwKzFwaD",
+        "name": "footprint_categories",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "clwl2uza",
+                "name": "name",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "unique": true,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "aiolgfxq",
+                "name": "parent",
+                "type": "relation",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "collectionId": "06ULXCMWwKzFwaD",
+                    "cascadeDelete": false,
+                    "maxSelect": 1,
+                    "displayFields": null
+                }
+            },
+            {
+                "id": "avn8npib",
+                "name": "description",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            }
+        ],
+        "listRule": "",
+        "viewRule": "",
+        "createRule": "",
+        "updateRule": "",
+        "deleteRule": "",
+        "options": {}
+    },
+    {
+        "id": "BOjtTDeCj7NQRAJ",
+        "name": "footprints",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "jbghdwms",
+                "name": "name",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "unique": true,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "bpsvhzqj",
+                "name": "description",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "vczmw3yv",
+                "name": "category",
+                "type": "relation",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "collectionId": "06ULXCMWwKzFwaD",
+                    "cascadeDelete": false,
+                    "maxSelect": 1,
+                    "displayFields": null
+                }
+            }
+        ],
+        "listRule": "",
+        "viewRule": "",
+        "createRule": "",
+        "updateRule": "",
+        "deleteRule": "",
+        "options": {}
+    },
+    {
         "id": "kI0bAn7Cl6PVZYH",
         "name": "projects",
         "type": "base",
@@ -515,6 +571,138 @@ var Schema string = `
         "createRule": "",
         "updateRule": "",
         "deleteRule": "",
+        "options": {}
+    },
+    {
+        "id": "rf9e9a5xllc0fdx",
+        "name": "project_components",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "oubdrbgj",
+                "name": "bom_id",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "hmqb0yhc",
+                "name": "component",
+                "type": "relation",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "collectionId": "4cKEGHHm79jmqFg",
+                    "cascadeDelete": false,
+                    "maxSelect": 1,
+                    "displayFields": null
+                }
+            },
+            {
+                "id": "ghbni22c",
+                "name": "quantity",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "min": 0,
+                    "max": null
+                }
+            },
+            {
+                "id": "fqubwz9b",
+                "name": "refdesignators",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "qjmpwj3j",
+                "name": "comment",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            }
+        ],
+        "listRule": "",
+        "viewRule": "",
+        "createRule": "",
+        "updateRule": "",
+        "deleteRule": "",
+        "options": {}
+    },
+    {
+        "id": "7b9ap40dd7w0yd5",
+        "name": "project_builds",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "dnfto6ly",
+                "name": "project",
+                "type": "relation",
+                "system": false,
+                "required": true,
+                "unique": false,
+                "options": {
+                    "collectionId": "kI0bAn7Cl6PVZYH",
+                    "cascadeDelete": false,
+                    "maxSelect": 1,
+                    "displayFields": []
+                }
+            },
+            {
+                "id": "qbceylux",
+                "name": "qty",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "min": 1,
+                    "max": null
+                }
+            },
+            {
+                "id": "skg2i4ry",
+                "name": "comment",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            }
+        ],
+        "listRule": "",
+        "viewRule": "",
+        "createRule": "",
+        "updateRule": "",
+        "deleteRule": null,
         "options": {}
     },
     {
@@ -686,194 +874,6 @@ var Schema string = `
         "viewRule": "",
         "createRule": null,
         "updateRule": null,
-        "deleteRule": null,
-        "options": {}
-    },
-    {
-        "id": "2K6tASoFfJIsf9K",
-        "name": "users",
-        "type": "auth",
-        "system": false,
-        "schema": [
-            {
-                "id": "yr471swz",
-                "name": "name",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "v7zfv7jk",
-                "name": "avatar",
-                "type": "file",
-                "system": false,
-                "required": false,
-                "unique": false,
-                "options": {
-                    "maxSelect": 1,
-                    "maxSize": 5242880,
-                    "mimeTypes": [
-                        "image/jpg",
-                        "image/jpeg",
-                        "image/png",
-                        "image/svg+xml",
-                        "image/gif"
-                    ],
-                    "thumbs": null
-                }
-            }
-        ],
-        "listRule": null,
-        "viewRule": null,
-        "createRule": "",
-        "updateRule": "id = @request.auth.id",
-        "deleteRule": null,
-        "options": {
-            "allowEmailAuth": false,
-            "allowOAuth2Auth": false,
-            "allowUsernameAuth": true,
-            "exceptEmailDomains": null,
-            "manageRule": null,
-            "minPasswordLength": 8,
-            "onlyEmailDomains": null,
-            "requireEmail": false
-        }
-    },
-    {
-        "id": "rf9e9a5xllc0fdx",
-        "name": "project_components",
-        "type": "base",
-        "system": false,
-        "schema": [
-            {
-                "id": "oubdrbgj",
-                "name": "bom_id",
-                "type": "text",
-                "system": false,
-                "required": true,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "hmqb0yhc",
-                "name": "component",
-                "type": "relation",
-                "system": false,
-                "required": false,
-                "unique": false,
-                "options": {
-                    "collectionId": "4cKEGHHm79jmqFg",
-                    "cascadeDelete": false,
-                    "maxSelect": 1,
-                    "displayFields": null
-                }
-            },
-            {
-                "id": "ghbni22c",
-                "name": "quantity",
-                "type": "number",
-                "system": false,
-                "required": false,
-                "unique": false,
-                "options": {
-                    "min": 0,
-                    "max": null
-                }
-            },
-            {
-                "id": "fqubwz9b",
-                "name": "refdesignators",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "qjmpwj3j",
-                "name": "comment",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            }
-        ],
-        "listRule": "",
-        "viewRule": "",
-        "createRule": "",
-        "updateRule": "",
-        "deleteRule": "",
-        "options": {}
-    },
-    {
-        "id": "7b9ap40dd7w0yd5",
-        "name": "project_builds",
-        "type": "base",
-        "system": false,
-        "schema": [
-            {
-                "id": "dnfto6ly",
-                "name": "project",
-                "type": "relation",
-                "system": false,
-                "required": true,
-                "unique": false,
-                "options": {
-                    "collectionId": "kI0bAn7Cl6PVZYH",
-                    "cascadeDelete": false,
-                    "maxSelect": 1,
-                    "displayFields": []
-                }
-            },
-            {
-                "id": "qbceylux",
-                "name": "qty",
-                "type": "number",
-                "system": false,
-                "required": false,
-                "unique": false,
-                "options": {
-                    "min": 1,
-                    "max": null
-                }
-            },
-            {
-                "id": "skg2i4ry",
-                "name": "comment",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            }
-        ],
-        "listRule": "",
-        "viewRule": "",
-        "createRule": "",
-        "updateRule": "",
         "deleteRule": null,
         "options": {}
     }

@@ -432,13 +432,13 @@ const beforeExcelUpload = (file: any) => {
   const fileSize = file.size / 1024 / 1024 < 5;
   if (!isExcel)
     ElNotification({
-      title: "Warm Tips",
+      title: "Notification",
       message: "Upload files can only be xls / xlsx / csv!",
       type: "warning"
     });
   if (!fileSize)
     ElNotification({
-      title: "Warm Tips",
+      title: "Notification",
       message: "Upload file size cannot exceed 5MB!",
       type: "warning"
     });
@@ -448,7 +448,7 @@ const beforeExcelUpload = (file: any) => {
 // File count exceeds prompt
 const handleExceed = (): void => {
   ElNotification({
-    title: "Warm Tips",
+    title: "Notification",
     message: "Maximum of one file upload!",
     type: "warning"
   });
@@ -457,7 +457,7 @@ const handleExceed = (): void => {
 // Upload error message
 const excelUploadError = (): void => {
   ElNotification({
-    title: "Warm Tips",
+    title: "Notification",
     message: `Batch Add ${parameter.value.title} Failure, Please re-upload!`,
     type: "error"
   });
@@ -466,7 +466,7 @@ const excelUploadError = (): void => {
 // 上传Success提示
 const excelUploadSuccess = (): void => {
   ElNotification({
-    title: "Warm Tips",
+    title: "Notification",
     message: `Batch Add ${parameter.value.title} success!`,
     type: "success"
   });

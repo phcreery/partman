@@ -1,9 +1,10 @@
 <template>
   <el-dropdown trigger="click">
     <div class="avatar isicon">
-      <img src="@/assets/images/avatar.gif" alt="avatar" />
+      <!-- <img src="@/assets/images/avatar.gif" alt="avatar" /> -->
       <!-- <el-icon><Avatar /></el-icon> -->
       <!-- <Avatar /> -->
+      <el-avatar :icon="UserFilled" />
     </div>
     <template #dropdown>
       <el-dropdown-menu>
@@ -35,15 +36,16 @@ import { useRouter } from "vue-router";
 import { ElMessageBox, ElMessage } from "element-plus";
 import InfoDialog from "./InfoDialog.vue";
 import PasswordDialog from "./PasswordDialog.vue";
+import { UserFilled } from "@element-plus/icons-vue";
 
 const router = useRouter();
 const globalStore = GlobalStore();
 
 // Logout
 const logout = () => {
-  ElMessageBox.confirm("Are you sure you want to log out??", "Warm Tips", {
-    confirmButtonText: "Determine",
-    cancelButtonText: "Cancellation",
+  ElMessageBox.confirm("Are you sure you want to log out??", "Notification", {
+    confirmButtonText: "Yes",
+    cancelButtonText: "Cancel",
     type: "warning"
   }).then(async () => {
     // 1.Calling the logout interface
@@ -54,7 +56,7 @@ const logout = () => {
     resetRouter();
     // 4.Redirect to landing page
     router.replace(LOGIN_URL);
-    ElMessage.success("Log out successfully！");
+    ElMessage.success("Logged out successfully!");
   });
 };
 

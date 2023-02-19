@@ -298,12 +298,18 @@ export namespace User {
     name: string;
     avatar: string;
     userId: string;
+    email: string;
+    password: string;
   };
   // Requests
   export type ReqGetUserListParams = ReqList;
   export type ReqGetUserListForExportParams = { filter: ReqList["filter"] };
+  export type ReqGetUserParams = ReqRecord;
   export type ReqCreateUserParams = UserColumns;
-  export interface ReqUpdateUserParams extends ReqRecord, UserColumns {}
+  export interface ReqUpdateUserParams extends ReqRecord, UserColumns {
+    oldPassword?: string;
+    passwordConfirm?: string;
+  }
   export type ReqDeleteUserParams = ReqRecord;
   export type ReqDeleteUsersParams = { ids: string[] };
   // Responses

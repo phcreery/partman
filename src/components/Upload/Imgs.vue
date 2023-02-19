@@ -107,13 +107,13 @@ const beforeUpload: UploadProps["beforeUpload"] = rawFile => {
   const imgType = props.fileType;
   if (!imgType.includes(rawFile.type as FileTypes))
     ElNotification({
-      title: "Warm Tips",
+      title: "Notification",
       message: "Uploading images that do not conform to the required format!",
       type: "warning"
     });
   if (!imgSize)
     ElNotification({
-      title: "Warm Tips",
+      title: "Notification",
       message: `The size of the uploaded image cannot exceed ${props.fileSize}M!`,
       type: "warning"
     });
@@ -148,7 +148,7 @@ const uploadSuccess = (response: { fileUrl: string } | undefined, uploadFile: Up
   // Call el-form Internal calibration method（Automatically calibratable）
   formItemContext?.prop && formContext?.validateField([formItemContext.prop as string]);
   ElNotification({
-    title: "Warm Tips",
+    title: "Notification",
     message: "Image uploaded successfully!",
     type: "success"
   });
@@ -163,7 +163,7 @@ const handleRemove = (uploadFile: UploadFile) => {
 // Image upload error message
 const uploadError = () => {
   ElNotification({
-    title: "Warm Tips",
+    title: "Notification",
     message: "Image upload failed, Please re-upload!",
     type: "error"
   });
@@ -172,7 +172,7 @@ const uploadError = () => {
 // File count exceeds prompt
 const handleExceed = () => {
   ElNotification({
-    title: "Warm Tips",
+    title: "Notification",
     message: `Currently, you can only upload a maximum of ${props.limit} Pictures, Please remove and upload!`,
     type: "warning"
   });

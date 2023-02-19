@@ -113,8 +113,3 @@ npm run dev:client
 ```
 npm run release:build
 ```
-
-### Config
-
-- Database Admin: admin@mail.com : partmanpass
-- Default User: partman : partman@mail.com : partmanpass

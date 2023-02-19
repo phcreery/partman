@@ -60,7 +60,7 @@
   </div>
 </template>
 
-<script setup lang="tsx" name="useComponent">
+<script setup lang="tsx" name="inventory">
 import { ref, reactive } from "vue";
 import { CirclePlus, Delete, EditPen, Download, Upload, DCaret, Switch } from "@element-plus/icons-vue";
 import { ColumnProps } from "@/components/ProTable/interface/index";

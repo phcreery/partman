@@ -35,7 +35,7 @@
   </div>
 </template>
 
-<script setup lang="tsx" name="useComponent">
+<script setup lang="tsx" name="users">
 import { ref, reactive } from "vue";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";

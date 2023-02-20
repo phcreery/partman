@@ -71,7 +71,7 @@
   </div>
 </template>
 
-<script setup lang="tsx" name="useComponent">
+<script setup lang="tsx" name="projects">
 import { ref, reactive } from "vue";
 import { ElNotification } from "element-plus";
 import { ColumnProps } from "@/components/ProTable/interface/index";

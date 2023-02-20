@@ -33,7 +33,7 @@
   </div>
 </template>
 
-<script setup lang="tsx" name="useComponent">
+<script setup lang="tsx" name="builds">
 import { ref, reactive } from "vue";
 import { CirclePlus, Download } from "@element-plus/icons-vue";
 import { ColumnProps } from "@/components/ProTable/interface/index";

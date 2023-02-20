@@ -26,7 +26,7 @@
   </div>
 </template>
 
-<script setup lang="tsx" name="useComponent">
+<script setup lang="tsx" name="logs">
 import { ref, reactive } from "vue";
 import { ZoomIn, Download } from "@element-plus/icons-vue";
 import { ColumnProps } from "@/components/ProTable/interface/index";

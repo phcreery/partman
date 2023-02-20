@@ -18,7 +18,7 @@
   </div>
 </template>
 
-<script setup lang="tsx" name="useComponent">
+<script setup lang="tsx" name="generalSettings">
 import { ref, reactive } from "vue";
 import { ElMessage } from "element-plus";
 import { useAuthButtons } from "@/hooks/useAuthButtons";

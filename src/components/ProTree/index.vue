@@ -15,7 +15,7 @@
     </div>
     <el-input v-model="filterText" placeholder="Filter keyword" />
     <!-- Tree -->
-    <el-scrollbar :style="{ height: title ? `calc(100% - 115px)` : `calc(100% - 78px)` }">
+    <el-scrollbar :style="{ height: title ? `calc(100% - 115px)` : `calc(100% - 110px)` }">
       <el-tree
         ref="treeRef"
         :data="treeData"

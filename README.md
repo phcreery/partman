@@ -27,8 +27,10 @@ _Coming soon_
 2. Initialize database
 
 ```
-partman init
+partman migrate up
 ```
+
+This will prompt you to create the UI user ans det the password
 
 3. Start partman
 
@@ -70,18 +72,37 @@ sudo systemctl restart partman
 sudo systemctl status partman
 ```
 
+### Updating
+
+```
+sudo systemctl stop partman
+[download latest partman binary]
+partman migrate up
+sudo systemctl start partman
+```
+
+## Why partman
+
+|                     | partman                                            | PartKeepr                                | InvenTree                                                         |
+| ------------------- | -------------------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------- |
+| Frontend Technology | TypeScript (Vue3)                                  | JavaScript                               | JavaScript, (Bootstrap, jQuery)                                   |
+| Backend Technology  | golang (PocketBase), SQLite                        | PHP (Symfony2), MySQL, PostgreSQL        | Python (DJango), PostgreSQL, MySQL, SQLite, Redis                 |
+| Integrations        | octopart, (Component Search Engine coming soon)    | None?                                    | Lots of Plugins                                                   |
+| Mobile App          | No                                                 | Yes                                      | Yes                                                               |
+| Installation        | Single portable executable/binary. Multi-platform. | PHP source, Docker, OVA. Unix-like only. | Python source in virtual environment, Docker. No windows support. |
+
 ## Developing
 
 🚀 Technologies used:
 
-- Vite 3.2
-- Vue 3.2
+- Go
+- [PocketBase](https://pocketbase.io/)
 - TypeScript
+- Vue 3
+- Vite 3
 - [Geeker Admin Template](https://github.com/HalseySpicy/Geeker-Admin) (from latest commit on 12/11/22)
 - Element-Plus
 - Pinia
-- Go
-- [PocketBase](https://pocketbase.io/)
 
 ### Dev Setup
 

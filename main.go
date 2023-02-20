@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -11,15 +12,14 @@ import (
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/spf13/cobra"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 
+	_ "phcreery/partman/migrations"
 	"phcreery/partman/server"
 )
 
-// Version of PocketBase
-var Version = "(untracked)"
+//go:embed package.json
+var f embed.FS
 
 //go:embed all:dist-ui
 //go:embed dist-ui/*
@@ -54,71 +54,27 @@ func bindStaticAdminUI(app core.App, e *core.ServeEvent) error {
 }
 
 func main() {
+
+	// /Set the version from package.json
+	type PackageJSON struct {
+		Version string `json:"version"`
+	}
+	content, err := f.ReadFile("package.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	var packageJSON PackageJSON
+	json.Unmarshal(content, &packageJSON)
+	if err != nil {
+		log.Fatal("Error during Unmarshal(): ", err)
+	}
+	var Version = packageJSON.Version
+
 	app := pocketbase.New()
 
 	app.RootCmd.Use = filepath.Base(os.Args[0]) // "partman"
 	app.RootCmd.Short = "partman CLI"
 	app.RootCmd.Version = Version
-
-	app.RootCmd.AddCommand(&cobra.Command{
-		Use:   "init",
-		Short: "Initialize the database and create the schema (WARNING: this will delete all data in the database)",
-		Run: func(cmd *cobra.Command, args []string) {
-			// app.IsBootstrapped()
-			err := app.Bootstrap()
-			if err != nil {
-				log.Fatal(err)
-				fmt.Println("Error Bootstrapping: ", err)
-			}
-
-			// ensure that the latest migrations are applied before starting the server
-			err = server.RunInitMigrations(app)
-			if err != nil {
-				log.Fatal(err)
-				fmt.Println("Error Running Migrations: ", err)
-			}
-
-			// app.RefreshSettings()
-
-			err = server.TryImportCollectionsFromJSON(app, server.SchemaAsForm)
-			// err = server.TryImportCollectionsFromJSON2(app, server.Schema)
-			if err != nil {
-				log.Fatal(err)
-				fmt.Println("Error Importing Collections: ", err)
-			} else {
-				fmt.Println("Collections Imported")
-			}
-
-			// create a default user
-			var name string
-			var username string
-			var password string
-
-			fmt.Println("Enter partman UI Name: ")
-			fmt.Scanln(&name)
-			fmt.Println("Enter partman UI Username: ")
-			fmt.Scanln(&username)
-			fmt.Println("Enter partman UI Password: ")
-			fmt.Scanln(&password)
-
-			collection, err := app.Dao().FindCollectionByNameOrId("users")
-			if err != nil {
-				fmt.Println("Error finding Users collection: ", err)
-			}
-
-			record := models.NewRecord(collection)
-			// hash the password
-			hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 13)
-			// record.Set("email", "test@partman.com")
-			record.Set("passwordHash", hashedPassword)
-			record.Set("username", username)
-			record.Set("name", name)
-
-			if err := app.Dao().SaveRecord(record); err != nil {
-				fmt.Println("Error creating default user: ", err)
-			}
-		},
-	})
 
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
 
@@ -134,6 +90,10 @@ func main() {
 	})
 
 	server.ComponentLogsHook(app)
+
+	migratecmd.MustRegister(app, app.RootCmd, &migratecmd.Options{
+		Automigrate: true, // auto creates migration files when making collection changes
+	})
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)

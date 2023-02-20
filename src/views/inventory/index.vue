@@ -99,7 +99,8 @@ import {
   // getStorageCategoryEnumTree,
   // postComponentCreateBatch_Client,
   postComponentCategoryCreate,
-  postStorageCreate
+  postStorageCreate,
+  postFootprintCreate
 } from "@/api/modules/components";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
@@ -324,7 +325,7 @@ const batchAdd = async () => {
       mergeOptions: { single: true }
     },
     { prop: "stock", label: "Stock", mergeOptions: { required: true, defaultBoth: true } },
-    // { prop: "footprint", label: "Footprint", apiCreate: postFootprintCreate, mergeOptions: { single: true } },
+    { prop: "footprint", label: "Footprint", apiCreate: postFootprintCreate, mergeOptions: { single: true } },
     { prop: "ipn", label: "IPN", mergeOptions: { single: true } },
     {
       prop: "storage_location",

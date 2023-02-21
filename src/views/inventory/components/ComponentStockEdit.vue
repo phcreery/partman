@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog v-model="drawerVisible" :title="`${drawerData.title}`">
+    <el-dialog v-model="drawerVisible" :title="`${drawerData.title}`" width="260px">
       <el-form
         ref="ruleFormRef"
         :rules="rules"
@@ -10,9 +10,9 @@
         label-suffix=" :"
         :append-to-body="true"
       >
-        <el-form-item label="Old Stock Level">
+        <!-- <el-form-item label="Old Stock Level">
           {{ drawerData.rowData!.stock }}
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="Stock" prop="stock">
           <el-input-number v-model="drawerData.addStock" />
         </el-form-item>

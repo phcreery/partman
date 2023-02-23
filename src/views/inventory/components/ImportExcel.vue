@@ -262,6 +262,11 @@ const useImporter = (
   };
 
   const evaluateEnum = async (row: any) => {
+    // Here is the explanation for the code above:
+    // 1. First we check if the current column has an enumMap and if so, we get the enumMap for the current column (`state.enumMap.get(col)`)
+    // 2. If there is an enumMap, we loop through the enumMap and check if the value of the current row matches any of the values in the enumMap.
+    // 3. If there is a match, we set the value of the row to the ID of the enumMap.
+    // 4. If there is no match, we check if there is a `colApiCreateFunc` for the current column. If there is, we call the `colApiCreateFunc` and pass the value of the current row to the `colApiCreateFunc`. If there is no `colApiCreateFunc`, we set the value of the row to an empty string.
     if (!state.columns) return row;
     if (!state.enumMap) return row;
 

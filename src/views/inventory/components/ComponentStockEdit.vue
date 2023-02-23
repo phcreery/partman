@@ -21,7 +21,7 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="drawerVisible = false">Cancel</el-button>
+        <el-button @click="() => (drawerVisible = false)">Cancel</el-button>
         <el-button type="primary" v-show="!drawerData.isView" @click="handleSubmit">Save</el-button>
       </template>
     </el-dialog>

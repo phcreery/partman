@@ -14,7 +14,7 @@ import (
 // https://github.com/mbecker/pocketstrava/blob/main/main.go
 // https://github.com/ItsShawn/scripturealone.app/blob/main/server/server.go (reverse proxy alternative?)
 
-func AddDashboardRequests(app core.App, e *core.ServeEvent) {
+func AddDashboardRequests(app core.App, e *core.ServeEvent, version string) {
 
 	e.Router.AddRoute(echo.Route{
 		Method: http.MethodGet,
@@ -61,20 +61,22 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent) {
 
 			// add up all records stock
 			totalComponents := 0
-			for _, record := range componentsRecords {
-				// read record column "stock"
-				stock := record.Stock
-				// convert to int
-				stockInt, err := strconv.Atoi(stock)
-				if err != nil {
-					// handle error
-					fmt.Println(err)
-					// return c.JSON(http.StatusUnauthorized, rest.
-					return c.String(http.StatusBadRequest, "cant query records")
-				}
-				// add to total
-				totalComponents += stockInt
-			}
+			// for _, record := range componentsRecords {
+			// 	// read record column "stock"
+			// 	stock := record.Stock
+			// 	// convert to int
+			// 	// TODO: update this
+			// 	// stockInt, err := strconv.Atoi(stock)
+			// 	stockInt := 0
+
+			// 	// if err != nil {
+			// 		// handle error
+			// 		// fmt.Println(err)
+			// 		// return c.String(http.StatusBadRequest, "cant query records")
+			// 	// }
+			// 	// add to total
+			// 	totalComponents += stockInt
+			// }
 
 			// loop though all storage locations and add up all records whose record.Storage_location field matches the storage location record id
 			// and set the storage location record.Number_of_components field to the total
@@ -121,6 +123,7 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent) {
 				// StorageLocationTree []models.StorageLocation `json:"storageLocationTree"`
 				Components       []ComponentRecord       `json:"components"`
 				StorageLocations []StorageLocationRecord `json:"storageLocations"`
+				Version          string                  `json:"version"`
 			}
 
 			// get dashboard info
@@ -132,6 +135,7 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent) {
 				// StorageLocationTree: storageLocationTree,
 				Components:       componentsRecords,
 				StorageLocations: storageLocationRecords,
+				Version:          version,
 			}
 
 			// print dashboardInfo

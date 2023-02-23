@@ -2,10 +2,12 @@ package server
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/forms"
 	"github.com/pocketbase/pocketbase/models"
+	"github.com/pocketbase/pocketbase/tools/hook"
 )
 
 // https://pocketbase.io/docs/custom-models/
@@ -22,16 +24,10 @@ func getRecordJSON(record *models.Record) (string, error) {
 
 // function to look up component and return JSON
 func getComponentValue(app core.App, id string) (string, error) {
-	// collection, err := app.Dao().FindCollectionByNameOrId("components")
-	// if err != nil {
-	// 	return "", err
-	// }
-
 	record, err := app.Dao().FindRecordById("components", id)
 	if err != nil {
 		return "", err
 	}
-
 	return getRecordJSON(record)
 }
 
@@ -69,10 +65,10 @@ func ComponentLogsHook(app core.App) {
 			form := forms.NewRecordUpsert(app, newLogRecord)
 
 			form.LoadData(map[string]any{
-				"component": record.Id,
+				"component":   record.Id,
 				"description": description,
-				"new_value": newComponentValue,
-				"old_value": oldComponentValue,
+				"new_value":   newComponentValue,
+				"old_value":   oldComponentValue,
 			})
 
 			// validate and submit (internally it calls app.Dao().SaveRecord(record) in a transaction)
@@ -98,4 +94,24 @@ func ComponentLogsHook(app core.App) {
 		return createComponentLogEntry(e.Record, "delete")
 	})
 
+}
+
+func ComponentTotalStockCounterHook(app core.App) {
+	type CustomComponent struct {
+		*models.Record
+		TotalQuantity int `json:"_total_quantity"`
+	}
+
+	app.OnRecordViewRequest("components").Add(func(e *core.RecordViewEvent) error {
+		record := e.Record
+		newRecord := CustomComponent{Record: record}
+		newRecord.TotalQuantity = 0
+		e.HttpContext.JSON(http.StatusOK, newRecord)
+		return hook.StopPropagation
+	})
+	app.OnRecordsListRequest().Add(func(e *core.RecordsListEvent) error {
+		// log.Println(e.Result)
+		return nil
+		// return insertComponentTotalStock(e.Result)
+	})
 }

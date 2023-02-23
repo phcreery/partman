@@ -21,6 +21,24 @@ import (
 //go:embed package.json
 var f embed.FS
 
+func GetVersion() string {
+	// Set the version from package.json
+	type PackageJSON struct {
+		Version string `json:"version"`
+	}
+	content, err := f.ReadFile("package.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	var packageJSON PackageJSON
+	json.Unmarshal(content, &packageJSON)
+	if err != nil {
+		log.Fatal("Error during Unmarshal(): ", err)
+	}
+	var Version = packageJSON.Version
+	return Version
+}
+
 //go:embed all:dist-ui
 //go:embed dist-ui/*
 var distDir embed.FS
@@ -55,20 +73,7 @@ func bindStaticAdminUI(app core.App, e *core.ServeEvent) error {
 
 func main() {
 
-	// /Set the version from package.json
-	type PackageJSON struct {
-		Version string `json:"version"`
-	}
-	content, err := f.ReadFile("package.json")
-	if err != nil {
-		fmt.Println(err)
-	}
-	var packageJSON PackageJSON
-	json.Unmarshal(content, &packageJSON)
-	if err != nil {
-		log.Fatal("Error during Unmarshal(): ", err)
-	}
-	var Version = packageJSON.Version
+	var Version = GetVersion()
 
 	app := pocketbase.New()
 
@@ -80,7 +85,7 @@ func main() {
 
 		server.AddProxyRequests(app, e)
 
-		server.AddDashboardRequests(app, e)
+		server.AddDashboardRequests(app, e, Version)
 
 		server.AddProjectBuildRoute(app, e)
 
@@ -89,10 +94,11 @@ func main() {
 		return nil
 	})
 
+	// server.ComponentTotalStockCounterHook(app)
 	server.ComponentLogsHook(app)
 
 	migratecmd.MustRegister(app, app.RootCmd, &migratecmd.Options{
-		Automigrate: true, // auto creates migration files when making collection changes
+		// Automigrate: true, // auto creates migration files when making collection changes
 	})
 
 	if err := app.Start(); err != nil {

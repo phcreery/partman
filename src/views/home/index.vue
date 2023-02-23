@@ -27,11 +27,15 @@
         </el-card>
       </el-col>
     </el-row>
-
     <el-row :gutter="12">
       <el-col :span="12">
         <el-card shadow="never">
-          <div ref="componentStorageTreeRef" style="width: 100%; height: 400px"></div>
+          <div ref="componentStorageTree" style="width: 100%; height: 400px"></div>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card shadow="hover">
+          partman version <b>{{ qty.version }}</b>
         </el-card>
       </el-col>
     </el-row>
@@ -57,7 +61,8 @@ const qty = ref({
   unique_components: 0,
   total_projects: 0,
   // total_categories: 0,
-  total_storage_locations: 0
+  total_storage_locations: 0,
+  version: ""
 });
 const storageLocationTreeData = ref([{}]);
 
@@ -107,6 +112,7 @@ const getQty = async () => {
   qty.value.total_projects = res.data.totalProjects;
   // qty.value.total_categories = res.data.total_categories;
   qty.value.total_storage_locations = res.data.totalStorageLocations;
+  qty.value.version = res.data.version;
 
   storageLocationTreeData.value = res.data.storageLocationsTree;
 };

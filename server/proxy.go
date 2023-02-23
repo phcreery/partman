@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/labstack/echo/v5"
+	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 )
 
@@ -78,7 +79,6 @@ func ProxyRequestHandler(proxy *httputil.ReverseProxy) func(http.ResponseWriter,
 	}
 }
 
-
 func AddProxyRequests(app core.App, e *core.ServeEvent) {
 	// add POST /api/connect/token to router which reverse proxies to https://identity.nexar.com/connect/token
 	e.Router.AddRoute(echo.Route{
@@ -100,7 +100,7 @@ func AddProxyRequests(app core.App, e *core.ServeEvent) {
 			return nil
 		},
 		Middlewares: []echo.MiddlewareFunc{
-			// apis.RequireAdminOrUserAuth(),
+			apis.RequireAdminOrRecordAuth(),
 		},
 	})
 
@@ -123,7 +123,7 @@ func AddProxyRequests(app core.App, e *core.ServeEvent) {
 			return nil
 		},
 		Middlewares: []echo.MiddlewareFunc{
-			// apis.RequireAdminOrUserAuth(),
+			apis.RequireAdminOrRecordAuth(),
 		},
 	})
 }

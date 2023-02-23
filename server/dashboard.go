@@ -61,22 +61,20 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent, version string) {
 
 			// add up all records stock
 			totalComponents := 0
-			// for _, record := range componentsRecords {
-			// 	// read record column "stock"
-			// 	stock := record.Stock
-			// 	// convert to int
-			// 	// TODO: update this
-			// 	// stockInt, err := strconv.Atoi(stock)
-			// 	stockInt := 0
+			for _, record := range componentsRecords {
+				// read record column "stock"
+				stock := record.Stock
+				// convert to int
+				stockInt, err := strconv.Atoi(stock)
 
-			// 	// if err != nil {
-			// 		// handle error
-			// 		// fmt.Println(err)
-			// 		// return c.String(http.StatusBadRequest, "cant query records")
-			// 	// }
-			// 	// add to total
-			// 	totalComponents += stockInt
-			// }
+				if err != nil {
+					// handle error
+					fmt.Println(err)
+					return c.String(http.StatusBadRequest, "cant query records")
+				}
+				// add to total
+				totalComponents += stockInt
+			}
 
 			// loop though all storage locations and add up all records whose record.Storage_location field matches the storage location record id
 			// and set the storage location record.Number_of_components field to the total

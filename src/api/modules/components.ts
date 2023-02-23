@@ -616,6 +616,7 @@ export const getDashboardInfo = async () => {
     components: Component.ResGetComponentRecord[];
     storageLocations: Storage.ResGetStorageRecord[];
     storageLocationsTree: Storage.ResGetStorageRecordTree[];
+    version: string;
   };
 
   let res = (await client.send("/api/custom/dashboard/info", {})) as unknown as APIdata<DashboardInfo>;

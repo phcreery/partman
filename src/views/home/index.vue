@@ -30,7 +30,7 @@
     <el-row :gutter="12">
       <el-col :span="12">
         <el-card shadow="never">
-          <div ref="componentStorageTree" style="width: 100%; height: 400px"></div>
+          <div ref="componentStorageTreeRef" style="width: 100%; height: 400px"></div>
         </el-card>
       </el-col>
       <el-col :span="6">

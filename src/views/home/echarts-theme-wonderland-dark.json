@@ -4,8 +4,8 @@
   "textStyle": {},
   "title": {
     "textStyle": {
-      "color": "#303133",
-      "textBorderColor": "#ffffff",
+      "color": "#ffffff",
+      "textBorderColor": "#303133",
       "textBorderWidth": 1
     },
     "subtextStyle": {

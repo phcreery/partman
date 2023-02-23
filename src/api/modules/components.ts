@@ -7,6 +7,7 @@ import {
   ReqList,
   ResList,
   Component,
+  ComponentStock,
   ComponentCategory,
   Footprint,
   FootprintCategory,
@@ -65,7 +66,7 @@ const getPathName = (data: any[], id: string, identifier = "id", parentIdentifie
   path.push(found.name);
   const parent = data.find(element => element[identifier] === found[parentIdentifier]);
   if (!parent) {
-    return path.reverse().join(" ▸ "); // / > ‣ → ▻ ▸ ▶ ▷
+    return path.reverse().join(" / "); // / > ‣ → ▻ ▸ ▶ ▷
   }
   return getPathName(data, parent[identifier], identifier, parentIdentifier, path);
 };
@@ -130,9 +131,25 @@ export const getComponentEnum = async () => {
   return { data: res.items } as unknown as APIdata<Component.ResGetComponentRecord[]>;
 };
 
-export const getComponent = async (id: string) => {
-  let res = await client.collection("components").getOne(id);
-  return { data: res } as unknown as APIdata<Component.ResGetComponentRecord>;
+// export const getComponent = async (id: string) => {
+//   let res = await client.collection("components").getOne(id);
+//   return { data: res } as unknown as APIdata<Component.ResGetComponentRecord>;
+// };
+
+// ---- COMPONENT STOCK ----
+
+export const getComponentStockList = async (params: ComponentStock.ReqGetComponentStockListParams) => {
+  let res = await client.collection("component_stock").getList(params.page, params.perPage, {
+    filter: params.filter ? filterToPBString(params.filter) : "",
+    sort: params.sort ?? "",
+    expand: params.expand ?? ""
+  });
+  return { data: res } as unknown as APIdata<ResList<ComponentStock.ResGetComponentStockRecord>>;
+};
+
+export const getComponentStockEnum = async () => {
+  let res = await client.collection("component_stock").getList(1, 99999, { $autoCancel: false });
+  return { data: res.items } as unknown as APIdata<ComponentStock.ResGetComponentStockRecord[]>;
 };
 
 // ---- COMPONENT CATEGORIES ----
@@ -616,6 +633,7 @@ export const getDashboardInfo = async () => {
     components: Component.ResGetComponentRecord[];
     storageLocations: Storage.ResGetStorageRecord[];
     storageLocationsTree: Storage.ResGetStorageRecordTree[];
+    version: string;
   };
 
   let res = (await client.send("/api/custom/dashboard/info", {})) as unknown as APIdata<DashboardInfo>;

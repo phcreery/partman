@@ -79,7 +79,8 @@ export namespace Component {
     mpn: string;
     manufacturer: string;
     description: string;
-    stock: number;
+    stock: string[];
+    _total_stock: number;
     comment: string;
     storage_location: string;
     category: string;
@@ -99,6 +100,21 @@ export namespace Component {
   export type ReqDeleteComponentsParams = { ids: string[] };
   // Responses
   export interface ResGetComponentRecord extends ResGetRecord, ComponentColumns {}
+}
+
+export namespace ComponentStock {
+  type ComponentStockColumns = {
+    component: string;
+    storage: string;
+    quantity: number;
+  };
+  // Requests
+  export type ReqGetComponentStockListParams = ReqList;
+  export type ReqCreateComponentStockParams = ComponentStockColumns;
+  export interface ReqUpdateComponentStockParams extends ReqRecord, ComponentStockColumns {}
+  export type ReqDeleteComponentStocksParams = { ids: string[] };
+  // Responses
+  export interface ResGetComponentStockRecord extends ResGetRecord, ComponentStockColumns {}
 }
 
 export namespace ComponentCategory {

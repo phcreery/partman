@@ -78,7 +78,8 @@ import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue"
 import MergeComponents from "./components/MergeComponents.vue";
 import {
   ResList,
-  Component
+  Component,
+  ComponentStock
   // ComponentCategory,
   // Footprint,
   // Storage
@@ -89,6 +90,7 @@ import {
   postComponentCreate,
   patchComponentUpdate,
   deleteComponents,
+  getComponentStockEnum,
   getFootprintsEnum,
   // getComponentStorageLocationEnum,
   // getComponentCategoryEnum,
@@ -216,7 +218,26 @@ const columns: ColumnProps[] = [
     },
     isShow: false
   },
-  { prop: "stock", label: "Stock", width: 80 },
+  // { prop: "stock", label: "Stock", width: 80 },
+  {
+    prop: "stock",
+    label: "Stock",
+    enum: getComponentStockEnum,
+    fieldNames: { value: "id", label: "location" },
+    search: {
+      el: "select",
+      props: {
+        value: "id",
+        label: "location",
+        multiple: true,
+        filterable: true
+      }
+    },
+    render: (scope: { row: ComponentStock.ResGetComponentStockRecord }) => {
+      console.log(scope);
+      return <div>1 or {scope}</div>;
+    }
+  },
   {
     prop: "ipn",
     label: "IPN",
@@ -239,29 +260,29 @@ const columns: ColumnProps[] = [
   //   isShow: true
   // },
 
-  {
-    prop: "storage_location",
-    label: "Location",
-    width: 160,
-    align: "left",
-    enum: getStorageLocationPathEnumTree,
-    // isFilterEnum: false,
-    fieldNames: { value: "id", label: "_fullName" },
-    sortable: true,
-    search: {
-      el: "tree-select",
-      props: {
-        props: { value: "id", label: "name", disabled: "disabled" },
-        filterable: true,
-        filterNodeMethod: (v: any, d: any) => filterNodeMethod(v, d["_fullName"]),
-        multiple: true
-      }
-    },
-    // render: (scope: { row: Component.ResGetComponentRecord }) => {
-    //   return <div>{scope.row}</div>;
-    // },
-    isShow: true
-  },
+  // {
+  //   prop: "storage_location",
+  //   label: "Location",
+  //   width: 160,
+  //   align: "left",
+  //   enum: getStorageLocationPathEnumTree,
+  //   // isFilterEnum: false,
+  //   fieldNames: { value: "id", label: "_fullName" },
+  //   sortable: true,
+  //   search: {
+  //     el: "tree-select",
+  //     props: {
+  //       props: { value: "id", label: "name", disabled: "disabled" },
+  //       filterable: true,
+  //       filterNodeMethod: (v: any, d: any) => filterNodeMethod(v, d["_fullName"]),
+  //       multiple: true
+  //     }
+  //   },
+  //   // render: (scope: { row: Component.ResGetComponentRecord }) => {
+  //   //   return <div>{scope.row}</div>;
+  //   // },
+  //   isShow: true
+  // },
   {
     prop: "created",
     label: "Created",

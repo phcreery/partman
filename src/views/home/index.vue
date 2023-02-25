@@ -35,7 +35,7 @@
       </el-col>
       <el-col :span="6">
         <el-card shadow="hover">
-          partman version <b>{{ qty.version }}</b>
+          partman <b>v{{ qty.version }}</b>
         </el-card>
       </el-col>
     </el-row>

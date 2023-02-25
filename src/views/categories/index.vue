@@ -53,7 +53,16 @@
         </template>
         <!-- Expand -->
         <template #expand="scope">
-          {{ scope.row }}
+          <!-- {{ scope.row }} -->
+          <ComponentDetails
+            :title="scope.row.mpn ?? ''"
+            :isView="true"
+            :rowData="scope.row"
+            :enum-map="proTable.enumMap"
+          ></ComponentDetails>
+        </template>
+        <template #stock="scope">
+          {{ scope.row.stock }}
         </template>
         <!-- Table operation -->
         <template #operation="scope">
@@ -67,7 +76,8 @@
 </template>
 
 <script setup lang="tsx" name="categories">
-import { ref, reactive, nextTick } from "vue";
+import { ref, reactive } from "vue";
+import { CirclePlus, Delete, EditPen, DCaret } from "@element-plus/icons-vue";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
@@ -75,7 +85,8 @@ import ProTable from "@/components/ProTable/index.vue";
 import ProTree from "@/components/ProTree/index.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 import ComponentCategoryDrawer from "@/views/categories/components/ComponentCategoryDrawer.vue";
-import { CirclePlus, Delete, EditPen } from "@element-plus/icons-vue";
+import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
+import { filterNodeMethod } from "@/utils/filterNodeMethod";
 import { ResList, Component, ComponentCategory } from "@/api/interface";
 import {
   getComponentList,
@@ -86,7 +97,9 @@ import {
   getComponentCategoryEnumTree,
   postComponentCategoryCreate,
   patchComponentCategoryUpdate,
-  deleteComponentCategories
+  deleteComponentCategories,
+  getFootprintsEnum,
+  getStorageLocationPathEnumTree
 } from "@/api/modules/components";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
@@ -128,13 +141,13 @@ const { BUTTONS } = useAuthButtons();
 // Table configuration item
 const columns: ColumnProps[] = [
   { type: "selection", width: 40, fixed: "left" },
-  // { type: "expand", label: "" },
+  { type: "expand", label: "" },
   {
     prop: "name",
-    label: "Name",
+    label: "Display Name",
     width: 260,
     align: "left",
-    sortable: true,
+    sortable: false,
     render: (scope: { row: Component.ResGetComponentRecord }) => {
       return (
         <div>
@@ -142,7 +155,6 @@ const columns: ColumnProps[] = [
         </div>
       );
     }
-    // isShow: false
   },
   {
     prop: "manufacturer",
@@ -161,50 +173,91 @@ const columns: ColumnProps[] = [
     isShow: false
   },
   {
-    prop: "category",
-    label: "Category",
-    width: 120,
-    align: "left",
-    enum: async () => {
-      // nextTick to prevent calling api multiple times and per instant and race condition on loading screen tracker
-      await nextTick();
-      return await getComponentCategoryEnumTree();
-    },
-    fieldNames: { value: "id", label: "name" },
-    sortable: true,
-    search: {
-      el: "tree-select",
-      props: {
-        props: { value: "id", label: "name" }
-      }
-    },
-    // search: true,
-    // searchType: "select",
-    // searchType: "treeSelect",
-    // values that go into the treeSelect props
-    // searchProps: {
-    //   value: "id",
-    //   label: "_fullName",
-    //   props: { value: "id", label: "name", emitPath: false },
-    //   checkStrictly: true
-    // },
-    // enumFunction: async () => {
-    //   // nextTick to prevent calling api multiple times and per instant and race condition on loading screen tracker
-    //   await nextTick();
-    //   return await getComponentCategoryEnum();
-    // },
-    // enumTreeFunction: async () => {
-    //   await nextTick();
-    //   return await getCompentCategoryEnumTree();
-    // },on
-    isShow: false
-  },
-  {
     prop: "description",
     label: "Description",
     // width: 220,
     align: "left",
     search: { el: "input" }
+  },
+  {
+    prop: "footprint",
+    label: "Footprint",
+    width: 120,
+    enum: getFootprintsEnum,
+    fieldNames: { value: "id", label: "name" },
+    sortable: true,
+    search: {
+      el: "select",
+      props: {
+        value: "id",
+        label: "name",
+        multiple: true,
+        filterable: true
+      }
+    },
+    isShow: false
+  },
+  { prop: "stock", label: "Stock", width: 80 },
+  {
+    prop: "ipn",
+    label: "IPN",
+    width: 60,
+    search: { el: "input" },
+    isShow: false
+  },
+  // {
+  //   prop: "storage_location",
+  //   label: "Short Location",
+  //   width: 160,
+  //   enum: getComponentStorageLocationEnum,
+  //   fieldNames: { value: "id", label: "name" },
+  //   sortable: true,
+  //   search: { el: "select" },
+  //   //
+  //   // searchType: "select",
+  //   // enumFunction: getComponentStorageLocationEnum,
+  //   // searchProps: { value: "id", label: "name" },
+  //   isShow: true
+  // },
+
+  {
+    prop: "storage_location",
+    label: "Location",
+    width: 160,
+    align: "left",
+    enum: getStorageLocationPathEnumTree,
+    // isFilterEnum: false,
+    fieldNames: { value: "id", label: "_fullName" },
+    sortable: true,
+    search: {
+      el: "tree-select",
+      props: {
+        props: { value: "id", label: "name", disabled: "disabled" },
+        filterable: true,
+        filterNodeMethod: (v: any, d: any) => filterNodeMethod(v, d["_fullName"]),
+        multiple: true
+      }
+    },
+    // render: (scope: { row: Component.ResGetComponentRecord }) => {
+    //   return <div>{scope.row}</div>;
+    // },
+    isShow: true
+  },
+  {
+    prop: "created",
+    label: "Created",
+    width: 200,
+    sortable: true,
+    search: { el: "date-picker", span: 1, props: { type: "datetimerange" } },
+    isShow: false
+  },
+  {
+    prop: "updated",
+    label: "Updated",
+    width: 200,
+    sortable: true,
+    search: { el: "date-picker", span: 1, props: { type: "datetimerange" } },
+    isShow: false
   },
   {
     prop: "operation",

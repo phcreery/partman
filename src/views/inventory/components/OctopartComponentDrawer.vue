@@ -32,7 +32,7 @@
               <el-descriptions title="Summary" :column="1" border direction="vertical">
                 <template #extra>
                   <el-button :icon="Link" @click="openOctopart(props.row.part)">View</el-button>
-                  <el-button type="primary" @click="handleSubmit(props.row.part)">Import</el-button>
+                  <el-button :icon="Magnet" type="primary" @click="handleSubmit(props.row.part)">Import</el-button>
                 </template>
                 <el-descriptions-item>
                   <template #label>
@@ -52,7 +52,7 @@
               <el-table :data="props.row.part.specs" :border="true">
                 <el-table-column label="Attribute" prop="attribute.name" />
                 <el-table-column label="Value" prop="value" />
-                <el-table-column label="Value" prop="units" />
+                <el-table-column label="Units" prop="units" />
               </el-table>
             </div>
           </template>
@@ -68,7 +68,7 @@
 <script setup lang="ts" name="UserDrawer">
 import { ref, Ref, reactive, watch } from "vue";
 import { ElMessage, FormInstance } from "element-plus";
-import { Search, Link, TopRight } from "@element-plus/icons-vue";
+import { Search, Link, TopRight, Magnet } from "@element-plus/icons-vue";
 import { Component } from "@/api/interface";
 // import { getFootprintsEnum, getComponentStorageLocationEnum, getComponentCategoryEnumTree } from "@/api/modules/components";
 import { SupPartResultSet, SupPart } from "@/api/interface/octopart";
@@ -82,8 +82,8 @@ interface DrawerProps {
   title: string;
   isView: boolean;
   rowData?: Component.ResGetComponentRecord;
-  apiUrl?: (params: any) => Promise<any>;
-  updateTable?: (component: Partial<Component.ResGetComponentRecord>) => Promise<any>;
+  apiUrl?: (params: Partial<Component.ResGetComponentRecord>) => Promise<any>;
+  updateTable?: () => Promise<any>;
 }
 
 // drawer frame status
@@ -109,8 +109,6 @@ const handleSubmit = (part: SupPart) => {
   ruleFormRef.value!.validate(async valid => {
     if (!valid) return;
     try {
-      // await drawerData.value.apiUrl!(drawerData.value.rowData);
-      // ElMessage.success({ message: `${drawerData.value.title} component success!` });
       let component: Partial<Component.ResGetComponentRecord> = {
         mpn: part.mpn,
         manufacturer: part.manufacturer.name,
@@ -121,7 +119,9 @@ const handleSubmit = (part: SupPart) => {
       // component.manufacturer = part.value.manufacturer.name;
       // component.specs = part.value.specs;
       // component.description = part.value.shortDescription;
-      drawerData.value.updateTable!(component);
+      await drawerData.value.apiUrl!(component);
+      ElMessage.success({ message: `${drawerData.value.title} component success!` });
+      drawerData.value.updateTable!();
       drawerVisible.value = false;
     } catch (error) {
       console.error(error);

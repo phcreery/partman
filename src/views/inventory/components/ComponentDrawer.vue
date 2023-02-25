@@ -29,7 +29,7 @@
           <div class="form-item-with-buttons">
             <el-space>
               <el-input v-model="drawerData.rowData!.mpn" placeholder="Please fill in the component name" clearable></el-input>
-              <el-button :icon="Search" @click="openOctopartComponentDrawer('New', drawerData.rowData)" />
+              <el-button :icon="Search" @click="openOctopartComponentDrawer('Import', drawerData.rowData)" />
             </el-space>
           </div>
         </el-form-item>
@@ -337,7 +337,7 @@ const openOctopartComponentDrawer = (title: string, rowData: Partial<Component.R
     title,
     rowData: { ...rowData },
     isView: title === "View",
-    apiUrl: title === "New" ? postFootprintCreate : "",
+    apiUrl: importRowData,
     updateTable: importRowData
   };
   drawerRefNestedOctopartComponent.value!.acceptParams(params);

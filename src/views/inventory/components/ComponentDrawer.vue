@@ -56,6 +56,12 @@
         <el-form-item label="IPN" prop="ipn">
           <el-input v-model="drawerData.rowData!.ipn" placeholder="Internal Part Number" clearable></el-input>
         </el-form-item>
+        <el-form-item label="Supplier" prop="supplier">
+          <el-input v-model="drawerData.rowData!.supplier" placeholder="Supplier" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="SPN" prop="spn">
+          <el-input v-model="drawerData.rowData!.spn" placeholder="Supplier Part Number" clearable></el-input>
+        </el-form-item>
         <el-form-item label="Category" prop="category" v-loading="componentCategories === undefined">
           <div class="form-item-with-buttons">
             <el-space>
@@ -185,13 +191,15 @@ import OctopartComponentDrawer from "@/views/inventory/components/OctopartCompon
 
 const rules = reactive({
   mpn: [{ required: true, message: "Please upload the component name", trigger: "change" }],
-  description: [{ required: false, message: "Please enter component description", trigger: "change" }],
   manufacturer: [{ required: false, message: "Please enter component manufacturer", trigger: "change" }],
-  footprint: [{ required: false, message: "Please fill in the footprint", trigger: "change" }],
-  stock: [{ required: true, message: "Please fill in the stock qty", trigger: "change" }],
-  storage_location: [{ required: false, message: "Please select location", trigger: "change" }],
+  description: [{ required: false, message: "Please enter component description", trigger: "change" }],
+  ipn: [{ required: false, message: "Please fill in IPN", trigger: "change" }],
+  supplier: [{ required: false, message: "Please fill in supplier", trigger: "change" }],
+  spn: [{ required: false, message: "Please fill in supplier part number", trigger: "change" }],
   category: [{ required: false, message: "Please select category", trigger: "change" }],
-  ipn: [{ required: false, message: "Please fill in IPN", trigger: "change" }]
+  footprint: [{ required: false, message: "Please fill in the footprint", trigger: "change" }],
+  storage_location: [{ required: false, message: "Please select location", trigger: "change" }],
+  stock: [{ required: true, message: "Please fill in the stock qty", trigger: "change" }]
 });
 
 // const cascaderProps = { value: "id", label: "name", emitPath: false };

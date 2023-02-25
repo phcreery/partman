@@ -175,22 +175,22 @@ const columns: ColumnProps[] = [
     search: { el: "input" },
     isShow: false
   },
-  // {
-  //   prop: "supplier",
-  //   label: "Supplier",
-  //   width: 130,
-  //   sortable: true,
-  //   search: { el: "input" },
-  //   isShow: false
-  // },
-  // {
-  //   prop: "spn",
-  //   label: "SPN",
-  //   width: 130,
-  //   sortable: true,
-  //   search: { el: "input" },
-  //   isShow: false
-  // },
+  {
+    prop: "supplier",
+    label: "Supplier",
+    width: 130,
+    sortable: true,
+    search: { el: "input" },
+    isShow: false
+  },
+  {
+    prop: "spn",
+    label: "SPN",
+    width: 130,
+    sortable: true,
+    search: { el: "input" },
+    isShow: false
+  },
   {
     prop: "description",
     label: "Description",

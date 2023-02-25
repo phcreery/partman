@@ -28,7 +28,9 @@
       <el-table :data="searchResults" :border="true" style="width: 100%">
         <el-table-column type="expand">
           <template #default="props">
+            <!-- {{ props.row }} -->
             <div style="margin: 4%">
+              <h2>{{ props.row.part.manufacturer.name }} {{ props.row.part.mpn }}</h2>
               <el-descriptions title="Summary" :column="1" border direction="vertical">
                 <template #extra>
                   <el-button :icon="Link" @click="openOctopart(props.row.part)">View</el-button>
@@ -47,6 +49,12 @@
                   {{ props.row.part.category.name }} ({{ props.row.part.category.path }})
                 </el-descriptions-item>
               </el-descriptions>
+
+              <el-image
+                :src="props.row.part.bestImage.url ?? props.row.part.images[0].url"
+                :zoom-rate="1.2"
+                fit="cover"
+              ></el-image>
 
               <h3>Attributes</h3>
               <el-table :data="props.row.part.specs" :border="true">
@@ -115,10 +123,6 @@ const handleSubmit = (part: SupPart) => {
         specs: part.specs,
         description: part.shortDescription
       };
-      // component.ipn = part.value.mpn;
-      // component.manufacturer = part.value.manufacturer.name;
-      // component.specs = part.value.specs;
-      // component.description = part.value.shortDescription;
       await drawerData.value.apiUrl!(component);
       ElMessage.success({ message: `${drawerData.value.title} component success!` });
       drawerData.value.updateTable!();

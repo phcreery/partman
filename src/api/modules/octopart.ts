@@ -53,7 +53,7 @@ export const graphql = async (body: object) => {
 export const getPartListByMPN = async (mpn: string): Promise<Query["supSearchMpn"]> => {
   let res = (await graphql({
     query: `query Search($mpn: String!) {
-              supSearchMpn(q: $mpn, limit: 2) {
+              supSearchMpn(q: $mpn, limit: 6) {
                 results {
                   part {
                     mpn
@@ -62,6 +62,12 @@ export const getPartListByMPN = async (mpn: string): Promise<Query["supSearchMpn
                       text
                       creditString
                       creditUrl
+                    }
+                    images {
+                      url
+                    }
+                    bestImage {
+                      url
                     }
                     manufacturer {
                       name

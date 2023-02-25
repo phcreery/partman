@@ -38,8 +38,6 @@
             v-model="drawerData.rowData!.manufacturer"
             placeholder="Please fill in the component manufacturer"
             clearable
-            :rows="4"
-            type="textarea"
             autosize
           >
           </el-input>
@@ -338,7 +336,7 @@ const openOctopartComponentDrawer = (title: string, rowData: Partial<Component.R
     rowData: { ...rowData },
     isView: title === "View",
     apiUrl: importRowData,
-    updateTable: importRowData
+    updateTable: () => {}
   };
   drawerRefNestedOctopartComponent.value!.acceptParams(params);
 };

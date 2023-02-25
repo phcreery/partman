@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/labstack/echo/v5"
-	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 )
 
@@ -100,7 +99,7 @@ func AddProxyRequests(app core.App, e *core.ServeEvent) {
 			return nil
 		},
 		Middlewares: []echo.MiddlewareFunc{
-			apis.RequireAdminOrRecordAuth(),
+			// apis.RequireAdminOrRecordAuth(),
 		},
 	})
 
@@ -123,7 +122,8 @@ func AddProxyRequests(app core.App, e *core.ServeEvent) {
 			return nil
 		},
 		Middlewares: []echo.MiddlewareFunc{
-			apis.RequireAdminOrRecordAuth(),
+			// because octopart also needs a Authorization token, we need to pass the token to the proxy
+			// apis.RequireAdminOrRecordAuth(),
 		},
 	})
 }

@@ -8,7 +8,7 @@ import { notFoundRouter } from "@/routers/modules/staticRouter";
 
 // 引入 views 文件夹下所有 vue 文件
 const modules = import.meta.glob("@/views/**/*.vue");
-console.log("modules", modules);
+
 /**
  * 初始化动态路由
  */

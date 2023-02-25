@@ -70,6 +70,14 @@ const getPathName = (data: any[], id: string, identifier = "id", parentIdentifie
   return getPathName(data, parent[identifier], identifier, parentIdentifier, path);
 };
 
+export const buildUrl = (path: string) => {
+  return client.buildUrl(path);
+};
+
+export const getFileUrl = (record: any, name: string, queryParams?: {} | undefined) => {
+  return client.getFileUrl(record, name, queryParams);
+};
+
 // ---- COMPONENTS ----
 
 export const getComponentList = async (params: Component.ReqGetComponentListParams) => {
@@ -103,8 +111,8 @@ export const postComponentCreate = async (params: Component.ReqCreateComponentPa
   return { data: record } as unknown as APIdata<Component.ResGetComponentRecord>;
 };
 
-export const patchComponentUpdate = async (params: Component.ReqUpdateComponentParams) => {
-  let record = await client.collection("components").update(params.id, params);
+export const patchComponentUpdate = async (params: Component.ReqUpdateComponentParams, id?: string) => {
+  let record = await client.collection("components").update(id ?? params.id, params);
   return { data: record } as unknown as APIdata<Component.ResGetComponentRecord>;
 };
 

@@ -11,16 +11,20 @@
         label-suffix=" :"
         :append-to-body="true"
       >
-        <!-- <el-form-item label="profile picture" prop="avatar">
-                <UploadImg
-                    v-model:imageUrl="drawerData.rowData!.avatar"
-                    :disabled="drawerData.isView"
-                    :upload-style="{ width: '120px', height: '120px' }"
-                    @check-validate="checkValidate('avatar')"
-                >
-                    <template #tip> The size cannot exceed 3M </template>
-                </UploadImg>
-            </el-form-item> -->
+        <!-- {{ drawerData.rowData!.image }} -->
+        <el-form-item label="Image" prop="avatar">
+          <UploadImg
+            v-model:imageName="drawerData.rowData!.image"
+            :imageUrl="getFileUrl(drawerData.rowData, drawerData.rowData!.image)"
+            rowParam="image"
+            :api="(d: FormData) => drawerData.apiUrl!(d, drawerData.rowData!.id)"
+            :disabled="drawerData.isView"
+            :upload-style="{ width: '120px', height: '120px' }"
+            @check-validate="checkValidate('image')"
+          >
+            <!-- <template #tip> The size cannot exceed 3M </template> -->
+          </UploadImg>
+        </el-form-item>
         <el-form-item label="MPN" prop="mpn">
           <div class="form-item-with-buttons">
             <el-space>
@@ -53,33 +57,6 @@
         </el-form-item>
         <el-form-item label="IPN" prop="ipn">
           <el-input v-model="drawerData.rowData!.ipn" placeholder="Internal Part Number" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="Stock" prop="stock">
-          <el-input-number v-model="drawerData.rowData!.stock" />
-        </el-form-item>
-        <el-form-item label="Storage Location" prop="storage_location" v-loading="componentStorageLocations === undefined">
-          <div class="form-item-with-buttons">
-            <el-space>
-              <!-- <el-select v-model="drawerData.rowData!.storage_location" placeholder="" clearable filterable>
-                <el-option v-for="item in componentStorageLocations" :key="item.id" :label="item.name" :value="item.id" />
-              </el-select> -->
-              <el-tree-select
-                v-model="drawerData.rowData!.storage_location"
-                :multiple="false"
-                :data="componentStorageLocations"
-                :props="treeSelectProps"
-                clearable
-                :render-after-expand="false"
-                :checkStrictly="true"
-                filterable
-                :filter-node-method="filterNodeMethod"
-              />
-              <el-button-group>
-                <el-button :icon="Refresh" @click="refreshStorageLocations" />
-                <el-button :icon="Plus" @click="openStorageDrawer('New')" />
-              </el-button-group>
-            </el-space>
-          </div>
         </el-form-item>
         <el-form-item label="Category" prop="category" v-loading="componentCategories === undefined">
           <div class="form-item-with-buttons">
@@ -118,6 +95,33 @@
               </el-button-group>
             </el-space>
           </div>
+        </el-form-item>
+        <el-form-item label="Storage Location" prop="storage_location" v-loading="componentStorageLocations === undefined">
+          <div class="form-item-with-buttons">
+            <el-space>
+              <!-- <el-select v-model="drawerData.rowData!.storage_location" placeholder="" clearable filterable>
+                <el-option v-for="item in componentStorageLocations" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select> -->
+              <el-tree-select
+                v-model="drawerData.rowData!.storage_location"
+                :multiple="false"
+                :data="componentStorageLocations"
+                :props="treeSelectProps"
+                clearable
+                :render-after-expand="false"
+                :checkStrictly="true"
+                filterable
+                :filter-node-method="filterNodeMethod"
+              />
+              <el-button-group>
+                <el-button :icon="Refresh" @click="refreshStorageLocations" />
+                <el-button :icon="Plus" @click="openStorageDrawer('New')" />
+              </el-button-group>
+            </el-space>
+          </div>
+        </el-form-item>
+        <el-form-item label="Stock" prop="stock">
+          <el-input-number v-model="drawerData.rowData!.stock" />
         </el-form-item>
         <!-- Specs {{ drawerData.rowData!.specs }} -->
         <el-form-item v-for="(domain, index) in drawerData.rowData!.specs" :key="index" label="Spec" :prop="index + '.value'">
@@ -165,6 +169,7 @@ import {
   // StorageCategory
 } from "@/api/interface";
 import {
+  getFileUrl,
   getFootprintsEnum,
   // getComponentStorageLocationEnum,
   getStorageLocationPathEnumTree,
@@ -174,7 +179,7 @@ import {
   postComponentCategoryCreate
 } from "@/api/modules/components";
 import { nestedObjectAssign } from "@/utils/nestedObjectAssign";
-// import UploadImg from "@/components/UploadImg/index.vue";
+import UploadImg from "@/components/Upload/Img.vue";
 import FootprintDrawer from "@/views/footprints/components/FootprintDrawer.vue";
 import StorageDrawer from "@/views/storage/components/StorageDrawer.vue";
 import ComponentCategoryDrawer from "@/views/categories/components/ComponentCategoryDrawer.vue";
@@ -198,7 +203,7 @@ interface DrawerProps {
   title: string;
   isView: boolean;
   rowData?: Component.ResGetComponentRecord;
-  apiUrl?: (params: any) => Promise<any>;
+  apiUrl?: (params: any, id?: string) => Promise<any>;
   updateTable?: () => Promise<any>;
 }
 
@@ -237,9 +242,9 @@ const handleSubmit = () => {
 };
 
 // Public verification method (the picture upload successfully triggers re -verification)
-// const checkValidate = (val: string) => {
-// 	ruleFormRef.value!.validateField(val, () => {});
-// };
+const checkValidate = (val: string) => {
+  ruleFormRef.value!.validateField(val, () => {});
+};
 
 // TreeSelect search function
 const filterNodeMethod = (value: string, data: ComponentCategory.ResGetComponentCategoryRecord) => {

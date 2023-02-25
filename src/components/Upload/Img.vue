@@ -14,12 +14,12 @@
       :drag="drag"
       :accept="fileType.join(',')"
     >
-      <template v-if="imageUrl">
+      <template v-if="imageName">
         <img :src="imageUrl" class="upload-image" />
         <div class="upload-handle" @click.stop>
           <div class="handle-icon" @click="editImg" v-if="!self_disabled">
             <el-icon><Edit /></el-icon>
-            <span>Editor</span>
+            <span>Edit</span>
           </div>
           <div class="handle-icon" @click="imgViewVisible = true">
             <el-icon><ZoomIn /></el-icon>
@@ -67,7 +67,9 @@ type FileTypes =
   | "image/x-icon";
 
 interface UploadFileProps {
-  imageUrl: string; // Image address ==> Must Pass
+  imageName: string; // Image address ==> Must Pass
+  imageUrl: string;
+  rowParam: string;
   api?: (params: any) => Promise<any>; // Uploading images of api Method，The general project upload is the same api Methods，Just introduce it directly in the component ==> Not a must pass
   drag?: boolean; // Whether to support drag and drop upload ==> Not a must pass（Default is true）
   disabled?: boolean; // Whether to disable the upload component ==> Not a must pass（Default is false）
@@ -80,7 +82,9 @@ interface UploadFileProps {
 
 // Accept parent component parameters
 const props = withDefaults(defineProps<UploadFileProps>(), {
+  imageName: "",
   imageUrl: "",
+  rowParam: "",
   drag: true,
   disabled: false,
   fileSize: 5,
@@ -109,17 +113,20 @@ const self_disabled = computed(() => {
  * @param options Uploaded files
  * */
 interface UploadEmits {
-  (e: "update:imageUrl", value: string): void;
+  (e: "update:imageName", value: string): void;
   (e: "check-validate"): void;
 }
 const emit = defineEmits<UploadEmits>();
 const handleHttpUpload = async (options: UploadRequestOptions) => {
   let formData = new FormData();
-  formData.append("file", options.file);
+  formData.append(props.rowParam ?? "file", options.file);
   try {
     const api = props.api ?? uploadImg;
     const { data } = await api(formData);
-    emit("update:imageUrl", data.fileUrl);
+    console.log("upload data", formData, data);
+    // emit("update:imageUrl", data.fileUrl);
+    // emit("update:imageName", options.file.name);
+    emit("update:imageName", data[props.rowParam ?? "file"]);
     // Call el-form Internal calibration method（Automatically calibratable）
     formItemContext?.prop && formContext?.validateField([formItemContext.prop as string]);
     emit("check-validate");
@@ -131,8 +138,12 @@ const handleHttpUpload = async (options: UploadRequestOptions) => {
 /**
  * @description Delete image
  * */
-const deleteImg = () => {
-  emit("update:imageUrl", "");
+const deleteImg = async () => {
+  const api = props.api ?? uploadImg;
+  let formData = new FormData();
+  formData.append(props.rowParam ?? "file", "");
+  await api(formData);
+  emit("update:imageName", "");
 };
 
 /**

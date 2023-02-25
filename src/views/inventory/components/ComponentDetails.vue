@@ -1,7 +1,28 @@
 <template>
   <el-row justify="space-around">
     <el-col :span="23">
-      <el-descriptions border :column="1" :title="props.title">
+      <h2>{{ props.title }}</h2>
+    </el-col>
+  </el-row>
+  <el-row justify="space-around">
+    <el-col :span="11">
+      <div class="demo-image__error">
+        <div class="block">
+          <!-- <span class="demonstration">Custom</span> -->
+          <div class="demo-image__preview">
+            <el-image :src="getFileUrl(props.rowData, props.rowData!.image)" :zoom-rate="1.2" fit="cover">
+              <template #error>
+                <div class="image-slot">
+                  <el-icon><icon-picture /></el-icon>
+                </div>
+              </template>
+            </el-image>
+          </div>
+        </div>
+      </div>
+    </el-col>
+    <el-col :span="11">
+      <el-descriptions border :column="1">
         <el-descriptions-item label="Manufacturer" label-align="right">{{ props.rowData?.manufacturer }}</el-descriptions-item>
         <el-descriptions-item label="Manufacturer Part Number" label-align="right">{{ props.rowData?.mpn }}</el-descriptions-item>
         <el-descriptions-item label="Description" label-align="right">{{ props.rowData?.description }}</el-descriptions-item>
@@ -36,8 +57,10 @@
 </template>
 
 <script setup lang="ts" name="ComponentDetails">
+import { Picture as IconPicture } from "@element-plus/icons-vue";
 import { Component } from "@/api/interface";
 import { filterEnum } from "@/utils/util";
+import { getFileUrl } from "@/api/modules/components";
 
 interface DetailsProps {
   title: string;
@@ -58,4 +81,38 @@ const enumRender = (prop: string, value: any) => {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.demo-image__error .block {
+  // box-sizing: border-box;
+  // display: inline-block;
+  width: 100%;
+
+  // padding: 30px 0;
+  text-align: center;
+  vertical-align: top;
+
+  // border-right: solid 1px var(--el-border-color);
+}
+.demo-image__error .el-image {
+  width: 100%;
+
+  // max-width: 300px;
+  height: 500px;
+
+  // max-height: 200px;
+  // padding: 0 5px;
+}
+.demo-image__error .image-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 30px;
+  color: var(--el-text-color-secondary);
+  background: var(--el-fill-color-light);
+}
+.demo-image__error .image-slot .el-icon {
+  font-size: 30px;
+}
+</style>

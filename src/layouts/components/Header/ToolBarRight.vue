@@ -1,6 +1,8 @@
 <template>
   <div class="tool-bar-ri">
     <div class="header-icon">
+      <!-- About -->
+      <About id="about"></About>
       <AssemblySize id="assemblySize" />
       <!-- <Language id="language" /> -->
       <SearchMenu id="searchMenu" />
@@ -23,6 +25,7 @@ import Fullscreen from "./components/Fullscreen.vue";
 // import ThemeSetting from "./components/ThemeSetting.vue";
 import AssemblySize from "./components/AssemblySize.vue";
 import Avatar from "./components/Avatar.vue";
+import About from "./components/About.vue";
 import SwitchDark from "@/components/SwitchDark/index.vue";
 
 import { GlobalStore } from "@/stores";

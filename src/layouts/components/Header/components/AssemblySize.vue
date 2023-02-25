@@ -1,14 +1,14 @@
 <template>
-	<el-dropdown trigger="click" @command="setAssemblySize">
-		<i :class="'iconfont icon-contentright'" class="toolBar-icon"></i>
-		<template #dropdown>
-			<el-dropdown-menu>
-				<el-dropdown-item v-for="item in assemblySizeList" :key="item" :disabled="assemblySize === item" :command="item">
-					{{ assemblySizeListCh[item] }}
-				</el-dropdown-item>
-			</el-dropdown-menu>
-		</template>
-	</el-dropdown>
+  <el-dropdown trigger="click" @command="setAssemblySize">
+    <i :class="'iconfont icon-contentright'" class="toolBar-icon"></i>
+    <template #dropdown>
+      <el-dropdown-menu>
+        <el-dropdown-item v-for="item in assemblySizeList" :key="item" :disabled="assemblySize === item" :command="item">
+          {{ assemblySizeListCh[item] }}
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </template>
+  </el-dropdown>
 </template>
 
 <script setup lang="ts">
@@ -19,15 +19,15 @@ const globalStore = GlobalStore();
 const assemblySize = computed((): string => globalStore.assemblySize);
 
 const assemblySizeListCh = reactive<{ [key: string]: any }>({
-	default: "Default",
-	large: "Large",
-	small: "Small"
+  default: "Default",
+  large: "Large",
+  small: "Small"
 });
 
 const assemblySizeList = reactive<string[]>(["default", "large", "small"]);
 
 const setAssemblySize = (item: string) => {
-	if (assemblySize.value === item) return;
-	globalStore.setAssemblySizeSize(item);
+  if (assemblySize.value === item) return;
+  globalStore.setAssemblySizeSize(item);
 };
 </script>

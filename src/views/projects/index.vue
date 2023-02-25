@@ -57,7 +57,11 @@
         </template>
         <!-- Expand -->
         <template #expand="scope">
-          {{ scope.row }}
+          <ComponentDetails
+            :title="scope.row.expand.component.mpn ?? ''"
+            :isView="true"
+            :rowData="scope.row.expand.component"
+          ></ComponentDetails>
         </template>
         <!-- Table operation -->
         <template #operation="scope">
@@ -81,6 +85,7 @@ import { useAuthButtons } from "@/hooks/useAuthButtons";
 import { JSON2CSV } from "@/hooks/useDataTransform";
 import ProTable from "@/components/ProTable/index.vue";
 import ProTree from "@/components/ProTree/index.vue";
+import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
 // import TreeFilter from "@/components/TreeFilter/index.vue";
 // import ImportExcel from "@/components/ImportExcel/index.vue";
 import ImportExcel from "../inventory/components/ImportExcel.vue";
@@ -108,10 +113,13 @@ const proTree = ref();
 
 // If the table needs to initialize the request parameter, it will be directly defined to the prop table (each request will automatically bring the parameter every time, and it will always be brought to
 const initParam = reactive<Partial<ProjectComponents.ReqGetProjectComponentListParams>>({
-  projectID: ""
+  projectID: "",
+  expand: "component" //  this doesn't work bc we are using enum atm.
 });
 
-const initParamProject = reactive({});
+const initParamProject = reactive<Partial<Project.ReqGetProjectListParams>>({
+  expand: "components"
+});
 const projectData = ref();
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
@@ -140,7 +148,7 @@ const { BUTTONS } = useAuthButtons();
 // Table configuration item
 const columns: ColumnProps[] = [
   { type: "selection", width: 40, fixed: "left" },
-  // { type: "expand", label: "" },
+  { type: "expand", label: "" },
   {
     prop: "bom_id",
     label: "ID",
@@ -151,7 +159,7 @@ const columns: ColumnProps[] = [
   {
     prop: "component",
     label: "MPN",
-    width: 120,
+    width: 220,
     align: "left",
     enum: getComponentEnum,
     fieldNames: { value: "id", label: "mpn" },
@@ -275,6 +283,14 @@ interface DrawerExpose {
 }
 const drawerRefComponent = ref<DrawerExpose>();
 const openComponentDrawer = (title: string, rowData: Partial<ProjectComponents.ResGetProjectComponentRecord> = {}) => {
+  if (!initParam.projectID) {
+    ElNotification({
+      title: "Notification",
+      message: "Please select a project first",
+      type: "error"
+    });
+    return;
+  }
   let params = {
     title,
     rowData: { ...rowData, _ofProjectID: initParam.projectID },

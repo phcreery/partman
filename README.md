@@ -12,7 +12,7 @@ Automatically organize, track, and inventory all your electronic components.
 
 I like to build small circuits and development boards. This requires me to design and buy PCBs along with electronic components. The problems arises when the minimum order quantity is way more than you need, or when you don't end up building as many boards as you were expecting, leaving you with a bunch of teeny-tiny components that are often too unique to use anywhere else. The lead me to attempting to keep track of them so I can design future boards around the components I already have. I have tried different solutions but none of them gave me the simplicity I wanted. This is an attempt to create a solution to that problem.
 
-![](doc/Screenshot%202022-08-30%20201625.png)
+![](doc/Screenshot%202023-02-24%20194626.png)
 
 ## Installation
 

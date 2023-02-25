@@ -253,8 +253,12 @@ const filterNodeMethod = (value: string, data: ComponentCategory.ResGetComponent
 
 const addSpec = () => {
   // check to see if there are any specs, if not, initialize spec parameter
-  if (drawerData.value.rowData && typeof drawerData.value.rowData?.specs !== "object") {
-    drawerData.value.rowData.specs = [];
+  if (
+    typeof drawerData.value.rowData?.specs !== "object" ||
+    drawerData.value.rowData?.specs === null ||
+    drawerData.value.rowData?.specs === undefined
+  ) {
+    drawerData.value.rowData!.specs = [];
   }
   drawerData.value.rowData?.specs.push({ attribute: { name: "", shortname: "", group: "" }, value: "", units: "" });
 };

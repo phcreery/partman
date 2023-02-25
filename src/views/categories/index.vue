@@ -77,7 +77,7 @@
 
 <script setup lang="tsx" name="categories">
 import { ref, reactive } from "vue";
-import { CirclePlus, Delete, EditPen, DCaret } from "@element-plus/icons-vue";
+import { CirclePlus, Delete, EditPen } from "@element-plus/icons-vue";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";

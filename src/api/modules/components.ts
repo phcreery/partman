@@ -600,8 +600,15 @@ export const getConfig = async (params: Config.ReqGetConfigParams) => {
 export const patchConfigUpdate = async (params: Config.ReqUpdateConfigParams) => {
   let res = (await client.collection("config").getList()) as unknown as ResList<Config.ResGetConfigRecord>;
   let configRecord = res.items.find(record => record.category === params.category);
-  if (!configRecord) return;
-  const record = await client.collection("config").update("", configRecord?.id, params);
+  // create if not found
+  if (!configRecord) {
+    res = await client.collection("config").create({ category: params.category, value: params.value });
+  }
+  if (!configRecord?.id) {
+    console.error("patchConfigUpdate configRecord?.id not found", configRecord);
+    return false;
+  }
+  const record = await client.collection("config").update(configRecord?.id, params);
   return { data: record } as unknown as APIdata<Config.ResGetConfigRecord>;
 };
 

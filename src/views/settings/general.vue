@@ -1,30 +1,34 @@
 <template>
   <div class="card content-box">
-    <el-form :model="formData" label-width="140px" style="width: 100%">
-      <el-form-item label="Octopart ID :">
-        <el-input v-model="formData.id" clearable />
-      </el-form-item>
-      <el-form-item label="Octopart Secret :">
-        <el-input v-model="formData.secret" clearable />
-      </el-form-item>
-      <!-- <el-form-item label="Test :">
+    <el-tabs v-model="activeTabName" style="width: 100%">
+      <el-tab-pane label="Octopart" name="octopart">
+        <el-form :model="formData" label-width="140px" style="width: 100%">
+          <el-form-item label="Octopart ID :">
+            <el-input v-model="formData.id" clearable />
+          </el-form-item>
+          <el-form-item label="Octopart Secret :">
+            <el-input v-model="formData.secret" clearable />
+          </el-form-item>
+          <!-- <el-form-item label="Test :">
         <el-input v-model="formData.test" clearable />
       </el-form-item> -->
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">Save</el-button>
-        <el-button @click="getFormData">Cancel</el-button>
-      </el-form-item>
-    </el-form>
+          <el-form-item>
+            <el-button type="primary" @click="onSubmit">Save</el-button>
+            <el-button @click="getFormData">Cancel</el-button>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script setup lang="tsx" name="generalSettings">
 import { ref, reactive } from "vue";
 import { ElMessage } from "element-plus";
-import { useAuthButtons } from "@/hooks/useAuthButtons";
-import { ResList, User } from "@/api/interface";
-import { CirclePlus, Delete, EditPen, Download, Upload, DCaret } from "@element-plus/icons-vue";
+// import { useAuthButtons } from "@/hooks/useAuthButtons";
 import { getConfig, patchConfigUpdate } from "@/api/modules/components";
+
+const activeTabName = ref("octopart");
 
 // do not use same name with ref
 const formData = reactive({
@@ -34,7 +38,7 @@ const formData = reactive({
 });
 
 // Page button permission
-const { BUTTONS } = useAuthButtons();
+// const { BUTTONS } = useAuthButtons();
 
 const getFormData = async () => {
   try {

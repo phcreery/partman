@@ -143,6 +143,24 @@ const columns: ColumnProps[] = [
   { type: "selection", width: 40, fixed: "left" },
   { type: "expand", label: "" },
   {
+    prop: "category",
+    label: "Category",
+    align: "left",
+    enum: getComponentCategoryEnumTree,
+    fieldNames: { value: "id", label: "_fullName" },
+    sortable: true,
+    search: {
+      el: "tree-select",
+      props: {
+        props: { value: "id", label: "name" },
+        filterable: true,
+        filterNodeMethod: (v: any, d: any) => filterNodeMethod(v, d["_fullName"]),
+        multiple: true
+      }
+    },
+    isShow: false
+  },
+  {
     prop: "name",
     label: "Display Name",
     width: 260,

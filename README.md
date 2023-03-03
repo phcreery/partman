@@ -32,7 +32,7 @@ _Coming soon_
 partman migrate up
 ```
 
-This will prompt you to create the UI user ans det the password
+This will prompt you to create the UI user and set the password
 
 3. Start partman
 

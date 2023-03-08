@@ -26,6 +26,8 @@ _Coming soon_
 
 1. Download latest release of partman for your system
 
+See [Releases](https://github.com/phcreery/partman/releases)
+
 2. Initialize database
 
 ```
@@ -91,7 +93,7 @@ sudo systemctl start partman
 | Backend Technology  | golang (PocketBase), SQLite                        | PHP (Symfony2), MySQL, PostgreSQL        | Python (DJango), PostgreSQL, MySQL, SQLite, Redis                 |
 | Integrations        | octopart, (Component Search Engine coming soon)    | None?                                    | Lots of Plugins                                                   |
 | Mobile App          | No                                                 | Yes                                      | Yes                                                               |
-| Installation        | Single portable executable/binary. Multi-platform. | PHP source, Docker, OVA. Unix-like only. | Python source in virtual environment, Docker. No windows support. |
+| Installation        | Single portable executable/binary. Multi-platform. | PHP, Docker, OVA. Unix-like only.        | Python in virtual environment, Docker. No windows support. |
 
 ## Developing
 

@@ -91,7 +91,7 @@ sudo systemctl start partman
 | ------------------- | -------------------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------- |
 | Frontend Technology | TypeScript (Vue3)                                  | JavaScript                               | JavaScript, (Bootstrap, jQuery)                                   |
 | Backend Technology  | golang (PocketBase), SQLite                        | PHP (Symfony2), MySQL, PostgreSQL        | Python (DJango), PostgreSQL, MySQL, SQLite, Redis                 |
-| Integrations        | octopart, (Component Search Engine coming soon)    | None?                                    | Lots of Plugins                                                   |
+| Integrations        | octopart                                           | None?                                    | Lots of Plugins                                                   |
 | Mobile App          | No                                                 | Yes                                      | Yes                                                               |
 | Installation        | Single portable executable/binary. Multi-platform. | PHP, Docker, OVA. Unix-like only.        | Python in virtual environment, Docker. No windows support. |
 

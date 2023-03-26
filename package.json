@@ -96,7 +96,7 @@
   "config": {},
   "standard-version": {
     "scripts": {
-      "prerelease": "vite build --mode production && git add .",
+      "prerelease": "git add .",
       "release": "standard-version -a"
     }
   }

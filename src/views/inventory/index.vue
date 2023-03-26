@@ -88,19 +88,20 @@ import {
   getComponentsListForExport,
   postComponentCreate,
   patchComponentUpdate,
+  postComponentsUpload,
   deleteComponents,
   getFootprintsEnum,
   // getComponentStorageLocationEnum,
   // getComponentCategoryEnum,
   getComponentCategoryEnumTree,
   // getStorageLocationPathEnum,
-  getStorageLocationPathEnumTree,
+  getStorageLocationPathEnumTree
   // getStorageCategoryEnum,
   // getStorageCategoryEnumTree,
   // postComponentCreateBatch_Client,
-  postComponentCategoryCreate,
-  postStorageCreate,
-  postFootprintCreate
+  // postComponentCategoryCreate,
+  // postStorageCreate,
+  // postFootprintCreate
 } from "@/api/modules/components";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
@@ -320,17 +321,15 @@ const batchAdd = async () => {
     {
       prop: "category",
       label: "Category",
-      apiCreate: postComponentCategoryCreate,
       uniqueKey: "name",
       mergeOptions: { single: true }
     },
     { prop: "stock", label: "Stock", mergeOptions: { required: true, defaultBoth: true } },
-    { prop: "footprint", label: "Footprint", apiCreate: postFootprintCreate, mergeOptions: { single: true } },
+    { prop: "footprint", label: "Footprint", mergeOptions: { single: true } },
     { prop: "ipn", label: "IPN", mergeOptions: { single: true } },
     {
       prop: "storage_location",
       label: "Location",
-      apiCreate: postStorageCreate,
       uniqueKey: "name",
       mergeOptions: { single: true }
     }
@@ -342,8 +341,7 @@ const batchAdd = async () => {
     uniqueKey: "mpn",
     enumMap: proTable.value.enumMap,
     apiGetExistingEntries: async () => await getComponentsListForExport({ filter: {} }), // existingEntries,
-    apiCreate: postComponentCreate,
-    apiUpdate: patchComponentUpdate,
+    apiUpload: postComponentsUpload,
     refresh: proTable.value.getTableList
   };
   dialogRefImport.value!.acceptParams(params);

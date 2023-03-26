@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v5"
+	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 )
 
@@ -21,7 +22,8 @@ func AddProjectBuildRoute(app core.App, e *core.ServeEvent) {
 			build_quantity_int, err := strconv.Atoi(build_quantity)
 			if err != nil {
 				fmt.Println(err)
-				return c.String(http.StatusBadRequest, "cant convert build_quantity to int")
+				// return c.String(http.StatusBadRequest, "cant convert build_quantity to int")
+				return apis.NewBadRequestError("cant convert build_quantity to int", err)
 			}
 
 			project, err := app.Dao().FindRecordById("projects", projectID)
@@ -34,7 +36,8 @@ func AddProjectBuildRoute(app core.App, e *core.ServeEvent) {
 				if err != nil {
 					fmt.Println(err)
 					// return c.String(http.StatusBadRequest, "can't find component in project_components")
-					continue
+					return apis.NewNotFoundError("can't find component in project_components", err)
+					// continue
 				}
 				component_id := project_component_record.GetString("component")
 				component_quantity_in_project := project_component_record.GetInt("quantity")
@@ -43,7 +46,8 @@ func AddProjectBuildRoute(app core.App, e *core.ServeEvent) {
 				if err != nil {
 					fmt.Println(err)
 					// return c.String(http.StatusBadRequest, "can't find project_component in components")
-					continue
+					return apis.NewNotFoundError("can't find project_component in components", err)
+					// continue
 				}
 				component_record_stock := component_record.GetInt("stock")
 				new_stock := component_record_stock - (build_quantity_int * component_quantity_in_project)
@@ -53,7 +57,8 @@ func AddProjectBuildRoute(app core.App, e *core.ServeEvent) {
 				if err != nil {
 					fmt.Println(err)
 					// return c.String(http.StatusBadRequest, "cant save component record")
-					continue
+					return apis.NewBadRequestError("cant save component record", err)
+					// continue
 				}
 			}
 

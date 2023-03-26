@@ -143,6 +143,14 @@ export const getComponent = async (id: string) => {
   return { data: res } as unknown as APIdata<Component.ResGetComponentRecord>;
 };
 
+export const postComponentsUpload = async (params: any) => {
+  let res = await client.send("/api/custom/importcomponents", {
+    method: "POST",
+    body: { data: params }
+  });
+  return { data: res } as unknown;
+};
+
 // ---- COMPONENT CATEGORIES ----
 
 export const postComponentCategoryCreate = async (params: ComponentCategory.ReqCreateComponentCategoryParams) => {

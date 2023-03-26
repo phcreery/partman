@@ -89,6 +89,8 @@ func main() {
 
 		server.AddProjectBuildRoute(app, e)
 
+		server.AddImportComponentsRoute(app, e)
+
 		bindStaticAdminUI(app, e)
 
 		return nil
@@ -98,7 +100,7 @@ func main() {
 	server.ComponentLogsHook(app)
 
 	migratecmd.MustRegister(app, app.RootCmd, &migratecmd.Options{
-		// Automigrate: true, // auto creates migration files when making collection changes
+		Automigrate: true, // auto creates migration files when making collection changes
 	})
 
 	if err := app.Start(); err != nil {

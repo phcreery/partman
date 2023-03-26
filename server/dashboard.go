@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v5"
+	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 )
 
@@ -70,7 +71,8 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent, version string) {
 				if err != nil {
 					// handle error
 					fmt.Println(err)
-					return c.String(http.StatusBadRequest, "cant query records")
+					// return c.String(http.StatusBadRequest, "cant query records")
+					return apis.NewNotFoundError("cant query records", err)
 				}
 				// add to total
 				totalComponents += stockInt
@@ -98,7 +100,8 @@ func AddDashboardRequests(app core.App, e *core.ServeEvent, version string) {
 							// handle error
 							fmt.Println(err)
 							// return c.JSON(http.StatusUnauthorized, rest.NewBadRequestError("cant query records", nil))
-							return c.String(http.StatusBadRequest, "cant query records")
+							// return c.String(http.StatusBadRequest, "cant query records")
+							return apis.NewNotFoundError("cant query records", err)
 						}
 						// add to total
 						total += stockInt

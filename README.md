@@ -34,11 +34,7 @@ See [Releases](https://github.com/phcreery/partman/releases)
 partman migrate up
 ```
 
-<<<<<<< HEAD
 This will prompt you to create the UI name, username, and password
-=======
-This will prompt you to create the UI user and set the password
->>>>>>> 73083c6ca611884fa941dc8c46f73ea983883b42
 
 3. Start partman
 
@@ -92,22 +88,23 @@ sudo systemctl start partman
 ## Why partman
 
 <<<<<<< HEAD
-|                         | partman                                            | PartKeepr                                | InvenTree                                                         |
+| | partman | PartKeepr | InvenTree |
 | ----------------------- | -------------------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------- |
-| **Frontend Technology** | TypeScript (Vue3)                                  | JavaScript                               | JavaScript, (Bootstrap, jQuery)                                   |
-| **Backend Technology**  | Go (PocketBase), SQLite                            | PHP (Symfony2), MySQL, PostgreSQL        | Python (DJango), PostgreSQL, MySQL, SQLite, Redis                 |
-| **Integrations**        | octopart                                           | None?                                    | Lots of Plugins                                                   |
-| **Mobile App**          | No                                                 | Yes                                      | Yes                                                               |
-| **Installation**        | Single portable executable/binary. Multi-platform. | PHP source, Docker, OVA. Unix-like only. | Python source in virtual environment, Docker. No windows support. |
+| **Frontend Technology** | TypeScript (Vue3) | JavaScript | JavaScript, (Bootstrap, jQuery) |
+| **Backend Technology** | Go (PocketBase), SQLite | PHP (Symfony2), MySQL, PostgreSQL | Python (DJango), PostgreSQL, MySQL, SQLite, Redis |
+| **Integrations** | octopart | None? | Lots of Plugins |
+| **Mobile App** | No | Yes | Yes |
+| **Installation** | Single portable executable/binary. Multi-platform. | PHP source, Docker, OVA. Unix-like only. | Python source in virtual environment, Docker. No windows support. |
 =======
-|                     | partman                                            | PartKeepr                                | InvenTree                                                         |
+| | partman | PartKeepr | InvenTree |
 | ------------------- | -------------------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------- |
-| Frontend Technology | TypeScript (Vue3)                                  | JavaScript                               | JavaScript, (Bootstrap, jQuery)                                   |
-| Backend Technology  | golang (PocketBase), SQLite                        | PHP (Symfony2), MySQL, PostgreSQL        | Python (DJango), PostgreSQL, MySQL, SQLite, Redis                 |
-| Integrations        | octopart                                           | None?                                    | Lots of Plugins                                                   |
-| Mobile App          | No                                                 | Yes                                      | Yes                                                               |
-| Installation        | Single portable executable/binary. Multi-platform. | PHP, Docker, OVA. Unix-like only.        | Python in virtual environment, Docker. No windows support. |
->>>>>>> 73083c6ca611884fa941dc8c46f73ea983883b42
+| Frontend Technology | TypeScript (Vue3) | JavaScript | JavaScript, (Bootstrap, jQuery) |
+| Backend Technology | golang (PocketBase), SQLite | PHP (Symfony2), MySQL, PostgreSQL | Python (DJango), PostgreSQL, MySQL, SQLite, Redis |
+| Integrations | octopart | None? | Lots of Plugins |
+| Mobile App | No | Yes | Yes |
+| Installation | Single portable executable/binary. Multi-platform. | PHP, Docker, OVA. Unix-like only. | Python in virtual environment, Docker. No windows support. |
+
+> > > > > > > 73083c6ca611884fa941dc8c46f73ea983883b42
 
 ## Developing
 

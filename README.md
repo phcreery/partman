@@ -85,27 +85,6 @@ partman migrate up
 sudo systemctl start partman
 ```
 
-## Why partman
-
-<<<<<<< HEAD
-| | partman | PartKeepr | InvenTree |
-| ----------------------- | -------------------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------- |
-| **Frontend Technology** | TypeScript (Vue3) | JavaScript | JavaScript, (Bootstrap, jQuery) |
-| **Backend Technology** | Go (PocketBase), SQLite | PHP (Symfony2), MySQL, PostgreSQL | Python (DJango), PostgreSQL, MySQL, SQLite, Redis |
-| **Integrations** | octopart | None? | Lots of Plugins |
-| **Mobile App** | No | Yes | Yes |
-| **Installation** | Single portable executable/binary. Multi-platform. | PHP source, Docker, OVA. Unix-like only. | Python source in virtual environment, Docker. No windows support. |
-=======
-| | partman | PartKeepr | InvenTree |
-| ------------------- | -------------------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------- |
-| Frontend Technology | TypeScript (Vue3) | JavaScript | JavaScript, (Bootstrap, jQuery) |
-| Backend Technology | golang (PocketBase), SQLite | PHP (Symfony2), MySQL, PostgreSQL | Python (DJango), PostgreSQL, MySQL, SQLite, Redis |
-| Integrations | octopart | None? | Lots of Plugins |
-| Mobile App | No | Yes | Yes |
-| Installation | Single portable executable/binary. Multi-platform. | PHP, Docker, OVA. Unix-like only. | Python in virtual environment, Docker. No windows support. |
-
-> > > > > > > 73083c6ca611884fa941dc8c46f73ea983883b42
-
 ## Developing
 
 🚀 Technologies used:

@@ -482,6 +482,14 @@ export const deleteProjectComponents = async (params: ProjectComponents.ReqRemov
   return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
 };
 
+export const postProjectComponentsUpload = async (params: any) => {
+  let res = await client.send("/api/custom/importprojectcomponents", {
+    method: "POST",
+    body: { data: params }
+  });
+  return { data: res } as unknown;
+};
+
 // ---- PROJECT BUILDS ----
 
 export const getProjectBuildsList = async (params: ProjectBuilds.ReqGetProjectBuildListParams) => {

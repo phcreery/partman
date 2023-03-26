@@ -91,6 +91,8 @@ func main() {
 
 		server.AddImportComponentsRoute(app, e)
 
+		server.AddImportProjectComponentsRoute(app, e)
+
 		bindStaticAdminUI(app, e)
 
 		return nil

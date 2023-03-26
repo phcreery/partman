@@ -95,10 +95,11 @@ import { CirclePlus, Delete, EditPen, Upload, Download } from "@element-plus/ico
 import { ResList, Project, ProjectComponents } from "@/api/interface";
 import {
   getComponentEnum,
-  postComponentCreate,
+  // postComponentCreate,
   getProjectsEnum,
   getProjectComponentsList,
   getProjectComponentsListForExport,
+  postProjectComponentsUpload,
   postProjectComponentAdd,
   patchProjectComponentUpdate,
   deleteProjectComponents,
@@ -235,15 +236,6 @@ interface DialogExpose {
   acceptParams: (params: any) => void;
 }
 const dialogRefImport = ref<DialogExpose>();
-// const batchAdd = () => {
-//   let params = {
-//     title: "component",
-//     // tempApi: exportUserInfo,
-//     // importApi: BatchAddUser,
-//     getTableList: proTable.value.getTableList
-//   };
-//   dialogRef.value!.acceptParams(params);
-// };
 const batchAdd = async () => {
   if (!initParam.projectID) {
     ElNotification({
@@ -255,23 +247,24 @@ const batchAdd = async () => {
   }
   let templateColumns = [
     { prop: "bom_id", label: "BOM ID", mergeOptions: { single: true, required: true } },
-    { prop: "component", label: "MPN", apiCreate: postComponentCreate, uniqueKey: "mpn", mergeOptions: { single: true } },
+    { prop: "component", label: "MPN", uniqueKey: "mpn", mergeOptions: { single: true } },
     { prop: "quantity", label: "Quantity", mergeOptions: { required: true, defaultBoth: true } },
     { prop: "refdesignators", label: "Ref. Designators", mergeOptions: { defaultBoth: true } },
     { prop: "comment", label: "Comment", mergeOptions: { defaultBoth: true } }
   ];
-  console.log(templateColumns);
-  console.log(proTable.value.enumMap);
   let params = {
     title: "Project Components",
     columns: templateColumns,
     uniqueKey: "bom_id",
     enumMap: proTable.value.enumMap,
     apiGetExistingEntries: async () => await getProjectComponentsListForExport({ filter: {}, projectID: initParam.projectID! }), // existingEntries,
-    apiCreate: (params: ProjectComponents.ReqAddProjectComponentParams) =>
-      postProjectComponentAdd({ ...params, _ofProjectID: initParam.projectID! }),
-    apiUpdate: (params: ProjectComponents.ReqUpdateProjectComponentParams) =>
-      patchProjectComponentUpdate({ ...params, _ofProjectID: initParam.projectID! }),
+    apiUpload: async (data: any) => {
+      // add project_id to each row
+      data.forEach((row: any) => {
+        row.project_id = initParam.projectID;
+      });
+      await postProjectComponentsUpload(data);
+    },
     refresh: proTable.value.getTableList
   };
   dialogRefImport.value!.acceptParams(params);

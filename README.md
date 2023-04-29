@@ -10,7 +10,7 @@ Personal electronic part database manager
 
 > **Warning**
 > This is very early in development. I am dogfooding it with my own data though.
-> I do not have a lot of time to put a whole lot of effort in this project. With that said, PRs are welcome.
+> I do not have a lot of time to put a whole lot of effort in this project. With that said, contributions are welcome.
 
 Automatically organize, track, and inventory all your electronic components.
 

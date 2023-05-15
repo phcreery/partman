@@ -30,6 +30,12 @@ I like to build small circuits and development boards. This requires me to desig
 
 ![](doc/Screenshot%202023-02-25%20232759.png)
 
+### Goals
+
+- [ ] Database Backup and Restore
+- [ ] Update from UI
+- [ ] "Fast" Entry (Barcode/QR code reader)
+
 ## Installation
 
 ### Docker

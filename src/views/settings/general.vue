@@ -42,8 +42,8 @@
 import { ref, reactive, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 // import { useAuthButtons } from "@/hooks/useAuthButtons";
-import { getConfig, patchConfigUpdate, getBackupsList, getHealth } from "@/api/modules/components";
-import { APIdata, Backup, Health } from "@/api/interface/index";
+import { getConfig, patchConfigUpdate, getHealth } from "@/api/modules/components";
+import { APIdata, Health } from "@/api/interface/index";
 
 const activeTabName = ref("server");
 // const backups = ref<APIdata<Backup.ResGetBackupRecord[]>>({});

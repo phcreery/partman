@@ -702,11 +702,11 @@ export const postBackupCreate = async (params: Backup.ReqCreateBackupParams) => 
 };
 
 export const deleteBackup = async (params: Backup.ReqDeleteBackupParams) => {
-  await client.backups.delete(params.id);
+  await client.backups.delete(params.key);
 };
 
 export const postBackupRestore = async (params: Backup.ReqRestoreBackupParams) => {
-  await client.backups.restore(params.id);
+  await client.backups.restore(params.key);
 };
 
 // ---- HEALTH ----

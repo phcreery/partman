@@ -8,7 +8,6 @@
     <el-col :span="11">
       <div class="demo-image__error">
         <div class="block">
-          <!-- <span class="demonstration">Custom</span> -->
           <div class="demo-image__preview">
             <el-image
               :src="(props.rowData && props.rowData.image) ? getFileUrl(props.rowData, props.rowData!.image) : undefined"
@@ -40,26 +39,23 @@
         <el-descriptions-item v-if="props.enumMap" label="Footprint" label-align="right">
           {{ enumRender("footprint", props.rowData?.footprint) }}
         </el-descriptions-item>
-        <!-- <el-descriptions-item v-if="props.enumMap" label="Supplier" label-align="right">{{
-          enumRender("footprint", props.rowData?.supplier)
-        }}</el-descriptions-item> -->
+        <el-descriptions-item v-if="props.enumMap" label="Supplier" label-align="right">{{
+          enumRender("supplier", props.rowData?.supplier)
+        }}</el-descriptions-item>
         <el-descriptions-item v-if="props.enumMap" label="Supplier Part Number" label-align="right">{{
           props.rowData?.spn
         }}</el-descriptions-item>
         <el-descriptions-item label="Internal Part Number" label-align="right">{{ props.rowData?.ipn }}</el-descriptions-item>
-        <!-- <el-descriptions-item
+        <el-descriptions-item
           v-for="item in props.rowData?.specs"
           :key="item.attribute"
           :label="item.attribute.name"
           label-align="right"
         >
           {{ item.value }} {{ item.units }}
-        </el-descriptions-item> -->
-
+        </el-descriptions-item>
         <el-descriptions-item label="Comments" label-align="right">{{ props.rowData?.comment }}</el-descriptions-item>
       </el-descriptions>
-
-      <!-- <div>component: {{ props.rowData }}</div> -->
     </el-col>
   </el-row>
 </template>
@@ -91,24 +87,13 @@ const enumRender = (prop: string, value: any) => {
 
 <style lang="scss" scoped>
 .demo-image__error .block {
-  // box-sizing: border-box;
-  // display: inline-block;
   width: 100%;
-
-  // padding: 30px 0;
   text-align: center;
   vertical-align: top;
-
-  // border-right: solid 1px var(--el-border-color);
 }
 .demo-image__error .el-image {
   width: 100%;
-
-  // max-width: 300px;
   height: 500px;
-
-  // max-height: 200px;
-  // padding: 0 5px;
 }
 .demo-image__error .image-slot {
   display: flex;

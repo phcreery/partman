@@ -42,7 +42,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="dashboard">
+<script setup lang="ts" name="Home">
 import { ref, onMounted, computed, watch } from "vue";
 import * as echarts from "echarts";
 import echartsThemeWonderland from "./echarts-theme-wonderland.json";

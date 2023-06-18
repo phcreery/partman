@@ -8,14 +8,12 @@
         <slot name="treeHeader" :row="selectedItem"></slot>
       </div>
       <div class="header-button-ri" v-if="toolButton">
-        <el-button-group>
-          <el-button :icon="Refresh" @click="refresh"> </el-button>
-        </el-button-group>
+        <el-button :icon="Refresh" @click="refresh"> </el-button>
       </div>
     </div>
     <el-input v-model="filterText" placeholder="Filter keyword" />
     <!-- Tree -->
-    <el-scrollbar :style="{ height: title ? `calc(100% - 115px)` : `calc(100% - 110px)` }">
+    <el-scrollbar>
       <el-tree
         ref="treeRef"
         :data="treeData"

@@ -1,5 +1,7 @@
 .filter {
   box-sizing: border-box;
+  display: flex;
+  flex-flow: column;
   width: 280px;
   height: 100%;
   padding: 18px;
@@ -18,7 +20,7 @@
     .header-button-ri {
       float: right;
     }
-    .el-button {
+    :deep(.el-button) {
       margin-bottom: 15px;
     }
   }
@@ -26,9 +28,9 @@
     margin: 0 0 15px;
   }
   .el-scrollbar {
+    flex: 1 1 auto;
+    overflow: auto;
     :deep(.el-tree) {
-      height: 80%;
-      overflow: auto;
       .el-tree-node__content {
         height: 30px;
       }

@@ -221,9 +221,9 @@ const columns: ColumnProps[] = [
   {
     prop: "ipn",
     label: "IPN",
-    width: 60,
+    width: 100,
     search: { el: "input" },
-    isShow: false
+    isShow: true
   },
   // {
   //   prop: "storage_location",
@@ -277,7 +277,7 @@ const columns: ColumnProps[] = [
     width: 200,
     sortable: true,
     search: { el: "date-picker", span: 1, props: { type: "datetimerange" } },
-    isShow: false
+    isShow: true
   },
   {
     prop: "operation",

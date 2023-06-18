@@ -51,7 +51,13 @@
               </el-descriptions>
 
               <el-image
-                :src="props.row.part.bestImage.url ?? props.row.part.images[0].url"
+                :src="
+                  props.row.part.bestImage && props.row.part.bestImage.url
+                    ? props.row.part.bestImage.url
+                    : props.row.part.images && props.row.part.images.length > 0 && props.row.part.images[0].url
+                    ? props.row.part.images[0].url
+                    : undefined
+                "
                 :zoom-rate="1.2"
                 fit="cover"
               ></el-image>

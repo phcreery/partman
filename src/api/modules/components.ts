@@ -17,7 +17,9 @@ import {
   ProjectBuilds,
   ComponentLog,
   User,
-  Config
+  Config,
+  Backup,
+  Health
 } from "@/api/interface/index";
 
 const emptyData = (params?: ReqList): ResList<null> => {
@@ -685,3 +687,32 @@ export const getDashboardInfo = async () => {
 //   });
 //   return { data: data } as unknown as APIdata<{ name: string; quantity: number }[]>;
 // }
+
+// ---- BACKUPS ----
+
+export const getBackupsList = async () => {
+  const backups = await client.backups.getFullList();
+  return { data: backups } as unknown as APIdata<Backup.ResGetBackupRecord[]>;
+};
+
+export const postBackupCreate = async (params: Backup.ReqCreateBackupParams) => {
+  const name = params.name ? params.name : "";
+  const backup = await client.backups.create(name);
+  return { data: backup } as unknown as APIdata<Backup.ResGetBackupRecord>;
+};
+
+export const deleteBackup = async (params: Backup.ReqDeleteBackupParams) => {
+  await client.backups.delete(params.id);
+};
+
+export const postBackupRestore = async (params: Backup.ReqRestoreBackupParams) => {
+  await client.backups.restore(params.id);
+};
+
+// ---- HEALTH ----
+
+export const getHealth = async () => {
+  let res = (await client.send("/api/health", {})) as unknown as APIdata<Health.ResHealth>;
+  console.log("getHealth", res);
+  return { data: res } as unknown as APIdata<Health.ResHealth>;
+};

@@ -327,3 +327,26 @@ export namespace Config {
   // Responses
   export interface ResGetConfigRecord extends ResGetRecord, ConfigColumns {}
 }
+
+export namespace Backup {
+  export type BackupColumns = {
+    key: string;
+    modified: string;
+    size: string;
+  };
+  // Requests
+  export type ReqGetBackupListParams = { fields?: string[] };
+  export type ReqCreateBackupParams = { name?: string };
+  export type ReqDeleteBackupParams = { key: string };
+  export type ReqRestoreBackupParams = { key: string };
+  export type ReqDownloadBackupParams = { key: string };
+  // Responses
+  export type ResGetBackupRecord = BackupColumns;
+}
+
+export namespace Health {
+  export type ResHealth = {
+    code: number;
+    message: string;
+  };
+}

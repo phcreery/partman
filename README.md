@@ -32,9 +32,10 @@ I like to build small circuits and development boards. This requires me to desig
 
 ### Goals
 
-- [ ] Database Backup and Restore
 - [ ] Update from UI
 - [ ] "Fast" Entry (Barcode/QR code reader)
+- [ ] fix: auto logout after leave/timeout
+- [ ] new: merge categories
 
 ## Installation
 

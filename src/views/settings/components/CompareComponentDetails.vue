@@ -1,26 +1,20 @@
 <template>
   <div>
-    <el-row>
-      <el-col :span="24"> What changed: {{ prettyPrint(compareObj(componentA, componentB)) }} </el-col>
+    <el-row justify="center">
+      <el-col :span="23">
+        <h2>What changed:</h2>
+        <code>{{ prettyPrint(compareObj(componentA, componentB)) }}</code>
+      </el-col>
     </el-row>
     <el-row justify="space-around">
-      <el-col :span="12">
-        Before:
-        <!-- <div style="white-space: pre-wrap">{{ prettyPrint(props.componentA) }}</div> -->
-        <ComponentDetails
-          :title="props.componentA?.mpn ?? '[empty]'"
-          :isView="true"
-          :rowData="props.componentA"
-        ></ComponentDetails>
+      <el-col :span="11">
+        <h3>Before:</h3>
+        <ComponentDetails :title="props.componentA?.mpn ?? '[empty]'" :isView="true" :rowData="props.componentA" />
       </el-col>
-      <el-col :span="12">
-        After:
-        <!-- <div style="white-space: pre-wrap">{{ prettyPrint(props.componentB) }}</div> -->
-        <ComponentDetails
-          :title="props.componentB?.mpn ?? '[empty]'"
-          :isView="true"
-          :rowData="props.componentB"
-        ></ComponentDetails>
+      <el-divider direction="vertical" style="height: auto" />
+      <el-col :span="11">
+        <h3>After:</h3>
+        <ComponentDetails :title="props.componentB?.mpn ?? '[empty]'" :isView="true" :rowData="props.componentB" />
       </el-col>
     </el-row>
   </div>

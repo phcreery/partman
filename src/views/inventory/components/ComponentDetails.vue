@@ -10,7 +10,11 @@
         <div class="block">
           <!-- <span class="demonstration">Custom</span> -->
           <div class="demo-image__preview">
-            <el-image :src="getFileUrl(props.rowData, props.rowData!.image)" :zoom-rate="1.2" fit="cover">
+            <el-image
+              :src="(props.rowData && props.rowData.image) ? getFileUrl(props.rowData, props.rowData!.image) : undefined"
+              :zoom-rate="1.2"
+              fit="cover"
+            >
               <template #error>
                 <div class="image-slot">
                   <el-icon><icon-picture /></el-icon>
@@ -36,21 +40,21 @@
         <el-descriptions-item v-if="props.enumMap" label="Footprint" label-align="right">
           {{ enumRender("footprint", props.rowData?.footprint) }}
         </el-descriptions-item>
-        <el-descriptions-item v-if="props.enumMap" label="Supplier" label-align="right">{{
+        <!-- <el-descriptions-item v-if="props.enumMap" label="Supplier" label-align="right">{{
           enumRender("footprint", props.rowData?.supplier)
-        }}</el-descriptions-item>
+        }}</el-descriptions-item> -->
         <el-descriptions-item v-if="props.enumMap" label="Supplier Part Number" label-align="right">{{
           props.rowData?.spn
         }}</el-descriptions-item>
         <el-descriptions-item label="Internal Part Number" label-align="right">{{ props.rowData?.ipn }}</el-descriptions-item>
-        <el-descriptions-item
+        <!-- <el-descriptions-item
           v-for="item in props.rowData?.specs"
           :key="item.attribute"
           :label="item.attribute.name"
           label-align="right"
         >
           {{ item.value }} {{ item.units }}
-        </el-descriptions-item>
+        </el-descriptions-item> -->
 
         <el-descriptions-item label="Comments" label-align="right">{{ props.rowData?.comment }}</el-descriptions-item>
       </el-descriptions>

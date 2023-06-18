@@ -4,13 +4,13 @@
 
 # partman
 
-Personal electronic part database manager
+Personal electronic part database manager in a single binary
 
 ## About
 
 > **Warning**
 > This is very early in development. I am dogfooding it with my own data though.
-> I do not have a lot of time to put a whole lot of effort in this project. With that said, contributions are welcome.
+> Contributions are welcome.
 
 Automatically organize, track, and inventory all your electronic components.
 

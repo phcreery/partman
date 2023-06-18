@@ -26,9 +26,9 @@ jobs:
 
       # This step usually is not needed because the /ui/dist is pregenerated locally
       # but its here to ensure that each release embeds the latest admin ui artifacts.
-      # If the artificats differs, a "dirty error" is thrown - https://goreleaser.com/errors/dirty/
+      # If the artifacts differs, a "dirty error" is thrown - https://goreleaser.com/errors/dirty/
       - name: Build Admin dashboard UI
-        run: npm ci && npm run build:client:dev
+        run: npm run build:client:pro
 
       # The prebuilt golangci-lint doesn't support go 1.18+ yet
       # https://github.com/golangci/golangci-lint/issues/2649
@@ -43,6 +43,6 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: release --rm-dist --snapshot
+          args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -12,8 +12,7 @@
     "build:client:pro": "vue-tsc --noEmit && vite build --mode production",
     "build:server": "cross-env CGO_ENABLED=0 go build",
     "build:server:all": "goreleaser release --clean --snapshot",
-    "release:build": "vue-tsc --noEmit && vite build --mode production && goreleaser release --clean --snapshot",
-    "release:publish": "standard-version",
+    "build:all": "vue-tsc --noEmit && vite build --mode production && goreleaser release --clean",
     "commit": "git pull && git add -A && git-cz && git push --follow-tags"
   },
   "dependencies": {
@@ -70,7 +69,6 @@
     "prettier": "^2.6.2",
     "rollup-plugin-visualizer": "^5.5.4",
     "sass": "^1.49.7",
-    "standard-version": "^9.5.0",
     "stylelint": "^14.8.5",
     "stylelint-config-html": "^1.0.0",
     "stylelint-config-prettier": "^9.0.3",
@@ -93,11 +91,5 @@
     "vue-tsc": "^1.0.9",
     "zip-build": "^1.7.0"
   },
-  "config": {},
-  "standard-version": {
-    "scripts": {
-      "prerelease": "git add .",
-      "release": "standard-version -a"
-    }
-  }
+  "config": {}
 }

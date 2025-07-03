@@ -1,36 +1,36 @@
 /*
-  Demand：Add a background watermark to the entire page。
+  需求：给整个页面添加背景水印。
 
-  Ideas：
-    1、Use canvas Feature Generation base64 Formatted image files，设置其Fonts大小，Color, etc.。
-    2、Set it as the background image，thus achieving the page or component watermark effect
+  思路：
+    1、使用 canvas 特性生成 base64 格式的图片文件，设置其字体大小，颜色等。
+    2、将其设置为背景图片，从而实现页面或组件水印效果
   
-  Use：Set watermark copy，Color，Font size is fine
-  <div v-waterMarker="{text:'All rights reserved',textColor:'rgba(180, 180, 180, 0.4)'}"></div>
+  使用：设置水印文案，颜色，字体大小即可
+  <div v-waterMarker="{text:'版权所有',textColor:'rgba(180, 180, 180, 0.4)'}"></div>
 */
 
-import type { Directive, DirectiveBinding } from "vue";
+import type { Directive, DirectiveBinding } from 'vue'
 const addWaterMarker: Directive = (str: string, parentNode: any, font: any, textColor: string) => {
-	// Watermark text，Parent element，字体，Text color
-	let can: HTMLCanvasElement = document.createElement("canvas");
-	parentNode.appendChild(can);
-	can.width = 205;
-	can.height = 140;
-	can.style.display = "none";
-	let cans = can.getContext("2d") as CanvasRenderingContext2D;
-	cans.rotate((-20 * Math.PI) / 180);
-	cans.font = font || "16px Microsoft JhengHei";
-	cans.fillStyle = textColor || "rgba(180, 180, 180, 0.3)";
-	cans.textAlign = "left";
-	cans.textBaseline = "Middle" as CanvasTextBaseline;
-	cans.fillText(str, can.width / 10, can.height / 2);
-	parentNode.style.backgroundImage = "url(" + can.toDataURL("image/png") + ")";
-};
+  // 水印文字，父元素，字体，文字颜色
+  const can: HTMLCanvasElement = document.createElement('canvas')
+  parentNode.appendChild(can)
+  can.width = 205
+  can.height = 140
+  can.style.display = 'none'
+  const cans = can.getContext('2d') as CanvasRenderingContext2D
+  cans.rotate((-20 * Math.PI) / 180)
+  cans.font = font || '16px Microsoft JhengHei'
+  cans.fillStyle = textColor || 'rgba(180, 180, 180, 0.3)'
+  cans.textAlign = 'left'
+  cans.textBaseline = 'Middle' as CanvasTextBaseline
+  cans.fillText(str, can.width / 10, can.height / 2)
+  parentNode.style.backgroundImage = 'url(' + can.toDataURL('image/png') + ')'
+}
 
 const waterMarker = {
-	mounted(el: DirectiveBinding, binding: DirectiveBinding) {
-		addWaterMarker(binding.value.text, el, binding.value.font, binding.value.textColor);
-	}
-};
+  mounted(el: DirectiveBinding, binding: DirectiveBinding) {
+    addWaterMarker(binding.value.text, el, binding.value.font, binding.value.textColor)
+  },
+}
 
-export default waterMarker;
+export default waterMarker

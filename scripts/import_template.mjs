@@ -16,7 +16,9 @@ const srcMyFilesToKeep = [
   "hooks/useMerger.ts", // Object.assign(state.totalParam, { filter: nowSearchParam }, isPageable ? pageParam.value : {});
   "utils/util.ts", // implement findItemNested for tree-select enum
   "utils/filterNodeMethod.ts", // filterNodeMethod for filterable tree-select inputs
-  "layouts/components/Header/ToolBarRight.vue" // my custom toolbar with removed items
+  "layouts/components/Header/ToolBarRight.vue", // my custom toolbar with removed items
+  "layouts/components/Header/components/About.vue", // my custom about
+  "hooks/useSelection.ts" // addition of getRowKeys() for ProTable
 ];
 
 // these folders are the ones to keep untouched in the src directory

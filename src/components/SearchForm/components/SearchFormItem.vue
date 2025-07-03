@@ -1,67 +1,97 @@
 <template>
   <component
-    v-if="column.search?.el"
-    :is="`el-${column.search.el}`"
-    v-bind="column.search.props"
-    v-model="searchParam[column.search.key ?? handleProp(column.prop!)]"
+    :is="column.search?.render ?? `el-${column.search?.el}`"
+    v-bind="{ ...handleSearchProps, ...placeholder, searchParam: _searchParam, clearable }"
+    v-model.trim="_searchParam[column.search?.key ?? handleProp(column.prop!)]"
     :data="column.search?.el === 'tree-select' ? columnEnum : []"
-    :options="column.search?.el === 'cascader' ? columnEnum : []"
-    :placeholder="placeholder(column)"
-    :clearable="clearable(column)"
-    range-separator="To"
-    start-placeholder="Start time"
-    end-placeholder="Ending time"
+    :options="['cascader', 'select-v2'].includes(column.search?.el!) ? columnEnum : []"
   >
-    <template #default="{ data }" v-if="column.search.el === 'cascader'">
-      <span>{{ data[fieldNames().label] }}</span>
+    <template v-if="column.search?.el === 'cascader'" #default="{ data }">
+      <span>{{ data[fieldNames.label] }}</span>
     </template>
-    <template v-if="column.search.el === 'select'">
+    <template v-if="column.search?.el === 'select'">
       <component
         :is="`el-option`"
         v-for="(col, index) in columnEnum"
         :key="index"
-        :label="col[fieldNames().label]"
-        :value="col[fieldNames().value]"
-      ></component>
+        :label="col[fieldNames.label]"
+        :value="col[fieldNames.value]"
+      />
     </template>
     <slot v-else></slot>
   </component>
 </template>
 
-<script setup lang="ts" name="searchFormItem">
+<script setup lang="ts">
+defineOptions({ name: "SearchFormItem" });
 import { computed, inject, ref } from "vue";
-import { handleProp } from "@/utils/util";
-import { ColumnProps } from "@/components/ProTable/interface";
+import { handleProp } from "@/utils";
+import type { ColumnProps } from "@/components/ProTable/interface";
 
 interface SearchFormItem {
-  column: ColumnProps; // 具体每一个搜索项of配置
-  searchParam: { [key: string]: any }; // Search Parameters
+  column: ColumnProps;
+  searchParam: { [key: string]: any };
 }
 const props = defineProps<SearchFormItem>();
 
-// Acceptance enumMap
-const enumMap = inject("enumMap", ref(new Map()));
+// Re receive SearchParam
+const _searchParam = computed(() => props.searchParam);
 
-const columnEnum = computed(() => {
-  if (!enumMap.value.get(props.column.prop)) return [];
-  return enumMap.value.get(props.column.prop);
-});
-
-// Judgment fieldNames Settings label && value 的 key Value
-const fieldNames = () => {
+// 判断 fieldNames 设置 label && value && children 的 key 值
+const fieldNames = computed(() => {
   return {
     label: props.column.fieldNames?.label ?? "label",
-    value: props.column.fieldNames?.value ?? "value"
+    value: props.column.fieldNames?.value ?? "value",
+    children: props.column.fieldNames?.children ?? "children"
   };
-};
+});
 
-// Judgment placeholder
-const placeholder = (column: ColumnProps) => {
-  return column.search?.props?.placeholder ?? (column.search?.el === "input" ? "Please enter" : "Please select");
-};
+// 接收 enumMap (el 为 select-v2 需单独处理 enumData)
+const enumMap = inject("enumMap", ref(new Map()));
+const columnEnum = computed(() => {
+  let enumData = enumMap.value.get(props.column.prop);
+  if (!enumData) return [];
+  if (props.column.search?.el === "select-v2" && props.column.fieldNames) {
+    enumData = enumData.map((item: { [key: string]: any }) => {
+      return { ...item, label: item[fieldNames.value.label], value: item[fieldNames.value.value] };
+    });
+  }
+  return enumData;
+});
 
-// Availability of clear button (When the search term has a default value，Clear button is not displayed)
-const clearable = (column: ColumnProps) => {
-  return column.search?.props?.clearable ?? (column.search?.defaultValue == null || column.search?.defaultValue == undefined);
-};
+// 处理透传的 searchProps (el 为 tree-select、cascader 的时候需要给下默认 label && value && children)
+const handleSearchProps = computed(() => {
+  const label = fieldNames.value.label;
+  const value = fieldNames.value.value;
+  const children = fieldNames.value.children;
+  const searchEl = props.column.search?.el;
+  let searchProps = props.column.search?.props ?? {};
+  if (searchEl === "tree-select") {
+    searchProps = { ...searchProps, props: { ...searchProps, label, children }, nodeKey: value };
+  }
+  if (searchEl === "cascader") {
+    searchProps = { ...searchProps, props: { ...searchProps, label, value, children } };
+  }
+  return searchProps;
+});
+
+// 处理默认 placeholder
+const placeholder = computed(() => {
+  const search = props.column.search;
+  if (["datetimerange", "daterange", "monthrange"].includes(search?.props?.type) || search?.props?.isRange) {
+    return {
+      rangeSeparator: search?.props?.rangeSeparator ?? "to",
+      startPlaceholder: search?.props?.startPlaceholder ?? "Start Time",
+      endPlaceholder: search?.props?.endPlaceholder ?? "End Time"
+    };
+  }
+  const placeholder = search?.props?.placeholder ?? (search?.el?.includes("input") ? "Please enter" : "Please select");
+  return { placeholder };
+});
+
+// 是否有清除按钮 (当搜索项有默认值时，清除按钮不显示)
+const clearable = computed(() => {
+  const search = props.column.search;
+  return search?.props?.clearable ?? (search?.defaultValue == null || search?.defaultValue == undefined);
+});
 </script>

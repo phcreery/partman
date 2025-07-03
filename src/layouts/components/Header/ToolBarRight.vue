@@ -28,10 +28,10 @@ import Avatar from "./components/Avatar.vue";
 import About from "./components/About.vue";
 import SwitchDark from "@/components/SwitchDark/index.vue";
 
-import { GlobalStore } from "@/stores";
+import { useUserStore } from "@/stores/modules/user";
 
-const globalStore = GlobalStore();
-const userInfo = computed(() => globalStore.userInfo);
+const userStore = useUserStore();
+const userInfo = computed(() => userStore.userInfo);
 </script>
 
 <style scoped lang="scss">

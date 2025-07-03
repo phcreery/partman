@@ -1,33 +1,44 @@
 <template>
-  <el-config-provider :locale="i18nLocale" :button="config" :size="assemblySize">
-    <router-view></router-view>
-  </el-config-provider>
+  <ElConfigProvider :locale="locale" :size="assemblySize" :button="buttonConfig">
+    <RouterView />
+  </ElConfigProvider>
 </template>
 
 <script setup lang="ts">
-import { reactive, computed } from "vue";
-import { GlobalStore } from "@/stores";
-import { useTheme } from "@/hooks/useTheme";
-import { getBrowserLang } from "@/utils/util";
-import zhCn from "element-plus/es/locale/lang/zh-cn";
-import en from "element-plus/es/locale/lang/en";
+import { onMounted, reactive, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { getBrowserLang } from '@/utils'
+import { useTheme } from '@/hooks/useTheme'
+import { ElConfigProvider } from 'element-plus'
+import type { LanguageType } from './stores/interface'
+import { useGlobalStore } from '@/stores/modules/global'
+import en from 'element-plus/es/locale/lang/en'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
-// Use theme
-useTheme();
+const globalStore = useGlobalStore()
 
-const globalStore = GlobalStore();
-// ConfigurationelementIs there a space between the button text
-const config = reactive({
-  autoInsertSpace: false
-});
+// init theme
+const { initTheme } = useTheme()
+initTheme()
 
-// element Language Configuration
-const i18nLocale = computed(() => {
-  if (globalStore.language && globalStore.language == "zh") return zhCn;
-  if (globalStore.language == "en") return en;
-  return getBrowserLang() == "zh" ? zhCn : en;
-});
+// init language
+const i18n = useI18n()
+onMounted(() => {
+  const language = globalStore.language ?? (getBrowserLang() as LanguageType)
+  i18n.locale.value = language || ''
+  globalStore.language = language
+})
 
-// Configure global component size (small/default(medium)/large)
-const assemblySize = computed((): string => globalStore.assemblySize);
+// element language
+const locale = computed(() => {
+  if (globalStore.language == 'zh') return zhCn
+  if (globalStore.language == 'en') return en
+  return getBrowserLang() == 'zh' ? zhCn : en
+})
+
+// element assemblySize
+const assemblySize = computed(() => globalStore.assemblySize)
+
+// element button config
+const buttonConfig = reactive({ autoInsertSpace: false })
 </script>

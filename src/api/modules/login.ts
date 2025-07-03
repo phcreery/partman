@@ -1,15 +1,13 @@
 import { Login, APIdata } from "@/api/interface/index";
-// import Menu from "@/assets/json/menu.json";
-// import qs from "qs";
-
-// import http from "@/api";
+import type { MenuOptions } from "@/api/interface/menu";
 import client from "@/api";
+import { HOME_URL } from "@/config";
 
 /**
  * @name Login module
  */
 // * User login interface
-export const loginApi = async (params: Login.ReqLoginParams): Promise<APIdata<Login.ResLogin>> => {
+export const loginApi = async (params: Login.ReqLoginForm): Promise<Partial<ResultData<Login.ResLogin>>> => {
   // return http.post<Login.ResLogin>(PORT1 + `/login`, params); // normal post json ask  ==>  application/json
   // return http.post<Login.ResLogin>(PORT1 + `/login`, {}, { params }); // post Request to carry Query parameter  ==>  ?username=admin&password=123456
   // return http.post<Login.ResLogin>(PORT1 + `/login`, qs.stringify(params)); // post Request to carry form parameters  ==>  application/x-www-form-urlencoded
@@ -20,99 +18,50 @@ export const loginApi = async (params: Login.ReqLoginParams): Promise<APIdata<Lo
   return { data: authData };
 };
 
-export const loginApiAsAdmin = async (params: Login.ReqLoginParams): Promise<Login.ResLogin> => {
+export const loginApiAsAdmin = async (params: Login.ReqLoginForm): Promise<Login.ResLogin> => {
   const adminAuthData = (await client.admins.authWithPassword(params.username, params.password)) as any;
   adminAuthData.user = adminAuthData.admin;
   // console.log("adminAuthData", adminAuthData);
   return adminAuthData;
 };
 
-// * 用户退出登录
+// * User logout
 export const logoutApi = () => {
-  return null; // http.post<Login.ResLogout>(PORT1 + `/logout`);
+  // return http.post<Login.ResLogout>(PORT1 + `/logout`);
+  return null;
 };
 
 // * Get the button permissions
 export const getAuthButtonListApi = (): Login.ResAuthButtons => {
-  // return http.get<Login.ResAuthButtons>(PORT1 + `/auth/buttons`);
-  // return {
-  //   code: 200,
-  //   msg: "success",
-  //   data: {
-  //     inventory: ["add", "batchAdd", "export", "batchDelete", "status", "view", "edit", "reset", "delete"],
-  //     footprints: ["add", "delete", "view", "edit"],
-  //     storage: ["add", "delete", "view", "edit"],
-  //     categories: ["add", "delete", "view", "edit"],
-  //     projects: ["add", "delete", "view", "edit", "batchAdd", "export"]
-  //   }
-  // };
-  return {
+  const res: ResultData<Login.ResAuthButtons> = {
     code: 200,
     msg: "success",
     data: {
-      inventory: {
-        add: true,
-        batchAdd: true,
-        export: true,
-        batchDelete: true,
-        status: true,
-        view: true,
-        edit: true,
-        reset: true,
-        delete: true,
-        merge: true
-      },
-      footprints: {
-        add: true,
-        delete: true,
-        view: true,
-        edit: true
-      },
-      storage: {
-        add: true,
-        delete: true,
-        view: true,
-        edit: true
-      },
-      categories: {
-        add: true,
-        delete: true,
-        view: true,
-        edit: true
-      },
-      projects: {
-        add: true,
-        delete: true,
-        view: true,
-        edit: true,
-        batchAdd: true,
-        export: true
-      },
-      builds: {
-        add: true,
-        view: true,
-        export: true
-      },
-      logs: {
-        export: true
-      }
-      // users: {
-      //   add: true,
-      //   delete: true,
-      //   view: true,
-      //   edit: true,
-      //   batchAdd: true,
-      //   export: true
-      // }
+      inventory: ["add", "batchAdd", "export", "batchDelete", "status", "view", "edit", "reset", "delete", "merge"],
+      footprints: ["add", "delete", "view", "edit"],
+      storage: ["add", "delete", "view", "edit"],
+      categories: ["add", "delete", "view", "edit"],
+      projects: ["add", "delete", "view", "edit", "batchAdd", "export"],
+      builds: ["add", "view", "export"],
+      logs: ["export"]
+      // users: [
+      //   "add",
+      //   "delete",
+      //   "view",
+      //   "edit",
+      //   "batchAdd",
+      //   "export"
+      // ]
     }
   };
+  return res.data;
 };
 
 // * Get the menu list
-export const getAuthMenuListApi = () => {
+export const getAuthMenuListApi = (): MenuOptions[] => {
   // return http.get<Menu.MenuOptions[]>(PORT1 + `/menu/list`);
   // If you want to make the menu into local data, comment on the line of code on the previous line, and introduce the local Menu.json data
-  let res = {
+  const res: ResultData<MenuOptions[]> = {
     code: 200,
     msg: "success",
     data: [
@@ -222,7 +171,7 @@ export const getAuthMenuListApi = () => {
       {
         path: "/settings",
         name: "settings",
-        component: "/settings/general",
+        component: "/settings/admin",
         meta: {
           icon: "setting",
           title: "Settings",
@@ -234,12 +183,12 @@ export const getAuthMenuListApi = () => {
         },
         children: [
           {
-            path: "/settings",
-            name: "settings",
-            component: "/settings/general",
+            path: "/settings/admin",
+            name: "admin",
+            component: "/settings/admin",
             meta: {
               icon: "setting",
-              title: "Settings",
+              title: "Admin",
               isLink: "",
               isHide: false,
               isFull: false,
@@ -299,5 +248,5 @@ export const getAuthMenuListApi = () => {
       // }
     ]
   };
-  return res; //.data;
+  return res.data;
 };

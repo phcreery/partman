@@ -1,44 +1,51 @@
 <template>
-	<div class="tool-bar-ri">
-		<div class="header-icon">
-			<AssemblySize id="assemblySize" />
-			<Language id="language" />
-			<SearchMenu id="searchMenu" />
-			<ThemeSetting id="themeSetting" />
-			<Message id="message" />
-			<Fullscreen id="fullscreen" />
-		</div>
-		<span class="username">Geeker</span>
-		<Avatar />
-	</div>
+  <div class="tool-bar-ri">
+    <div class="header-icon">
+      <assembly-size id="assemblySize" />
+      <language id="language" />
+      <search-menu id="searchMenu" />
+      <theme-setting id="themeSetting" />
+      <message id="message" />
+      <fullscreen id="fullscreen" />
+    </div>
+    <span class="username">{{ username }}</span>
+    <avatar />
+  </div>
 </template>
 
 <script setup lang="ts">
-import SearchMenu from "./components/SearchMenu.vue";
-import Fullscreen from "./components/Fullscreen.vue";
-import Message from "./components/Message.vue";
-import Language from "./components/Language.vue";
-import ThemeSetting from "./components/ThemeSetting.vue";
-import AssemblySize from "./components/AssemblySize.vue";
-import Avatar from "./components/Avatar.vue";
+import { computed } from 'vue'
+import { useUserStore } from '@/stores/modules/user'
+import AssemblySize from './components/AssemblySize.vue'
+import Language from './components/Language.vue'
+import SearchMenu from './components/SearchMenu.vue'
+import ThemeSetting from './components/ThemeSetting.vue'
+import Message from './components/Message.vue'
+import Fullscreen from './components/Fullscreen.vue'
+import Avatar from './components/Avatar.vue'
+
+const userStore = useUserStore()
+const username = computed(() => userStore.userInfo.name)
 </script>
 
 <style scoped lang="scss">
 .tool-bar-ri {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin: 0 30px;
-	.header-icon {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		width: 230px;
-		margin-right: 22px;
-	}
-	.username {
-		margin: 0 20px 0 0;
-		font-size: 15px;
-	}
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 25px;
+  .header-icon {
+    display: flex;
+    align-items: center;
+    & > * {
+      margin-left: 21px;
+      color: var(--el-header-text-color);
+    }
+  }
+  .username {
+    margin: 0 20px;
+    font-size: 15px;
+    color: var(--el-header-text-color);
+  }
 }
 </style>

@@ -1,50 +1,41 @@
 import { defineStore } from "pinia";
-import { AuthState } from "@/stores/interface";
-import { getFlatArr } from "@/utils/util";
+import type { AuthState } from "@/stores/interface";
 import { getAuthButtonListApi, getAuthMenuListApi } from "@/api/modules/login";
-import { getKeepAliveRouterName, getShowMenuList, getAllBreadcrumbList } from "@/utils/util";
-import piniaPersistConfig from "@/config/piniaPersist";
+import { getFlatMenuList, getShowMenuList, getAllBreadcrumbList } from "@/utils";
 
-// AuthStore
-export const AuthStore = defineStore({
-  id: "AuthState",
+export const useAuthStore = defineStore("geeker-auth", {
   state: (): AuthState => ({
-    // The current page of router name，Used for button permission filtering
-    routeName: "",
     // Button permission list
     authButtonList: {},
-    // menuList As a dynamic route，Won't do persistent storage
-    authMenuList: []
+    // Menu permission list
+    authMenuList: [],
+    // The router name of the current page, used for button permission filtering
+    routeName: ""
   }),
   getters: {
     // Button permission list
     authButtonListGet: state => state.authButtonList,
-    // List of menus returned by the backend ==> There is no processing here
+    // Menu permission list ==> The menu here is not processed
     authMenuListGet: state => state.authMenuList,
-    // List of menus returned by the backend ==> Left menu bar rendering，Need to remove isHide == true
+    // Menu permission list ==> For rendering the left sidebar, need to remove items with isHide == true
     showMenuListGet: state => getShowMenuList(state.authMenuList),
-    // One-dimensional array routing after flattening，Mainly used to add dynamic routes
-    flatMenuListGet: state => getFlatArr(state.authMenuList),
-    // All breadcrumb navigation list
-    breadcrumbListGet: state => getAllBreadcrumbList(state.authMenuList),
-    // Menus that need to be cached name，Use as page keepAlive
-    keepAliveRouterGet: state => getKeepAliveRouterName(state.authMenuList)
+    // Menu permission list ==> Flattened one-dimensional array menu, mainly used to add dynamic routes
+    flatMenuListGet: state => getFlatMenuList(state.authMenuList),
+    // All breadcrumb navigation lists after recursive processing
+    breadcrumbListGet: state => getAllBreadcrumbList(state.authMenuList)
   },
   actions: {
-    // getAuthButtonList
+    // Get AuthButtonList
     async getAuthButtonList() {
-      const { data } = await getAuthButtonListApi();
-      this.authButtonList = data;
+      this.authButtonList = await getAuthButtonListApi();
     },
-    // getAuthMenuList
+    // Get AuthMenuList
     async getAuthMenuList() {
-      const { data } = await getAuthMenuListApi();
-      this.authMenuList = data;
+      this.authMenuList = await getAuthMenuListApi();
     },
-    // setRouteName
+    // Set RouteName
     async setRouteName(name: string) {
       this.routeName = name;
     }
-  },
-  persist: piniaPersistConfig("AuthState", ["routeName", "authButtonList"])
+  }
 });

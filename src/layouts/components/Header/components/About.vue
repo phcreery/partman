@@ -17,7 +17,7 @@
 import { ref } from "vue";
 import { InfoFilled } from "@element-plus/icons-vue";
 
-const version = APP_VERSION;
+// const version = APP_VERSION;
 
 // Open the theme settings
 const drawerVisible = ref(false);

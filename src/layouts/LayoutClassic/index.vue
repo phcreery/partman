@@ -1,93 +1,65 @@
-<!-- Classic Layout -->
+<!-- 经典布局 -->
 <template>
-  <el-container class="layout">
-    <el-header>
-      <div class="header-lf">
+  <ElContainer class="layout">
+    <ElHeader>
+      <div class="header-lf mask-image">
         <div class="logo flx-center">
-          <img src="@/assets/images/logo.png" alt="logo" />
-          <span>partman</span>
+          <img class="logo-img" src="@/assets/images/logo.png" alt="logo" />
+          <span class="logo-text">{{ title }}</span>
         </div>
         <ToolBarLeft />
       </div>
-      <ToolBarRight />
-    </el-header>
-    <el-container class="classic-content">
-      <el-aside>
-        <div class="menu" :style="{ width: isCollapse ? '65px' : '210px' }">
-          <el-scrollbar>
-            <el-menu
-              :default-active="activeMenu"
+      <div class="header-ri">
+        <ToolBarRight />
+      </div>
+    </ElHeader>
+    <ElContainer class="classic-content">
+      <ElAside>
+        <div class="aside-box" :style="{ width: isCollapse ? '65px' : '210px' }">
+          <ElScrollbar>
+            <ElMenu
               :router="false"
+              :default-active="activeMenu"
               :collapse="isCollapse"
+              :unique-opened="accordion"
               :collapse-transition="false"
-              :unique-opened="true"
-              background-color="#ffffff"
-              text-color="#303133"
             >
-              <SubMenu :menuList="menuList" />
-            </el-menu>
-          </el-scrollbar>
+              <SubMenu :menu-list="menuList" />
+            </ElMenu>
+          </ElScrollbar>
         </div>
-      </el-aside>
-      <el-container class="classic-main">
-        <Main />
-      </el-container>
-    </el-container>
-  </el-container>
+      </ElAside>
+      <ElContainer class="classic-main">
+        <MainContainer />
+      </ElContainer>
+    </ElContainer>
+  </ElContainer>
 </template>
 
-<script setup lang="ts" name="layoutClassic">
+<script setup lang="ts">
+defineOptions({
+  name: "LayoutClassic"
+});
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import { GlobalStore } from "@/stores";
-import { AuthStore } from "@/stores/modules/auth";
-import Main from "@/layouts/components/Main/index.vue";
+import { useAuthStore } from "@/stores/modules/auth";
+import { useGlobalStore } from "@/stores/modules/global";
+import MainContainer from "@/layouts/components/Main/index.vue";
 import SubMenu from "@/layouts/components/Menu/SubMenu.vue";
 import ToolBarLeft from "@/layouts/components/Header/ToolBarLeft.vue";
 import ToolBarRight from "@/layouts/components/Header/ToolBarRight.vue";
 
+const title = import.meta.env.VITE_GLOB_APP_TITLE;
+
 const route = useRoute();
-const authStore = AuthStore();
-const globalStore = GlobalStore();
-const activeMenu = computed(() => (route.meta.activeMenu ? route.meta.activeMenu : route.path));
+const authStore = useAuthStore();
+const globalStore = useGlobalStore();
+const accordion = computed(() => globalStore.accordion);
+const isCollapse = computed(() => globalStore.isCollapse);
 const menuList = computed(() => authStore.showMenuListGet);
-const isCollapse = computed(() => globalStore.themeConfig.isCollapse);
+const activeMenu = computed(() => (route.meta.activeMenu ? route.meta.activeMenu : route.path) as string);
 </script>
 
 <style scoped lang="scss">
-@import "./index.scss";
-</style>
-
-<style lang="scss">
-.classic {
-  .classic-content {
-    height: calc(100% - 55px); // Minus head height
-    .classic-main {
-      display: flex;
-      flex-direction: column;
-    }
-  }
-  .el-menu,
-  .el-menu--popup {
-    .el-menu-item {
-      &.is-active {
-        background: var(--el-color-primary-light-9);
-        &::before {
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          left: 0;
-          width: 4px;
-          content: "";
-          background: var(--el-color-primary);
-        }
-      }
-    }
-  }
-
-  // guide
-  #driver-highlighted-element-stage {
-    background-color: #606266 !important;
-  }
-}
+@use "./index";
 </style>

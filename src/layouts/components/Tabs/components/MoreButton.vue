@@ -1,85 +1,81 @@
 <template>
-	<el-dropdown trigger="click">
-		<el-button size="small" type="primary">
-			<span>{{ $t("tabs.more") }}</span>
-			<el-icon class="el-icon--right"><arrow-down /></el-icon>
-		</el-button>
-		<template #dropdown>
-			<el-dropdown-menu>
-				<el-dropdown-item @click="refresh">
-					<el-icon><Refresh /></el-icon>{{ $t("tabs.refresh") }}
-				</el-dropdown-item>
-				<el-dropdown-item @click="maximize">
-					<el-icon><FullScreen /></el-icon>{{ $t("tabs.maximize") }}
-				</el-dropdown-item>
-				<el-dropdown-item divided @click="closeCurrentTab">
-					<el-icon><Remove /></el-icon>{{ $t("tabs.closeCurrent") }}
-				</el-dropdown-item>
-				<el-dropdown-item @click="closeOtherTab">
-					<el-icon><CircleClose /></el-icon>{{ $t("tabs.closeOther") }}
-				</el-dropdown-item>
-				<el-dropdown-item @click="closeAllTab">
-					<el-icon><FolderDelete /></el-icon>{{ $t("tabs.closeAll") }}
-				</el-dropdown-item>
-			</el-dropdown-menu>
-		</template>
-	</el-dropdown>
+  <el-dropdown trigger="click" :teleported="false">
+    <div class="more-button">
+      <i :class="'iconfont icon-xiala'"></i>
+    </div>
+    <template #dropdown>
+      <el-dropdown-menu>
+        <el-dropdown-item @click="refresh">
+          <el-icon><Refresh /></el-icon>{{ $t('tabs.refresh') }}
+        </el-dropdown-item>
+        <el-dropdown-item @click="maximize">
+          <el-icon><FullScreen /></el-icon>{{ $t('tabs.maximize') }}
+        </el-dropdown-item>
+        <el-dropdown-item divided @click="closeCurrentTab">
+          <el-icon><Remove /></el-icon>{{ $t('tabs.closeCurrent') }}
+        </el-dropdown-item>
+        <el-dropdown-item @click="tabStore.closeTabsOnSide(route.fullPath, 'left')">
+          <el-icon><DArrowLeft /></el-icon>{{ $t('tabs.closeLeft') }}
+        </el-dropdown-item>
+        <el-dropdown-item @click="tabStore.closeTabsOnSide(route.fullPath, 'right')">
+          <el-icon><DArrowRight /></el-icon>{{ $t('tabs.closeRight') }}
+        </el-dropdown-item>
+        <el-dropdown-item divided @click="tabStore.closeMultipleTab(route.fullPath)">
+          <el-icon><CircleClose /></el-icon>{{ $t('tabs.closeOther') }}
+        </el-dropdown-item>
+        <el-dropdown-item @click="closeAllTab">
+          <el-icon><FolderDelete /></el-icon>{{ $t('tabs.closeAll') }}
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </template>
+  </el-dropdown>
 </template>
 
 <script setup lang="ts">
-import { computed, inject, nextTick } from "vue";
-import { HOME_URL } from "@/config/config";
-import { GlobalStore } from "@/stores";
-import { TabsStore } from "@/stores/modules/tabs";
-import { KeepAliveStore } from "@/stores/modules/keepAlive";
-import { useRoute, useRouter } from "vue-router";
+import { inject, nextTick } from 'vue'
+import { HOME_URL } from '@/config'
+import { useTabsStore } from '@/stores/modules/tabs'
+import { useGlobalStore } from '@/stores/modules/global'
+import { useKeepAliveStore } from '@/stores/modules/keepAlive'
+import { useRoute, useRouter } from 'vue-router'
 
-const route = useRoute();
-const router = useRouter();
-const tabStore = TabsStore();
-const globalStore = GlobalStore();
-const keepAliveStore = KeepAliveStore();
-const themeConfig = computed(() => globalStore.themeConfig);
+const route = useRoute()
+const router = useRouter()
+const tabStore = useTabsStore()
+const globalStore = useGlobalStore()
+const keepAliveStore = useKeepAliveStore()
 
-const refreshCurrentPage: Function = inject("refresh") as Function;
 // refresh current page
+const refreshCurrentPage = inject('refresh') as (_val: boolean) => void
 const refresh = () => {
-	setTimeout(() => {
-		keepAliveStore.removeKeepLiveName(route.name as string);
-		refreshCurrentPage(false);
-		nextTick(() => {
-			keepAliveStore.addKeepLiveName(route.name as string);
-			refreshCurrentPage(true);
-		});
-	}, 0);
-};
+  setTimeout(() => {
+    route.meta.isKeepAlive && keepAliveStore.removeKeepAliveName(route.fullPath as string)
+    refreshCurrentPage(false)
+    nextTick(() => {
+      route.meta.isKeepAlive && keepAliveStore.addKeepAliveName(route.fullPath as string)
+      refreshCurrentPage(true)
+    })
+  }, 0)
+}
 
 // maximize current page
 const maximize = () => {
-	globalStore.setThemeConfig({ ...themeConfig.value, maximize: true });
-};
+  globalStore.maximize = true
+}
 
 // Close Current
 const closeCurrentTab = () => {
-	if (route.meta.isAffix) return;
-	tabStore.removeTabs(route.fullPath);
-	keepAliveStore.removeKeepLiveName(route.name as string);
-};
-
-// Close Other
-const closeOtherTab = () => {
-	tabStore.closeMultipleTab(route.fullPath);
-	keepAliveStore.clearMultipleKeepAlive([route.name] as string[]);
-};
+  if (route.meta.isAffix) return
+  tabStore.removeTabs(route.fullPath)
+}
 
 // Close All
 const closeAllTab = () => {
-	tabStore.closeMultipleTab();
-	keepAliveStore.clearMultipleKeepAlive();
-	router.push(HOME_URL);
-};
+  tabStore.closeMultipleTab()
+  router.push(HOME_URL)
+}
 </script>
 
 <style scoped lang="scss">
-@import "../index.scss";
+@use '../index';
 </style>

@@ -16,16 +16,15 @@ export interface ResList<T> {
   totalItems: number;
 }
 
-// * Request response parameter (excluding data)
-// export interface Result {
-// 	code: string;
-// 	msg: string;
-// }
+export interface Result {
+  code: number;
+  msg: string;
+}
 
-// * Request response parameter (containing data)
-// export interface ResultData<T = any> extends Result {
-// 	data?: T;
-// }
+// 请求响应参数（包含data）
+export interface ResultData<T = any> extends Result {
+  data: T;
+}
 
 // * 文件上传模块
 export namespace Upload {
@@ -34,23 +33,22 @@ export namespace Upload {
   }
 }
 
-export type APIdata<T> = { data: T };
-
 // * Login module
 export namespace Login {
-  export interface ReqLoginParams {
-    username: string;
-    password: string;
-  }
   export interface ResLogin {
     token: string;
     record: object;
   }
+  export interface ReqLoginForm {
+    username: string;
+    password: string;
+  }
   export interface ResAuthButtons {
-    [propName: string]: any;
+    [key: string]: string[];
   }
 }
 
+// Pocketbase
 export interface ReqRecord {
   id: string;
 }

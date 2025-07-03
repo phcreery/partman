@@ -25,24 +25,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { Login } from "@/api/interface";
 // import { ElNotification } from "element-plus";
 import { loginApi } from "@/api/modules/login";
-import { GlobalStore } from "@/stores";
-import { TabsStore } from "@/stores/modules/tabs";
+import { useUserStore } from "@/stores/modules/user";
+import { useTabsStore } from "@/stores/modules/tabs";
 // import { getTimeState } from "@/utils/util";
-// import { HOME_URL } from "@/config/config";
+import { HOME_URL } from "@/config";
 import { initDynamicRouter } from "@/routers/modules/dynamicRouter";
 import { CircleClose, UserFilled } from "@element-plus/icons-vue";
 import type { ElForm } from "element-plus";
 // import md5 from "js-md5";
 
 const router = useRouter();
-const tabsStore = TabsStore();
-const globalStore = GlobalStore();
-// 定义 formRef（校验规则）
+const tabsStore = useTabsStore();
+const userStore = useUserStore();
+
 type FormInstance = InstanceType<typeof ElForm>;
 const loginFormRef = ref<FormInstance>();
 const loginRules = reactive({
@@ -57,19 +57,22 @@ const login = (formEl: FormInstance | undefined) => {
     if (!valid) return;
     loading.value = true;
     try {
-      // 1.执行登录接口
       // const { data } = await loginApi({ ...loginForm, password: md5(loginForm.password) });
       const { data } = await loginApi(loginForm);
-      // globalStore.setToken(data.access_token);
-      globalStore.setToken(data.token);
-      globalStore.setUserInfo(data.record);
+      userStore.setToken(data.token);
+      // userStore.setUserInfo({ name: data.record.name });
+
       // 2.添加动态路由
       await initDynamicRouter();
+
       // 3.清除上个账号的 tab 信息
       tabsStore.closeMultipleTab();
+      tabsStore.setTabs([]);
+      // keepAliveStore.setKeepAliveName([])
+
       // 4.跳转到首页
-      // router.push(HOME_URL);
-      router.push({ name: "home" });
+      router.push(HOME_URL);
+      // router.push({ name: "home" });
       // ElNotification({
       //   title: getTimeState(),
       //   message: "欢迎登录 Geeker-Admin",
@@ -96,8 +99,11 @@ onMounted(() => {
     }
   };
 });
+onBeforeUnmount(() => {
+  document.onkeydown = null;
+});
 </script>
 
 <style scoped lang="scss">
-@import "../index.scss";
+@use "../index" as *;
 </style>

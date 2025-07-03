@@ -1,28 +1,29 @@
 export default {
   home: {
-    welcome: "Welcome"
+    welcome: '欢迎使用',
   },
   tabs: {
-    more: "More",
-    refresh: "Refresh",
-    maximize: "Maximize",
-    closeCurrent: "Close current",
-    closeOther: "Close other",
-    closeAll: "Close all"
+    refresh: '刷新',
+    maximize: '最大化',
+    closeCurrent: '关闭当前',
+    closeLeft: '关闭左侧',
+    closeRight: '关闭右侧',
+    closeOther: '关闭其它',
+    closeAll: '关闭所有',
   },
   header: {
-    componentSize: "Component size",
-    language: "Internationalization",
-    theme: "Global Topics",
-    layoutConfig: "Layout settings",
-    primary: "primary",
-    darkMode: "Dark Mode",
-    greyMode: "Grey Mode",
-    weakMode: "Color vision mode",
-    fullScreen: "Full Screen",
-    exitFullScreen: "Exit full screen",
-    personalData: "User Information",
-    changePassword: "Change password",
-    logout: "Logout"
-  }
-};
+    componentSize: '组件大小',
+    language: '国际化',
+    theme: '全局主题',
+    layoutConfig: '布局设置',
+    primary: 'primary',
+    darkMode: '暗黑模式',
+    greyMode: '灰色模式',
+    weakMode: '色弱模式',
+    fullScreen: '全屏',
+    exitFullScreen: '退出全屏',
+    personalData: '个人信息',
+    changePassword: '修改密码',
+    logout: '退出登录',
+  },
+}

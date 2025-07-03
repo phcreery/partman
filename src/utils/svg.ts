@@ -1,5 +1,5 @@
 /**
- * @description Customization loading svg
+ * @description Loading Svg
  */
 export const loadingSvg = `
 <path class="path" d="
@@ -10,4 +10,4 @@ export const loadingSvg = `
 	A 15 15, 0, 1, 1, 27.99 7.5
 	L 15 15
 " style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>
-`;
+`

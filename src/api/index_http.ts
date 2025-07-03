@@ -5,7 +5,9 @@ import { AxiosCanceler } from "./helper/axiosCancel";
 import { ResultEnum } from "@/enums/httpEnum";
 import { checkStatus } from "./helper/checkStatus";
 import { ElMessage } from "element-plus";
-import { GlobalStore } from "@/stores";
+import { useGlobalStore } from "@/stores/modules/global";
+import { useUserStore } from "@/stores/modules/user";
+
 import router from "@/routers";
 
 /**
@@ -44,12 +46,13 @@ class RequestHttp {
      */
     this.service.interceptors.request.use(
       (config: AxiosRequestConfig) => {
-        const globalStore = GlobalStore();
+        // const globalStore = useGlobalStore();
+        const userStore = useUserStore();
         // * Add the current request to pending
         axiosCanceler.addPending(config);
         // * If the current request does not need to display loading, in the API service: { headers: { noLoading: true } } Let's control not to display loading, see loginapi
         config.headers!.noLoading || showFullScreenLoading();
-        const token: string = globalStore.token;
+        const token: string = userStore.token;
         return { ...config, headers: { ...config.headers, "x-access-token": token } };
       },
       (error: AxiosError) => {
@@ -64,14 +67,14 @@ class RequestHttp {
     this.service.interceptors.response.use(
       (response: AxiosResponse) => {
         const { data, config } = response;
-        const globalStore = GlobalStore();
+        const userStore = useUserStore();
         // * After the request is over, remove the request and turn off the request loading
         axiosCanceler.removePending(config);
         tryHideFullScreenLoading();
         // * Login failure (code == 599）
         if (data.code == ResultEnum.OVERDUE) {
           ElMessage.error(data.msg);
-          globalStore.setToken("");
+          userStore.setToken("");
           router.replace({
             path: "/login"
           });

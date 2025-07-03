@@ -1,5 +1,4 @@
-import * as json2csv from "json2csv";
-// import { read, writeFileXLSX } from "xlsx";
+import * as json2csv from "@json2csv/plainjs";
 import XLSX from "xlsx";
 
 /**
@@ -10,7 +9,7 @@ import XLSX from "xlsx";
  * */
 export const JSON2CSV = async (json: any = {}, fields: Array<string>) => {
   try {
-    const opts: json2csv.Options<unknown> = { fields };
+    const opts = { fields };
     const parser = new json2csv.Parser(opts);
     const csv = parser.parse(json);
     // console.log(csv);

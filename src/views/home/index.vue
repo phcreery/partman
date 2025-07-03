@@ -48,13 +48,13 @@ import * as echarts from "echarts";
 import echartsThemeWonderland from "./echarts-theme-wonderland.json";
 import echartsThemeWonderlandDark from "./echarts-theme-wonderland-dark.json";
 import { getDashboardInfo } from "@/api/modules/components";
-import { GlobalStore } from "@/stores";
+import { useGlobalStore } from "@/stores/modules/global";
 import { useEcharts } from "@/hooks/useEcharts";
 
 const componentStorageTreeRef = ref(null);
 
-const globalStore = GlobalStore();
-const themeConfig = computed(() => globalStore.themeConfig);
+const globalStore = useGlobalStore();
+const themeConfig = computed(() => globalStore);
 
 const qty = ref({
   total_components: 0,
@@ -142,7 +142,7 @@ watch(
 </script>
 
 <style scoped lang="scss">
-@import "./index.scss";
+@use "./index.scss" as *;
 .el-row {
   margin-bottom: 12px;
 }

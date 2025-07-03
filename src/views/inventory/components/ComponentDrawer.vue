@@ -205,7 +205,7 @@ const rules = reactive({
 // const cascaderProps = { value: "id", label: "name", emitPath: false };
 const treeSelectProps = { value: "id", label: "name", disabled: "disabled", emitPath: false };
 
-interface DrawerProps {
+export interface DrawerProps {
   title: string;
   isView: boolean;
   rowData?: Component.ResGetComponentRecord;
@@ -270,19 +270,19 @@ const addSpec = () => {
 };
 
 const deleteSpecIndex = (index: number) => {
-  drawerData.value.rowData?.specs.splice(index, 1);
+  drawerData.value.rowData?.specs?.splice(index, 1);
 };
 
 const componentCategories = ref<ComponentCategory.ResGetComponentCategoryRecord[]>();
 const componentStorageLocations = ref<Storage.ResGetStorageRecordTree[]>();
 const componentFootprints = ref<Footprint.ResGetFootprintRecord[]>();
 
-const refreshCategories = () => getComponentCategoryEnumTree().then(res => (componentCategories.value = res.data));
+const refreshCategories = () => getComponentCategoryEnumTree().then(res => (componentCategories.value = res));
 const refreshStorageLocations = () =>
   getStorageLocationPathEnumTree().then(res => {
-    componentStorageLocations.value = res.data;
+    componentStorageLocations.value = res;
   });
-const refreshFootprints = () => getFootprintsEnum().then(res => (componentFootprints.value = res.data));
+const refreshFootprints = () => getFootprintsEnum().then(res => (componentFootprints.value = res));
 
 // When opening the drawer, fetch the necessary field values
 watch(drawerVisible, openValue => {
@@ -294,7 +294,7 @@ watch(drawerVisible, openValue => {
 });
 
 // Open the drawer (new, view, edit)
-interface DrawerExpose {
+export interface DrawerExpose {
   acceptParams: (params: any) => void;
 }
 // New Footprint Drawer

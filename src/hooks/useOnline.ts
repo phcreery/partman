@@ -1,27 +1,27 @@
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from 'vue'
 
 /**
- * @description Network availability
+ * @description 网络是否可用
  * */
 export const useOnline = () => {
-	const online = ref(true);
-	const showStatus = (val: any) => {
-		online.value = typeof val == "boolean" ? val : val.target.online;
-	};
-	// After the page loads，Set the correct network state
-	navigator.onLine ? showStatus(true) : showStatus(false);
+  const online = ref(true)
+  const showStatus = (val: any) => {
+    online.value = typeof val == 'boolean' ? val : val.target.online
+  }
+  // 在页面加载后，设置正确的网络状态
+  navigator.onLine ? showStatus(true) : showStatus(false)
 
-	onMounted(() => {
-		// Start listening for changes in network status
-		window.addEventListener("online", showStatus);
-		window.addEventListener("offline", showStatus);
-	});
+  onMounted(() => {
+    // 开始监听网络状态的变化
+    window.addEventListener('online', showStatus)
+    window.addEventListener('offline', showStatus)
+  })
 
-	onUnmounted(() => {
-		// Remove listening to network state changes
-		window.removeEventListener("online", showStatus);
-		window.removeEventListener("offline", showStatus);
-	});
+  onUnmounted(() => {
+    // 移除监听网络状态的变化
+    window.removeEventListener('online', showStatus)
+    window.removeEventListener('offline', showStatus)
+  })
 
-	return { online };
-};
+  return { online }
+}

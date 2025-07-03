@@ -1,25 +1,11 @@
-// import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { showFullScreenLoading, tryHideFullScreenLoading } from "@/config/serviceLoading";
-// import { AxiosCanceler } from "./helper/axiosCancel";
-// import { ResultData } from "@/api/interface";
+// import { showFullScreenLoading, tryHideFullScreenLoading } from "@/config/serviceLoading";
+import { showFullScreenLoading, tryHideFullScreenLoading } from "@/components/Loading/fullScreen";
 import { ResultEnum } from "@/enums/httpEnum";
-// import { checkStatus } from "./helper/checkStatus";
 import { ElMessage } from "element-plus";
-import { GlobalStore } from "@/stores";
+import { useUserStore } from "@/stores/modules/user";
 import router from "@/routers";
 
 import PocketBase from "pocketbase";
-
-/**
- * pinia Example of wrong use instructions
- * https://github.com/vuejs/pinia/discussions/971
- * https://github.com/vuejs/pinia/discussions/664#discussioncomment-1329898
- * https://pinia.vuejs.org/core-concepts/outside-component-usage.html#single-page-applications
- */
-// const globalStore = GlobalStore();
-
-// console.log("import.meta.env.VITE_API_URL", import.meta.env.VITE_API_URL);
-// console.log("window.location.origin", window.location.origin);
 
 const config = {
   // The default address request address can be modified in the file of the beginning of .env
@@ -36,8 +22,8 @@ client.beforeSend = function (url, reqConfig) {
   console.log("before send", url, reqConfig);
   // * If the current request does not need to display loading, in the API service: { headers: { noLoading: true } } Let's control not to display loading, see login api
   reqConfig.headers!.noLoading || showFullScreenLoading();
-  // const globalStore = GlobalStore();
-  // const token: string = globalStore.token;
+  // const userStore = useUserStore();
+  // const token: string = userStore.token;
   // return { ...reqConfig, headers: { ...reqConfig.headers, "x-access-token": token } };
 
   // For list of the possible reqConfig properties check
@@ -46,15 +32,15 @@ client.beforeSend = function (url, reqConfig) {
   // 	"X-Custom-Header": "example"
   // });
 
-  return reqConfig;
+  return { url, reqConfig };
 };
 
 client.afterSend = function (response: Response, data) {
   // do something with the response state
   console.log("after send response", response, data);
 
-  // const { data, config } = response;
-  const globalStore = GlobalStore();
+  const userStore = useUserStore();
+
   // * After the request is over, remove the request and turn off the request loading
   tryHideFullScreenLoading();
 
@@ -62,7 +48,7 @@ client.afterSend = function (response: Response, data) {
   // I don't think PocketBase has a timeout to login. I'll leave it here anyways
   if (data.code == ResultEnum.OVERDUE) {
     ElMessage.error(data.msg);
-    globalStore.setToken("");
+    userStore.setToken("");
     router.replace({
       path: "/login"
     });

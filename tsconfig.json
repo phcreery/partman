@@ -3,7 +3,7 @@
     "target": "esnext",
     "useDefineForClassFields": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
 
     /* Strict Type-Checking Options */
     "strict": true /* Enable all strict type-checking options. */,
@@ -20,16 +20,25 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
+    // Skip the library inspection and solve the packaging failure
+    "skipLibCheck": true,
+    "noEmit": true,
     // Analyze the benchmark directory of non -relative module name
     "baseUrl": "./",
     // The module is to a list of path mapping based on Baseurl.
     "paths": {
       "@": ["src"],
       "@/*": ["src/*"]
-    },
-    // Skip the library inspection and solve the packaging failure
-    "skipLibCheck": true
+    }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "vite.config.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "build/**/*.ts",
+    "build/**/*.d.ts",
+    "vite.config.ts"
+  ],
   "exclude": ["node_modules", "dist", "**/*.js", "src_**", "template"]
 }

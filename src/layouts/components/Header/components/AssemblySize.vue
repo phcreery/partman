@@ -3,8 +3,13 @@
     <i :class="'iconfont icon-contentright'" class="toolBar-icon"></i>
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item v-for="item in assemblySizeList" :key="item" :disabled="assemblySize === item" :command="item">
-          {{ assemblySizeListCh[item] }}
+        <el-dropdown-item
+          v-for="item in assemblySizeList"
+          :key="item.value"
+          :command="item.value"
+          :disabled="assemblySize === item.value"
+        >
+          {{ item.label }}
         </el-dropdown-item>
       </el-dropdown-menu>
     </template>
@@ -12,22 +17,24 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed } from "vue";
-import { GlobalStore } from "@/stores";
-
-const globalStore = GlobalStore();
-const assemblySize = computed((): string => globalStore.assemblySize);
-
-const assemblySizeListCh = reactive<{ [key: string]: any }>({
-  default: "Default",
-  large: "Large",
-  small: "Small"
+defineOptions({
+  name: "AssemblySize"
 });
+import { computed } from "vue";
+import { useGlobalStore } from "@/stores/modules/global";
+import type { AssemblySizeType } from "@/stores/interface";
 
-const assemblySizeList = reactive<string[]>(["default", "large", "small"]);
+const globalStore = useGlobalStore();
+const assemblySize = computed(() => globalStore.assemblySize);
 
-const setAssemblySize = (item: string) => {
+const assemblySizeList = [
+  { label: "Default", value: "default" },
+  { label: "Large", value: "large" },
+  { label: "Small", value: "small" }
+];
+
+const setAssemblySize = (item: AssemblySizeType) => {
   if (assemblySize.value === item) return;
-  globalStore.setAssemblySizeSize(item);
+  globalStore.assemblySize = item;
 };
 </script>

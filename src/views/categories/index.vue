@@ -12,7 +12,7 @@
         <el-button
           :icon="EditPen"
           :disabled="scope.row.id === ''"
-          @click="openComponentCategoryDrawer('Edit', scope.row)"
+          @click="openComponentCategoryDrawer('Edit', scope.row as unknown as ComponentCategory.ResGetComponentCategoryRecord)"
           v-if="BUTTONS.edit"
         ></el-button>
         <el-button
@@ -29,6 +29,7 @@
     <div class="table-box">
       <ProTable
         ref="proTable"
+        pageAuthId="categories"
         :columns="columns"
         :requestApi="getComponentList"
         :initParam="initParam"
@@ -139,7 +140,7 @@ const handleCategorySelect = (data: any) => {
 const { BUTTONS } = useAuthButtons();
 
 // Table configuration item
-const columns: ColumnProps[] = [
+const columns: ColumnProps<Component.ResGetComponentRecord>[] = [
   { type: "selection", width: 40, fixed: "left" },
   { type: "expand", label: "" },
   {
@@ -168,9 +169,9 @@ const columns: ColumnProps[] = [
     sortable: false,
     render: (scope: { row: Component.ResGetComponentRecord }) => {
       return (
-        <div>
+        <>
           {scope.row.manufacturer} - {scope.row.mpn}
-        </div>
+        </>
       );
     }
   },
@@ -298,28 +299,25 @@ const batchDeleteCategory = async (ids: string[]) => {
 };
 
 // Open the drawer (new, view, edit)
-interface DrawerExpose {
-  acceptParams: (params: any) => void;
-}
-const drawerRefComponent = ref<DrawerExpose>();
-const openComponentDrawer = (title: string, rowData: Partial<Component.ResGetComponentRecord> = {}) => {
+const drawerRefComponent = ref<InstanceType<typeof ComponentDrawer>>();
+const openComponentDrawer = (title: string, rowData?: Component.ResGetComponentRecord) => {
   let params = {
     title,
-    rowData: { ...rowData },
+    rowData,
     isView: title === "View",
-    apiUrl: title === "New" ? postComponentCreate : title === "Edit" ? patchComponentUpdate : "",
+    apiUrl: title === "New" ? postComponentCreate : title === "Edit" ? patchComponentUpdate : undefined,
     updateTable: proTable.value.getTableList
   };
   drawerRefComponent.value!.acceptParams(params);
 };
 
-const drawerRefComponentCategory = ref<DrawerExpose>();
-const openComponentCategoryDrawer = (title: string, rowData: Partial<ComponentCategory.ResGetComponentCategoryRecord> = {}) => {
+const drawerRefComponentCategory = ref<InstanceType<typeof ComponentCategoryDrawer>>();
+const openComponentCategoryDrawer = (title: string, rowData?: ComponentCategory.ResGetComponentCategoryRecord) => {
   let params = {
     title,
-    rowData: { ...rowData },
+    rowData,
     isView: title === "View",
-    apiUrl: title === "New" ? postComponentCategoryCreate : title === "Edit" ? patchComponentCategoryUpdate : "",
+    apiUrl: title === "New" ? postComponentCategoryCreate : title === "Edit" ? patchComponentCategoryUpdate : undefined,
     updateTable: proTree.value.refresh
   };
   drawerRefComponentCategory.value!.acceptParams(params);

@@ -1,70 +1,113 @@
-import { computed, onBeforeMount } from "vue";
-import { getLightColor, getDarkColor } from "@/utils/theme/tool";
-import { GlobalStore } from "@/stores";
-import { DEFAULT_PRIMARY } from "@/config/config";
-import { ElMessage } from "element-plus";
+import { storeToRefs } from 'pinia'
+import { ElMessage } from 'element-plus'
+import { DEFAULT_PRIMARY } from '@/config'
+import { useGlobalStore } from '@/stores/modules/global'
+import { getLightColor, getDarkColor } from '@/utils/color'
+import { menuTheme } from '@/styles/theme/menu'
+import { asideTheme } from '@/styles/theme/aside'
+import { headerTheme } from '@/styles/theme/header'
+
+export type ThemeType = 'light' | 'inverted' | 'dark'
+export type GreyOrWeakType = 'grey' | 'weak'
 
 /**
- * @description 切换主题
+ * @description 全局主题 hooks
  * */
 export const useTheme = () => {
-	const globalStore = GlobalStore();
-	const themeConfig = computed(() => globalStore.themeConfig);
+  const globalStore = useGlobalStore()
+  const { primary, isDark, isGrey, isWeak, layout, asideInverted, headerInverted } = storeToRefs(globalStore)
 
-	// 切换暗黑模式
-	const switchDark = () => {
-		const body = document.documentElement as HTMLElement;
-		if (themeConfig.value.isDark) body.setAttribute("class", "dark");
-		else body.setAttribute("class", "");
-		changePrimary(themeConfig.value.primary);
-	};
+  // 切换暗黑模式 ==> 同时修改主题颜色、侧边栏、头部颜色
+  const switchDark = () => {
+    const html = document.documentElement as HTMLElement
+    if (isDark.value) html.setAttribute('class', 'dark')
+    else html.setAttribute('class', '')
+    changePrimary(primary.value)
+    setAsideTheme()
+    setHeaderTheme()
+  }
 
-	// 修改主题颜色
-	const changePrimary = (val: string) => {
-		if (!val) {
-			val = DEFAULT_PRIMARY;
-			ElMessage({ type: "success", message: `主题颜色已重置为 ${DEFAULT_PRIMARY}` });
-		}
-		globalStore.setThemeConfig({ ...themeConfig.value, primary: val });
-		// 为了兼容暗黑模式下主题颜色也正常，以下方法计算主题颜色 由深到浅 的具体颜色
-		document.documentElement.style.setProperty("--el-color-primary", themeConfig.value.primary);
-		document.documentElement.style.setProperty(
-			"--el-color-primary-dark-2",
-			themeConfig.value.isDark
-				? `${getLightColor(themeConfig.value.primary, 0.2)}`
-				: `${getDarkColor(themeConfig.value.primary, 0.3)}`
-		);
-		// 颜色加深或变浅
-		for (let i = 1; i <= 9; i++) {
-			document.documentElement.style.setProperty(
-				`--el-color-primary-light-${i}`,
-				themeConfig.value.isDark
-					? `${getDarkColor(themeConfig.value.primary, i / 10)}`
-					: `${getLightColor(themeConfig.value.primary, i / 10)}`
-			);
-		}
-	};
+  // 修改主题颜色
+  const changePrimary = (val: string | null) => {
+    if (!val) {
+      val = DEFAULT_PRIMARY
+      ElMessage({ type: 'success', message: `主题颜色已重置为 ${DEFAULT_PRIMARY}` })
+    }
+    // 计算主题颜色变化
+    document.documentElement.style.setProperty('--el-color-primary', val)
+    document.documentElement.style.setProperty(
+      '--el-color-primary-dark-2',
+      isDark.value ? `${getLightColor(val, 0.2)}` : `${getDarkColor(val, 0.3)}`
+    )
+    for (let i = 1; i <= 9; i++) {
+      const primaryColor = isDark.value ? `${getDarkColor(val, i / 10)}` : `${getLightColor(val, i / 10)}`
+      document.documentElement.style.setProperty(`--el-color-primary-light-${i}`, primaryColor)
+    }
+    globalStore.primary = val
+  }
 
-	// 灰色和弱色切换
-	const changeGreyOrWeak = (value: boolean, type: string) => {
-		const body = document.body as HTMLElement;
-		if (!value) return body.setAttribute("style", "");
-		if (type === "grey") body.setAttribute("style", "filter: grayscale(1)");
-		if (type === "weak") body.setAttribute("style", "filter: invert(80%)");
-		let propName = type == "grey" ? "isWeak" : "isGrey";
-		globalStore.setThemeConfig({ ...themeConfig.value, [propName]: false });
-	};
+  // 灰色和弱色切换
+  const changeGreyOrWeak = (type: GreyOrWeakType, value: boolean) => {
+    const body = document.body as HTMLElement
+    if (!value) return body.removeAttribute('style')
+    const styles: Record<GreyOrWeakType, string> = {
+      grey: 'filter: grayscale(1)',
+      weak: 'filter: invert(80%)',
+    }
+    body.setAttribute('style', styles[type])
+    const propName = type === 'grey' ? 'isWeak' : 'isGrey'
+    globalStore[propName] = false
+  }
 
-	onBeforeMount(() => {
-		switchDark();
-		changePrimary(themeConfig.value.primary);
-		if (themeConfig.value.isGrey) changeGreyOrWeak(true, "grey");
-		if (themeConfig.value.isWeak) changeGreyOrWeak(true, "weak");
-	});
+  // 设置菜单样式
+  const setMenuTheme = () => {
+    let type: ThemeType = 'light'
+    if (layout.value === 'transverse' && headerInverted.value) type = 'inverted'
+    if (layout.value !== 'transverse' && asideInverted.value) type = 'inverted'
+    if (isDark.value) type = 'dark'
+    const theme = menuTheme[type]
+    for (const [key, value] of Object.entries(theme)) {
+      document.documentElement.style.setProperty(key, value)
+    }
+  }
 
-	return {
-		switchDark,
-		changePrimary,
-		changeGreyOrWeak
-	};
-};
+  // 设置侧边栏样式
+  const setAsideTheme = () => {
+    let type: ThemeType = 'light'
+    if (asideInverted.value) type = 'inverted'
+    if (isDark.value) type = 'dark'
+    const theme = asideTheme[type]
+    for (const [key, value] of Object.entries(theme)) {
+      document.documentElement.style.setProperty(key, value)
+    }
+    setMenuTheme()
+  }
+
+  // 设置头部样式
+  const setHeaderTheme = () => {
+    let type: ThemeType = 'light'
+    if (headerInverted.value) type = 'inverted'
+    if (isDark.value) type = 'dark'
+    const theme = headerTheme[type]
+    for (const [key, value] of Object.entries(theme)) {
+      document.documentElement.style.setProperty(key, value)
+    }
+    setMenuTheme()
+  }
+
+  // init theme
+  const initTheme = () => {
+    switchDark()
+    if (isGrey.value) changeGreyOrWeak('grey', true)
+    if (isWeak.value) changeGreyOrWeak('weak', true)
+  }
+
+  return {
+    initTheme,
+    switchDark,
+    changePrimary,
+    changeGreyOrWeak,
+    setAsideTheme,
+    setHeaderTheme,
+  }
+}

@@ -1,27 +1,24 @@
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import { useRoute } from "vue-router";
-import { AuthStore } from "@/stores/modules/auth";
+import { useAuthStore } from "@/stores/modules/auth";
 
 /**
  * @description Page button permissions
- * */
+ */
 export const useAuthButtons = () => {
-	// Current page keywords
-	const nowKey = ref<string>("");
-	// Current page routing object
-	const route = useRoute();
+  const route = useRoute();
+  const authStore = useAuthStore();
+  console.log("useAuthButtons", route.name, authStore.authButtonListGet);
+  const authButtons = authStore.authButtonListGet[route.name as string] || [];
+  console.log("authButtons", JSON.stringify(authButtons));
 
-	nowKey.value = route.name as string;
+  const BUTTONS = computed(() => {
+    const currentPageAuthButton: { [key: string]: boolean } = {};
+    authButtons.forEach(item => (currentPageAuthButton[item] = true));
+    return currentPageAuthButton;
+  });
 
-	// Current page button permission list
-	const BUTTONS = computed(() => {
-		const authStore = AuthStore();
-		// Before getting the interface data，Set to empty object，Otherwise, an error is reported
-		return authStore.authButtonListGet[nowKey.value] || {};
-	});
-
-	return {
-		nowKey,
-		BUTTONS
-	};
+  return {
+    BUTTONS
+  };
 };

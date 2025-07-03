@@ -1,56 +1,54 @@
 import router from "@/routers/index";
-import { isType } from "@/utils/util";
-import { LOGIN_URL } from "@/config/config";
+import { LOGIN_URL } from "@/config";
+import type { RouteRecordRaw } from "vue-router";
 import { ElNotification } from "element-plus";
-import { GlobalStore } from "@/stores";
-import { AuthStore } from "@/stores/modules/auth";
-import { notFoundRouter } from "@/routers/modules/staticRouter";
+import { useUserStore } from "@/stores/modules/user";
+import { useAuthStore } from "@/stores/modules/auth";
 
-// 引入 views 文件夹下所有 vue 文件
+// Import all vue files under the views folder
 const modules = import.meta.glob("@/views/**/*.vue");
 
 /**
- * 初始化动态路由
+ * @description Initialize dynamic routes
  */
 export const initDynamicRouter = async () => {
-  const authStore = AuthStore();
-  const globalStore = GlobalStore();
+  const userStore = useUserStore();
+  const authStore = useAuthStore();
+
   try {
-    // 1.获取菜单列表 && 按钮权限（可合并到一个接口获取，根据后端不同可自行改造）
+    // 1. Get menu list & button permission list
     await authStore.getAuthMenuList();
     await authStore.getAuthButtonList();
+
+    // 2. Check if the current user has menu permissions
     console.log("authStore.authMenuListGet", authStore.authMenuListGet);
-    // 2.判断当前用户有没有菜单权限
     if (!authStore.authMenuListGet.length) {
       ElNotification({
-        title: "无权限访问",
-        message: "当前账号无任何菜单权限，请联系系统管理员！",
+        title: "No Access Permission",
+        message: "The current account has no menu permissions. Please contact the system administrator!",
         type: "warning",
         duration: 3000
       });
-      globalStore.setToken("");
+      userStore.setToken("");
       router.replace(LOGIN_URL);
       return Promise.reject("No permission");
     }
 
-    // 3.添加动态路由
-    authStore.flatMenuListGet.forEach((item: any) => {
+    // 3. Add dynamic routes
+    authStore.flatMenuListGet.forEach(item => {
       item.children && delete item.children;
-      if (item.component && isType(item.component) == "string") {
+      if (item.component && typeof item.component == "string") {
         item.component = modules["/src/views" + item.component + ".vue"];
       }
       if (item.meta.isFull) {
-        router.addRoute(item);
+        router.addRoute(item as unknown as RouteRecordRaw);
       } else {
-        router.addRoute("layout", item);
+        router.addRoute("layout", item as unknown as RouteRecordRaw);
       }
     });
-
-    // 4.最后添加 notFoundRouter
-    router.addRoute(notFoundRouter);
   } catch (error) {
-    // 💢 当按钮 || 菜单请求出错时，重定向到登陆页
-    globalStore.setToken("");
+    // When button or menu request fails, redirect to login page
+    userStore.setToken("");
     router.replace(LOGIN_URL);
     return Promise.reject(error);
   }

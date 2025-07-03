@@ -110,7 +110,7 @@ const componentCategories = ref();
 watch(drawerVisible, openValue => {
   if (openValue) {
     getComponentCategoryEnumTree().then(res => {
-      if (res) componentCategories.value = res.data;
+      if (res) componentCategories.value = res;
     });
   }
 });

@@ -1,11 +1,12 @@
-import NProgress from "nprogress";
-import "nprogress/nprogress.css";
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 NProgress.configure({
-	easing: "ease", // Animation method
-	speed: 500, // Incremental progress bar speed
-	showSpinner: true, // Whether to show loadingico
-	trickleSpeed: 200, // Auto-increment interval
-	minimum: 0.3 // Minimum percentage at initialization
-});
-export default NProgress;
+  easing: 'ease', // 动画方式
+  speed: 500, // 递增进度条的速度
+  showSpinner: true, // 是否显示加载ico
+  trickleSpeed: 200, // 自动递增间隔
+  minimum: 0.3, // 初始化时的最小百分比
+})
+
+export default NProgress

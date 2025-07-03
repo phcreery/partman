@@ -2,6 +2,7 @@
   <div class="table-box">
     <ProTable
       ref="proTable"
+      pageAuthId="inventory"
       :columns="columns"
       :requestApi="getComponentList"
       :initParam="initParam"
@@ -10,7 +11,7 @@
     >
       <!-- Table header button -->
       <template #tableHeader="scope">
-        <el-button type="primary" :icon="CirclePlus" @click="openDrawer('New')" v-if="BUTTONS.add">New Component</el-button>
+        <el-button type="primary" :icon="CirclePlus" @click="openDrawer('New')" v-if="BUTTONS.add"> New Component </el-button>
         <el-button
           type="danger"
           :icon="Delete"
@@ -25,7 +26,7 @@
           :icon="Switch"
           plain
           :disabled="scope.selectedListIds.length !== 2"
-          @click="openMergeDialog(scope.selectedListIds, scope.selectList)"
+          @click="openMergeDialog(scope.selectedListIds, scope.selectedList)"
           v-if="BUTTONS.merge"
         >
           Merge
@@ -61,7 +62,7 @@
 </template>
 
 <script setup lang="tsx" name="inventory">
-import { ref, reactive } from "vue";
+import { ref, reactive, ExtractPublicPropTypes } from "vue";
 import { CirclePlus, Delete, EditPen, Download, Upload, DCaret, Switch } from "@element-plus/icons-vue";
 import { ColumnProps } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
@@ -73,6 +74,7 @@ import ProTable from "@/components/ProTable/index.vue";
 // import ImportExcel from "@/components/ImportExcel/index.vue";
 import ImportExcel from "./components/ImportExcel.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
+import type { DrawerExpose } from "@/views/inventory/components/ComponentDrawer.vue";
 import ComponentStockEdit from "@/views/inventory/components/ComponentStockEdit.vue";
 import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
 import MergeComponents from "./components/MergeComponents.vue";
@@ -114,7 +116,7 @@ const initParam = reactive({
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
 const dataCallback = (data: ResList<Component.ResGetComponentRecord>) => {
   return {
-    datalist: data.items,
+    list: data.items,
     total: data.totalItems,
     pageNum: data.page,
     pageSize: data.perPage
@@ -124,9 +126,9 @@ const dataCallback = (data: ResList<Component.ResGetComponentRecord>) => {
 const { BUTTONS } = useAuthButtons();
 
 // Table configuration item
-const columns: ColumnProps[] = [
+const columns: ColumnProps<Component.ResGetComponentRecord>[] = [
   { type: "selection", width: 40, fixed: "left" },
-  { type: "expand", label: "" },
+  { type: "expand", label: "Expand" },
   {
     prop: "category",
     label: "Category",
@@ -151,12 +153,8 @@ const columns: ColumnProps[] = [
     width: 260,
     align: "left",
     sortable: false,
-    render: (scope: { row: Component.ResGetComponentRecord }) => {
-      return (
-        <div>
-          {scope.row.manufacturer} - {scope.row.mpn}
-        </div>
-      );
+    render: (_scope): string => {
+      return `${_scope.row.manufacturer} - ${_scope.row.mpn}`;
     }
     // isShow: false
   },
@@ -292,6 +290,7 @@ const batchDelete = async (ids: string[]) => {
   await useHandleData(deleteComponents, { ids }, "Delete the selected component(s)");
   proTable.value.getTableList();
 };
+
 // Export component list
 const downloadFile = async () => {
   // useDownload(exportUserInfo, "user list", proTable.value.searchParam);
@@ -308,11 +307,9 @@ const downloadFile = async () => {
   let csv = JSON2CSV(json, columns);
   useDownload(() => csv, `${name}_component_list`, {}, true, ".csv");
 };
+
 // Add components in batches
-interface DialogExpose {
-  acceptParams: (params: any) => void;
-}
-const dialogRefImport = ref<DialogExpose>();
+const dialogRefImport = ref<InstanceType<typeof ImportExcel>>();
 const batchAdd = async () => {
   let templateColumns = [
     { prop: "mpn", label: "MPN" },
@@ -347,8 +344,8 @@ const batchAdd = async () => {
   dialogRefImport.value!.acceptParams(params);
 };
 
-const dialogRefMerge = ref<DialogExpose>();
-const openMergeDialog = (ids: string[], selectList: Component.ResGetComponentRecord[]) => {
+const dialogRefMerge = ref<InstanceType<typeof MergeComponents>>();
+const openMergeDialog = (ids: string[], selectList: Record<string, any>[]) => {
   let params = {
     title: "Merge Components",
     // ids,
@@ -363,35 +360,32 @@ const openMergeDialog = (ids: string[], selectList: Component.ResGetComponentRec
 };
 
 // Open the drawer (new, view, edit)
-interface DrawerExpose {
-  acceptParams: (params: any) => void;
-}
-const drawerRef = ref<DrawerExpose>();
-const openDrawer = (title: string, rowData: Partial<Component.ResGetComponentRecord> = {}) => {
+const drawerRef = ref<InstanceType<typeof ComponentDrawer>>();
+const openDrawer = (title: string, rowData?: Component.ResGetComponentRecord) => {
   /*eslint indent: ["error", 2, { "ignoredNodes": ["ConditionalExpression"] }]*/
   let params = {
     title,
-    rowData: { ...rowData },
+    rowData,
     isView: title === "View",
     apiUrl:
       title === "New"
         ? postComponentCreate
         : title === "Edit"
-        ? patchComponentUpdate
-        : title === "Stock"
-        ? patchComponentUpdate
-        : "",
+          ? patchComponentUpdate
+          : title === "Stock"
+            ? patchComponentUpdate
+            : undefined,
     updateTable: proTable.value.getTableList
   };
   drawerRef.value!.acceptParams(params);
 };
 
 // Open the stock drawer
-const drawerRefComponentStockEdit = ref<DrawerExpose>();
-const openStockDrawer = (title: string, rowData: Partial<Component.ResGetComponentRecord> = {}) => {
+const drawerRefComponentStockEdit = ref<InstanceType<typeof ComponentStockEdit>>();
+const openStockDrawer = (title: string, rowData?: Component.ResGetComponentRecord) => {
   let params = {
     title: `${rowData!.manufacturer} - ${rowData!.mpn}`,
-    rowData: { ...rowData },
+    rowData,
     isView: false,
     addStock: 0,
     apiUrl: patchComponentUpdate,

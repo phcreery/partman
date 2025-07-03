@@ -87,7 +87,7 @@ const getTreeList = async () => {
     // First put the initialization parameter and pagination parameter in the total parameter
     // use nestedObjectAssign instead??
     Object.assign(totalParam.value, props.initParam, {}); // isPageable ? pageParam.value : {}
-    let { data } = await props.requestApi(totalParam.value);
+    let data = await props.requestApi(totalParam.value);
     props.dataCallback && (data = props.dataCallback(data));
     // Add default top-level selection item
     treeData.value = props.showAll ? [{ id: "", [props.label]: "All" }, ...data] : data;
@@ -127,5 +127,5 @@ defineExpose({ selectedItem, refresh });
 </script>
 
 <style scoped lang="scss">
-@import "./index.scss";
+@use "./index.scss" as *;
 </style>

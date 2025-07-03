@@ -1,107 +1,115 @@
-import { Table } from "./interface";
-import { reactive, computed, onMounted, toRefs } from "vue";
+import { reactive, computed, toRefs } from "vue";
+
+export interface Pageable {
+  pageNum: number;
+  pageSize: number;
+  total: number;
+}
+export interface StateProps {
+  tableData: any[];
+  pageable: Pageable;
+  searchParam: IObject;
+  searchInitParam: IObject;
+  totalParam: IObject;
+  icon?: IObject;
+}
 
 /**
- * @description table 页面操作Methods封装
- * @param {Function} api Get table data api 方法(Must Pass)
- * @param {Object} initParam Get data initialization parameters(Not a must pass，Default is{})
- * @param {Boolean} isPageable With or without pagination(Not a must pass，Default istrue)
- * @param {Function} dataCallBack Methods for processing the data returned by the backend(Not a must pass)
+ * @description table 页面操作方法封装
+ * @param {Function} api 获取表格数据 api 方法 (必传)
+ * @param {Object} initParam 获取数据初始化参数 (非必传，默认为{})
+ * @param {Boolean} isPageable 是否有分页 (非必传，默认为true)
+ * @param {Function} dataCallBack 对后台返回的数据进行处理的方法 (非必传)
  * */
 export const useTable = (
-  api: (params: any) => Promise<any>,
+  api?: (_params: any) => Promise<any>,
   initParam: object = {},
   isPageable: boolean = true,
-  dataCallBack?: (data: any) => any
+  dataCallBack?: (_data: any) => any,
+  requestError?: (_error: any) => void
 ) => {
-  const state = reactive<Table.TableStateProps>({
-    // Table Data
+  const state = reactive<StateProps>({
+    // 表格数据
     tableData: [],
-    // Paging Data
+    // 分页数据
     pageable: {
-      // Current page数
+      // 当前页数
       pageNum: 1,
-      // Number of bars per page
-      pageSize: 25,
-      // Total number of articles
+      // 每页显示条数
+      pageSize: 10,
+      // 总条数
       total: 0
     },
-    // Query Parameters(Include only queries)
+    // 查询参数(只包括查询)
     searchParam: {},
-    // Initialize the default query parameters
+    // 初始化默认的查询参数
     searchInitParam: {},
-    // Total Parameters(Include paging and query parameters)
+    // 总参数(包含分页和查询参数)
     totalParam: {}
   });
 
   /**
-   * @description Paging query parameters(Includes paging and form field sorting only,Other sorting methods can be configured by yourself)
+   * @description 分页查询参数(只包括分页和表格字段排序,其他排序方式可自行配置)
    * */
   const pageParam = computed({
     get: () => {
       return {
-        page: state.pageable.pageNum,
-        perPage: state.pageable.pageSize
+        pageNum: state.pageable.pageNum,
+        pageSize: state.pageable.pageSize
       };
     },
     set: (newVal: any) => {
-      console.log("I am the value after the paging update", newVal);
+      console.error("我是分页更新之后的值", newVal);
     }
   });
 
-  // All that needs to be done at the time of initialization is Set form query defaults && Get table data(resetThe function does exactly these two functions)
-  onMounted(() => {
-    reset();
-  });
-
   /**
-   * @description Get table data
+   * @description 获取表格数据
    * @return void
    * */
   const getTableList = async () => {
+    if (!api) return;
     try {
-      // First put the initialization parameters and paging parameters into the total parameters
+      // 先把初始化参数和分页参数放到总参数里面
       Object.assign(state.totalParam, initParam, isPageable ? pageParam.value : {});
-      let { data } = await api(state.totalParam);
+      let data = await api({ ...state.searchInitParam, ...state.totalParam });
+      // console.log("data", data);
       dataCallBack && (data = dataCallBack(data));
-      state.tableData = isPageable ? data.datalist : data;
-      // 解构Paging data returned by the backend (如果有分页Update paging information)
-      const { pageNum, pageSize, total } = data;
-      isPageable && updatePageable({ pageNum, pageSize, total });
+      // console.log("data", data);
+      state.tableData = isPageable ? data.list : data;
+      // 解构后台返回的分页数据 (如果有分页更新分页信息)
+      if (isPageable) {
+        state.pageable.total = data.total;
+      }
     } catch (error) {
-      console.log(error);
+      if (requestError) {
+        requestError(error);
+      } else {
+        throw new Error(error as any);
+      }
     }
   };
 
   /**
-   * @description Update query parameters
+   * @description 更新查询参数
    * @return void
    * */
   const updatedTotalParam = () => {
     state.totalParam = {};
-    // Handling query parameters，You can add custom prefix operations to query parameters
-    let nowSearchParam: { [key: string]: any } = {};
-    // Prevent manual emptying of input boxes to carry parameters（Here you can customize the query parameter prefix）
-    for (let key in state.searchParam) {
-      // * In some cases the parameters are false/0 should also carry the parameter
+    // 处理查询参数，可以给查询参数加自定义前缀操作
+    const nowSearchParam: StateProps["searchParam"] = {};
+    // 防止手动清空输入框携带参数（这里可以自定义查询参数前缀）
+    for (const key in state.searchParam) {
+      // 某些情况下参数为 false/0 也应该携带参数
       if (state.searchParam[key] || state.searchParam[key] === false || state.searchParam[key] === 0) {
         nowSearchParam[key] = state.searchParam[key];
       }
     }
-    Object.assign(state.totalParam, { filter: nowSearchParam }, isPageable ? pageParam.value : {});
+    Object.assign(state.totalParam, nowSearchParam);
   };
 
   /**
-   * @description 更新分页信息
-   * @param {Object} resPageable 后台返回的分页数据
-   * @return void
-   * */
-  const updatePageable = (resPageable: Table.Pageable) => {
-    Object.assign(state.pageable, resPageable);
-  };
-
-  /**
-   * @description Form Data Inquiry
+   * @description 表格数据查询
    * @return void
    * */
   const search = () => {
@@ -111,23 +119,20 @@ export const useTable = (
   };
 
   /**
-   * @description Form Data Reset
+   * @description 表格数据重置
    * @return void
    * */
   const reset = () => {
     state.pageable.pageNum = 1;
-    state.searchParam = {};
-    // When resetting the search form，If there are default search parameters，then reset the default search parameters
-    Object.keys(state.searchInitParam).forEach(key => {
-      state.searchParam[key] = state.searchInitParam[key];
-    });
+    // 重置搜索表单的时，如果有默认搜索参数，则重置默认的搜索参数
+    state.searchParam = { ...state.searchInitParam };
     updatedTotalParam();
     getTableList();
   };
 
   /**
-   * @description Number of entries per page change
-   * @param {Number} val Current bar count
+   * @description 每页条数改变
+   * @param {Number} val 当前条数
    * @return void
    * */
   const handleSizeChange = (val: number) => {
@@ -137,7 +142,7 @@ export const useTable = (
   };
 
   /**
-   * @description Current page change
+   * @description 当前页改变
    * @param {Number} val 当前页
    * @return void
    * */
@@ -152,6 +157,7 @@ export const useTable = (
     search,
     reset,
     handleSizeChange,
-    handleCurrentChange
+    handleCurrentChange,
+    updatedTotalParam
   };
 };

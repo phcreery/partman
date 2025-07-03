@@ -1,70 +1,113 @@
-import { computed, onBeforeMount } from "vue";
-import { getLightColor, getDarkColor } from "@/utils/theme/tool";
-import { GlobalStore } from "@/stores";
-import { DEFAULT_PRIMARY } from "@/config/config";
-import { ElMessage } from "element-plus";
+import { storeToRefs } from 'pinia'
+import { ElMessage } from 'element-plus'
+import { DEFAULT_PRIMARY } from '@/config'
+import { useGlobalStore } from '@/stores/modules/global'
+import { getLightColor, getDarkColor } from '@/utils/color'
+import { menuTheme } from '@/styles/theme/menu'
+import { asideTheme } from '@/styles/theme/aside'
+import { headerTheme } from '@/styles/theme/header'
+
+export type ThemeType = 'light' | 'inverted' | 'dark'
+export type GreyOrWeakType = 'grey' | 'weak'
 
 /**
- * @description Switching topics
+ * @description 全局主题 hooks
  * */
 export const useTheme = () => {
-  const globalStore = GlobalStore();
-  const themeConfig = computed(() => globalStore.themeConfig);
+  const globalStore = useGlobalStore()
+  const { primary, isDark, isGrey, isWeak, layout, asideInverted, headerInverted } = storeToRefs(globalStore)
 
-  // Switch to dark mode
+  // 切换暗黑模式 ==> 同时修改主题颜色、侧边栏、头部颜色
   const switchDark = () => {
-    const body = document.documentElement as HTMLElement;
-    if (themeConfig.value.isDark) body.setAttribute("class", "dark");
-    else body.setAttribute("class", "");
-    changePrimary(themeConfig.value.primary);
-  };
+    const html = document.documentElement as HTMLElement
+    if (isDark.value) html.setAttribute('class', 'dark')
+    else html.setAttribute('class', '')
+    changePrimary(primary.value)
+    setAsideTheme()
+    setHeaderTheme()
+  }
 
-  // Modify theme color
-  const changePrimary = (val: string) => {
+  // 修改主题颜色
+  const changePrimary = (val: string | null) => {
     if (!val) {
-      val = DEFAULT_PRIMARY;
-      ElMessage({ type: "success", message: `The theme color has been reset to ${DEFAULT_PRIMARY}` });
+      val = DEFAULT_PRIMARY
+      ElMessage({ type: 'success', message: `主题颜色已重置为 ${DEFAULT_PRIMARY}` })
     }
-    globalStore.setThemeConfig({ ...themeConfig.value, primary: val });
-    // To be compatible with the dark mode theme color is also normal，The following method calculates the theme color From deep to light The specific color of the
-    document.documentElement.style.setProperty("--el-color-primary", themeConfig.value.primary);
+    // 计算主题颜色变化
+    document.documentElement.style.setProperty('--el-color-primary', val)
     document.documentElement.style.setProperty(
-      "--el-color-primary-dark-2",
-      themeConfig.value.isDark
-        ? `${getLightColor(themeConfig.value.primary, 0.2)}`
-        : `${getDarkColor(themeConfig.value.primary, 0.3)}`
-    );
-    // Deepening or lightening of color
+      '--el-color-primary-dark-2',
+      isDark.value ? `${getLightColor(val, 0.2)}` : `${getDarkColor(val, 0.3)}`
+    )
     for (let i = 1; i <= 9; i++) {
-      document.documentElement.style.setProperty(
-        `--el-color-primary-light-${i}`,
-        themeConfig.value.isDark
-          ? `${getDarkColor(themeConfig.value.primary, i / 10)}`
-          : `${getLightColor(themeConfig.value.primary, i / 10)}`
-      );
+      const primaryColor = isDark.value ? `${getDarkColor(val, i / 10)}` : `${getLightColor(val, i / 10)}`
+      document.documentElement.style.setProperty(`--el-color-primary-light-${i}`, primaryColor)
     }
-  };
+    globalStore.primary = val
+  }
 
-  // Gray and weak color switching
-  const changeGreyOrWeak = (value: boolean, type: string) => {
-    const body = document.body as HTMLElement;
-    if (!value) return body.setAttribute("style", "");
-    if (type === "grey") body.setAttribute("style", "filter: grayscale(1)");
-    if (type === "weak") body.setAttribute("style", "filter: invert(80%)");
-    let propName = type == "grey" ? "isWeak" : "isGrey";
-    globalStore.setThemeConfig({ ...themeConfig.value, [propName]: false });
-  };
+  // 灰色和弱色切换
+  const changeGreyOrWeak = (type: GreyOrWeakType, value: boolean) => {
+    const body = document.body as HTMLElement
+    if (!value) return body.removeAttribute('style')
+    const styles: Record<GreyOrWeakType, string> = {
+      grey: 'filter: grayscale(1)',
+      weak: 'filter: invert(80%)',
+    }
+    body.setAttribute('style', styles[type])
+    const propName = type === 'grey' ? 'isWeak' : 'isGrey'
+    globalStore[propName] = false
+  }
 
-  onBeforeMount(() => {
-    switchDark();
-    changePrimary(themeConfig.value.primary);
-    if (themeConfig.value.isGrey) changeGreyOrWeak(true, "grey");
-    if (themeConfig.value.isWeak) changeGreyOrWeak(true, "weak");
-  });
+  // 设置菜单样式
+  const setMenuTheme = () => {
+    let type: ThemeType = 'light'
+    if (layout.value === 'transverse' && headerInverted.value) type = 'inverted'
+    if (layout.value !== 'transverse' && asideInverted.value) type = 'inverted'
+    if (isDark.value) type = 'dark'
+    const theme = menuTheme[type]
+    for (const [key, value] of Object.entries(theme)) {
+      document.documentElement.style.setProperty(key, value)
+    }
+  }
+
+  // 设置侧边栏样式
+  const setAsideTheme = () => {
+    let type: ThemeType = 'light'
+    if (asideInverted.value) type = 'inverted'
+    if (isDark.value) type = 'dark'
+    const theme = asideTheme[type]
+    for (const [key, value] of Object.entries(theme)) {
+      document.documentElement.style.setProperty(key, value)
+    }
+    setMenuTheme()
+  }
+
+  // 设置头部样式
+  const setHeaderTheme = () => {
+    let type: ThemeType = 'light'
+    if (headerInverted.value) type = 'inverted'
+    if (isDark.value) type = 'dark'
+    const theme = headerTheme[type]
+    for (const [key, value] of Object.entries(theme)) {
+      document.documentElement.style.setProperty(key, value)
+    }
+    setMenuTheme()
+  }
+
+  // init theme
+  const initTheme = () => {
+    switchDark()
+    if (isGrey.value) changeGreyOrWeak('grey', true)
+    if (isWeak.value) changeGreyOrWeak('weak', true)
+  }
 
   return {
+    initTheme,
     switchDark,
     changePrimary,
-    changeGreyOrWeak
-  };
-};
+    changeGreyOrWeak,
+    setAsideTheme,
+    setHeaderTheme,
+  }
+}

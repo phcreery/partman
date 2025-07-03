@@ -3,9 +3,8 @@ import client, { tryCatchAsync } from "@/api";
 import { nestedObjectAssign } from "@/utils/nestedObjectAssign";
 
 import {
-  APIdata,
   ReqList,
-  ResList,
+  ResultList,
   Component,
   ComponentCategory,
   Footprint,
@@ -22,7 +21,7 @@ import {
   Health
 } from "@/api/interface/index";
 
-const emptyData = (params?: ReqList): ResList<null> => {
+const emptyData = (params?: ReqList): ResultList<null> => {
   return {
     page: params ? params.page : 0,
     perPage: params ? params.perPage : 25,
@@ -90,7 +89,7 @@ export const getComponentList = async (params: Component.ReqGetComponentListPara
     expand: params.expand ?? "", // Default expand all???
     $autoCancel: false
   });
-  return { data: res } as unknown as APIdata<ResList<Component.ResGetComponentRecord>>;
+  return res as unknown as ResultList<Component.ResGetComponentRecord>;
 };
 
 export const getComponentsListForExport = async (params: Component.ReqGetComponentListForExportParams) => {
@@ -101,7 +100,7 @@ export const getComponentsListForExport = async (params: Component.ReqGetCompone
     expand: "",
     sort: ""
   });
-  return res.data.items as unknown as Component.ResGetComponentRecord[];
+  return res.items as unknown as Component.ResGetComponentRecord[];
 };
 
 export const deleteComponent = async (params: Component.ReqDeleteComponentParams) => {
@@ -110,12 +109,12 @@ export const deleteComponent = async (params: Component.ReqDeleteComponentParams
 
 export const postComponentCreate = async (params: Component.ReqCreateComponentParams) => {
   let record = await client.collection("components").create(params);
-  return { data: record } as unknown as APIdata<Component.ResGetComponentRecord>;
+  return { data: record } as unknown as Component.ResGetComponentRecord;
 };
 
 export const patchComponentUpdate = async (params: Component.ReqUpdateComponentParams, id?: string) => {
   let record = await client.collection("components").update(id ?? params.id, params);
-  return { data: record } as unknown as APIdata<Component.ResGetComponentRecord>;
+  return { data: record } as unknown as Component.ResGetComponentRecord;
 };
 
 // TODO: convert this to a backend function
@@ -137,12 +136,12 @@ export const getComponentEnum = async () => {
   // res.items.forEach((component: ComponentCategory.ResGetComponentCategoryRecord) => {
   // 	component._fullName = getPathName(res.items, component.id);
   // });
-  return { data: res.items } as unknown as APIdata<Component.ResGetComponentRecord[]>;
+  return res.items as Component.ResGetComponentRecord[];
 };
 
 export const getComponent = async (id: string) => {
   let res = await client.collection("components").getOne(id);
-  return { data: res } as unknown as APIdata<Component.ResGetComponentRecord>;
+  return res as unknown as Component.ResGetComponentRecord;
 };
 
 export const postComponentsUpload = async (params: any) => {
@@ -150,19 +149,19 @@ export const postComponentsUpload = async (params: any) => {
     method: "POST",
     body: { data: params }
   });
-  return { data: res } as unknown;
+  return res;
 };
 
 // ---- COMPONENT CATEGORIES ----
 
 export const postComponentCategoryCreate = async (params: ComponentCategory.ReqCreateComponentCategoryParams) => {
   let record = await client.collection("component_categories").create(params);
-  return { data: record } as unknown as APIdata<ComponentCategory.ResGetComponentCategoryRecord>;
+  return record as unknown as ComponentCategory.ResGetComponentCategoryRecord;
 };
 
 export const patchComponentCategoryUpdate = async (params: ComponentCategory.ReqUpdateComponentCategoryParams) => {
   let record = await client.collection("component_categories").update(params.id, params);
-  return { data: record } as unknown as APIdata<Component.ResGetComponentRecord>;
+  return record as unknown as Component.ResGetComponentRecord;
 };
 
 export const deleteComponentCategories = async (params: ComponentCategory.ReqDeleteComponentCategoriesParams) => {
@@ -182,13 +181,13 @@ export const getComponentCategoryEnum = async () => {
   res.items.forEach((component: ComponentCategory.ResGetComponentCategoryRecord) => {
     component._fullName = getPathName(res.items, component.id);
   });
-  return { data: res.items } as unknown as APIdata<ComponentCategory.ResGetComponentCategoryRecord[]>;
+  return res.items as unknown as ComponentCategory.ResGetComponentCategoryRecord[];
 };
 
 export const getComponentCategoryEnumTree = async () => {
-  let res = await (await getComponentCategoryEnum()).data;
+  let res = await getComponentCategoryEnum();
   const tree = arrayToTree(res, { id: "id", parentId: "parent", dataField: null });
-  return { data: tree } as unknown as APIdata<ComponentCategory.ResGetComponentCategoryRecordTree[]>;
+  return tree as unknown as ComponentCategory.ResGetComponentCategoryRecordTree[];
 };
 
 // ---- FOOTPRINTS ----
@@ -199,22 +198,22 @@ export const getFootprintList = async (params: Footprint.ReqGetFootprintListPara
     sort: params.sort ?? "",
     expand: params.expand ?? ""
   });
-  return { data: res } as unknown as APIdata<ResList<Footprint.ResGetFootprintRecord>>;
+  return res as unknown as ResultList<Footprint.ResGetFootprintRecord>;
 };
 
 export const getFootprintsEnum = async () => {
   let res = await client.collection("footprints").getList(1, 99999, {});
-  return { data: res.items } as unknown as APIdata<Footprint.ResGetFootprintRecord[]>;
+  return res.items as unknown as Footprint.ResGetFootprintRecord[];
 };
 
 export const postFootprintCreate = async (params: Footprint.ReqCreateFootprintParams) => {
   let record = await client.collection("footprints").create(params);
-  return { data: record } as unknown as APIdata<Footprint.ResGetFootprintRecord>;
+  return record as unknown as Footprint.ResGetFootprintRecord;
 };
 
 export const patchFootprintUpdate = async (params: Footprint.ReqUpdateFootprintParams) => {
   let record = await client.collection("footprints").update(params.id, params);
-  return { data: record } as unknown as APIdata<Footprint.ResGetFootprintRecord>;
+  return record as unknown as Footprint.ResGetFootprintRecord;
 };
 
 export const deleteFootprints = async (params: Footprint.ReqDeleteFootprintsParams) => {
@@ -229,12 +228,12 @@ export const deleteFootprints = async (params: Footprint.ReqDeleteFootprintsPara
 
 export const postFootprintCategoryCreate = async (params: FootprintCategory.ReqCreateFootprintCategoryParams) => {
   let record = await client.collection("footprint_categories").create(params);
-  return { data: record } as unknown as APIdata<FootprintCategory.ResGetFootprintCategoryRecord>;
+  return record as unknown as FootprintCategory.ResGetFootprintCategoryRecord;
 };
 
 export const patchFootprintCategoryUpdate = async (params: FootprintCategory.ReqUpdateFootprintCategoryParams) => {
   let record = await client.collection("footprint_categories").update(params.id, params);
-  return { data: record } as unknown as APIdata<Footprint.ResGetFootprintRecord>;
+  return record as unknown as Footprint.ResGetFootprintRecord;
 };
 
 export const deleteFootprintCategories = async (params: FootprintCategory.ReqDeleteFootprintCategoriesParams) => {
@@ -254,20 +253,20 @@ export const getFootprintCategoryEnum = async () => {
   res.items.forEach((footprint: FootprintCategory.ResGetFootprintCategoryRecord) => {
     footprint._fullName = getPathName(res.items, footprint.id);
   });
-  return { data: res.items } as unknown as APIdata<FootprintCategory.ResGetFootprintCategoryRecord[]>;
+  return res.items as unknown as FootprintCategory.ResGetFootprintCategoryRecord[];
 };
 
 export const getFootprintCategoryEnumTree = async () => {
-  let res = (await getFootprintCategoryEnum()).data;
+  let res = await getFootprintCategoryEnum();
   const tree = arrayToTree(res, { id: "id", parentId: "parent", dataField: null });
-  return { data: tree } as unknown as APIdata<FootprintCategory.ResGetFootprintCategoryRecordTree[]>;
+  return tree as unknown as FootprintCategory.ResGetFootprintCategoryRecordTree[];
 };
 
 // ---- STORAGE LOCATIONS ----
 
 export const getComponentStorageLocationEnum = async () => {
   let res = await client.collection("storage_locations").getList(1, 99999, { $autoCancel: false });
-  return { data: res.items } as unknown as APIdata<Storage.ResGetStorageRecord[]>;
+  return res.items as unknown as Storage.ResGetStorageRecord[];
 };
 
 export const getStorageList = async (params: Storage.ReqGetStorageListParams) => {
@@ -276,17 +275,17 @@ export const getStorageList = async (params: Storage.ReqGetStorageListParams) =>
     sort: params.sort ?? "",
     expand: params.expand ?? ""
   });
-  return { data: res } as unknown as APIdata<ResList<Storage.ResGetStorageRecord>>;
+  return res as unknown as ResultList<Storage.ResGetStorageRecord>;
 };
 
 export const postStorageCreate = async (params: Storage.ReqCreateStorageParams) => {
   let record = await client.collection("storage_locations").create(params);
-  return { data: record } as unknown as APIdata<Storage.ResGetStorageRecord>;
+  return record as unknown as Storage.ResGetStorageRecord;
 };
 
 export const patchStorageUpdate = async (params: Storage.ReqUpdateStorageParams) => {
   let record = await client.collection("storage_locations").update(params.id, params);
-  return { data: record } as unknown as APIdata<Storage.ResGetStorageRecord>;
+  return record as unknown as Storage.ResGetStorageRecord;
 };
 
 export const deleteStorages = async (params: Storage.ReqDeleteStoragesParams) => {
@@ -299,45 +298,47 @@ export const deleteStorages = async (params: Storage.ReqDeleteStoragesParams) =>
 
 // Special case for storage locations, we need to get the full path name
 export const getStorageLocationPathEnum = async () => {
-  let storage_locations = (await getComponentStorageLocationEnum()) as APIdata<
-    (Storage.ResGetStorageRecord & { parent: string; _fullName: string; disabled: boolean })[]
-  >;
-  let storage_categories = (await getStorageCategoryEnum()) as APIdata<
-    (StorageCategory.ResGetStorageCategoryRecord & { disabled: boolean })[]
-  >;
+  let storage_locations = (await getComponentStorageLocationEnum()) as (Storage.ResGetStorageRecord & {
+    parent: string;
+    _fullName: string;
+    disabled: boolean;
+  })[];
+  let storage_categories = (await getStorageCategoryEnum()) as (StorageCategory.ResGetStorageCategoryRecord & {
+    disabled: boolean;
+  })[];
   // Since the storage locations are separate from storage categories, we need to merge them into a single array/tree
   // change category key of each storage_locations to parent
-  storage_locations.data.forEach((storage_location: Storage.ResGetStorageRecord & { parent: string; disabled: boolean }) => {
+  storage_locations.forEach((storage_location: Storage.ResGetStorageRecord & { parent: string; disabled: boolean }) => {
     storage_location.parent = storage_location.category;
     storage_location.disabled = false;
   });
-  storage_categories.data.forEach((storage_category: StorageCategory.ResGetStorageCategoryRecord & { disabled: boolean }) => {
+  storage_categories.forEach((storage_category: StorageCategory.ResGetStorageCategoryRecord & { disabled: boolean }) => {
     storage_category.disabled = true;
   });
-  storage_categories.data.push(...storage_locations.data);
-  storage_categories.data.forEach((storage_location: StorageCategory.ResGetStorageCategoryRecord) => {
-    storage_location._fullName = getPathName(storage_categories.data, storage_location.id);
+  storage_categories.push(...storage_locations);
+  storage_categories.forEach((storage_location: StorageCategory.ResGetStorageCategoryRecord) => {
+    storage_location._fullName = getPathName(storage_categories, storage_location.id);
   });
-  return { data: storage_categories.data } as unknown as APIdata<Storage.ResGetStorageRecord[]>;
+  return storage_categories as unknown as Storage.ResGetStorageRecord[];
 };
 
 export const getStorageLocationPathEnumTree = async () => {
   // The EnumTree is used primarily for tree-selects
-  let storage_locations = (await getStorageLocationPathEnum()).data;
+  let storage_locations = await getStorageLocationPathEnum();
   const tree = arrayToTree(storage_locations, { id: "id", parentId: "parent", dataField: null });
-  return { data: tree } as unknown as APIdata<Storage.ResGetStorageRecordTree[]>;
+  return tree as unknown as Storage.ResGetStorageRecordTree[];
 };
 
 // ---- STORAGE CATEGORY ----
 
 export const postStorageCategoryCreate = async (params: StorageCategory.ReqCreateStorageCategoryParams) => {
   let record = await client.collection("storage_categories").create(params);
-  return { data: record } as unknown as APIdata<StorageCategory.ResGetStorageCategoryRecord>;
+  return record as unknown as StorageCategory.ResGetStorageCategoryRecord;
 };
 
 export const patchStorageCategoryUpdate = async (params: StorageCategory.ReqUpdateStorageCategoryParams) => {
   let record = await client.collection("storage_categories").update(params.id, params);
-  return { data: record } as unknown as APIdata<Storage.ResGetStorageRecord>;
+  return record as unknown as Storage.ResGetStorageRecord;
 };
 
 export const deleteStorageCategories = async (params: StorageCategory.ReqDeleteStorageCategoriesParams) => {
@@ -357,13 +358,13 @@ export const getStorageCategoryEnum = async () => {
   res.items.forEach((storage_location: StorageCategory.ResGetStorageCategoryRecord) => {
     storage_location._fullName = getPathName(res.items, storage_location.id);
   });
-  return { data: res.items } as unknown as APIdata<StorageCategory.ResGetStorageCategoryRecord[]>;
+  return res.items as unknown as StorageCategory.ResGetStorageCategoryRecord[];
 };
 
 export const getStorageCategoryEnumTree = async () => {
-  let res = await (await getStorageCategoryEnum()).data;
+  let res = await getStorageCategoryEnum();
   const tree = arrayToTree(res, { id: "id", parentId: "parent", dataField: null });
-  return { data: tree } as unknown as APIdata<StorageCategory.ResGetStorageCategoryRecordTree[]>;
+  return tree as unknown as StorageCategory.ResGetStorageCategoryRecordTree[];
 };
 
 // ---- PROJECTS ----
@@ -374,22 +375,27 @@ export const getProjectList = async (params: Project.ReqGetProjectListParams) =>
     sort: params.sort ?? "",
     expand: params.expand ?? ""
   });
-  return { data: res } as unknown as APIdata<ResList<Project.ResGetProjectRecord>>;
+  return res as unknown as ResultList<Project.ResGetProjectRecord>;
+};
+
+export const getProjectListForEnum = async () => {
+  let res = await client.collection("projects").getList(1, 99999, {});
+  return res.items as unknown as Project.ResGetProjectRecord[];
 };
 
 export const getProjectsEnum = async () => {
   let res = await client.collection("projects").getList(1, 99999, {});
-  return { data: res.items } as unknown as APIdata<Project.ResGetProjectRecord[]>;
+  return res.items as unknown as Project.ResGetProjectRecord[];
 };
 
 export const postProjectCreate = async (params: Project.ReqCreateProjectParams) => {
   let record = await client.collection("projects").create(params);
-  return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
+  return record as unknown as Project.ResGetProjectRecord;
 };
 
 export const patchProjectUpdate = async (params: Project.ReqUpdateProjectParams) => {
   const record = await client.collection("projects").update(params.id, params);
-  return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
+  return record as unknown as Project.ResGetProjectRecord;
 };
 
 export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) => {
@@ -403,8 +409,7 @@ export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) =>
 // ---- PROJECT COMPONENTS ----
 
 export const getProjectComponentsList = async (params: ProjectComponents.ReqGetProjectComponentListParams) => {
-  if (params.projectID === "")
-    return { data: emptyData(params) } as unknown as APIdata<ResList<ProjectComponents.ResGetProjectComponentRecord>>;
+  if (params.projectID === "") return emptyData(params) as unknown as ResultList<ProjectComponents.ResGetProjectComponentRecord>;
   let res_project = (await client.collection("projects").getOne(params.projectID, {})) as unknown as Project.ResGetProjectRecord;
 
   if (res_project.components.length === 0) res_project.components = ["none"]; // TODO: should be `= []` ?
@@ -419,16 +424,15 @@ export const getProjectComponentsList = async (params: ProjectComponents.ReqGetP
     filter: filterToPBString(filter),
     sort: params.sort ?? "",
     expand: "component" // params.expand ?? "",
-  })) as unknown as ResList<ProjectComponents.ResGetProjectComponentRecord>;
+  })) as unknown as ResultList<ProjectComponents.ResGetProjectComponentRecord>;
 
   let res = res_project_components;
 
-  return { data: res } as unknown as APIdata<ResList<ProjectComponents.ResGetProjectComponentRecord>>;
+  return res as unknown as ResultList<ProjectComponents.ResGetProjectComponentRecord>;
 };
 
 export const getProjectComponentsListForExport = async (params: ProjectComponents.ReqGetProjectComponentListForExportParams) => {
-  if (params.projectID === "")
-    return { data: emptyData() } as unknown as APIdata<ResList<ProjectComponents.ResGetProjectComponentRecord>>;
+  if (params.projectID === "") return emptyData() as unknown as ResultList<ProjectComponents.ResGetProjectComponentRecord>;
   let res = await getProjectComponentsList({
     page: 1,
     perPage: 9999,
@@ -437,7 +441,7 @@ export const getProjectComponentsListForExport = async (params: ProjectComponent
     sort: "",
     projectID: params.projectID
   });
-  return res.data.items as unknown as ProjectComponents.ResGetProjectComponentRecord[];
+  return res.items as unknown as ProjectComponents.ResGetProjectComponentRecord[];
 };
 
 export const postProjectComponentAdd = async (params: ProjectComponents.ReqAddProjectComponentParams) => {
@@ -458,7 +462,7 @@ export const postProjectComponentAdd = async (params: ProjectComponents.ReqAddPr
   const record = (await client
     .collection("projects")
     .update(params._ofProjectID, res_project)) as unknown as Project.ResGetProjectRecord;
-  return { data: record } as unknown as APIdata<ProjectComponents.ResGetProjectComponentRecord>;
+  return record as unknown as ProjectComponents.ResGetProjectComponentRecord;
 };
 
 export const patchProjectComponentUpdate = async (params: ProjectComponents.ReqUpdateProjectComponentParams) => {
@@ -468,7 +472,7 @@ export const patchProjectComponentUpdate = async (params: ProjectComponents.ReqU
     quantity: params.quantity,
     refdesignators: params.refdesignators
   });
-  return { data: record } as unknown as APIdata<ProjectComponents.ResGetProjectComponentRecord>;
+  return record as unknown as ProjectComponents.ResGetProjectComponentRecord;
 };
 
 export const deleteProjectComponents = async (params: ProjectComponents.ReqRemoveProjectComponentsParams) => {
@@ -481,7 +485,7 @@ export const deleteProjectComponents = async (params: ProjectComponents.ReqRemov
     await client.collection("project_components").delete(id);
   }
   const record = await client.collection("projects").update(params.projectID, res_project);
-  return { data: record } as unknown as APIdata<Project.ResGetProjectRecord>;
+  return record as unknown as Project.ResGetProjectRecord;
 };
 
 export const postProjectComponentsUpload = async (params: any) => {
@@ -489,7 +493,7 @@ export const postProjectComponentsUpload = async (params: any) => {
     method: "POST",
     body: { data: params }
   });
-  return { data: res } as unknown;
+  return res;
 };
 
 // ---- PROJECT BUILDS ----
@@ -499,8 +503,8 @@ export const getProjectBuildsList = async (params: ProjectBuilds.ReqGetProjectBu
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
-  })) as unknown as ResList<ProjectBuilds.ResGetProjectBuildRecord>;
-  return { data: res } as unknown as APIdata<ResList<ProjectBuilds.ResGetProjectBuildRecord>>;
+  })) as unknown as ResultList<ProjectBuilds.ResGetProjectBuildRecord>;
+  return res as unknown as ResultList<ProjectBuilds.ResGetProjectBuildRecord>;
 };
 
 export const getProjectBuildsListForExport = async (params: ProjectBuilds.ReqGetProjectBuildListForExportParams) => {
@@ -511,7 +515,7 @@ export const getProjectBuildsListForExport = async (params: ProjectBuilds.ReqGet
     expand: "",
     sort: ""
   });
-  return res.data.items as unknown as ProjectBuilds.ResGetProjectBuildRecord[];
+  return res.items as unknown as ProjectBuilds.ResGetProjectBuildRecord[];
 };
 
 export const postProjectBuildsCreate = async (params: ProjectBuilds.ReqCreateProjectBuildParams) => {
@@ -526,12 +530,12 @@ export const postProjectBuildsCreate = async (params: ProjectBuilds.ReqCreatePro
       method: "POST"
     }
   );
-  return { data: res } as unknown as APIdata<ProjectBuilds.ResGetProjectBuildRecord>;
+  return res as unknown as ProjectBuilds.ResGetProjectBuildRecord;
 };
 
 // export const postProjectBuildsRun = async (params: ProjectBuilds.ReqCreateProjectBuildParams) => {
 //   let res = await client.collection("project_builds").create(params);
-//   return { data: res } as unknown as APIdata<ProjectBuilds.ResGetProjectBuildRecord>;
+//   return { data: res } as unknown as ResultData<ProjectBuilds.ResGetProjectBuildRecord>;
 // };
 
 // ---- COMPONENT LOGS ----
@@ -541,8 +545,8 @@ export const getComponentLogsList = async (params: ComponentLog.ReqGetComponentL
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
-  })) as unknown as ResList<ComponentLog.ResGetComponentLogRecord>;
-  return { data: res } as unknown as APIdata<ResList<ComponentLog.ResGetComponentLogRecord>>;
+  })) as unknown as ResultList<ComponentLog.ResGetComponentLogRecord>;
+  return res as unknown as ResultList<ComponentLog.ResGetComponentLogRecord>;
 };
 
 export const getComponentLogsListForExport = async (params: ComponentLog.ReqGetComponentLogListForExportParams) => {
@@ -553,7 +557,7 @@ export const getComponentLogsListForExport = async (params: ComponentLog.ReqGetC
     expand: "",
     sort: ""
   });
-  return res.data.items as unknown as ComponentLog.ResGetComponentLogRecord[];
+  return res.items as unknown as ComponentLog.ResGetComponentLogRecord[];
 };
 
 // ---- USERS ----
@@ -564,7 +568,7 @@ export const getUserList = async (params: User.ReqGetUserListParams) => {
     sort: params.sort ?? "",
     expand: params.expand ?? "" // Default expand all???
   });
-  return { data: res } as unknown as APIdata<ResList<User.ResGetUserRecord>>;
+  return res as unknown as ResultList<User.ResGetUserRecord>;
 };
 
 export const getUsersListForExport = async (params: User.ReqGetUserListForExportParams) => {
@@ -575,12 +579,12 @@ export const getUsersListForExport = async (params: User.ReqGetUserListForExport
     expand: "",
     sort: ""
   });
-  return res.data.items as unknown as User.ResGetUserRecord[];
+  return res.items as unknown as User.ResGetUserRecord[];
 };
 
 export const getUser = async (params: User.ReqGetUserParams) => {
   let res = await client.collection("users").getOne(params.id);
-  return { data: res } as unknown as APIdata<User.ResGetUserRecord>;
+  return res as unknown as User.ResGetUserRecord;
 };
 
 export const deleteUser = async (params: User.ReqDeleteUserParams) => {
@@ -589,13 +593,13 @@ export const deleteUser = async (params: User.ReqDeleteUserParams) => {
 
 export const postUserCreate = async (params: User.ReqCreateUserParams) => {
   let record = await client.collection("users").create(params);
-  return { data: record } as unknown as APIdata<User.ResGetUserRecord>;
+  return record as unknown as User.ResGetUserRecord;
 };
 
 export const patchUserUpdate = async (params: User.ReqUpdateUserParams) => {
   console.log("patchUserUpdate", params);
   const record = await client.collection("users").update(params.id, params);
-  return { data: record } as unknown as APIdata<User.ResGetUserRecord>;
+  return record as unknown as User.ResGetUserRecord;
 };
 
 export const deleteUsers = async (params: User.ReqDeleteUsersParams) => {
@@ -612,19 +616,19 @@ export const getUserEnum = async () => {
     console.error("getUserEnum res err", res, err);
     // return false;
   }
-  return { data: res.items } as unknown as APIdata<User.ResGetUserRecord[]>;
+  return res.items as unknown as User.ResGetUserRecord[];
 };
 
 // ---- SETTINGS/CONFIG ----
 
 export const getConfig = async (params: Config.ReqGetConfigParams) => {
-  let res = (await client.collection("config").getList()) as unknown as ResList<Config.ResGetConfigRecord>;
+  let res = (await client.collection("config").getList()) as unknown as ResultList<Config.ResGetConfigRecord>;
   let configRecord = res.items.find(record => record.category === params.category);
-  return { data: configRecord?.value } as unknown as APIdata<ResList<Config.ResGetConfigRecord>>;
+  return configRecord?.value as unknown as ResultList<Config.ResGetConfigRecord>;
 };
 
 export const patchConfigUpdate = async (params: Config.ReqUpdateConfigParams) => {
-  let res = (await client.collection("config").getList()) as unknown as ResList<Config.ResGetConfigRecord>;
+  let res = (await client.collection("config").getList()) as unknown as ResultList<Config.ResGetConfigRecord>;
   let configRecord = res.items.find(record => record.category === params.category);
   // create if not found
   if (!configRecord) {
@@ -635,7 +639,7 @@ export const patchConfigUpdate = async (params: Config.ReqUpdateConfigParams) =>
     return false;
   }
   const record = await client.collection("config").update(configRecord?.id, params);
-  return { data: record } as unknown as APIdata<Config.ResGetConfigRecord>;
+  return record as unknown as Config.ResGetConfigRecord;
 };
 
 // ---- DASHBOARD ----
@@ -652,7 +656,7 @@ export const getDashboardInfo = async () => {
     version: string;
   };
 
-  let res = (await client.send("/api/custom/dashboard/info", {})) as unknown as APIdata<DashboardInfo>;
+  let res = (await client.send("/api/custom/dashboard/info", {})) as unknown as ResultData<DashboardInfo>;
   let storageLocationsTree = await getStorageLocationPathEnumTree();
 
   let components = res.data.components;
@@ -666,11 +670,11 @@ export const getDashboardInfo = async () => {
       o.value = components.filter((component: Component.ResGetComponentRecord) => component.storage_location === o.id).length;
     }
   }
-  for (const storageLocation of storageLocationsTree.data) {
+  for (const storageLocation of storageLocationsTree) {
     await iter(storageLocation);
   }
-  res.data.storageLocationsTree = storageLocationsTree.data;
-  return { data: res.data } as unknown as APIdata<DashboardInfo>;
+  res.data.storageLocationsTree = storageLocationsTree;
+  return res.data as unknown as DashboardInfo;
 };
 
 // export const getDashboardComponentSupplyDemandRatio = async () => {
@@ -685,20 +689,20 @@ export const getDashboardInfo = async () => {
 //     });
 //     return { name: component.name, quantity: qty };
 //   });
-//   return { data: data } as unknown as APIdata<{ name: string; quantity: number }[]>;
+//   return { data: data } as unknown as ResultData<{ name: string; quantity: number }[]>;
 // }
 
 // ---- BACKUPS ----
 
 export const getBackupsList = async () => {
   const backups = await client.backups.getFullList();
-  return { data: backups } as unknown as APIdata<Backup.ResGetBackupRecord[]>;
+  return backups as unknown as Backup.ResGetBackupRecord[];
 };
 
 export const postBackupCreate = async (params: Backup.ReqCreateBackupParams) => {
   const name = params.name ? params.name : "";
   const backup = await client.backups.create(name);
-  return { data: backup } as unknown as APIdata<Backup.ResGetBackupRecord>;
+  return backup as unknown as Backup.ResGetBackupRecord;
 };
 
 export const deleteBackup = async (params: Backup.ReqDeleteBackupParams) => {
@@ -712,7 +716,7 @@ export const postBackupRestore = async (params: Backup.ReqRestoreBackupParams) =
 // ---- HEALTH ----
 
 export const getHealth = async () => {
-  let res = (await client.send("/api/health", {})) as unknown as APIdata<Health.ResHealth>;
+  let res = (await client.send("/api/health", {})) as unknown as Health.ResHealth;
   console.log("getHealth", res);
-  return { data: res } as unknown as APIdata<Health.ResHealth>;
+  return res as unknown as Health.ResHealth;
 };

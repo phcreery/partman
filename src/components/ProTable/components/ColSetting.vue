@@ -1,16 +1,19 @@
 <template>
-  <!-- Column display settings -->
-  <el-drawer title="Column settings" v-model="drawerVisible" size="500px">
-    <div class="table" ref="colTableRef">
-      <el-table :data="colSetting" :border="true">
-        <el-table-column prop="label" label="Column" :align="'center'" />
-        <el-table-column prop="name" label="Visibility" v-slot="scope" :align="'center'">
-          <el-switch v-model="scope.row.isShow"></el-switch>
+  <!-- Column Settings -->
+  <el-drawer v-model="drawerVisible" title="Column Settings" size="450px">
+    <div class="table-main">
+      <el-table :data="colSetting" :border="true" row-key="prop" default-expand-all :tree-props="{ children: '_children' }">
+        <el-table-column prop="label" align="center" label="Column Name" />
+        <el-table-column v-slot="scope" prop="isShow" align="center" label="Visible">
+          <el-switch v-model="scope.row.isShow" />
+        </el-table-column>
+        <el-table-column v-slot="scope" prop="sortable" align="center" label="Sortable">
+          <el-switch v-model="scope.row.sortable" />
         </el-table-column>
         <template #empty>
           <div class="table-empty">
             <img src="@/assets/images/notData.png" alt="notData" />
-            <div>No data</div>
+            <div>No configurable columns</div>
           </div>
         </template>
       </el-table>
@@ -18,15 +21,21 @@
   </el-drawer>
 </template>
 
-<script setup lang="ts" name="colSetting">
+<script setup lang="ts">
+defineOptions({
+  name: "ColSetting"
+});
 import { ref } from "vue";
-import { ColumnProps } from "@/components/ProTable/interface";
+import type { ColumnProps } from "@/components/ProTable/interface";
+
 defineProps<{ colSetting: ColumnProps[] }>();
+
 const drawerVisible = ref<boolean>(false);
-// 打开列设置
+
 const openColSetting = () => {
   drawerVisible.value = true;
 };
+
 defineExpose({
   openColSetting
 });

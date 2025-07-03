@@ -1,20 +1,9 @@
-// * 设置 notification/message 层级在 loading 之上
-.el-message,
-.el-notification {
-  z-index: 99999 !important;
-}
-
-// * 设置 el-alert 边框
+/* el-alert */
 .el-alert {
   border: 1px solid;
 }
 
-// * 解决 popup 弹出时宽度会 100%-8px 问题，在浏览器缩放 特定的情况下才会出现
-.el-popup-parent--hidden {
-  width: 100% !important;
-}
-
-// * 当前页面最大化 css
+/* 当前页面最大化 css */
 .main-maximize {
   .aside-split,
   .el-aside,
@@ -25,18 +14,24 @@
   }
 }
 
-// * card 卡片样式
+/* mask image */
+.mask-image {
+  padding-right: 50px;
+  mask-image: linear-gradient(90deg, #000000 0%, #000000 calc(100% - 50px), transparent);
+}
+
+/* custom card */
 .card {
   box-sizing: border-box;
   padding: 20px;
   overflow-x: hidden;
-  background-color: var(--el-fill-color-blank);
+  background-color: var(--el-bg-color);
   border: 1px solid var(--el-border-color-light);
-  border-radius: 4px;
+  border-radius: 6px;
   box-shadow: 0 0 12px rgb(0 0 0 / 5%);
 }
 
-// * 不需要 card 卡片样式（在组件内使用 proTable 会使用到）
+/* ProTable 不需要 card 样式（在组件内使用 ProTable 会使用到） */
 .no-card {
   .card {
     padding: 0;
@@ -45,9 +40,13 @@
     border-radius: 0;
     box-shadow: none;
   }
+  .table-search {
+    padding: 18px 0 0 !important;
+    margin-bottom: 0 !important;
+  }
 }
 
-// * content-box (常用内容盒子)
+/* content-box (常用内容盒子) */
 .content-box {
   display: flex;
   flex-direction: column;
@@ -71,19 +70,19 @@
   }
 }
 
-// * main-box (树形表格 treeFilter 页面会使用，左右布局 flex)
+/* main-box (树形表格 treeFilter 页面会使用，左右布局 flex) */
 .main-box {
   display: flex;
   width: 100%;
   height: 100%;
   .table-box {
-    width: calc(100% - 230px);
+    overflow: hidden;
   }
 }
 
-// * table-box 表格页面样式
-.table,
-.table-box {
+/* proTable */
+.table-box,
+.table-main {
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -95,24 +94,13 @@
     padding: 18px 18px 0;
     margin-bottom: 10px;
     .el-form {
-      .el-input,
-      .el-select,
-      .el-cascader,
-      .el-date-editor--timerange,
-      .el-date-editor--datetimerange,
-      .el-date-editor--daterange {
+      .el-form-item__content > * {
         width: 100%;
       }
 
       // 去除时间选择器上下 padding
       .el-range-editor.el-input__wrapper {
         padding: 0 10px;
-      }
-
-      // el-select 为多选时不换行显示
-      .el-select__tags {
-        overflow: hidden;
-        white-space: nowrap;
       }
     }
     .operation {
@@ -125,14 +113,21 @@
 
   // 表格 header 样式
   .table-header {
+    .header-button-lf,
+    .header-button-ri {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px 12px;
+      margin-bottom: 15px;
+      .el-button:not(.el-input .el-button) {
+        margin-left: 0;
+      }
+    }
     .header-button-lf {
       float: left;
     }
     .header-button-ri {
       float: right;
-    }
-    .el-button {
-      margin-bottom: 15px;
     }
   }
 
@@ -154,21 +149,28 @@
     .el-table__row {
       height: 45px;
       font-size: 14px;
+      .move {
+        cursor: move;
+        .el-icon {
+          cursor: move;
+        }
+      }
     }
 
     // 设置 el-table 中 header 文字不换行，并省略
     .el-table__header .el-table__cell > .cell {
-      white-space: nowrap;
+      // white-space: nowrap;
+      white-space: wrap;
     }
 
     // 解决表格数据为空时样式不居中问题(仅在element-plus中)
     .el-table__empty-block {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
       .table-empty {
         line-height: 30px;
+        img {
+          display: inline-flex;
+        }
       }
     }
 
@@ -188,7 +190,7 @@
   }
 }
 
-// * el-table 组件大小切换样式
+/* el-table 组件大小 */
 .el-table--small {
   .el-table__header th {
     height: 40px !important;
@@ -210,14 +212,15 @@
   }
 }
 
-// * el-drawer 样式
+/* el-drawer */
 .el-drawer {
   .el-drawer__header {
-    padding: 15px 20px 14px;
+    padding: 16px 20px;
     margin-bottom: 0;
     border-bottom: 1px solid var(--el-border-color-lighter);
     span {
       font-size: 17px;
+      line-height: 17px;
       color: var(--el-text-color-primary) !important;
     }
   }
@@ -225,12 +228,12 @@
     border-top: 1px solid var(--el-border-color-lighter);
   }
 
-  // drawer select 样式
+  // select 样式
   .el-select {
     width: 100%;
   }
 
-  // drawer-form 中两列 form-item
+  // drawer-form 中存在两列 form-item 样式
   .drawer-multiColumn-form {
     display: flex;
     flex-wrap: wrap;
@@ -243,8 +246,9 @@
   }
 }
 
-// * el-dialog 样式
+/* el-dialog */
 .el-dialog {
+  padding: 0;
   .el-dialog__header {
     padding: 15px 20px;
     margin: 0;
@@ -252,5 +256,9 @@
     .el-dialog__title {
       font-size: 17px;
     }
+  }
+  .el-dialog__body,
+  .el-dialog__footer {
+    padding: 15px 20px;
   }
 }

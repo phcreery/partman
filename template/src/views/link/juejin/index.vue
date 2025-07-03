@@ -1,14 +1,19 @@
 <template>
-	<div class="card content-box">
-		<span class="text">
-			掘金文档：
-			<a href="https://juejin.cn/post/7080820051422478366" target="_blank">https://juejin.cn/post/7080820051422478366</a> 🍒🍉🍊
-		</span>
-	</div>
+  <div class="card content-box">
+    <span class="text">
+      掘金文档：
+      <a href="https://juejin.cn/user/3263814531551816/posts" target="_blank"
+        >https://juejin.cn/user/3263814531551816/posts</a
+      >
+      🍒🍉🍊
+    </span>
+  </div>
 </template>
 
-<script setup lang="ts" name="juejin"></script>
+<script setup lang="ts">
+defineOptions({ name: 'Juejin' })
+</script>
 
 <style scoped lang="scss">
-@import "./index.scss";
+@use './index';
 </style>

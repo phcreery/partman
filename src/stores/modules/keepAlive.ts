@@ -1,26 +1,22 @@
-import { defineStore } from "pinia";
-import { keepAliveState } from "@/stores/interface";
+import { defineStore } from 'pinia'
+import type { KeepAliveState } from '@/stores/interface'
 
-// KeepAliveStore
-export const KeepAliveStore = defineStore({
-	id: "keepAliveStore",
-	state: (): keepAliveState => ({
-		// The current cache of routerName ==> No persistence
-		keepLiveName: []
-	}),
-	getters: {},
-	actions: {
-		// addKeepLiveName
-		async addKeepLiveName(name: string) {
-			!this.keepLiveName.includes(name) && this.keepLiveName.push(name);
-		},
-		// removeKeepLiveName
-		async removeKeepLiveName(name: string) {
-			this.keepLiveName = this.keepLiveName.filter(item => item !== name);
-		},
-		// clearMultipleKeepAlive
-		async clearMultipleKeepAlive(keepLiveName: string[] = []) {
-			this.keepLiveName = keepLiveName;
-		}
-	}
-});
+export const useKeepAliveStore = defineStore('geeker-keepAlive', {
+  state: (): KeepAliveState => ({
+    keepAliveName: [],
+  }),
+  actions: {
+    // Add KeepAliveName
+    async addKeepAliveName(name: string) {
+      !this.keepAliveName.includes(name) && this.keepAliveName.push(name)
+    },
+    // Remove KeepAliveName
+    async removeKeepAliveName(name: string) {
+      this.keepAliveName = this.keepAliveName.filter(item => item !== name)
+    },
+    // Set KeepAliveName
+    async setKeepAliveName(keepAliveName: string[] = []) {
+      this.keepAliveName = keepAliveName
+    },
+  },
+})

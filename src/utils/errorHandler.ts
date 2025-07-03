@@ -1,28 +1,28 @@
 import { ElNotification } from "element-plus";
 
 /**
- * @description 全局代码Error捕捉
+ * @description Global code error handler
  * */
 const errorHandler = (error: any) => {
-  // Filtering HTTP Request Error
+  // Filter HTTP request errors
   if (error.status || error.status == 0) return false;
-  let errorMap: { [key: string]: string } = {
-    InternalError: "JavascriptInternal engine errors",
-    ReferenceError: "No match found",
-    TypeError: "Wrong type or object is used",
-    RangeError: "When using built-in objects，Parameters out of range",
-    SyntaxError: "Grammatical errors",
-    EvalError: "Wrong use ofEval",
-    URIError: "URI错误"
+  const errorMap: { [key: string]: string } = {
+    InternalError: "Internal JavaScript engine error",
+    ReferenceError: "Object not found",
+    TypeError: "Incorrect type or object used",
+    RangeError: "Parameter out of range when using built-in object",
+    SyntaxError: "Syntax error",
+    EvalError: "Incorrect use of Eval",
+    URIError: "URI error"
   };
-  let errorName = errorMap[error.name] || "Unknown error";
+  const errorName = errorMap[error.name] || "Unknown error";
+  console.error("Global error handler:", error);
   ElNotification({
     title: errorName,
     message: error,
     type: "error",
     duration: 3000
   });
-  console.error(error);
 };
 
 export default errorHandler;

@@ -9,12 +9,12 @@ import { APIdata, Upload } from "@/api/interface/index";
 export const uploadImg = (params: FormData) => {
   console.log(params);
   // return http.post<Upload.ResFileUrl>(PORT1 + `/file/upload/img`, params);
-  return { data: undefined } as unknown as APIdata<Upload.ResFileUrl>;
+  return { data: undefined } as unknown as ResultData<Upload.ResFileUrl>;
 };
 
 // * 视频上传
 export const uploadVideo = (params: FormData) => {
   console.log(params);
   // return http.post<Upload.ResFileUrl>(PORT1 + `/file/upload/video`, params);
-  return { data: undefined } as unknown as APIdata<Upload.ResFileUrl>;
+  return { data: undefined } as unknown as ResultData<Upload.ResFileUrl>;
 };

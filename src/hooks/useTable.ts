@@ -50,8 +50,11 @@ export const useTable = (
   const pageParam = computed({
     get: () => {
       return {
-        pageNum: state.pageable.pageNum,
-        pageSize: state.pageable.pageSize
+        // Customized for PocketBase
+        // pageNum: state.pageable.pageNum,
+        // pageSize: state.pageable.pageSize
+        page: state.pageable.pageNum,
+        perPage: state.pageable.pageSize
       };
     },
     set: (newVal: any) => {
@@ -68,6 +71,7 @@ export const useTable = (
     try {
       // 先把初始化参数和分页参数放到总参数里面
       Object.assign(state.totalParam, initParam, isPageable ? pageParam.value : {});
+      console.log("{ ...state.searchInitParam, ...state.totalParam }", { ...state.searchInitParam, ...state.totalParam });
       let data = await api({ ...state.searchInitParam, ...state.totalParam });
       // console.log("data", data);
       dataCallBack && (data = dataCallBack(data));
@@ -101,7 +105,9 @@ export const useTable = (
         nowSearchParam[key] = state.searchParam[key];
       }
     }
-    Object.assign(state.totalParam, nowSearchParam);
+
+    // Customized for PocketBase
+    Object.assign(state.totalParam, { filter: nowSearchParam }, isPageable ? pageParam.value : {});
   };
 
   /**

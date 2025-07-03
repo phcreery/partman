@@ -32,6 +32,8 @@ const srcMyFoldersToKeep = [
   // remove "item.isShow &&" from colSetting
   // change default pageSize: 25,
   // add { printData, tableColumns } to export
+  // update updatedTotalParam() to include { filter: nowSearchParam }, isPageable ? pageParam.value : {}
+  // update pageParam() to return { page: state.pageable.pageNum, perPage: state.pageable.pageSize }
   "components/ProTree" // this is my tree component TODO: use new tree filter component found in the template
 ];
 

@@ -1,4 +1,4 @@
-import { Login, APIdata } from "@/api/interface/index";
+import { Login, ResultData } from "@/api/interface/index";
 import type { MenuOptions } from "@/api/interface/menu";
 import client from "@/api";
 import { HOME_URL } from "@/config";
@@ -7,7 +7,7 @@ import { HOME_URL } from "@/config";
  * @name Login module
  */
 // * User login interface
-export const loginApi = async (params: Login.ReqLoginForm): Promise<Partial<ResultData<Login.ResLogin>>> => {
+export const loginApi = async (params: Login.ReqLoginForm): Promise<Login.ResLogin> => {
   // return http.post<Login.ResLogin>(PORT1 + `/login`, params); // normal post json ask  ==>  application/json
   // return http.post<Login.ResLogin>(PORT1 + `/login`, {}, { params }); // post Request to carry Query parameter  ==>  ?username=admin&password=123456
   // return http.post<Login.ResLogin>(PORT1 + `/login`, qs.stringify(params)); // post Request to carry form parameters  ==>  application/x-www-form-urlencoded
@@ -15,7 +15,7 @@ export const loginApi = async (params: Login.ReqLoginForm): Promise<Partial<Resu
   const authData = await client.collection("users").authWithPassword(params.username, params.password);
   // authData.user = await client.collection("users").getOne(authData.record.id);
   // console.log("authData", authData);
-  return { data: authData };
+  return authData;
 };
 
 export const loginApiAsAdmin = async (params: Login.ReqLoginForm): Promise<Login.ResLogin> => {

@@ -12,7 +12,7 @@
         <el-button
           :icon="EditPen"
           :disabled="scope.row.id === ''"
-          @click="openStorageCategoryDrawer('Edit', scope.row)"
+          @click="openStorageCategoryDrawer('Edit', scope.row as unknown as StorageCategory.ResGetStorageCategoryRecord)"
           v-if="BUTTONS.edit"
         ></el-button>
         <el-button
@@ -28,6 +28,7 @@
     </ProTree>
     <div class="table-box">
       <ProTable
+        pageAuthId="storage"
         ref="proTable"
         :columns="columns"
         :requestApi="getStorageList"
@@ -68,7 +69,7 @@
 
 <script setup lang="tsx" name="storage">
 import { ref, reactive, nextTick } from "vue";
-import { ColumnProps } from "@/components/ProTable/interface/index";
+import { ColumnProps, PageableList } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import ProTable from "@/components/ProTable/index.vue";
@@ -104,9 +105,9 @@ const initParamCategory = reactive({});
 const dataCallbackTree = (data: any) => {
   return data;
 };
-const dataCallbackTable = (data: ResList<Storage.ResGetStorageRecord>) => {
+const dataCallbackTable = (data: ResList<Storage.ResGetStorageRecord>): PageableList<Storage.ResGetStorageRecord> => {
   return {
-    datalist: data.items,
+    list: data.items,
     total: data.totalItems,
     pageNum: data.page,
     pageSize: data.perPage
@@ -175,28 +176,25 @@ const batchDeleteCategory = async (ids: string[]) => {
 };
 
 // Open the drawer (new, view, edit)
-interface DrawerExpose {
-  acceptParams: (params: any) => void;
-}
-const drawerRefStorage = ref<DrawerExpose>();
-const openStorageDrawer = (title: string, rowData: Partial<Storage.ResGetStorageRecord> = {}) => {
+const drawerRefStorage = ref<InstanceType<typeof StorageDrawer>>();
+const openStorageDrawer = (title: string, rowData?: Storage.ResGetStorageRecord) => {
   let params = {
     title,
-    rowData: { ...rowData },
+    rowData: rowData || ({} as Storage.ResGetStorageRecord),
     isView: title === "View",
-    apiUrl: title === "New" ? postStorageCreate : title === "Edit" ? patchStorageUpdate : "",
+    apiUrl: title === "New" ? postStorageCreate : title === "Edit" ? patchStorageUpdate : undefined,
     updateTable: proTable.value.getTableList
   };
   drawerRefStorage.value!.acceptParams(params);
 };
 
-const drawerRefStorageCategory = ref<DrawerExpose>();
-const openStorageCategoryDrawer = (title: string, rowData: Partial<StorageCategory.ResGetStorageCategoryRecord> = {}) => {
+const drawerRefStorageCategory = ref<InstanceType<typeof StorageCategoryDrawer>>();
+const openStorageCategoryDrawer = (title: string, rowData?: StorageCategory.ResGetStorageCategoryRecord) => {
   let params = {
     title,
-    rowData: { ...rowData },
+    rowData: rowData || ({} as StorageCategory.ResGetStorageCategoryRecord),
     isView: title === "View",
-    apiUrl: title === "New" ? postStorageCategoryCreate : title === "Edit" ? patchStorageCategoryUpdate : "",
+    apiUrl: title === "New" ? postStorageCategoryCreate : title === "Edit" ? patchStorageCategoryUpdate : undefined,
     updateTable: proTree.value.refresh
   };
   drawerRefStorageCategory.value!.acceptParams(params);

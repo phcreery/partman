@@ -133,7 +133,7 @@ const trimEllip = (string: string, length: number) => {
 
 const components = ref<Component.ResGetComponentRecord[]>();
 
-const refreshComponents = () => getComponentEnum().then(res => (components.value = res.data));
+const refreshComponents = () => getComponentEnum().then(res => (components.value = res));
 
 // When opening the drawer, fetch the necessary field values
 watch(drawerVisible, openValue => {

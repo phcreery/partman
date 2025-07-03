@@ -121,7 +121,7 @@ const handleSubmit = () => {
 
 const componentProjects = ref<Project.ResGetProjectRecord[]>();
 
-const refreshProjects = () => getProjectsEnum().then(res => (componentProjects.value = res.data));
+const refreshProjects = () => getProjectsEnum().then(res => (componentProjects.value = res));
 
 // When opening the drawer, fetch the necessary field values
 watch(drawerVisible, openValue => {
@@ -131,17 +131,13 @@ watch(drawerVisible, openValue => {
 });
 
 // Open the drawer (new, view, edit)
-interface DrawerExpose {
-  acceptParams: (params: any) => void;
-}
-// New Footprint Drawer
-const drawerRefNestedProject = ref<DrawerExpose>();
-const openProjectDrawer = (title: string, rowData: Partial<Project.ResGetProjectRecord> = {}) => {
+const drawerRefNestedProject = ref<InstanceType<typeof ProjectDrawer>>();
+const openProjectDrawer = (title: string, rowData?: Project.ResGetProjectRecord) => {
   let params = {
     title,
-    rowData: { ...rowData },
+    rowData: rowData || ({} as Project.ResGetProjectRecord),
     isView: title === "View",
-    apiUrl: title === "New" ? postProjectCreate : "",
+    apiUrl: title === "New" ? postProjectCreate : undefined,
     updateTable: refreshProjects // proTable.value.refresh
   };
   drawerRefNestedProject.value!.acceptParams(params);

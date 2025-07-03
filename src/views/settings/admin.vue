@@ -2,29 +2,25 @@
   <div class="card content-box">
     <el-tabs v-model="activeTabName" style="width: 100%">
       <el-tab-pane label="Server" name="server">
-        <div v-if="health.data.code === 200">
-          <el-result icon="success" :title="health.data.message" :sub-title="'Code: ' + health.data.code">
-            <template #extra>
-              <el-button type="primary" @click="gotoAdminUI">Pocketbase Admin UI</el-button>
-            </template>
-          </el-result>
-        </div>
-        <div v-else>
-          <el-result icon="error" :title="health.data.message" :sub-title="'Code: ' + health.data.code">
-            <template #extra>
-              <el-button type="primary" @click="gotoAdminUI">Pocketbase Admin UI</el-button>
-            </template>
-          </el-result>
-        </div>
+        <el-result
+          :icon="health.data.code === 200 ? 'success' : 'error'"
+          :title="health.data.message"
+          :sub-title="'Code: ' + health.data.code"
+        >
+          <template #extra>
+            <el-button @click="updateHealth">Refresh</el-button>
+            <el-button type="primary" @click="gotoAdminUI">Pocketbase Admin UI</el-button>
+          </template>
+        </el-result>
       </el-tab-pane>
 
       <el-tab-pane label="Octopart" name="octopart">
         <el-form :model="octopartFormData" label-width="140px" style="width: 100%">
           <el-form-item label="Octopart ID :">
-            <el-input v-model="octopartFormData.id" clearable />
+            <el-input v-model="octopartFormData.id" clearable style="width: 300px" />
           </el-form-item>
           <el-form-item label="Octopart Secret :">
-            <el-input v-model="octopartFormData.secret" clearable />
+            <el-input v-model="octopartFormData.secret" clearable style="width: 300px" type="password" show-password />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">Save</el-button>
@@ -43,11 +39,11 @@ import { ref, reactive, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 // import { useAuthButtons } from "@/hooks/useAuthButtons";
 import { getConfig, patchConfigUpdate, getHealth } from "@/api/modules/components";
-import { APIdata, Health } from "@/api/interface/index";
+import { ResultData, Health } from "@/api/interface/index";
 
 const activeTabName = ref("server");
 // const backups = ref<ResultData<Backup.ResGetBackupRecord[]>>({});
-const health = ref<ResultData<Health.ResHealth>>({ data: { message: "", code: 0 } });
+const health = ref<ResultData<Health.ResHealth>>({ code: 500, msg: "", data: { message: "", code: 0 } });
 
 // do not use same name with ref
 const octopartFormData = reactive({
@@ -75,13 +71,20 @@ const onSubmit = async () => {
 };
 
 const gotoAdminUI = () => {
-  window.open(window.location.host + "/_/", "_blank");
+  window.open(import.meta.env.VITE_API_URL + "_/", "_blank");
+};
+
+const updateHealth = async () => {
+  try {
+    health.value.data = await getHealth();
+  } catch (error) {
+    console.error("Error fetching health data:", error);
+  }
 };
 
 onMounted(async () => {
   console.log("mounted");
-  // backups.value = await getBackupsList();
-  health.value = await getHealth();
+  await updateHealth();
 });
 
 getOctopartFormData();

@@ -2,6 +2,7 @@
   <div class="table-box">
     <ProTable
       ref="proTable"
+      pageAuthId="builds"
       :columns="columns"
       :requestApi="getComponentLogsList"
       :initParam="initParam"
@@ -29,7 +30,7 @@
 <script setup lang="tsx" name="logs">
 import { ref, reactive } from "vue";
 import { ZoomIn, Download } from "@element-plus/icons-vue";
-import { ColumnProps } from "@/components/ProTable/interface/index";
+import { ColumnProps, PageableList } from "@/components/ProTable/interface/index";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import ProTable from "@/components/ProTable/index.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
@@ -53,9 +54,11 @@ const proTable = ref();
 const initParam = reactive({});
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
-const dataCallback = (data: ResList<ComponentLog.ResGetComponentLogRecord>) => {
+const dataCallback = (
+  data: ResList<ComponentLog.ResGetComponentLogRecord>
+): PageableList<ComponentLog.ResGetComponentLogRecord> => {
   return {
-    datalist: data.items,
+    list: data.items,
     total: data.totalItems,
     pageNum: data.page,
     pageSize: data.perPage
@@ -162,10 +165,10 @@ const openDrawer = (title: string, rowData: Partial<ComponentLog.ResGetComponent
         title === "New"
           ? postComponentCreate
           : title === "Edit"
-          ? patchComponentUpdate
-          : title === "Stock"
-          ? patchComponentUpdate
-          : "",
+            ? patchComponentUpdate
+            : title === "Stock"
+              ? patchComponentUpdate
+              : "",
       updateTable: proTable.value.refresh
     };
     drawerRef.value!.acceptParams(params);

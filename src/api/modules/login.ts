@@ -187,7 +187,7 @@ export const getAuthMenuListApi = (): MenuOptions[] => {
             name: "admin",
             component: "/settings/admin",
             meta: {
-              icon: "setting",
+              icon: "operation",
               title: "Admin",
               isLink: "",
               isHide: false,

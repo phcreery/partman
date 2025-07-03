@@ -1,10 +1,6 @@
 import { reactive, computed, toRefs } from "vue";
+import { Pageable } from "@/components/ProTable/interface/index";
 
-export interface Pageable {
-  pageNum: number;
-  pageSize: number;
-  total: number;
-}
 export interface StateProps {
   tableData: any[];
   pageable: Pageable;
@@ -15,11 +11,11 @@ export interface StateProps {
 }
 
 /**
- * @description table 页面操作方法封装
- * @param {Function} api 获取表格数据 api 方法 (必传)
- * @param {Object} initParam 获取数据初始化参数 (非必传，默认为{})
- * @param {Boolean} isPageable 是否有分页 (非必传，默认为true)
- * @param {Function} dataCallBack 对后台返回的数据进行处理的方法 (非必传)
+ * @description Encapsulated table page operation methods
+ * @param {Function} api API method to get table data (required)
+ * @param {Object} initParam Initial parameters for fetching data (optional, default is {})
+ * @param {Boolean} isPageable Whether to use pagination (optional, default is true)
+ * @param {Function} dataCallBack Method to process the data returned from the backend (optional)
  * */
 export const useTable = (
   api?: (_params: any) => Promise<any>,
@@ -29,27 +25,27 @@ export const useTable = (
   requestError?: (_error: any) => void
 ) => {
   const state = reactive<StateProps>({
-    // 表格数据
+    // Table data
     tableData: [],
-    // 分页数据
+    // Pagination data
     pageable: {
-      // 当前页数
+      // Current page number
       pageNum: 1,
-      // 每页显示条数
+      // Number of items per page
       pageSize: 10,
-      // 总条数
+      // Total number of items
       total: 0
     },
-    // 查询参数(只包括查询)
+    // Search parameters (only for queries)
     searchParam: {},
-    // 初始化默认的查询参数
+    // Initial default search parameters
     searchInitParam: {},
-    // 总参数(包含分页和查询参数)
+    // Total parameters (including pagination and search parameters)
     totalParam: {}
   });
 
   /**
-   * @description 分页查询参数(只包括分页和表格字段排序,其他排序方式可自行配置)
+   * @description Pagination query parameters (only includes pagination and table field sorting, other sorting methods can be configured as needed)
    * */
   const pageParam = computed({
     get: () => {

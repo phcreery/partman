@@ -2,6 +2,7 @@
   <div class="table-box">
     <ProTable
       ref="proTable"
+      pageAuthId="builds"
       :columns="columns"
       :requestApi="getProjectBuildsList"
       :initParam="initParam"
@@ -36,7 +37,7 @@
 <script setup lang="tsx" name="builds">
 import { ref, reactive } from "vue";
 import { CirclePlus, Download } from "@element-plus/icons-vue";
-import { ColumnProps } from "@/components/ProTable/interface/index";
+import { ColumnProps, PageableList } from "@/components/ProTable/interface/index";
 // import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import { useDownload } from "@/hooks/useDownload";
@@ -60,9 +61,11 @@ const initParam = reactive({
 });
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
-const dataCallback = (data: ResList<ProjectBuilds.ResGetProjectBuildRecord>) => {
+const dataCallback = (
+  data: ResList<ProjectBuilds.ResGetProjectBuildRecord>
+): PageableList<ProjectBuilds.ResGetProjectBuildRecord> => {
   return {
-    datalist: data.items,
+    list: data.items,
     total: data.totalItems,
     pageNum: data.page,
     pageSize: data.perPage
@@ -129,17 +132,13 @@ const downloadFile = async () => {
 };
 
 // Open the drawer (new, view, edit)
-interface DrawerExpose {
-  acceptParams: (params: any) => void;
-}
-const drawerRef = ref<DrawerExpose>();
-const openDrawer = (title: string, rowData: Partial<Component.ResGetComponentRecord> = {}) => {
-  /*eslint indent: ["error", 2, { "ignoredNodes": ["ConditionalExpression"] }]*/
+const drawerRef = ref<InstanceType<typeof ProjectBuildDrawer>>();
+const openDrawer = (title: string, rowData?: ProjectBuilds.ResGetProjectBuildRecord) => {
   let params = {
     title,
-    rowData: { ...rowData },
+    rowData: rowData || ({} as ProjectBuilds.ResGetProjectBuildRecord),
     isView: title === "View",
-    apiUrl: title === "New" ? postProjectBuildsCreate : "",
+    apiUrl: title === "New" ? postProjectBuildsCreate : undefined,
     updateTable: proTable.value.getTableList
   };
   drawerRef.value!.acceptParams(params);

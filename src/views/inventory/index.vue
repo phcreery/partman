@@ -128,7 +128,7 @@ const { BUTTONS } = useAuthButtons();
 // Table configuration item
 const columns: ColumnProps<Component.ResGetComponentRecord>[] = [
   { type: "selection", width: 40, fixed: "left" },
-  { type: "expand", label: "Expand" },
+  { type: "expand", label: "" },
   {
     prop: "category",
     label: "Category",
@@ -192,8 +192,8 @@ const columns: ColumnProps<Component.ResGetComponentRecord>[] = [
   },
   {
     prop: "description",
-    label: "Description",
-    // width: 220,
+    label: "Desc.",
+    width: 220,
     align: "left",
     search: { el: "input" }
   },

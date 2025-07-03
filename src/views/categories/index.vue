@@ -121,7 +121,7 @@ const dataCallbackTree = (data: any) => {
 };
 const dataCallbackTable = (data: ResList<Component.ResGetComponentRecord>) => {
   return {
-    datalist: data.items,
+    list: data.items,
     total: data.totalItems,
     pageNum: data.page,
     pageSize: data.perPage
@@ -303,7 +303,7 @@ const drawerRefComponent = ref<InstanceType<typeof ComponentDrawer>>();
 const openComponentDrawer = (title: string, rowData?: Component.ResGetComponentRecord) => {
   let params = {
     title,
-    rowData,
+    rowData: rowData || ({} as Component.ResGetComponentRecord),
     isView: title === "View",
     apiUrl: title === "New" ? postComponentCreate : title === "Edit" ? patchComponentUpdate : undefined,
     updateTable: proTable.value.getTableList
@@ -315,7 +315,7 @@ const drawerRefComponentCategory = ref<InstanceType<typeof ComponentCategoryDraw
 const openComponentCategoryDrawer = (title: string, rowData?: ComponentCategory.ResGetComponentCategoryRecord) => {
   let params = {
     title,
-    rowData,
+    rowData: rowData || ({} as ComponentCategory.ResGetComponentCategoryRecord),
     isView: title === "View",
     apiUrl: title === "New" ? postComponentCategoryCreate : title === "Edit" ? patchComponentCategoryUpdate : undefined,
     updateTable: proTree.value.refresh

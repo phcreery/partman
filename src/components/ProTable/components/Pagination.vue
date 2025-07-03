@@ -14,21 +14,17 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({ name: 'Pagination' })
-import { useGlobalStore } from '@/stores/modules/global'
-const globalStore = useGlobalStore()
+defineOptions({ name: "Pagination" });
+import { useGlobalStore } from "@/stores/modules/global";
+import { Pageable } from "@/components/ProTable/interface/index";
 
-interface Pageable {
-  pageNum: number
-  pageSize: number
-  total: number
-}
+const globalStore = useGlobalStore();
 
 interface PaginationProps {
-  pageable: Pageable
-  handleSizeChange: (_size: number) => void
-  handleCurrentChange: (_currentPage: number) => void
+  pageable: Pageable;
+  handleSizeChange: (_size: number) => void;
+  handleCurrentChange: (_currentPage: number) => void;
 }
 
-defineProps<PaginationProps>()
+defineProps<PaginationProps>();
 </script>

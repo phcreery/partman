@@ -88,6 +88,7 @@ const getTreeList = async () => {
     // use nestedObjectAssign instead??
     Object.assign(totalParam.value, props.initParam, {}); // isPageable ? pageParam.value : {}
     let data = await props.requestApi(totalParam.value);
+    // console.log("getTreeList data:", data);
     props.dataCallback && (data = props.dataCallback(data));
     // Add default top-level selection item
     treeData.value = props.showAll ? [{ id: "", [props.label]: "All" }, ...data] : data;

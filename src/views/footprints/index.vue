@@ -29,6 +29,7 @@
     <div class="table-box">
       <ProTable
         ref="proTable"
+        pageAuthId="footprints"
         :columns="columns"
         :requestApi="getFootprintList"
         :initParam="initParam"
@@ -68,7 +69,7 @@
 
 <script setup lang="tsx" name="footprints">
 import { ref, reactive, nextTick } from "vue";
-import { ColumnProps } from "@/components/ProTable/interface/index";
+import { ColumnProps, PageableList } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import ProTable from "@/components/ProTable/index.vue";
@@ -105,9 +106,9 @@ const initParamCategory = reactive({});
 const dataCallbackTree = (data: any) => {
   return data;
 };
-const dataCallbackTable = (data: ResList<Footprint.ResGetFootprintRecord>) => {
+const dataCallbackTable = (data: ResList<Footprint.ResGetFootprintRecord>): PageableList<Footprint.ResGetFootprintRecord> => {
   return {
-    datalist: data.items,
+    list: data.items,
     total: data.totalItems,
     pageNum: data.page,
     pageSize: data.perPage
@@ -182,28 +183,25 @@ const batchDeleteCategory = async (ids: string[]) => {
 };
 
 // Open the drawer (new, view, edit)
-interface DrawerExpose {
-  acceptParams: (params: any) => void;
-}
-const drawerRefFootprint = ref<DrawerExpose>();
-const openFootprintDrawer = (title: string, rowData: Partial<Footprint.ResGetFootprintRecord> = {}) => {
+const drawerRefFootprint = ref<InstanceType<typeof FootprintDrawer>>();
+const openFootprintDrawer = (title: string, rowData?: Footprint.ResGetFootprintRecord) => {
   let params = {
     title,
-    rowData: { ...rowData },
+    rowData: rowData || ({} as Footprint.ResGetFootprintRecord),
     isView: title === "View",
-    apiUrl: title === "New" ? postFootprintCreate : title === "Edit" ? patchFootprintUpdate : "",
+    apiUrl: title === "New" ? postFootprintCreate : title === "Edit" ? patchFootprintUpdate : undefined,
     updateTable: proTable.value.getTableList
   };
   drawerRefFootprint.value!.acceptParams(params);
 };
 
-const drawerRefFootprintCategory = ref<DrawerExpose>();
+const drawerRefFootprintCategory = ref<InstanceType<typeof FootprintCategoryDrawer>>();
 const openFootprintCategoryDrawer = (title: string, rowData: Partial<FootprintCategory.ResGetFootprintCategoryRecord> = {}) => {
   let params = {
     title,
-    rowData: { ...rowData },
+    rowData: rowData || ({} as FootprintCategory.ResGetFootprintCategoryRecord),
     isView: title === "View",
-    apiUrl: title === "New" ? postFootprintCategoryCreate : title === "Edit" ? patchFootprintCategoryUpdate : "",
+    apiUrl: title === "New" ? postFootprintCategoryCreate : title === "Edit" ? patchFootprintCategoryUpdate : undefined,
     updateTable: proTree.value.refresh
   };
   drawerRefFootprintCategory.value!.acceptParams(params);

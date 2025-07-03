@@ -88,7 +88,7 @@
         <div class="table-empty">
           <slot name="empty">
             <img src="@/assets/images/notData.png" alt="notData" />
-            <div>暂无数据</div>
+            <div>No Data</div>
           </slot>
         </div>
       </template>
@@ -198,8 +198,6 @@ const enumMap = ref(new Map<string, { [key: string]: any }[]>());
 const setEnumMap = async ({ prop, enum: enumValue }: ColumnProps) => {
   if (!enumValue) return;
 
-  console.log(`setEnumMap: ${prop} => ${typeof enumValue}`);
-
   // 如果当前 enumMap 存在相同的值 return
   if (enumMap.value.has(prop!) && (typeof enumValue === "function" || enumMap.value.get(prop!) === enumValue)) return;
 
@@ -211,9 +209,6 @@ const setEnumMap = async ({ prop, enum: enumValue }: ColumnProps) => {
 
   // 当前 enum 为后台数据需要请求数据，则调用该请求接口，并存储到 enumMap
   const data = await enumValue();
-
-  console.log(`setEnumMap: ${prop} => ${data}`);
-  console.log(data);
 
   enumMap.value.set(prop!, data);
 };

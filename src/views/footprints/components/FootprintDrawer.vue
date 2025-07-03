@@ -141,7 +141,7 @@ const footprintCategories = ref();
 
 const refreshFootprintCategories = () =>
   getFootprintCategoryEnumTree().then(res => {
-    if (res) footprintCategories.value = res.data;
+    if (res) footprintCategories.value = res;
   });
 
 // When opening the drawer, fetch the necessary field values

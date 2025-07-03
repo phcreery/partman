@@ -31,6 +31,7 @@
     <div class="table-box">
       <ProTable
         ref="proTable"
+        pageAuthId="projects"
         :columns="columns"
         :requestApi="getProjectComponentsList"
         :initParam="initParam"
@@ -78,7 +79,7 @@
 <script setup lang="tsx" name="projects">
 import { ref, reactive } from "vue";
 import { ElNotification } from "element-plus";
-import { ColumnProps } from "@/components/ProTable/interface/index";
+import { ColumnProps, PageableList } from "@/components/ProTable/interface/index";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useDownload } from "@/hooks/useDownload";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
@@ -128,9 +129,11 @@ const dataCallbackTree = (data: any) => {
   projectData.value = data;
   return data;
 };
-const dataCallbackTable = (data: ResList<ProjectComponents.ReqGetProjectComponentListParams>) => {
+const dataCallbackTable = (
+  data: ResList<ProjectComponents.ReqGetProjectComponentListParams>
+): PageableList<ProjectComponents.ReqGetProjectComponentListParams> => {
   return {
-    datalist: data.items,
+    list: data.items,
     total: data.totalItems,
     pageNum: data.page,
     pageSize: data.perPage

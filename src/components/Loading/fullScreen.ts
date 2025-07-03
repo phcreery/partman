@@ -10,7 +10,6 @@ const startLoading = () => {
   if (loadingInstance && !loadingInstance.closed) {
     return;
   }
-  console.log("startLoading");
   loadingInstance = ElLoading.service({
     fullscreen: true,
     lock: true,
@@ -23,9 +22,7 @@ const startLoading = () => {
  * @description End Loading
  * */
 const endLoading = () => {
-  console.log("endLoading", loadingInstance);
   loadingInstance.close();
-  console.log("endLoading", loadingInstance);
 };
 
 /**
@@ -33,7 +30,6 @@ const endLoading = () => {
  * */
 let needLoadingRequestCount = 0;
 export const showFullScreenLoading = () => {
-  console.log("showFullScreenLoading");
   if (needLoadingRequestCount === 0) {
     needLoadingRequestCount++;
     startLoading();
@@ -46,7 +42,6 @@ export const showFullScreenLoading = () => {
  * @description Hide fullscreen loading
  * */
 export const tryHideFullScreenLoading = () => {
-  console.log("tryHideFullScreenLoading");
   if (needLoadingRequestCount <= 0) return;
   needLoadingRequestCount--;
   if (needLoadingRequestCount === 0) {

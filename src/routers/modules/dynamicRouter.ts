@@ -21,7 +21,6 @@ export const initDynamicRouter = async () => {
     await authStore.getAuthButtonList();
 
     // 2. Check if the current user has menu permissions
-    console.log("authStore.authMenuListGet", authStore.authMenuListGet);
     if (!authStore.authMenuListGet.length) {
       ElNotification({
         title: "No Access Permission",

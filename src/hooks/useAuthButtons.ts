@@ -8,7 +8,6 @@ import { useAuthStore } from "@/stores/modules/auth";
 export const useAuthButtons = () => {
   const route = useRoute();
   const authStore = useAuthStore();
-  console.log("useAuthButtons", route.name, authStore.authButtonListGet);
   const authButtons = authStore.authButtonListGet[route.name as string] || [];
   console.log("authButtons", JSON.stringify(authButtons));
 

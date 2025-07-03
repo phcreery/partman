@@ -208,7 +208,7 @@ const treeSelectProps = { value: "id", label: "name", disabled: "disabled", emit
 export interface DrawerProps {
   title: string;
   isView: boolean;
-  rowData?: Component.ResGetComponentRecord;
+  rowData: Component.ResGetComponentRecord;
   apiUrl?: (params: any, id?: string) => Promise<any>;
   updateTable?: () => Promise<any>;
 }
@@ -217,7 +217,8 @@ export interface DrawerProps {
 const drawerVisible = ref(false);
 const drawerData = ref<DrawerProps>({
   isView: false,
-  title: ""
+  title: "",
+  rowData: {} as Component.ResGetComponentRecord
 });
 
 // Parameters transmitted from the parent component

@@ -110,7 +110,7 @@ const storageCategories = ref();
 watch(drawerVisible, openValue => {
   if (openValue) {
     getStorageCategoryEnumTree().then(res => {
-      if (res) storageCategories.value = res.data;
+      if (res) storageCategories.value = res;
     });
   }
 });

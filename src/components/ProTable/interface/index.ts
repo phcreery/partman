@@ -69,6 +69,16 @@ export type HeaderRenderScope<T> = {
   [key: string]: any;
 };
 
+export interface Pageable {
+  pageNum: number;
+  pageSize: number;
+  total: number;
+}
+
+export interface PageableList<T = any> extends Pageable {
+  list: T[];
+}
+
 export interface ColumnProps<T = any>
   extends Partial<Omit<TableColumnCtx<T>, "type" | "children" | "renderCell" | "renderHeader">> {
   type?: TypeProps; // 列类型
@@ -93,7 +103,7 @@ export interface ProTableProps<Q = any, I = any> {
   requestApi?: (_params: Q) => Promise<ResList<I>>; // API to request table data ==> optional
   requestAuto?: boolean; // Whether to automatically execute the request API ==> optional (default: true)
   requestError?: (_params: any) => void; // Table API request error listener ==> optional
-  dataCallback?: (_data: any) => any; // Callback function for returned data, can be used to process data ==> optional
+  dataCallback?: (_data: any) => I[] | PageableList<I>; // Callback function for returned data, can be used to process data ==> optional
   title?: string; // Table title ==> optional
   pagination?: boolean; // Whether to show pagination component ==> optional (default: true)
   initParam?: Partial<Q>; // Initial request parameters ==> optional (default: {})

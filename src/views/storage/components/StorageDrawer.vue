@@ -141,7 +141,7 @@ const storageCategories = ref();
 
 const refreshStorageCategories = () =>
   getStorageCategoryEnumTree().then(res => {
-    if (res) storageCategories.value = res.data;
+    if (res) storageCategories.value = res;
   });
 
 // When opening the drawer, fetch the necessary field values

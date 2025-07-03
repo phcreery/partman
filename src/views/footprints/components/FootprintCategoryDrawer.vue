@@ -110,7 +110,7 @@ const footprintCategories = ref();
 watch(drawerVisible, openValue => {
   if (openValue) {
     getFootprintCategoryEnumTree().then(res => {
-      if (res) footprintCategories.value = res.data;
+      if (res) footprintCategories.value = res;
     });
   }
 });

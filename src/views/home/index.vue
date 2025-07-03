@@ -35,7 +35,10 @@
       </el-col>
       <el-col :span="6">
         <el-card shadow="hover">
-          partman <b>v{{ qty.version }}</b>
+          Version <b>{{ qty.version }}</b>
+          <br />
+          <!-- <el-text type="info">Update Available?</el-text> -->
+          <el-button type="info" link @click="checkForUpdate"> Check for Update </el-button>
         </el-card>
       </el-col>
     </el-row>
@@ -107,14 +110,14 @@ echarts.registerTheme("wonderland-dark", echartsThemeWonderlandDark);
 
 const getQty = async () => {
   const res = await getDashboardInfo();
-  qty.value.total_components = Number(res.data.totalComponents);
-  qty.value.unique_components = res.data.uniqueComponents;
-  qty.value.total_projects = res.data.totalProjects;
-  // qty.value.total_categories = res.data.total_categories;
-  qty.value.total_storage_locations = res.data.totalStorageLocations;
-  qty.value.version = res.data.version;
+  qty.value.total_components = Number(res.totalComponents);
+  qty.value.unique_components = res.uniqueComponents;
+  qty.value.total_projects = res.totalProjects;
+  // qty.value.total_categories = res.total_categories;
+  qty.value.total_storage_locations = res.totalStorageLocations;
+  qty.value.version = res.version;
 
-  storageLocationTreeData.value = res.data.storageLocationsTree;
+  storageLocationTreeData.value = res.storageLocationsTree;
 };
 
 const drawChart = () => {
@@ -139,6 +142,10 @@ watch(
     drawChart();
   }
 );
+
+function checkForUpdate() {
+  window.open("https://github.com/phcreery/partman/releases");
+}
 </script>
 
 <style scoped lang="scss">

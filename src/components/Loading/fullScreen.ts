@@ -1,45 +1,55 @@
-import { ElLoading } from 'element-plus'
+import { ElLoading } from "element-plus";
 
-/* 全局请求 loading */
-let loadingInstance: ReturnType<typeof ElLoading.service>
+/* Global request loading */
+let loadingInstance: ReturnType<typeof ElLoading.service>;
 
 /**
- * @description 开启 Loading
+ * @description Start Loading
  * */
 const startLoading = () => {
+  if (loadingInstance && !loadingInstance.closed) {
+    return;
+  }
+  console.log("startLoading");
   loadingInstance = ElLoading.service({
     fullscreen: true,
     lock: true,
-    text: 'Loading',
-    background: 'rgba(0, 0, 0, 0.7)',
-  })
-}
+    text: "Loading",
+    background: "rgba(0, 0, 0, 0.7)"
+  });
+};
 
 /**
- * @description 结束 Loading
+ * @description End Loading
  * */
 const endLoading = () => {
-  loadingInstance.close()
-}
+  console.log("endLoading", loadingInstance);
+  loadingInstance.close();
+  console.log("endLoading", loadingInstance);
+};
 
 /**
- * @description 显示全屏加载
+ * @description Show fullscreen loading
  * */
-let needLoadingRequestCount = 0
+let needLoadingRequestCount = 0;
 export const showFullScreenLoading = () => {
+  console.log("showFullScreenLoading");
   if (needLoadingRequestCount === 0) {
-    startLoading()
+    needLoadingRequestCount++;
+    startLoading();
+  } else {
+    needLoadingRequestCount++;
   }
-  needLoadingRequestCount++
-}
+};
 
 /**
- * @description 隐藏全屏加载
+ * @description Hide fullscreen loading
  * */
 export const tryHideFullScreenLoading = () => {
-  if (needLoadingRequestCount <= 0) return
-  needLoadingRequestCount--
+  console.log("tryHideFullScreenLoading");
+  if (needLoadingRequestCount <= 0) return;
+  needLoadingRequestCount--;
   if (needLoadingRequestCount === 0) {
-    endLoading()
+    endLoading();
   }
-}
+};

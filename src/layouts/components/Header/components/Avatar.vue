@@ -1,18 +1,22 @@
 <template>
   <el-dropdown trigger="click">
-    <div class="avatar">
+    <!-- <div class="avatar">
       <img src="@/assets/images/avatar.gif" alt="avatar" />
+    </div> -->
+
+    <div class="avatar isicon">
+      <el-avatar :icon="UserFilled" />
     </div>
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item @click="openDialog('infoRef')">
-          <el-icon><User /></el-icon>{{ $t('header.personalData') }}
+          <el-icon><User /></el-icon>{{ $t("header.personalData") }}
         </el-dropdown-item>
         <el-dropdown-item @click="openDialog('passwordRef')">
-          <el-icon><Edit /></el-icon>{{ $t('header.changePassword') }}
+          <el-icon><Edit /></el-icon>{{ $t("header.changePassword") }}
         </el-dropdown-item>
         <el-dropdown-item divided @click="logout">
-          <el-icon><SwitchButton /></el-icon>{{ $t('header.logout') }}
+          <el-icon><SwitchButton /></el-icon>{{ $t("header.logout") }}
         </el-dropdown-item>
       </el-dropdown-menu>
     </template>
@@ -25,46 +29,46 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: 'Avatar',
-})
-import { ref } from 'vue'
-import { LOGIN_URL } from '@/config'
-import { useRouter } from 'vue-router'
-import { logoutApi } from '@/api/modules/login'
-import { useUserStore } from '@/stores/modules/user'
-import { ElMessageBox, ElMessage } from 'element-plus'
-import InfoDialog from './InfoDialog.vue'
-import PasswordDialog from './PasswordDialog.vue'
+  name: "Avatar"
+});
+import { ref } from "vue";
+import { LOGIN_URL } from "@/config";
+import { useRouter } from "vue-router";
+import { logoutApi } from "@/api/modules/login";
+import { useUserStore } from "@/stores/modules/user";
+import { ElMessageBox, ElMessage } from "element-plus";
+import InfoDialog from "./InfoDialog.vue";
+import PasswordDialog from "./PasswordDialog.vue";
+import { UserFilled } from "@element-plus/icons-vue";
 
-const router = useRouter()
-const userStore = useUserStore()
-
-// 退出登录
+const router = useRouter();
+const userStore = useUserStore();
+// Logout
 const logout = () => {
-  ElMessageBox.confirm('您是否确认退出登录?', '温馨提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
+  ElMessageBox.confirm("Are you sure you want to log out?", "Prompt", {
+    confirmButtonText: "OK",
+    cancelButtonText: "Cancel",
+    type: "warning"
   }).then(async () => {
-    // 1.执行退出登录接口
-    await logoutApi()
+    // 1. Call logout API
+    await logoutApi();
 
-    // 2.清除 Token
-    userStore.setToken('')
+    // 2. Clear Token
+    userStore.setToken("");
 
-    // 3.重定向到登陆页
-    router.replace(LOGIN_URL)
-    ElMessage.success('退出登录成功！')
-  })
-}
+    // 3. Redirect to login page
+    router.replace(LOGIN_URL);
+    ElMessage.success("Logged out successfully!");
+  });
+};
 
-// 打开修改密码和个人信息弹窗
-const infoRef = ref<InstanceType<typeof InfoDialog> | null>(null)
-const passwordRef = ref<InstanceType<typeof PasswordDialog> | null>(null)
+// Open dialogs for editing password and personal information
+const infoRef = ref<InstanceType<typeof InfoDialog> | null>(null);
+const passwordRef = ref<InstanceType<typeof PasswordDialog> | null>(null);
 const openDialog = (ref: string) => {
-  if (ref == 'infoRef') infoRef.value?.openDialog()
-  if (ref == 'passwordRef') passwordRef.value?.openDialog()
-}
+  if (ref == "infoRef") infoRef.value?.openDialog();
+  if (ref == "passwordRef") passwordRef.value?.openDialog();
+};
 </script>
 
 <style scoped lang="scss">

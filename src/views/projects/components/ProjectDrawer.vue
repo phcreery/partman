@@ -33,6 +33,17 @@
           >
           </el-input>
         </el-form-item>
+        <!-- <el-form-item label="Comment" prop="comment">
+          <el-input
+            v-model="drawerData.rowData!.comment"
+            placeholder="Please fill in the project comment"
+            clearable
+            :rows="4"
+            type="textarea"
+            autosize
+          >
+          </el-input>
+        </el-form-item> -->
       </el-form>
       <template #footer>
         <el-button @click="drawerVisible = false">Cancel</el-button>

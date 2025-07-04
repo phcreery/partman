@@ -15,7 +15,7 @@ export const loginApi = async (params: Login.ReqLoginForm): Promise<Login.ResLog
   const authData = await client.collection("users").authWithPassword(params.username, params.password);
   // authData.user = await client.collection("users").getOne(authData.record.id);
   // console.log("authData", authData);
-  return authData;
+  return authData as unknown as Login.ResLogin;
 };
 
 export const loginApiAsAdmin = async (params: Login.ReqLoginForm): Promise<Login.ResLogin> => {

@@ -19,7 +19,9 @@ const srcMyFilesToKeep = [
   "layouts/components/Header/ToolBarRight.vue", // my custom toolbar with removed items
   "layouts/components/Header/components/About.vue", // my custom about
   "hooks/useSelection.ts", // addition of getRowKeys() for ProTable
-  "components/Loading/fullScreen.ts" // fix race condition in multiple request from pocketbase sdk
+  "components/Loading/fullScreen.ts", // fix race condition in multiple request from pocketbase sdk
+  "layouts/components/Header/components/PasswordDialog.vue", // my custom password dialog
+  "layouts/components/Header/components/InfoDialog.vue" // my custom info dialog
 ];
 
 // these folders are the ones to keep untouched in the src directory

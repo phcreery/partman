@@ -28,11 +28,11 @@
 import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { Login } from "@/api/interface";
-// import { ElNotification } from "element-plus";
+import { ElNotification } from "element-plus";
 import { loginApi } from "@/api/modules/login";
 import { useUserStore } from "@/stores/modules/user";
 import { useTabsStore } from "@/stores/modules/tabs";
-// import { getTimeState } from "@/utils/util";
+import { getTimeState } from "@/utils/util";
 import { HOME_URL } from "@/config";
 import { initDynamicRouter } from "@/routers/modules/dynamicRouter";
 import { CircleClose, UserFilled } from "@element-plus/icons-vue";
@@ -50,7 +50,10 @@ const loginRules = reactive({
   password: [{ required: true, message: "Please enter the password", trigger: "blur" }]
 });
 const loading = ref(false);
-const loginForm = reactive<Login.ReqLoginParams>({ username: "", password: "" });
+const loginForm = reactive<Login.ReqLoginForm>({
+  username: "",
+  password: ""
+});
 const login = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.validate(async valid => {
@@ -61,7 +64,12 @@ const login = (formEl: FormInstance | undefined) => {
       const data = await loginApi(loginForm);
       console.log("login data", data);
       userStore.setToken(data.token);
-      userStore.setUserInfo({ name: data.record.name });
+      userStore.setUserInfo({
+        name: data.record.name,
+        email: data.record.email,
+        // avatar: data.record.avatar,
+        username: data.record.username
+      });
 
       // 2.添加动态路由
       await initDynamicRouter();
@@ -76,7 +84,7 @@ const login = (formEl: FormInstance | undefined) => {
       // router.push({ name: "home" });
       // ElNotification({
       //   title: getTimeState(),
-      //   message: "欢迎登录 Geeker-Admin",
+      //   message: "Welcome to partman",
       //   type: "success",
       //   duration: 3000
       // });

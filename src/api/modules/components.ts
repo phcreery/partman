@@ -4,7 +4,8 @@ import { nestedObjectAssign } from "@/utils/nestedObjectAssign";
 
 import {
   ReqList,
-  ResultList,
+  ResultData,
+  ResList,
   Component,
   ComponentCategory,
   Footprint,
@@ -21,7 +22,7 @@ import {
   Health
 } from "@/api/interface/index";
 
-const emptyData = (params?: ReqList): ResultList<null> => {
+const emptyData = (params?: ReqList): ResList<null> => {
   return {
     page: params ? params.page : 0,
     perPage: params ? params.perPage : 25,
@@ -89,7 +90,7 @@ export const getComponentList = async (params: Component.ReqGetComponentListPara
     expand: params.expand ?? "", // Default expand all???
     $autoCancel: false
   });
-  return res as unknown as ResultList<Component.ResGetComponentRecord>;
+  return res as unknown as ResList<Component.ResGetComponentRecord>;
 };
 
 export const getComponentsListForExport = async (params: Component.ReqGetComponentListForExportParams) => {
@@ -198,7 +199,7 @@ export const getFootprintList = async (params: Footprint.ReqGetFootprintListPara
     sort: params.sort ?? "",
     expand: params.expand ?? ""
   });
-  return res as unknown as ResultList<Footprint.ResGetFootprintRecord>;
+  return res as unknown as ResList<Footprint.ResGetFootprintRecord>;
 };
 
 export const getFootprintsEnum = async () => {
@@ -275,7 +276,7 @@ export const getStorageList = async (params: Storage.ReqGetStorageListParams) =>
     sort: params.sort ?? "",
     expand: params.expand ?? ""
   });
-  return res as unknown as ResultList<Storage.ResGetStorageRecord>;
+  return res as unknown as ResList<Storage.ResGetStorageRecord>;
 };
 
 export const postStorageCreate = async (params: Storage.ReqCreateStorageParams) => {
@@ -375,7 +376,7 @@ export const getProjectList = async (params: Project.ReqGetProjectListParams) =>
     sort: params.sort ?? "",
     expand: params.expand ?? ""
   });
-  return res as unknown as ResultList<Project.ResGetProjectRecord>;
+  return res as unknown as ResList<Project.ResGetProjectRecord>;
 };
 
 export const getProjectListForEnum = async () => {
@@ -409,7 +410,7 @@ export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) =>
 // ---- PROJECT COMPONENTS ----
 
 export const getProjectComponentsList = async (params: ProjectComponents.ReqGetProjectComponentListParams) => {
-  if (params.projectID === "") return emptyData(params) as unknown as ResultList<ProjectComponents.ResGetProjectComponentRecord>;
+  if (params.projectID === "") return emptyData(params) as unknown as ResList<ProjectComponents.ResGetProjectComponentRecord>;
   let res_project = (await client.collection("projects").getOne(params.projectID, {})) as unknown as Project.ResGetProjectRecord;
 
   if (res_project.components.length === 0) res_project.components = ["none"]; // TODO: should be `= []` ?
@@ -424,15 +425,15 @@ export const getProjectComponentsList = async (params: ProjectComponents.ReqGetP
     filter: filterToPBString(filter),
     sort: params.sort ?? "",
     expand: "component" // params.expand ?? "",
-  })) as unknown as ResultList<ProjectComponents.ResGetProjectComponentRecord>;
+  })) as unknown as ResList<ProjectComponents.ResGetProjectComponentRecord>;
 
   let res = res_project_components;
 
-  return res as unknown as ResultList<ProjectComponents.ResGetProjectComponentRecord>;
+  return res as unknown as ResList<ProjectComponents.ResGetProjectComponentRecord>;
 };
 
 export const getProjectComponentsListForExport = async (params: ProjectComponents.ReqGetProjectComponentListForExportParams) => {
-  if (params.projectID === "") return emptyData() as unknown as ResultList<ProjectComponents.ResGetProjectComponentRecord>;
+  if (params.projectID === "") return emptyData() as unknown as ResList<ProjectComponents.ResGetProjectComponentRecord>;
   let res = await getProjectComponentsList({
     page: 1,
     perPage: 9999,
@@ -503,8 +504,8 @@ export const getProjectBuildsList = async (params: ProjectBuilds.ReqGetProjectBu
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
-  })) as unknown as ResultList<ProjectBuilds.ResGetProjectBuildRecord>;
-  return res as unknown as ResultList<ProjectBuilds.ResGetProjectBuildRecord>;
+  })) as unknown as ResList<ProjectBuilds.ResGetProjectBuildRecord>;
+  return res as unknown as ResList<ProjectBuilds.ResGetProjectBuildRecord>;
 };
 
 export const getProjectBuildsListForExport = async (params: ProjectBuilds.ReqGetProjectBuildListForExportParams) => {
@@ -545,8 +546,8 @@ export const getComponentLogsList = async (params: ComponentLog.ReqGetComponentL
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
-  })) as unknown as ResultList<ComponentLog.ResGetComponentLogRecord>;
-  return res as unknown as ResultList<ComponentLog.ResGetComponentLogRecord>;
+  })) as unknown as ResList<ComponentLog.ResGetComponentLogRecord>;
+  return res as unknown as ResList<ComponentLog.ResGetComponentLogRecord>;
 };
 
 export const getComponentLogsListForExport = async (params: ComponentLog.ReqGetComponentLogListForExportParams) => {
@@ -568,7 +569,7 @@ export const getUserList = async (params: User.ReqGetUserListParams) => {
     sort: params.sort ?? "",
     expand: params.expand ?? "" // Default expand all???
   });
-  return res as unknown as ResultList<User.ResGetUserRecord>;
+  return res as unknown as ResList<User.ResGetUserRecord>;
 };
 
 export const getUsersListForExport = async (params: User.ReqGetUserListForExportParams) => {
@@ -622,13 +623,13 @@ export const getUserEnum = async () => {
 // ---- SETTINGS/CONFIG ----
 
 export const getConfig = async (params: Config.ReqGetConfigParams) => {
-  let res = (await client.collection("config").getList()) as unknown as ResultList<Config.ResGetConfigRecord>;
+  let res = (await client.collection("config").getList()) as unknown as ResList<Config.ResGetConfigRecord>;
   let configRecord = res.items.find(record => record.category === params.category);
-  return configRecord?.value as unknown as ResultList<Config.ResGetConfigRecord>;
+  return configRecord?.value as unknown as ResList<Config.ResGetConfigRecord>;
 };
 
 export const patchConfigUpdate = async (params: Config.ReqUpdateConfigParams) => {
-  let res = (await client.collection("config").getList()) as unknown as ResultList<Config.ResGetConfigRecord>;
+  let res = (await client.collection("config").getList()) as unknown as ResList<Config.ResGetConfigRecord>;
   let configRecord = res.items.find(record => record.category === params.category);
   // create if not found
   if (!configRecord) {

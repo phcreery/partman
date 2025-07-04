@@ -35,9 +35,15 @@ export namespace Upload {
 
 // * Login module
 export namespace Login {
+  export type LoginColumns = {
+    username: string;
+    name: string;
+    email: string;
+    // avatar: string;
+  };
   export interface ResLogin {
     token: string;
-    record: object;
+    record: LoginColumns;
   }
   export interface ReqLoginForm {
     username: string;

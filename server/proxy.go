@@ -8,7 +8,6 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase/core"
 )
 
@@ -78,52 +77,46 @@ func ProxyRequestHandler(proxy *httputil.ReverseProxy) func(http.ResponseWriter,
 	}
 }
 
-func AddProxyRequests(app core.App, e *core.ServeEvent) {
-	// add POST /api/connect/token to router which reverse proxies to https://identity.nexar.com/connect/token
-	e.Router.AddRoute(echo.Route{
-		Method: http.MethodPost,
-		Path:   "/api/octopart/connect/token",
-		Handler: func(c echo.Context) error {
-			r := c.Request()
-			Host := "https://identity.nexar.com"
-			proxy, remote, err := NewProxy(Host)
-			if err != nil {
-				panic(err)
-			}
-			// req.URL.Scheme = "https"
-			r.Host = remote.Host
-			r.URL.Path = strings.TrimPrefix(r.URL.Path, "/api/octopart")
+func AddProxyRequests(app core.App, se *core.ServeEvent) {
 
-			handler := ProxyRequestHandler(proxy)
-			handler(c.Response().Writer, r)
-			return nil
-		},
-		Middlewares: []echo.MiddlewareFunc{
-			// apis.RequireAdminOrRecordAuth(),
-		},
-	})
+	se.Router.POST("/api/octopart/connect/token", func(e *core.RequestEvent) error {
 
-	e.Router.AddRoute(echo.Route{
-		Method: http.MethodPost,
-		Path:   "/api/octopart/graphql",
-		Handler: func(c echo.Context) error {
-			r := c.Request()
-			Host := "https://api.nexar.com"
-			proxy, remote, err := NewProxy(Host)
-			if err != nil {
-				panic(err)
-			}
-			// req.URL.Scheme = "https"
-			r.Host = remote.Host
-			r.URL.Path = strings.TrimPrefix(r.URL.Path, "/api/octopart")
+		r := e.Request
+		Host := "https://identity.nexar.com"
+		proxy, remote, err := NewProxy(Host)
+		if err != nil {
+			panic(err)
+		}
+		// req.URL.Scheme = "https"
+		r.Host = remote.Host
+		r.URL.Path = strings.TrimPrefix(r.URL.Path, "/api/octopart")
 
-			handler := ProxyRequestHandler(proxy)
-			handler(c.Response().Writer, r)
-			return nil
-		},
-		Middlewares: []echo.MiddlewareFunc{
-			// because octopart also needs a Authorization token, we need to pass the token to the proxy
-			// apis.RequireAdminOrRecordAuth(),
-		},
-	})
+		handler := ProxyRequestHandler(proxy)
+		handler(e.Response, r)
+		return nil
+	},
+	)
+
+	// se.Router.AddRoute(echo.Route{
+	// 	Method: http.MethodPost,
+	// 	Path:   "/api/octopart/graphql",
+	// 	Handler: func(c echo.Context) error {
+
+	se.Router.POST("/api/octopart/graphql", func(c *core.RequestEvent) error {
+
+		r := c.Request
+		Host := "https://api.nexar.com"
+		proxy, remote, err := NewProxy(Host)
+		if err != nil {
+			panic(err)
+		}
+		// req.URL.Scheme = "https"
+		r.Host = remote.Host
+		r.URL.Path = strings.TrimPrefix(r.URL.Path, "/api/octopart")
+
+		handler := ProxyRequestHandler(proxy)
+		handler(c.Response, r)
+		return nil
+	},
+	)
 }

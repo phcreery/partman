@@ -55,7 +55,7 @@ func bindStaticAdminUI(app core.App, e *core.ServeEvent) error {
 	// (similar to echo.StaticFS but with gzip middleware enabled)
 	e.Router.GET(
 		uiPath+"*",
-		apis.StaticDirectoryHandler(DistDirFS, false),
+		apis.Static(DistDirFS, false),
 		// middleware.Gzip(),
 	)
 
@@ -72,26 +72,29 @@ func main() {
 	app.RootCmd.Short = "partman CLI"
 	app.RootCmd.Version = Version
 
-	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
+	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
 
-		server.AddProxyRequests(app, e)
+		// Authentication middleware
+		// e.Router.Bind(apis.RequireAuth())
 
-		server.AddDashboardRequests(app, e, Version)
+		server.AddProxyRequests(app, se)
 
-		server.AddProjectBuildRoute(app, e)
+		server.AddDashboardRequests(app, se, Version)
 
-		server.AddImportComponentsRoute(app, e)
+		server.AddProjectBuildRoute(app, se)
 
-		server.AddImportProjectComponentsRoute(app, e)
+		server.AddImportComponentsRoute(app, se)
 
-		bindStaticAdminUI(app, e)
+		server.AddImportProjectComponentsRoute(app, se)
 
-		return nil
+		bindStaticAdminUI(app, se)
+
+		return se.Next()
 	})
 
 	server.ComponentLogsHook(app)
 
-	migratecmd.MustRegister(app, app.RootCmd, &migratecmd.Options{
+	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
 		Automigrate: true, // auto creates migration files when making collection changes
 	})
 

@@ -2,18 +2,14 @@ package server
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/forms"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/tools/hook"
 )
 
-// https://pocketbase.io/docs/custom-models/
 // https://pocketbase.io/docs/record-methods/
 
-func getRecordJSON(record *models.Record) (string, error) {
+func getRecordJSON(record *core.Record) (string, error) {
 	// convert record to JSON
 	b, err := record.MarshalJSON()
 	if err != nil {
@@ -24,7 +20,7 @@ func getRecordJSON(record *models.Record) (string, error) {
 
 // function to look up component and return JSON
 func getComponentValue(app core.App, id string) (string, error) {
-	record, err := app.Dao().FindRecordById("components", id)
+	record, err := app.FindRecordById("components", id)
 	if err != nil {
 		return "", err
 	}
@@ -33,38 +29,41 @@ func getComponentValue(app core.App, id string) (string, error) {
 
 func ComponentLogsHook(app core.App) {
 	// https://pocketbase.io/docs/hooks/
-	createComponentLogEntry := func(record *models.Record, eventType string) error {
+	createComponentLogEntry := func(record *core.Record, eventType string) error {
 		if record.Collection().Name == "components" {
 			// print id
-			fmt.Println(record.Id)
+			app.Logger().Debug(record.Id)
 
 			description := ""
 			oldComponentValue := ""
 			newComponentValue := ""
-			if eventType == "create" {
+			switch eventType {
+			case "create":
 				description = "Component created"
 				newComponentValue, _ = getRecordJSON(record)
-			} else if eventType == "update" {
+			case "update":
 				description = "Component updated"
 				newComponentValue, _ = getRecordJSON(record)
 				oldComponentValue, _ = getComponentValue(app, record.Id)
-			} else if eventType == "delete" {
+			case "delete":
 				description = "Component deleted"
 				oldComponentValue, _ = getComponentValue(app, record.Id)
 			}
 
-			collection, err := app.Dao().FindCollectionByNameOrId("component_log")
+			collection, err := app.FindCollectionByNameOrId("component_log")
 			if err != nil {
 				fmt.Println("error finding collection 'component_log'", err)
 				return err
 			}
 
-			newLogRecord := models.NewRecord(collection)
+			newLogRecord := core.NewRecord(collection)
 
 			// with data validation
 			form := forms.NewRecordUpsert(app, newLogRecord)
 
-			form.LoadData(map[string]any{
+			// newLogRecord.
+
+			form.Load(map[string]any{
 				"component":   record.Id,
 				"description": description,
 				"new_value":   newComponentValue,
@@ -73,45 +72,43 @@ func ComponentLogsHook(app core.App) {
 
 			// validate and submit (internally it calls app.Dao().SaveRecord(record) in a transaction)
 			if err := form.Submit(); err != nil {
-				fmt.Println("create log entry error", err)
+				// fmt.Println("create log entry error", err)
+				app.Logger().Error("create log entry error", err)
 				return err
 			}
 		}
 		return nil
 	}
 
-	// app.OnModelAfterCreate().Add(createComponentLogEntry)
-	// app.OnModelAfterUpdate().Add(createComponentLogEntry)
-	// app.OnModelAfterDelete().Add(createComponentLogEntry)
-
-	app.OnRecordAfterCreateRequest().Add(func(e *core.RecordCreateEvent) error {
-		return createComponentLogEntry(e.Record, "create")
+	app.OnRecordCreate().BindFunc(func(e *core.RecordEvent) error {
+		createComponentLogEntry(e.Record, "create")
+		return e.Next()
 	})
-	app.OnRecordBeforeUpdateRequest().Add(func(e *core.RecordUpdateEvent) error {
-		return createComponentLogEntry(e.Record, "update")
+	app.OnRecordUpdate().BindFunc(func(e *core.RecordEvent) error {
+		createComponentLogEntry(e.Record, "update")
+		return e.Next()
 	})
-	app.OnRecordBeforeDeleteRequest().Add(func(e *core.RecordDeleteEvent) error {
-		return createComponentLogEntry(e.Record, "delete")
+	app.OnRecordDelete().BindFunc(func(e *core.RecordEvent) error {
+		createComponentLogEntry(e.Record, "delete")
+		return e.Next()
 	})
 
 }
 
-func ComponentTotalStockCounterHook(app core.App) {
-	type CustomComponent struct {
-		*models.Record
-		TotalQuantity int `json:"_total_quantity"`
-	}
+// func ComponentTotalStockCounterHook(app core.App) {
+// 	type CustomComponent struct {
+// 		*core.Record
+// 		TotalQuantity int `json:"_total_quantity"`
+// 	}
 
-	app.OnRecordViewRequest("components").Add(func(e *core.RecordViewEvent) error {
-		record := e.Record
-		newRecord := CustomComponent{Record: record}
-		newRecord.TotalQuantity = 0
-		e.HttpContext.JSON(http.StatusOK, newRecord)
-		return hook.StopPropagation
-	})
-	app.OnRecordsListRequest().Add(func(e *core.RecordsListEvent) error {
-		// log.Println(e.Result)
-		return nil
-		// return insertComponentTotalStock(e.Result)
-	})
-}
+// 	app.OnRecordViewRequest("components").Add(func(e *core.RecordViewEvent) error {
+// 		record := e.Record
+// 		newRecord := CustomComponent{Record: record}
+// 		newRecord.TotalQuantity = 0
+// 		e.HttpContext.JSON(http.StatusOK, newRecord)
+// 		return hook.StopPropagation
+// 	})
+// 	app.OnRecordsListRequest().Add(func(e *core.RecordsListEvent) error {
+// 		return nil
+// 	})
+// }

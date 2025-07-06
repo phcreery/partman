@@ -16,7 +16,11 @@
       <!-- Expand -->
       <template #expand="scope">
         <!-- {{ scope.row }} -->
-        <CompareComponentDetails :componentA="scope.row.old_value" :componentB="scope.row.new_value" :isView="true" />
+        <CompareComponentDetails
+          :componentA="(scope.row as ComponentLog.ResGetComponentLogRecord).old_value"
+          :componentB="(scope.row as ComponentLog.ResGetComponentLogRecord).new_value"
+          :isView="true"
+        />
       </template>
       <!-- Table operation -->
       <template #operation="scope">
@@ -40,16 +44,14 @@ import { useDownload } from "@/hooks/useDownload";
 import { JSON2CSV } from "@/hooks/useDataTransform";
 import {
   getComponent,
-  // getComponentList,
   getComponentLogsListForExport,
-  // getComponentEnum,
   postComponentCreate,
   patchComponentUpdate,
   getComponentLogsList
 } from "@/api/modules/components";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
-const proTable = ref();
+const proTable = ref<InstanceType<typeof ProTable>>();
 // If the table needs to initialize the request parameter, it will be directly defined to the propable (each request will automatically bring the parameter every time, and it will always be brought to
 const initParam = reactive({});
 
@@ -95,6 +97,30 @@ const columns: Partial<ColumnProps>[] = [
     // isShow: false
   },
   {
+    prop: "old_value",
+    label: "Component Old MPN",
+    width: 260,
+    align: "left",
+    search: { el: "input", props: { props: { value: "old_value.mpn", label: "mpn" } } },
+    // enum: getComponentEnum,
+    // fieldNames: { value: "id", label: "component" },
+    sortable: false,
+    render: (scope: { row: ComponentLog.ResGetComponentLogRecord }) => scope.row.old_value.mpn,
+    isShow: false
+  },
+  {
+    prop: "new_value",
+    label: "Component New MPN",
+    width: 260,
+    align: "left",
+    search: { el: "input", props: { props: { value: "new_value.mpn", label: "mpn" } } },
+    // enum: getComponentEnum,
+    // fieldNames: { value: "id", label: "component" },
+    sortable: false,
+    render: (scope: { row: ComponentLog.ResGetComponentLogRecord }) => scope.row.new_value.mpn,
+    isShow: false
+  },
+  {
     prop: "description",
     label: "Description",
     // width: 220,
@@ -132,6 +158,11 @@ const columns: Partial<ColumnProps>[] = [
 
 // Export component list
 const downloadFile = async () => {
+  if (!proTable.value) {
+    console.error("ProTable is not initialized");
+    return;
+  }
+
   // useDownload(exportUserInfo, "user list", proTable.value.searchParam);
   let name = "all";
   let json = await getComponentLogsListForExport({
@@ -140,38 +171,35 @@ const downloadFile = async () => {
 
   let columns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "").filter((c: string) => c);
   // remove specific columns from array
-  let badColumns = ["operation", "expand", "selection", "footprint", "name"];
-  columns = columns.filter((c: string) => !badColumns.includes(c));
+  let removeColumns = ["operation", "expand", "selection", "footprint", "name"];
+  columns = columns.filter((c: string) => !removeColumns.includes(c));
 
   let csv = JSON2CSV(json, columns);
   useDownload(() => csv, `${name}_component_list`, {}, true, ".csv");
 };
 
 // Open the drawer (new, view, edit)
-interface DrawerExpose {
-  acceptParams: (params: any) => void;
-}
-const drawerRef = ref<DrawerExpose>();
-const openDrawer = (title: string, rowData: Partial<ComponentLog.ResGetComponentLogRecord> = {}) => {
-  let referenceComponentRowData: Partial<Component.ResGetComponentRecord> = {};
-  getComponent(String(rowData.component)).then(res => {
-    referenceComponentRowData = res.data;
-    /*eslint indent: ["error", 2, { "ignoredNodes": ["ConditionalExpression"] }]*/
-    let params = {
-      title,
-      rowData: referenceComponentRowData, //{ ...referenceComponentRowData },
-      isView: title === "View",
-      apiUrl:
-        title === "New"
-          ? postComponentCreate
-          : title === "Edit"
+const drawerRef = ref<InstanceType<typeof ComponentDrawer>>();
+const openDrawer = async (title: string, rowData?: ComponentLog.ResGetComponentLogRecord) => {
+  if (!rowData) {
+    console.error("Row data is not provided");
+    return;
+  }
+  let referenceComponentRowData = await getComponent(String(rowData.component));
+  let params = {
+    title,
+    rowData: { ...(referenceComponentRowData as Component.ResGetComponentRecord) },
+    isView: title === "View",
+    apiUrl:
+      title === "New"
+        ? postComponentCreate
+        : title === "Edit"
+          ? patchComponentUpdate
+          : title === "Stock"
             ? patchComponentUpdate
-            : title === "Stock"
-              ? patchComponentUpdate
-              : "",
-      updateTable: proTable.value.refresh
-    };
-    drawerRef.value!.acceptParams(params);
-  });
+            : undefined,
+    updateTable: proTable.value!.getTableList
+  };
+  drawerRef.value!.acceptParams(params);
 };
 </script>

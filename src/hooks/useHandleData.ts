@@ -1,38 +1,39 @@
-import { ElMessageBox, ElMessage } from 'element-plus'
+import { ElMessageBox, ElMessage } from "element-plus";
 
-type MessageType = '' | 'success' | 'warning' | 'info' | 'error'
+type MessageType = "" | "success" | "warning" | "info" | "error";
+
 /**
- * @description 操作单条数据信息 (二次确认【删除、禁用、启用、重置密码】)
- * @param {Function} api 操作数据接口的api方法 (必传)
- * @param {Object} params 携带的操作数据参数 {id,params} (必传)
- * @param {String} message 提示信息 (必传)
- * @param {String} confirmType icon类型 (不必传,默认为 warning)
+ * @description Handle single data operation (secondary confirmation: delete, disable, enable, reset password)
+ * @param {Function} api The API method for the operation (required)
+ * @param {Object} params Parameters for the operation {id, params} (required)
+ * @param {String} message Prompt message (required)
+ * @param {String} confirmType Icon type (optional, defaults to 'warning')
  * @returns {Promise}
  */
 export const useHandleData = (
   api: (_params: any) => Promise<any>,
   params: any = {},
   message: string,
-  confirmType: MessageType = 'warning'
+  confirmType: MessageType = "warning"
 ) => {
   return new Promise((resolve, reject) => {
-    ElMessageBox.confirm(`是否${message}?`, '温馨提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
+    ElMessageBox.confirm(`Do you want to ${message}?`, "Prompt", {
+      confirmButtonText: "Confirm",
+      cancelButtonText: "Cancel",
       type: confirmType,
-      draggable: true,
+      draggable: true
     })
       .then(async () => {
-        const res = await api(params)
-        if (!res) return reject(false)
+        const res = await api(params);
+        if (!res) return reject(false);
         ElMessage({
-          type: 'success',
-          message: `${message}成功!`,
-        })
-        resolve(true)
+          type: "success",
+          message: `${message} succeeded!`
+        });
+        resolve(true);
       })
       .catch(() => {
         // cancel operation
-      })
-  })
-}
+      });
+  });
+};

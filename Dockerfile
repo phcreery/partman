@@ -14,6 +14,7 @@ RUN npm install
 
 # RUN bun build:client:prod
 # RUN bun x vite build --mode production
+# for some reason bun stalls on the vite build step, so we use npx vite instead
 RUN npx vite build --mode production
 
 # Stage 1: Build the Go application

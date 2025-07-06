@@ -1,7 +1,7 @@
 {
   "name": "partman",
   "private": true,
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "Electronic Component management system",
   "author": "phcreery <phcreery@gmail.com>",
   "scripts": {
@@ -12,7 +12,8 @@
     "build:client:prod": "vue-tsc --noEmit && vite build --mode production",
     "build:server": "cross-env CGO_ENABLED=0 go build",
     "build:server:all": "goreleaser release --clean --snapshot",
-    "build:all:release": "vue-tsc --noEmit && vite build --mode production && goreleaser release --clean",
+    "build:all": "vue-tsc --noEmit && vite build --mode production && goreleaser release --clean",
+    "build:docker": "docker build -f 'Dockerfile-build' -t 'partman:latest' '.'",
     "commit": "git pull && git add -A && git-cz && git push --follow-tags"
   },
   "dependencies": {

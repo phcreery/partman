@@ -193,7 +193,7 @@ const columns: ColumnProps<Component.ResGetComponentRecord>[] = [
   {
     prop: "description",
     label: "Desc.",
-    width: 220,
+    // width: 220,
     align: "left",
     search: { el: "input" }
   },

@@ -32,10 +32,12 @@ I like to build small circuits and development boards. This requires me to desig
 
 ### Goals
 
-- [ ] Update from UI
+- [ ] User Management
+- [ ] Backup Management
 - [ ] "Fast" Entry (Barcode/QR code reader)
-- [ ] fix: auto logout after leave/timeout
-- [ ] new: merge categories
+- [ ] Fix: auto logout after leave/timeout
+- [ ] Update from UI
+- [ ] Merge Categories
 
 ## Installation
 
@@ -43,7 +45,7 @@ I like to build small circuits and development boards. This requires me to desig
 
 _Coming soon_
 
-### Manually Install on Linux
+### Install on Linux Bare Metal
 
 1. Download latest release of partman for your system
 
@@ -128,7 +130,6 @@ Install prerequisites
 - node & npm
 
 ```
-go get github.com/pocketbase/pocketbase
 npm i
 ```
 
@@ -147,5 +148,5 @@ npm run dev:client
 ### Build
 
 ```
-npm run release:build
+npm run build:all:release
 ```

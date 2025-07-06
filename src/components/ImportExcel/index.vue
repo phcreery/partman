@@ -1,16 +1,10 @@
 <template>
-  <el-dialog
-    v-model="dialogVisible"
-    :title="`批量添加${parameter.title}`"
-    :destroy-on-close="true"
-    width="580px"
-    draggable
-  >
+  <el-dialog v-model="dialogVisible" :title="`Batch Add ${parameter.title}`" :destroy-on-close="true" width="580px" draggable>
     <el-form class="drawer-multiColumn-form" label-width="100px">
-      <el-form-item label="模板下载 :">
-        <el-button type="primary" :icon="Download" @click="downloadTemp"> 点击下载 </el-button>
+      <el-form-item label="Template Download:">
+        <el-button type="primary" :icon="Download" @click="downloadTemp"> Click to Download </el-button>
       </el-form-item>
-      <el-form-item label="文件上传 :">
+      <el-form-item label="File Upload:">
         <el-upload
           action="#"
           class="upload"
@@ -29,16 +23,18 @@
             <el-icon class="el-icon--upload">
               <upload-filled />
             </el-icon>
-            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__text">Drag files here, or <em>click to upload</em></div>
           </slot>
           <template #tip>
             <slot name="tip">
-              <div class="el-upload__tip">请上传 .xls , .xlsx 标准格式文件，文件最大为 {{ parameter.fileSize }}M</div>
+              <div class="el-upload__tip">
+                Please upload .xls or .xlsx standard format files, maximum file size is {{ parameter.fileSize }}M
+              </div>
             </slot>
           </template>
         </el-upload>
       </el-form-item>
-      <el-form-item label="数据覆盖 :">
+      <el-form-item label="Overwrite Data:">
         <el-switch v-model="isCover" />
       </el-form-item>
     </el-form>
@@ -46,112 +42,112 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({ name: 'ImportExcel' })
-import { ref } from 'vue'
-import { useDownload } from '@/hooks/useDownload'
-import { Download } from '@element-plus/icons-vue'
-import type { UploadRequestOptions, UploadRawFile } from 'element-plus'
-import { ElNotification } from 'element-plus'
+defineOptions({ name: "ImportExcel" });
+import { ref } from "vue";
+import { useDownload } from "@/hooks/useDownload";
+import { Download } from "@element-plus/icons-vue";
+import type { UploadRequestOptions, UploadRawFile } from "element-plus";
+import { ElNotification } from "element-plus";
 
 export interface ExcelParameterProps {
-  title: string // 标题
-  fileSize?: number // 上传文件的大小
-  fileType?: ExcelMimeType[] // 上传文件的类型
-  tempApi?: (_params: any) => Promise<any> // 下载模板的Api
-  importApi?: (_params: any) => Promise<any> // 批量导入的Api
-  getTableList?: () => void // 获取表格数据的Api
+  title: string; // Title
+  fileSize?: number; // Maximum file size
+  fileType?: ExcelMimeType[]; // Allowed file types
+  tempApi?: (_params: any) => Promise<any>; // Template download API
+  importApi?: (_params: any) => Promise<any>; // Batch import API
+  getTableList?: () => void; // Fetch table data API
 }
 
-// 是否覆盖数据
-const isCover = ref(false)
-// 最大文件上传数
-const excelLimit = ref(1)
-// dialog状态
-const dialogVisible = ref(false)
-// 父组件传过来的参数
+// Overwrite data
+const isCover = ref(false);
+// Maximum number of files to upload
+const excelLimit = ref(1);
+// Dialog visibility
+const dialogVisible = ref(false);
+// Parameters from parent component
 const parameter = ref<ExcelParameterProps>({
-  title: '',
+  title: "",
   fileSize: 5,
-  fileType: ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
-})
+  fileType: ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
+});
 
-// 接收父组件参数
+// Receive parameters from parent component
 const acceptParams = (params: ExcelParameterProps) => {
-  parameter.value = { ...parameter.value, ...params }
-  dialogVisible.value = true
-}
+  parameter.value = { ...parameter.value, ...params };
+  dialogVisible.value = true;
+};
 
-// Excel 导入模板下载
+// Download Excel import template
 const downloadTemp = () => {
-  if (!parameter.value.tempApi) return
-  useDownload(parameter.value.tempApi, `${parameter.value.title}模板`)
-}
+  if (!parameter.value.tempApi) return;
+  useDownload(parameter.value.tempApi, `${parameter.value.title} Template`);
+};
 
-// 文件上传
+// File upload
 const uploadExcel = async (param: UploadRequestOptions) => {
-  let excelFormData = new FormData()
-  excelFormData.append('file', param.file)
-  excelFormData.append('isCover', isCover.value as unknown as Blob)
-  await parameter.value.importApi!(excelFormData)
-  parameter.value.getTableList && parameter.value.getTableList()
-  dialogVisible.value = false
-}
+  let excelFormData = new FormData();
+  excelFormData.append("file", param.file);
+  excelFormData.append("isCover", isCover.value as unknown as Blob);
+  await parameter.value.importApi!(excelFormData);
+  parameter.value.getTableList && parameter.value.getTableList();
+  dialogVisible.value = false;
+};
 
 /**
- * @description 文件上传之前判断
- * @param file 上传的文件
+ * @description Check before file upload
+ * @param file The file to be uploaded
  * */
 const beforeExcelUpload = (file: UploadRawFile) => {
-  const isExcel = parameter.value.fileType!.includes(file.type as ExcelMimeType)
-  const fileSize = file.size / 1024 / 1024 < parameter.value.fileSize!
+  const isExcel = parameter.value.fileType!.includes(file.type as ExcelMimeType);
+  const fileSize = file.size / 1024 / 1024 < parameter.value.fileSize!;
   if (!isExcel)
     ElNotification({
-      title: '温馨提示',
-      message: '上传文件只能是 xls / xlsx 格式！',
-      type: 'warning',
-    })
+      title: "Notice",
+      message: "Only xls / xlsx format files can be uploaded!",
+      type: "warning"
+    });
   if (!fileSize)
     setTimeout(() => {
       ElNotification({
-        title: '温馨提示',
-        message: `上传文件大小不能超过 ${parameter.value.fileSize}MB！`,
-        type: 'warning',
-      })
-    }, 0)
-  return isExcel && fileSize
-}
+        title: "Notice",
+        message: `The uploaded file size cannot exceed ${parameter.value.fileSize}MB!`,
+        type: "warning"
+      });
+    }, 0);
+  return isExcel && fileSize;
+};
 
-// 文件数超出提示
+// Exceed file number tip
 const handleExceed = () => {
   ElNotification({
-    title: '温馨提示',
-    message: '最多只能上传一个文件！',
-    type: 'warning',
-  })
-}
+    title: "Notice",
+    message: "You can only upload one file at most!",
+    type: "warning"
+  });
+};
 
-// 上传错误提示
+// Upload error tip
 const excelUploadError = () => {
   ElNotification({
-    title: '温馨提示',
-    message: `批量添加${parameter.value.title}失败，请您重新上传！`,
-    type: 'error',
-  })
-}
+    title: "Notice",
+    message: `Batch add ${parameter.value.title} failed, please re-upload!`,
+    type: "error"
+  });
+};
 
-// 上传成功提示
+// Upload success tip
 const excelUploadSuccess = () => {
   ElNotification({
-    title: '温馨提示',
-    message: `批量添加${parameter.value.title}成功！`,
-    type: 'success',
-  })
-}
+    title: "Notice",
+    message: `Batch add ${parameter.value.title} succeeded!`,
+    type: "success"
+  });
+};
 
 defineExpose({
-  acceptParams,
-})
+  acceptParams
+});
 </script>
 <style lang="scss" scoped>
-@use './index';
+@use "./index";
 </style>

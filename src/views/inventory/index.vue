@@ -41,7 +41,7 @@
           :title="scope.row.mpn ?? ''"
           :isView="true"
           :rowData="scope.row"
-          :enum-map="proTable.enumMap"
+          :enum-map="proTable!.enumMap"
         ></ComponentDetails>
       </template>
       <template #stock="scope">
@@ -105,9 +105,10 @@ import {
   // postStorageCreate,
   // postFootprintCreate
 } from "@/api/modules/components";
+import { ElNotification } from "element-plus";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
-const proTable = ref();
+const proTable = ref<InstanceType<typeof ProTable>>();
 // If the table needs to initialize the request parameter, it will be directly defined to the propable (each request will automatically bring the parameter every time, and it will always be brought to
 const initParam = reactive({
   expand: "footprint, category, storage_location, storage_categories"
@@ -287,12 +288,31 @@ const columns: ColumnProps<Component.ResGetComponentRecord>[] = [
 
 // Batch delete components
 const batchDelete = async (ids: string[]) => {
+  if (!proTable.value) {
+    console.error("ProTable is not initialized");
+    ElNotification({
+      title: "Notification",
+      message: "ProTable is not initialized",
+      type: "error"
+    });
+    return;
+  }
+
   await useHandleData(deleteComponents, { ids }, "Delete the selected component(s)");
   proTable.value.getTableList();
 };
 
 // Export component list
 const downloadFile = async () => {
+  if (!proTable.value) {
+    console.error("ProTable is not initialized");
+    ElNotification({
+      title: "Notification",
+      message: "ProTable is not initialized",
+      type: "error"
+    });
+    return;
+  }
   // useDownload(exportUserInfo, "user list", proTable.value.searchParam);
   let name = "all";
   let json = await getComponentsListForExport({
@@ -311,6 +331,15 @@ const downloadFile = async () => {
 // Add components in batches
 const dialogRefImport = ref<InstanceType<typeof ImportExcel>>();
 const batchAdd = async () => {
+  if (!proTable.value) {
+    console.error("ProTable is not initialized");
+    ElNotification({
+      title: "Notification",
+      message: "ProTable is not initialized",
+      type: "error"
+    });
+    return;
+  }
   let templateColumns = [
     { prop: "mpn", label: "MPN" },
     { prop: "manufacturer", label: "Manufacturer" },
@@ -346,6 +375,15 @@ const batchAdd = async () => {
 
 const dialogRefMerge = ref<InstanceType<typeof MergeComponents>>();
 const openMergeDialog = (ids: string[], selectList: Record<string, any>[]) => {
+  if (!proTable.value) {
+    console.error("ProTable is not initialized");
+    ElNotification({
+      title: "Notification",
+      message: "ProTable is not initialized",
+      type: "error"
+    });
+    return;
+  }
   let params = {
     title: "Merge Components",
     // ids,
@@ -365,7 +403,7 @@ const openDrawer = (title: string, rowData?: Component.ResGetComponentRecord) =>
   /*eslint indent: ["error", 2, { "ignoredNodes": ["ConditionalExpression"] }]*/
   let params = {
     title,
-    rowData,
+    rowData: { ...rowData } as Component.ResGetComponentRecord,
     isView: title === "View",
     apiUrl:
       title === "New"
@@ -375,7 +413,7 @@ const openDrawer = (title: string, rowData?: Component.ResGetComponentRecord) =>
           : title === "Stock"
             ? patchComponentUpdate
             : undefined,
-    updateTable: proTable.value.getTableList
+    updateTable: proTable.value!.getTableList
   };
   drawerRef.value!.acceptParams(params);
 };
@@ -385,11 +423,11 @@ const drawerRefComponentStockEdit = ref<InstanceType<typeof ComponentStockEdit>>
 const openStockDrawer = (title: string, rowData?: Component.ResGetComponentRecord) => {
   let params = {
     title: `${rowData!.manufacturer} - ${rowData!.mpn}`,
-    rowData,
+    rowData: { ...rowData } as Component.ResGetComponentRecord,
     isView: false,
     addStock: 0,
     apiUrl: patchComponentUpdate,
-    updateTable: proTable.value.getTableList
+    updateTable: proTable.value!.getTableList
   };
   drawerRefComponentStockEdit.value!.acceptParams(params);
 };

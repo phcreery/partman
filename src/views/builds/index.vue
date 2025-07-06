@@ -17,12 +17,12 @@
       <!-- Expand -->
       <template #expand="scope">
         <!-- {{ scope.row }} -->
-        <ComponentDetails
+        <!-- <ComponentDetails
           :title="scope.row.mpn ?? ''"
           :isView="true"
           :rowData="scope.row"
-          :enum-map="proTable.enumMap"
-        ></ComponentDetails>
+          :enum-map="proTable!.enumMap"
+        ></ComponentDetails> -->
       </template>
 
       <!-- Table operation -->
@@ -52,9 +52,10 @@ import {
   getProjectBuildsListForExport,
   postProjectBuildsCreate
 } from "@/api/modules/components";
+// import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
-const proTable = ref();
+const proTable = ref<InstanceType<typeof ProTable>>();
 // If the table needs to initialize the request parameter, it will be directly defined to the propable (each request will automatically bring the parameter every time, and it will always be brought to
 const initParam = reactive({
   expand: ""
@@ -116,7 +117,7 @@ const columns: ColumnProps[] = [
 
 // Export component list
 const downloadFile = async () => {
-  // useDownload(exportUserInfo, "user list", proTable.value.searchParam);
+  if (!proTable.value) return;
   let name = "all";
   let json = await getProjectBuildsListForExport({
     filter: proTable.value.searchParam
@@ -134,6 +135,7 @@ const downloadFile = async () => {
 // Open the drawer (new, view, edit)
 const drawerRef = ref<InstanceType<typeof ProjectBuildDrawer>>();
 const openDrawer = (title: string, rowData?: ProjectBuilds.ResGetProjectBuildRecord) => {
+  if (!proTable.value) return;
   let params = {
     title,
     rowData: rowData || ({} as ProjectBuilds.ResGetProjectBuildRecord),

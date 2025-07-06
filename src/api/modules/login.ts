@@ -171,7 +171,7 @@ export const getAuthMenuListApi = (): MenuOptions[] => {
       {
         path: "/settings",
         name: "settings",
-        component: "/settings/admin",
+        component: "/settings/admin/index",
         meta: {
           icon: "setting",
           title: "Settings",
@@ -185,7 +185,7 @@ export const getAuthMenuListApi = (): MenuOptions[] => {
           {
             path: "/settings/admin",
             name: "admin",
-            component: "/settings/admin",
+            component: "/settings/admin/index",
             meta: {
               icon: "operation",
               title: "Admin",

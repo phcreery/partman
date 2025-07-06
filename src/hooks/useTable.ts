@@ -32,7 +32,7 @@ export const useTable = (
       // Current page number
       pageNum: 1,
       // Number of items per page
-      pageSize: 10,
+      pageSize: 25,
       // Total number of items
       total: 0
     },

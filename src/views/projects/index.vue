@@ -79,24 +79,27 @@
 <script setup lang="tsx" name="projects">
 import { ref, reactive } from "vue";
 import { ElNotification } from "element-plus";
+import { CirclePlus, Delete, EditPen, Upload, Download } from "@element-plus/icons-vue";
+
+// Components
 import { ColumnProps, PageableList } from "@/components/ProTable/interface/index";
+import ProTable from "@/components/ProTable/index.vue";
+import ProTree from "@/components/ProTree/index.vue";
+import ImportExcel from "../inventory/components/ImportExcel.vue";
+import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
+import ProjectComponentDrawer from "@/views/projects/components/ProjectComponentDrawer.vue";
+import ProjectDrawer from "@/views/projects/components/ProjectDrawer.vue";
+
+// Hooks
 import { useHandleData } from "@/hooks/useHandleData";
 import { useDownload } from "@/hooks/useDownload";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import { JSON2CSV } from "@/hooks/useDataTransform";
-import ProTable from "@/components/ProTable/index.vue";
-import ProTree from "@/components/ProTree/index.vue";
-import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
-// import TreeFilter from "@/components/TreeFilter/index.vue";
-// import ImportExcel from "@/components/ImportExcel/index.vue";
-import ImportExcel from "../inventory/components/ImportExcel.vue";
-import ProjectComponentDrawer from "@/views/projects/components/ProjectComponentDrawer.vue";
-import ProjectDrawer from "@/views/projects/components/ProjectDrawer.vue";
-import { CirclePlus, Delete, EditPen, Upload, Download } from "@element-plus/icons-vue";
+
+// API
 import { ResList, Project, ProjectComponents } from "@/api/interface";
 import {
   getComponentEnum,
-  // postComponentCreate,
   getProjectsEnum,
   getProjectComponentsList,
   getProjectComponentsListForExport,
@@ -110,8 +113,8 @@ import {
 } from "@/api/modules/components";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
-const proTable = ref();
-const proTree = ref();
+const proTable = ref<InstanceType<typeof ProTable>>();
+const proTree = ref<InstanceType<typeof ProTree>>();
 
 // If the table needs to initialize the request parameter, it will be directly defined to the prop table (each request will automatically bring the parameter every time, and it will always be brought to
 const initParam = reactive<Partial<ProjectComponents.ReqGetProjectComponentListParams>>({
@@ -143,7 +146,7 @@ const dataCallbackTable = (
 // what binds the category tree to the table filter
 const handleProjectSelect = (data: any) => {
   initParam.projectID = data.id;
-  proTable.value.clearSelection();
+  proTable.value!.clearSelection();
 };
 
 // Page button permission
@@ -206,6 +209,15 @@ const columns: ColumnProps[] = [
 
 // Batch delete footprints
 const batchDelete = async (ids: string[]) => {
+  if (!proTable.value) {
+    console.error("ProTable is not initialized");
+    ElNotification({
+      title: "Notification",
+      message: "ProTable is not initialized",
+      type: "error"
+    });
+    return;
+  }
   await useHandleData(
     deleteProjectComponents,
     { projectID: String(initParam.projectID), ids },
@@ -216,6 +228,15 @@ const batchDelete = async (ids: string[]) => {
 
 // Batch delete footprints
 const batchDeleteProject = async (ids: string[]) => {
+  if (!proTree.value || !proTable.value) {
+    console.error("ProTree or ProTable is not initialized");
+    ElNotification({
+      title: "Notification",
+      message: "ProTree or ProTable is not initialized",
+      type: "error"
+    });
+    return;
+  }
   await useHandleData(deleteProjects, { ids }, "Delete the selected projects(s)");
   proTree.value.refresh();
   proTable.value.clearSelection();
@@ -223,6 +244,15 @@ const batchDeleteProject = async (ids: string[]) => {
 
 // Export component list
 const downloadFile = async () => {
+  if (!proTable.value) {
+    console.error("ProTable is not initialized");
+    ElNotification({
+      title: "Notification",
+      message: "ProTable is not initialized",
+      type: "error"
+    });
+    return;
+  }
   // useDownload(exportUserInfo, "user list", proTable.value.searchParam);
   let name = initParam.projectID;
   let json = await getProjectComponentsListForExport({
@@ -259,7 +289,7 @@ const batchAdd = async () => {
     title: "Project Components",
     columns: templateColumns,
     uniqueKey: "bom_id",
-    enumMap: proTable.value.enumMap,
+    enumMap: proTable.value!.enumMap,
     apiGetExistingEntries: async () => await getProjectComponentsListForExport({ filter: {}, projectID: initParam.projectID! }), // existingEntries,
     apiUpload: async (data: any) => {
       // add project_id to each row
@@ -268,7 +298,7 @@ const batchAdd = async () => {
       });
       await postProjectComponentsUpload(data);
     },
-    refresh: proTable.value.getTableList
+    refresh: proTable.value!.getTableList
   };
   dialogRefImport.value!.acceptParams(params);
 };
@@ -292,19 +322,19 @@ const openComponentDrawer = (title: string, rowData: Partial<ProjectComponents.R
     rowData: { ...rowData, _ofProjectID: initParam.projectID },
     isView: title === "View",
     apiUrl: title === "New" ? postProjectComponentAdd : title === "Edit" ? patchProjectComponentUpdate : "",
-    updateTable: proTable.value.getTableList
+    updateTable: proTable.value!.getTableList
   };
   drawerRefComponent.value!.acceptParams(params);
 };
 
 const drawerRefProject = ref<DrawerExpose>();
-const openProjectDrawer = (title: string, rowData: Partial<Project.ResGetProjectRecord> = {}) => {
+const openProjectDrawer = (title: string, rowData?: Project.ResGetProjectRecord) => {
   let params = {
     title,
     rowData: { ...rowData },
     isView: title === "View",
     apiUrl: title === "New" ? postProjectCreate : title === "Edit" ? patchProjectUpdate : "",
-    updateTable: proTree.value.refresh
+    updateTable: proTree.value!.refresh
   };
   drawerRefProject.value!.acceptParams(params);
 };

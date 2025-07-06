@@ -34,10 +34,12 @@ I like to build small circuits and development boards. This requires me to desig
 
 - [ ] User Management
 - [ ] Backup Management
+- [ ] Clone Operation
 - [ ] "Fast" Entry (Barcode/QR code reader)
 - [ ] Fix: auto logout after leave/timeout
 - [ ] Update from UI
 - [ ] Merge Categories
+- [ ] Public Demo
 
 ## Installation
 

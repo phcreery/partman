@@ -301,6 +301,7 @@ defineExpose({
   isSelected,
   selectedList,
   selectedListIds,
+  tableColumns,
 
   getTableList,
   search,

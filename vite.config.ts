@@ -56,7 +56,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       pure: viteEnv.VITE_DROP_CONSOLE ? ["console.log"] : []
     },
     build: {
-      outDir: "dist",
+      outDir: "dist-ui",
       // minify: 'esbuild',
       // esbuild 打包更快，但是不能去除 console.log，terser打包慢，但能去除 console.log
       minify: "terser",

@@ -9,7 +9,7 @@
     "dev:server": "cross-env CGO_ENABLED=0 go run . serve --http=\"0.0.0.0:8090\"",
     "build:client:dev": "vue-tsc --noEmit && vite build --mode development",
     "build:client:test": "vue-tsc --noEmit && vite build --mode test",
-    "build:client:pro": "vue-tsc --noEmit && vite build --mode production",
+    "build:client:prod": "vue-tsc --noEmit && vite build --mode production",
     "build:server": "cross-env CGO_ENABLED=0 go build",
     "build:server:all": "goreleaser release --clean --snapshot",
     "build:all:release": "vue-tsc --noEmit && vite build --mode production && goreleaser release --clean",

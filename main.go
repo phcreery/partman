@@ -51,15 +51,6 @@ const uiPath = "/" // trailedAdminPath
 // bindStaticAdminUI registers the endpoints that serves the static admin UI.
 // https://github.com/pocketbase/pocketbase/apis/base.go
 func bindStaticAdminUI(app core.App, e *core.ServeEvent) error {
-
-	// redirect to trailing slash to ensure that relative urls will still work properly
-	// e.Router.GET(
-	// 	strings.TrimRight(uiPath, "/"),
-	// 	func(c echo.Context) error {
-	// 		return c.Redirect(http.StatusTemporaryRedirect, uiPath)
-	// 	},
-	// )
-
 	// serves static files from the /dist directory
 	// (similar to echo.StaticFS but with gzip middleware enabled)
 	e.Router.GET(
@@ -98,7 +89,6 @@ func main() {
 		return nil
 	})
 
-	// server.ComponentTotalStockCounterHook(app)
 	server.ComponentLogsHook(app)
 
 	migratecmd.MustRegister(app, app.RootCmd, &migratecmd.Options{

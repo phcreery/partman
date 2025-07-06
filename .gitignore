@@ -15,6 +15,7 @@ release
 *.local
 stats.html
 src_*
+template
 
 
 # Editor directories and files

@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/fatih/color"
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
@@ -88,6 +89,8 @@ func main() {
 		server.AddImportProjectComponentsRoute(app, se)
 
 		bindStaticAdminUI(app, se)
+
+		fmt.Printf("── Web:       %s\n", color.CyanString("http://%s/", se.Server.Addr))
 
 		return se.Next()
 	})

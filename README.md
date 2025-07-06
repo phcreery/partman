@@ -40,6 +40,7 @@ I like to build small circuits and development boards. This requires me to desig
 - [ ] Update from UI
 - [ ] Merge Categories
 - [ ] Public Demo
+- [ ] McMaster Carr integration
 
 ## Installation
 

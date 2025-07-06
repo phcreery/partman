@@ -2,13 +2,13 @@
   <div class="tool-bar-ri">
     <div class="header-icon">
       <!-- About -->
-      <About id="about"></About>
-      <AssemblySize id="assemblySize" />
+      <About />
+      <AssemblySize />
       <!-- <Language id="language" /> -->
-      <SearchMenu id="searchMenu" />
+      <SearchMenu />
       <!-- <ThemeSetting id="themeSetting" /> -->
       <!-- <Message id="message" /> -->
-      <Fullscreen id="fullscreen" />
+      <Fullscreen />
       <SwitchDark />
     </div>
     <span class="username">{{ userInfo?.name }}</span>

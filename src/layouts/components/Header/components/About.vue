@@ -1,16 +1,11 @@
 <template>
-  <div style="height: 16px">
-    <!-- <el-tooltip effect="dark" content="About" placement="bottom"> -->
-    <!-- <i :class="'iconfont icon-info'" class="icon-style toolBar-icon" @click="openDrawer"></i> -->
-    <el-icon class="icon-style el-icon toolBar-icon" style="cursor: pointer" @click="openDrawer"><InfoFilled /></el-icon>
-    <!-- </el-tooltip> -->
-    <el-drawer v-model="drawerVisible" title="About" size="300px">
-      <el-divider class="divider" content-position="center">
-        <div class="divider-content">partman {{ version }}</div>
-      </el-divider>
-      <p><a href="https://github.com/phcreery/partman">https://github.com/phcreery/partman</a></p>
-    </el-drawer>
-  </div>
+  <el-icon style="cursor: pointer" @click="openDrawer"><InfoFilled /></el-icon>
+  <el-drawer v-model="drawerVisible" title="About" size="300px">
+    <el-divider class="divider" content-position="center">
+      <div class="divider-content">partman {{ version }}</div>
+    </el-divider>
+    <p><a href="https://github.com/phcreery/partman">https://github.com/phcreery/partman</a></p>
+  </el-drawer>
 </template>
 
 <script setup lang="ts">
@@ -26,6 +21,4 @@ const openDrawer = () => {
 };
 </script>
 
-<style scoped lang="scss">
-// @import "../index.scss";
-</style>
+<style scoped lang="scss"></style>

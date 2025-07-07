@@ -5,7 +5,9 @@ const srcTemplateFilesToRemove = [
   "utils/serviceDict.ts" // contains unused male/female enum dict
 ];
 
-// const srcTemplateFoldersToRemove = [];
+const srcTemplateFoldersToRemove = [
+  "src/components/WangEditor" // this is the old wang editor, use new one from template
+];
 
 // these file are the ones to keep untouched in the src directory
 const srcMyFilesToKeep = [
@@ -54,6 +56,9 @@ copyFolderRecursiveSync2("template/src", "src");
 // delete files to remove from src
 srcTemplateFilesToRemove.forEach(file => {
   deleteFolderRecursive(`src/${file}`);
+});
+srcTemplateFoldersToRemove.forEach(folder => {
+  deleteFolderRecursive(`src/${folder}`);
 });
 
 // copy files to keep from src_backup to src

@@ -10,7 +10,7 @@ export default defineConfig({
     VITE_REPORT: Schema.boolean(),
     VITE_DROP_CONSOLE: Schema.boolean(),
     VITE_PWA: Schema.boolean.optional(),
-    VITE_API_URL: Schema.string(),
+    VITE_API_URL: Schema.string.optional(),
     VITE_PUBLIC_PATH: Schema.string.optional(),
     VITE_ROUTER_MODE: Schema.enum(["hash", "history"] as const),
     VITE_USER_NODE_ENV: Schema.enum.optional(["development", "production"] as const),

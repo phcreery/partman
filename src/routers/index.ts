@@ -30,8 +30,8 @@ const routerMode = {
  * @param meta.isKeepAlive ==> Whether the current route is cached
  * */
 const router = createRouter({
-  // history: routerMode[mode](),
-  history: createWebHashHistory(),
+  history: routerMode[mode](),
+  // history: createWebHashHistory(),
   routes: [...staticRouter, ...errorRouter],
   strict: false,
   scrollBehavior: () => ({ left: 0, top: 0 })

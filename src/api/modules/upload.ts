@@ -1,4 +1,4 @@
-import { APIdata, Upload } from "@/api/interface/index";
+import { ResultData, Upload } from "@/api/interface/index";
 // import { PORT1 } from "@/api/config/servicePort";
 // import http from "@/api";
 
@@ -9,12 +9,12 @@ import { APIdata, Upload } from "@/api/interface/index";
 export const uploadImg = (params: FormData) => {
   console.log(params);
   // return http.post<Upload.ResFileUrl>(PORT1 + `/file/upload/img`, params);
-  return { data: undefined } as unknown as ResultData<Upload.ResFileUrl>;
+  return undefined as unknown as Upload.ResFileUrl;
 };
 
 // * 视频上传
 export const uploadVideo = (params: FormData) => {
   console.log(params);
   // return http.post<Upload.ResFileUrl>(PORT1 + `/file/upload/video`, params);
-  return { data: undefined } as unknown as ResultData<Upload.ResFileUrl>;
+  return undefined as unknown as Upload.ResFileUrl;
 };

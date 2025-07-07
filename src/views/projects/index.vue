@@ -13,7 +13,7 @@
         <el-button
           :icon="EditPen"
           :disabled="scope.row.id === ''"
-          @click="openProjectDrawer('Edit', scope.row)"
+          @click="openProjectDrawer('Edit', scope.row as unknown as Project.ResGetProjectRecord)"
           v-if="BUTTONS.edit"
         ></el-button>
         <el-button

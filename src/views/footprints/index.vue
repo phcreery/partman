@@ -12,7 +12,7 @@
         <el-button
           :icon="EditPen"
           :disabled="scope.row.id === ''"
-          @click="openFootprintCategoryDrawer('Edit', scope.row)"
+          @click="openFootprintCategoryDrawer('Edit', scope.row as unknown as FootprintCategory.ResGetFootprintCategoryRecord)"
           v-if="BUTTONS.edit"
         ></el-button>
         <el-button
@@ -196,7 +196,7 @@ const openFootprintDrawer = (title: string, rowData?: Footprint.ResGetFootprintR
 };
 
 const drawerRefFootprintCategory = ref<InstanceType<typeof FootprintCategoryDrawer>>();
-const openFootprintCategoryDrawer = (title: string, rowData: Partial<FootprintCategory.ResGetFootprintCategoryRecord> = {}) => {
+const openFootprintCategoryDrawer = (title: string, rowData?: FootprintCategory.ResGetFootprintCategoryRecord) => {
   let params = {
     title,
     rowData: rowData || ({} as FootprintCategory.ResGetFootprintCategoryRecord),

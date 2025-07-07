@@ -42,7 +42,7 @@ import { Search } from "@element-plus/icons-vue";
 import { useAuthStore } from "@/stores/modules/auth";
 import { useRouter } from "vue-router";
 import { useDebounceFn } from "@vueuse/core";
-import type { MenuOptions } from "@/api/interface/menu";
+import type { MenuOptions } from "@/api/modules/menu";
 
 const router = useRouter();
 const authStore = useAuthStore();

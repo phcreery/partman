@@ -1,8 +1,8 @@
-import { isArray } from '@/utils/is'
-import type { FieldNamesProps } from '@/components/ProTable/interface'
-import type { MenuOptions } from '@/api/modules/menu'
+import { isArray } from "@/utils/is";
+import type { FieldNamesProps } from "@/components/ProTable/interface";
+import type { MenuOptions } from "@/api/modules/menu";
 
-const mode = import.meta.env.VITE_ROUTER_MODE
+const mode = import.meta.env.VITE_ROUTER_MODE;
 
 /**
  * @description 获取localStorage
@@ -10,11 +10,11 @@ const mode = import.meta.env.VITE_ROUTER_MODE
  * @returns {String}
  */
 export function localGet(key: string) {
-  const value = window.localStorage.getItem(key)
+  const value = window.localStorage.getItem(key);
   try {
-    return JSON.parse(window.localStorage.getItem(key) as string)
+    return JSON.parse(window.localStorage.getItem(key) as string);
   } catch (error) {
-    return value
+    return value;
   }
 }
 
@@ -25,7 +25,7 @@ export function localGet(key: string) {
  * @returns {void}
  */
 export function localSet(key: string, value: any) {
-  window.localStorage.setItem(key, JSON.stringify(value))
+  window.localStorage.setItem(key, JSON.stringify(value));
 }
 
 /**
@@ -34,7 +34,7 @@ export function localSet(key: string, value: any) {
  * @returns {void}
  */
 export function localRemove(key: string) {
-  window.localStorage.removeItem(key)
+  window.localStorage.removeItem(key);
 }
 
 /**
@@ -42,7 +42,7 @@ export function localRemove(key: string) {
  * @returns {void}
  */
 export function localClear() {
-  window.localStorage.clear()
+  window.localStorage.clear();
 }
 
 /**
@@ -51,9 +51,9 @@ export function localClear() {
  * @returns {String}
  */
 export function isType(val: any) {
-  if (val === null) return 'null'
-  if (typeof val !== 'object') return typeof val
-  else return Object.prototype.toString.call(val).slice(8, -1).toLocaleLowerCase()
+  if (val === null) return "null";
+  if (typeof val !== "object") return typeof val;
+  else return Object.prototype.toString.call(val).slice(8, -1).toLocaleLowerCase();
 }
 
 /**
@@ -63,22 +63,22 @@ export function isType(val: any) {
  * @returns {Boolean} 相同返回 true，反之 false
  */
 export function isObjectValueEqual(a: { [key: string]: any }, b: { [key: string]: any }) {
-  if (!a || !b) return false
-  const aProps = Object.getOwnPropertyNames(a)
-  const bProps = Object.getOwnPropertyNames(b)
-  if (aProps.length != bProps.length) return false
+  if (!a || !b) return false;
+  const aProps = Object.getOwnPropertyNames(a);
+  const bProps = Object.getOwnPropertyNames(b);
+  if (aProps.length != bProps.length) return false;
   for (let i = 0; i < aProps.length; i++) {
-    const propName = aProps[i]
-    const propA = a[propName]
-    const propB = b[propName]
-    if (!b[propName]) return false
+    const propName = aProps[i];
+    const propA = a[propName];
+    const propB = b[propName];
+    if (!b[propName]) return false;
     if (propA instanceof Object) {
-      if (!isObjectValueEqual(propA, propB)) return false
+      if (!isObjectValueEqual(propA, propB)) return false;
     } else if (propA !== propB) {
-      return false
+      return false;
     }
   }
-  return true
+  return true;
 }
 
 /**
@@ -88,7 +88,7 @@ export function isObjectValueEqual(a: { [key: string]: any }, b: { [key: string]
  * @returns {Number}
  */
 export function randomNum(min: number, max: number): number {
-  return Math.floor(Math.random() * (min - max) + max)
+  return Math.floor(Math.random() * (min - max) + max);
 }
 
 /**
@@ -96,13 +96,13 @@ export function randomNum(min: number, max: number): number {
  * @returns {String}
  */
 export function getTimeState() {
-  const timeNow = new Date()
-  const hours = timeNow.getHours()
-  if (hours >= 6 && hours <= 10) return `早上好 ⛅`
-  if (hours >= 10 && hours <= 14) return `中午好 🌞`
-  if (hours >= 14 && hours <= 18) return `下午好 🌞`
-  if (hours >= 18 && hours <= 24) return `晚上好 🌛`
-  if (hours >= 0 && hours <= 6) return `凌晨好 🌛`
+  const timeNow = new Date();
+  const hours = timeNow.getHours();
+  if (hours >= 6 && hours <= 10) return `早上好 ⛅`;
+  if (hours >= 10 && hours <= 14) return `中午好 🌞`;
+  if (hours >= 14 && hours <= 18) return `下午好 🌞`;
+  if (hours >= 18 && hours <= 24) return `晚上好 🌛`;
+  if (hours >= 0 && hours <= 6) return `凌晨好 🌛`;
 }
 
 /**
@@ -110,14 +110,14 @@ export function getTimeState() {
  * @returns {String}
  */
 export function getBrowserLang() {
-  const browserLang = navigator.language ? navigator.language : navigator.browserLanguage
-  let defaultBrowserLang = ''
-  if (['cn', 'zh', 'zh-cn'].includes(browserLang.toLowerCase())) {
-    defaultBrowserLang = 'zh'
+  const browserLang = navigator.language ? navigator.language : navigator.browserLanguage;
+  let defaultBrowserLang = "";
+  if (["cn", "zh", "zh-cn"].includes(browserLang.toLowerCase())) {
+    defaultBrowserLang = "zh";
   } else {
-    defaultBrowserLang = 'en'
+    defaultBrowserLang = "en";
   }
-  return defaultBrowserLang
+  return defaultBrowserLang;
 }
 
 /**
@@ -127,9 +127,9 @@ export function getBrowserLang() {
 export function getUrlWithParams() {
   const url = {
     hash: location.hash.substring(1),
-    history: location.pathname + location.search,
-  }
-  return url[mode]
+    history: location.pathname + location.search
+  };
+  return url[mode];
 }
 
 /**
@@ -138,8 +138,8 @@ export function getUrlWithParams() {
  * @returns {Array}
  */
 export function getFlatMenuList(menuList: MenuOptions[]): MenuOptions[] {
-  const newMenuList: MenuOptions[] = JSON.parse(JSON.stringify(menuList))
-  return newMenuList.flatMap(item => [item, ...(item.children ? getFlatMenuList(item.children) : [])])
+  const newMenuList: MenuOptions[] = JSON.parse(JSON.stringify(menuList));
+  return newMenuList.flatMap(item => [item, ...(item.children ? getFlatMenuList(item.children) : [])]);
 }
 
 /**
@@ -148,11 +148,11 @@ export function getFlatMenuList(menuList: MenuOptions[]): MenuOptions[] {
  * @returns {Array}
  * */
 export function getShowMenuList(menuList: MenuOptions[]) {
-  const newMenuList: MenuOptions[] = JSON.parse(JSON.stringify(menuList))
+  const newMenuList: MenuOptions[] = JSON.parse(JSON.stringify(menuList));
   return newMenuList.filter(item => {
-    item.children?.length && (item.children = getShowMenuList(item.children))
-    return !item.meta?.isHide
-  })
+    item.children?.length && (item.children = getShowMenuList(item.children));
+    return !item.meta?.isHide;
+  });
 }
 
 /**
@@ -164,11 +164,11 @@ export function getShowMenuList(menuList: MenuOptions[]) {
  */
 export const getAllBreadcrumbList = (menuList: MenuOptions[], parent = [], result: { [key: string]: any } = {}) => {
   for (const item of menuList) {
-    result[item.path] = [...parent, item]
-    if (item.children) getAllBreadcrumbList(item.children, result[item.path], result)
+    result[item.path] = [...parent, item];
+    if (item.children) getAllBreadcrumbList(item.children, result[item.path], result);
   }
-  return result
-}
+  return result;
+};
 
 /**
  * @description 使用递归处理路由菜单 path，生成一维数组 (第一版本地路由鉴权会用到，该函数暂未使用)
@@ -178,10 +178,10 @@ export const getAllBreadcrumbList = (menuList: MenuOptions[], parent = [], resul
  */
 export function getMenuListPath(menuList: MenuOptions[], menuPathArr: string[] = []): string[] {
   for (const item of menuList) {
-    if (typeof item === 'object' && item.path) menuPathArr.push(item.path)
-    if (item.children?.length) getMenuListPath(item.children, menuPathArr)
+    if (typeof item === "object" && item.path) menuPathArr.push(item.path);
+    if (item.children?.length) getMenuListPath(item.children, menuPathArr);
   }
-  return menuPathArr
+  return menuPathArr;
 }
 
 /**
@@ -192,13 +192,13 @@ export function getMenuListPath(menuList: MenuOptions[], menuPathArr: string[] =
  */
 export function findMenuByPath(menuList: MenuOptions[], path: string): MenuOptions | null {
   for (const item of menuList) {
-    if (item.path === path) return item
+    if (item.path === path) return item;
     if (item.children) {
-      const res = findMenuByPath(item.children, path)
-      if (res) return res
+      const res = findMenuByPath(item.children, path);
+      if (res) return res;
     }
   }
-  return null
+  return null;
 }
 
 /**
@@ -209,10 +209,10 @@ export function findMenuByPath(menuList: MenuOptions[], path: string): MenuOptio
  * */
 export function getKeepAliveRouterName(menuList: MenuOptions[], keepAliveNameArr: string[] = []) {
   menuList.forEach(item => {
-    item.meta.isKeepAlive && item.name && keepAliveNameArr.push(item.name)
-    item.children?.length && getKeepAliveRouterName(item.children, keepAliveNameArr)
-  })
-  return keepAliveNameArr
+    item.meta.isKeepAlive && item.name && keepAliveNameArr.push(item.name);
+    item.children?.length && getKeepAliveRouterName(item.children, keepAliveNameArr);
+  });
+  return keepAliveNameArr;
 }
 
 /**
@@ -224,8 +224,8 @@ export function getKeepAliveRouterName(menuList: MenuOptions[], keepAliveNameArr
  * */
 export function formatTableColumn(row: number, col: number, callValue: any) {
   // 如果当前值为数组，使用 / 拼接（根据需求自定义）
-  if (isArray(callValue)) return callValue.length ? callValue.join(' / ') : '--'
-  return callValue ?? '--'
+  if (isArray(callValue)) return callValue.length ? callValue.join(" / ") : "--";
+  return callValue ?? "--";
 }
 
 /**
@@ -235,8 +235,8 @@ export function formatTableColumn(row: number, col: number, callValue: any) {
  * */
 export function formatValue(callValue: any) {
   // 如果当前值为数组，使用 / 拼接（根据需求自定义）
-  if (isArray(callValue)) return callValue.length ? callValue.join(' / ') : '--'
-  return callValue ?? '--'
+  if (isArray(callValue)) return callValue.length ? callValue.join(" / ") : "--";
+  return callValue ?? "--";
 }
 
 /**
@@ -246,9 +246,9 @@ export function formatValue(callValue: any) {
  * @returns {*}
  * */
 export function handleRowAccordingToProp(row: { [key: string]: any }, prop: string) {
-  if (!prop.includes('.')) return row[prop] ?? '--'
-  prop.split('.').forEach(item => (row = row[item] ?? '--'))
-  return row
+  if (!prop.includes(".")) return row[prop] ?? "--";
+  prop.split(".").forEach(item => (row = row[item] ?? "--"));
+  return row;
 }
 
 /**
@@ -257,9 +257,9 @@ export function handleRowAccordingToProp(row: { [key: string]: any }, prop: stri
  * @returns {String}
  * */
 export function handleProp(prop: string) {
-  const propArr = prop.split('.')
-  if (propArr.length == 1) return prop
-  return propArr[propArr.length - 1]
+  const propArr = prop.split(".");
+  if (propArr.length == 1) return prop;
+  return propArr[propArr.length - 1];
 }
 
 /**
@@ -270,18 +270,18 @@ export function handleProp(prop: string) {
  * @param {String} type 过滤类型（目前只有 tag）
  * @returns {String}
  * */
-export function filterEnum(callValue: any, enumData?: any, fieldNames?: FieldNamesProps, type?: 'tag') {
-  const value = fieldNames?.value ?? 'value'
-  const label = fieldNames?.label ?? 'label'
-  const children = fieldNames?.children ?? 'children'
-  let filterData: { [key: string]: any } = {}
+export function filterEnum(callValue: any, enumData?: any, fieldNames?: FieldNamesProps, type?: "tag") {
+  const value = fieldNames?.value ?? "value";
+  const label = fieldNames?.label ?? "label";
+  const children = fieldNames?.children ?? "children";
+  let filterData: { [key: string]: any } = {};
   // 判断 enumData 是否为数组
-  if (Array.isArray(enumData)) filterData = findItemNested(enumData, callValue, value, children)
+  if (Array.isArray(enumData)) filterData = findItemNested(enumData, callValue, value, children);
   // 判断是否输出的结果为 tag 类型
-  if (type == 'tag') {
-    return filterData?.tagType ? filterData.tagType : ''
+  if (type == "tag") {
+    return filterData?.tagType ? filterData.tagType : "";
   } else {
-    return filterData ? filterData[label] : '--'
+    return filterData ? filterData[label] : "--";
   }
 }
 
@@ -290,8 +290,8 @@ export function filterEnum(callValue: any, enumData?: any, fieldNames?: FieldNam
  * */
 export function findItemNested(enumData: any, callValue: any, value: string, children: string) {
   return enumData.reduce((accumulator: any, current: any) => {
-    if (accumulator) return accumulator
-    if (current[value] === callValue) return current
-    if (current[children]) return findItemNested(current[children], callValue, value, children)
-  }, null)
+    if (accumulator) return accumulator;
+    if (current[value] === callValue) return current;
+    if (current[children]) return findItemNested(current[children], callValue, value, children);
+  }, null);
 }

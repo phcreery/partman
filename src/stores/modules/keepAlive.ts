@@ -1,22 +1,22 @@
-import { defineStore } from 'pinia'
-import type { KeepAliveState } from '@/stores/interface'
+import { defineStore } from "pinia";
+import type { KeepAliveState } from "@/stores/interface";
 
-export const useKeepAliveStore = defineStore('geeker-keepAlive', {
+export const useKeepAliveStore = defineStore("geeker-keepAlive", {
   state: (): KeepAliveState => ({
-    keepAliveName: [],
+    keepAliveName: []
   }),
   actions: {
     // Add KeepAliveName
     async addKeepAliveName(name: string) {
-      !this.keepAliveName.includes(name) && this.keepAliveName.push(name)
+      !this.keepAliveName.includes(name) && this.keepAliveName.push(name);
     },
     // Remove KeepAliveName
     async removeKeepAliveName(name: string) {
-      this.keepAliveName = this.keepAliveName.filter(item => item !== name)
+      this.keepAliveName = this.keepAliveName.filter(item => item !== name);
     },
     // Set KeepAliveName
     async setKeepAliveName(keepAliveName: string[] = []) {
-      this.keepAliveName = keepAliveName
-    },
-  },
-})
+      this.keepAliveName = keepAliveName;
+    }
+  }
+});

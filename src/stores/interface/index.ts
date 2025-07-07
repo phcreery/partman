@@ -1,4 +1,4 @@
-import type { MenuOptions } from "@/api/interface/menu";
+import type { MenuOptions } from "@/api/modules/menu";
 
 export type LayoutType = "vertical" | "classic" | "transverse" | "columns";
 
@@ -34,6 +34,13 @@ export interface UserState {
   userInfo: { name: string; email: string; avatar?: string; username: string };
 }
 
+// export interface UserGetters {}
+
+// export interface UserActions {
+//   setToken(token: string): void;
+//   setUserInfo(userInfo: UserState["userInfo"]): void;
+// }
+
 /* tabsMenuProps */
 export interface TabsMenuProps {
   icon: string;
@@ -42,6 +49,15 @@ export interface TabsMenuProps {
   name: string;
   close: boolean;
   isKeepAlive: boolean;
+}
+
+export interface TabsMenuActions {
+  addTabs(tabItem: TabsMenuProps): Promise<void>;
+  removeTabs(tabPath: string, isCurrent?: boolean): Promise<void>;
+  closeTabsOnSide(path: string, type: "left" | "right"): Promise<void>;
+  closeMultipleTab(tabsMenuValue?: string): Promise<void>;
+  setTabs(tabsMenuList: TabsMenuProps[]): Promise<void>;
+  setTabsTitle(title: string): Promise<void>;
 }
 
 /* TabsState */
@@ -58,7 +74,29 @@ export interface AuthState {
   authMenuList: MenuOptions[];
 }
 
+// export interface AuthGetters {
+//   authButtonListGet: AuthState["authButtonList"];
+//   authMenuListGet: AuthState["authMenuList"];
+//   showMenuListGet: MenuOptions[];
+//   flatMenuListGet: MenuOptions[];
+//   breadcrumbListGet: MenuOptions[];
+// }
+
+// export interface AuthActions {
+//   getAuthButtonList(): Promise<void>;
+//   getAuthMenuList(): Promise<void>;
+//   setRouteName(name: string): void;
+// }
+
 /* KeepAliveState */
 export interface KeepAliveState {
   keepAliveName: string[];
 }
+
+// export interface KeepAliveGetters {}
+
+// export interface KeepAliveActions {
+//   addKeepAliveName(name: string): void;
+//   removeKeepAliveName(name: string): void;
+//   setKeepAliveName(keepAliveName?: string[]): void;
+// }

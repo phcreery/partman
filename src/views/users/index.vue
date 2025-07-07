@@ -2,6 +2,7 @@
   <div class="table-box">
     <ProTable
       ref="proTable"
+      pageAuthId="users"
       :columns="columns"
       :requestApi="getUserList"
       :initParam="initParam"
@@ -60,7 +61,7 @@ const initParam = reactive({});
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
 const dataCallback = (data: ResList<User.ResGetUserRecord>) => {
   return {
-    datalist: data.items,
+    list: data.items,
     total: data.totalItems,
     pageNum: data.page,
     pageSize: data.perPage

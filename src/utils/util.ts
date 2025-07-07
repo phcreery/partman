@@ -1,4 +1,5 @@
 import { isArray } from "@/utils/is";
+import type { MenuOptions } from "@/api/modules/menu";
 
 /**
  * @description GetlocalStorage
@@ -158,7 +159,7 @@ export function getBrowserLang() {
  * @param {String} path Current Access Address
  * @return array
  */
-export function filterCurrentRoute(menuList: Menu.MenuOptions[], path: string) {
+export function filterCurrentRoute(menuList: MenuOptions[], path: string) {
   let result = {};
   for (let item of menuList) {
     if (item.path === path) return item;
@@ -175,9 +176,9 @@ export function filterCurrentRoute(menuList: Menu.MenuOptions[], path: string) {
  * @param {Array} menuList All Menu List
  * @return array
  */
-export function getFlatArr(menuList: Menu.MenuOptions[]) {
-  let newMenuList: Menu.MenuOptions[] = JSON.parse(JSON.stringify(menuList));
-  return newMenuList.reduce((pre: Menu.MenuOptions[], current: Menu.MenuOptions) => {
+export function getFlatArr(menuList: MenuOptions[]) {
+  let newMenuList: MenuOptions[] = JSON.parse(JSON.stringify(menuList));
+  return newMenuList.reduce((pre: MenuOptions[], current: MenuOptions) => {
     let flatArr = [...pre, current];
     if (current.children) flatArr = [...flatArr, ...getFlatArr(current.children)];
     return flatArr;
@@ -190,7 +191,7 @@ export function getFlatArr(menuList: Menu.MenuOptions[]) {
  * @param {Array} cacheArr Cached Routing Menu name ['**','**']
  * @return array
  * */
-export function getKeepAliveRouterName(menuList: Menu.MenuOptions[], keepAliveArr: string[] = []) {
+export function getKeepAliveRouterName(menuList: MenuOptions[], keepAliveArr: string[] = []) {
   menuList.forEach(item => {
     item.meta.isKeepAlive && item.name && keepAliveArr.push(item.name);
     item.children?.length && getKeepAliveRouterName(item.children, keepAliveArr);
@@ -203,8 +204,8 @@ export function getKeepAliveRouterName(menuList: Menu.MenuOptions[], keepAliveAr
  * @param {Array} menuList All Menu List
  * @return array
  * */
-export function getShowMenuList(menuList: Menu.MenuOptions[]) {
-  let newMenuList: Menu.MenuOptions[] = JSON.parse(JSON.stringify(menuList));
+export function getShowMenuList(menuList: MenuOptions[]) {
+  let newMenuList: MenuOptions[] = JSON.parse(JSON.stringify(menuList));
   return newMenuList.filter(item => {
     item.children?.length && (item.children = getShowMenuList(item.children));
     return !item.meta?.isHide;
@@ -217,8 +218,8 @@ export function getShowMenuList(menuList: Menu.MenuOptions[]) {
  * @param {Array} menuPathArr One-dimensional array of menu addresses ['**','**']
  * @return array
  */
-export function getMenuListPath(menuList: Menu.MenuOptions[], menuPathArr: string[] = []) {
-  menuList.forEach((item: Menu.MenuOptions) => {
+export function getMenuListPath(menuList: MenuOptions[], menuPathArr: string[] = []) {
+  menuList.forEach((item: MenuOptions) => {
     typeof item === "object" && item.path && menuPathArr.push(item.path);
     item.children?.length && getMenuListPath(item.children, menuPathArr);
   });
@@ -231,10 +232,10 @@ export function getMenuListPath(menuList: Menu.MenuOptions[], menuPathArr: strin
  * @param {Array} menuList All Menu List
  * @returns array
  */
-export function getCurrentBreadcrumb(path: string, menuList: Menu.MenuOptions[]) {
-  let tempPath: Menu.MenuOptions[] = [];
+export function getCurrentBreadcrumb(path: string, menuList: MenuOptions[]) {
+  let tempPath: MenuOptions[] = [];
   try {
-    const getNodePath = (node: Menu.MenuOptions) => {
+    const getNodePath = (node: MenuOptions) => {
       tempPath.push(node);
       if (node.path === path) throw new Error("Find IT!");
       if (node.children?.length) node.children.forEach(item => getNodePath(item));
@@ -251,9 +252,9 @@ export function getCurrentBreadcrumb(path: string, menuList: Menu.MenuOptions[])
  * @param {Array} menuList All Menu List
  * @returns array
  */
-export function getAllBreadcrumbList(menuList: Menu.MenuOptions[]) {
+export function getAllBreadcrumbList(menuList: MenuOptions[]) {
   let handleBreadcrumbList: { [key: string]: any } = {};
-  const loop = (menuItem: Menu.MenuOptions) => {
+  const loop = (menuItem: MenuOptions) => {
     if (menuItem?.children?.length) menuItem.children.forEach(item => loop(item));
     handleBreadcrumbList[menuItem.path] = getCurrentBreadcrumb(menuItem.path, menuList);
   };

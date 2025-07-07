@@ -1,5 +1,5 @@
 import { Login, ResultData } from "@/api/interface/index";
-import type { MenuOptions } from "@/api/interface/menu";
+import type { MenuOptions } from "@/api/modules/menu";
 import client from "@/api";
 import { HOME_URL } from "@/config";
 

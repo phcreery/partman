@@ -9,7 +9,7 @@ import PocketBase from "pocketbase";
 
 const config = {
   // The default address request address can be modified in the file of the beginning of .env
-  baseURL: import.meta.env.VITE_API_URL as string,
+  baseURL: (import.meta.env.VITE_API_URL as string) || window.location.origin,
   // Set timeout time (10s)
   timeout: ResultEnum.TIMEOUT as number,
   // Allow carrier certificates during cross-domain

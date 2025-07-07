@@ -55,7 +55,7 @@ func bindStaticAdminUI(app core.App, e *core.ServeEvent) error {
 	// serves static files from the /dist directory
 	// (similar to echo.StaticFS but with gzip middleware enabled)
 	e.Router.GET(
-		uiPath+"*",
+		uiPath+"{path...}",
 		apis.Static(DistDirFS, false),
 		// middleware.Gzip(),
 	)

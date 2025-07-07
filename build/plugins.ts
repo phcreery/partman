@@ -11,58 +11,74 @@ import viteCompression from "vite-plugin-compression";
 // import NextDevTools from "vite-plugin-vue-devtools";
 // import { codeInspectorPlugin } from "code-inspector-plugin";
 // import devtoolsJson from "vite-plugin-devtools-json";
+import { ValidateEnv } from "@julr/vite-plugin-validate-env";
 
 /**
- * 创建 vite 插件
+ * Create vite plugins
  * @param viteEnv
  */
-export const createVitePlugins = (viteEnv: ViteEnv): (PluginOption | PluginOption[])[] => {
-  const { VITE_GLOB_APP_TITLE, VITE_REPORT, VITE_DEVTOOLS, VITE_PWA, VITE_CODE_INSPECTOR } = viteEnv;
+export const createVitePlugins = (viteEnv: ImportMetaEnv): (PluginOption | PluginOption[])[] => {
+  const { VITE_GLOB_APP_TITLE, VITE_REPORT, VITE_DEVTOOLS, VITE_PWA } = viteEnv;
   return [
     vue(),
-    // vue 可以使用 jsx/tsx 语法
+    // Vue can use jsx/tsx syntax
     vueJsx(),
+
+    // Validate environment variables
+    ValidateEnv({
+      configFile: "build/env"
+    }),
+
     // chrome dev tools
     // devtoolsJson(),
+
     // devTools
     // VITE_DEVTOOLS && NextDevTools({ launchEditor: "code" }),
-    // esLint 报错信息显示在浏览器界面上
+
+    // Show esLint error messages in the browser interface
     // eslintPlugin({
     //   failOnError: false
     // }),
-    // 创建打包压缩配置
+
+    // Create build compression config
     createCompression(viteEnv),
-    // 注入变量到 html 文件
+
+    // Inject variables into html files
     createHtmlPlugin({
       minify: true,
       inject: {
         data: { title: VITE_GLOB_APP_TITLE }
       }
     }),
-    // 使用 svg 图标
+
+    // Use svg icons
     createSvgIconsPlugin({
       iconDirs: [resolve(process.cwd(), "src/assets/icons")],
       symbolId: "icon-[dir]-[name]"
     }),
+
     // vitePWA
     // VITE_PWA && createVitePwa(viteEnv),
-    // 是否生成包预览，分析依赖包大小做优化处理
+
+    // Whether to generate a bundle preview, analyze dependency package size for optimization
     VITE_REPORT && (visualizer({ filename: "stats.html", gzipSize: true, brotliSize: true }) as PluginOption)
-    // 自动 IDE 并将光标定位到 DOM 对应的源代码位置。see: https://inspector.fe-dev.cn/guide/start.html
+
+    // Automatically open IDE and locate cursor to the source code position corresponding to the DOM. see: https://inspector.fe-dev.cn/guide/start.html
     // VITE_CODE_INSPECTOR &&
     //   codeInspectorPlugin({
     //     bundler: "vite"
     //   })
+
     // mock
     // mockDevServerPlugin(),
   ];
 };
 
 /**
- * @description 根据 compress 配置，生成不同的压缩规则
+ * @description Generate different compression rules according to the compress config
  * @param viteEnv
  */
-const createCompression = (viteEnv: ViteEnv): PluginOption | PluginOption[] => {
+const createCompression = (viteEnv: ImportMetaEnv): PluginOption | PluginOption[] => {
   const { VITE_BUILD_COMPRESS = "none", VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE } = viteEnv;
   const compressList = VITE_BUILD_COMPRESS.split(",");
   const plugins: PluginOption[] = [];

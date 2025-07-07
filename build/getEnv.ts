@@ -1,4 +1,5 @@
 import path from "path";
+import { loadAndValidateEnv } from "@julr/vite-plugin-validate-env";
 
 export function isDevFn(mode: string): boolean {
   return mode === "development";
@@ -20,8 +21,8 @@ export function isReportMode(): boolean {
 }
 
 // Read all environment variable configuration files to process.env
-export function wrapperEnv(envConf: Recordable): ViteEnv {
-  const ret: any = {};
+export function wrapperEnv(envConf: Recordable): ImportMetaEnv {
+  const sanitized: any = {};
 
   for (const envName of Object.keys(envConf)) {
     let realName = envConf[envName].replace(/\\n/g, "\n");
@@ -32,9 +33,14 @@ export function wrapperEnv(envConf: Recordable): ViteEnv {
         realName = JSON.parse(realName);
       } catch (error) {}
     }
-    ret[envName] = realName;
+    sanitized[envName] = realName;
   }
-  return ret;
+
+  // loadAndValidateEnv(sanitized, {
+  //   // configFile: "env.ts"
+  //   configFile: "build/env"
+  // });
+  return sanitized;
 }
 
 /**

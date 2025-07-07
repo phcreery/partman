@@ -12,14 +12,14 @@ const srcMyFilesToKeep = [
   "hooks/useDataTransform.ts",
   "hooks/useDownload.ts",
   "utils/nestedObjectAssign.ts",
+  "utils/filterNodeMethod.ts", // filterNodeMethod for filterable tree-select inputs
+  "utils/util.ts", // implement findItemNested for tree-select enum
   "hooks/useTable.ts", // TODO: update pageParam() => page & perPage
   "hooks/useMerger.ts", // Object.assign(state.totalParam, { filter: nowSearchParam }, isPageable ? pageParam.value : {});
-  "utils/util.ts", // implement findItemNested for tree-select enum
-  "utils/filterNodeMethod.ts", // filterNodeMethod for filterable tree-select inputs
-  "layouts/components/Header/ToolBarRight.vue", // my custom toolbar with removed items
-  "layouts/components/Header/components/About.vue", // my custom about
   "hooks/useSelection.ts", // addition of getRowKeys() for ProTable
   "components/Loading/fullScreen.ts", // fix race condition in multiple request from pocketbase sdk
+  "layouts/components/Header/ToolBarRight.vue", // my custom toolbar with removed items
+  "layouts/components/Header/components/About.vue", // my custom about
   "layouts/components/Header/components/PasswordDialog.vue", // my custom password dialog
   "layouts/components/Header/components/InfoDialog.vue" // my custom info dialog
 ];
@@ -29,13 +29,15 @@ const srcMyFoldersToKeep = [
   "views",
   "api",
   "assets",
-  "components/ProTable", // TODO: these changes should be merged with the template
+  "components/ProTable",
+  /* TODO: these ProTable changes should be merged with the template
   // Update button layout in top-right of pro-table
   // remove "item.isShow &&" from colSetting
   // change default pageSize: 25,
   // add { printData, tableColumns } to export
   // update updatedTotalParam() to include { filter: nowSearchParam }, isPageable ? pageParam.value : {}
   // update pageParam() to return { page: state.pageable.pageNum, perPage: state.pageable.pageSize }
+  */
   "components/ProTree" // this is my tree component TODO: use new tree filter component found in the template
 ];
 

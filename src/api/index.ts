@@ -37,7 +37,7 @@ client.beforeSend = function (url, reqConfig) {
 
 client.afterSend = function (response: Response, data) {
   // do something with the response state
-  console.log("after send response", response, data);
+  console.log("after send response:", response, "data:", data);
 
   const userStore = useUserStore();
 
@@ -46,8 +46,11 @@ client.afterSend = function (response: Response, data) {
 
   // * Authentication failure (code == 599）
   // I don't think PocketBase has a timeout to login. I'll leave it here anyways
-  if (data.code == ResultEnum.OVERDUE) {
-    ElMessage.error(data.msg);
+  if (response.status == ResultEnum.UNAUTHORIZED || response.status == ResultEnum.TIMEOUT) {
+    ElMessage({
+      message: "Authentication failure",
+      type: "error"
+    });
     userStore.setToken("");
     router.replace({
       path: "/login"
@@ -56,8 +59,12 @@ client.afterSend = function (response: Response, data) {
   }
 
   // * Global error information interception (return data stream when downloading files, without code, directly report an error)
-  if (data.code && data.code !== ResultEnum.SUCCESS) {
-    ElMessage.error(data.message);
+  if (response.status && response.status !== ResultEnum.SUCCESS) {
+    // ElMessage.error(data.message);
+    ElMessage({
+      message: data.message || "Request failed",
+      type: "error"
+    });
     return Promise.reject(data);
   }
 
@@ -75,7 +82,11 @@ const handleError = (e: unknown) => {
     errorMessage = e.message; // works, `e` narrowed to Error
   }
   console.error("err", errorMessage);
-  ElMessage.error(errorMessage);
+  // ElMessage.error(errorMessage);
+  ElMessage({
+    message: errorMessage || "An error occurred",
+    type: "error"
+  });
 };
 
 // custom function to catch and handle errors

@@ -19,10 +19,8 @@ export const loginApi = async (params: Login.ReqLoginForm): Promise<Login.ResLog
 };
 
 export const loginApiAsAdmin = async (params: Login.ReqLoginForm): Promise<Login.ResLogin> => {
-  const adminAuthData = (await client.admins.authWithPassword(params.username, params.password)) as any;
-  adminAuthData.user = adminAuthData.admin;
-  // console.log("adminAuthData", adminAuthData);
-  return adminAuthData;
+  const adminAuthData = await client.collection("_superusers").authWithPassword(params.username, params.password);
+  return adminAuthData as unknown as Login.ResLogin;
 };
 
 // * User logout

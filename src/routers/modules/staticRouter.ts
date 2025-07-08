@@ -1,63 +1,63 @@
-import type { RouteRecordRaw } from 'vue-router'
-import { HOME_URL, LOGIN_URL } from '@/config'
+import type { RouteRecordRaw } from "vue-router";
+import { HOME_URL, LOGIN_URL } from "@/config";
 
 /**
- * staticRouter (静态路由)
+ * staticRouter (Static Routes)
  */
 export const staticRouter: RouteRecordRaw[] = [
   {
-    path: '/',
-    redirect: HOME_URL,
+    path: "/",
+    redirect: HOME_URL
   },
   {
     path: LOGIN_URL,
-    name: 'login',
-    component: () => import('@/views/login/index.vue'),
+    name: "login",
+    component: () => import("@/views/login/index.vue"),
     meta: {
-      title: '登录',
-    },
+      title: "Login"
+    }
   },
   {
-    path: '/layout',
-    name: 'layout',
-    component: () => import('@/layouts/index.vue'),
+    path: "/layout",
+    name: "layout",
+    component: () => import("@/layouts/index.vue"),
     // component: () => import("@/layouts/indexAsync.vue"),
     redirect: HOME_URL,
-    children: [],
-  },
-]
+    children: []
+  }
+];
 
 /**
- * errorRouter (错误页面路由)
+ * errorRouter (Error Page Routes)
  */
 export const errorRouter = [
   {
-    path: '/403',
-    name: '403',
-    component: () => import('@/components/ErrorMessage/403.vue'),
+    path: "/403",
+    name: "403",
+    component: () => import("@/components/ErrorMessage/403.vue"),
     meta: {
-      title: '403页面',
-    },
+      title: "403 Page"
+    }
   },
   {
-    path: '/404',
-    name: '404',
-    component: () => import('@/components/ErrorMessage/404.vue'),
+    path: "/404",
+    name: "404",
+    component: () => import("@/components/ErrorMessage/404.vue"),
     meta: {
-      title: '404页面',
-    },
+      title: "404 Page"
+    }
   },
   {
-    path: '/500',
-    name: '500',
-    component: () => import('@/components/ErrorMessage/500.vue'),
+    path: "/500",
+    name: "500",
+    component: () => import("@/components/ErrorMessage/500.vue"),
     meta: {
-      title: '500页面',
-    },
+      title: "500 Page"
+    }
   },
   // Resolve refresh page, route warnings
   {
-    path: '/:pathMatch(.*)*',
-    component: () => import('@/components/ErrorMessage/404.vue'),
-  },
-]
+    path: "/:pathMatch(.*)*",
+    component: () => import("@/components/ErrorMessage/404.vue")
+  }
+];

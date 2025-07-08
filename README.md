@@ -44,43 +44,29 @@ I like to build small circuits and development boards. This requires me to desig
 
 ## Installation
 
-### Docker
+<details>
 
-_Coming soon_
-
-#### Build
-
-```
-docker build -f 'Dockerfile' -t 'partman:latest' '.'
-```
+<summary>Install on Linux Bare Metal</summary>
 
 ### Install on Linux Bare Metal
 
-1. Download latest release of partman for your system
+1.  Download latest release of partman for your system. See [Releases](https://github.com/phcreery/partman/releases)
 
-See [Releases](https://github.com/phcreery/partman/releases)
+2.  Initialize database
 
-2. Initialize database
+        partman migrate up
 
-```
-partman migrate up
-```
+    > This will prompt you to create the UI name, username, and password
 
-This will prompt you to create the UI name, username, and password
+3.  Start partman
 
-3. Start partman
+        partman serve --http="0.0.0.0:8090"
 
-```
-partman serve --http="0.0.0.0:8090"
-```
+    > Visit the link and follow the steps to create a new admin account.
 
-Visit the link and follow the steps to create a new admin account.
+4.  (optional) Create systemd service
 
-4. (optional) Create systemd service
-
-```
-sudo nano /lib/systemd/system/partman.service
-```
+        sudo nano /lib/systemd/system/partman.service
 
 ```
 [Unit]
@@ -117,6 +103,26 @@ partman migrate up
 sudo systemctl start partman
 ```
 
+</details>
+
+<details>
+
+<summary>Docker</summary>
+
+### Docker
+
+```
+docker build \
+  --build-arg PARTMAN_ADMIN_EMAIL=admin@example.com \
+  --build-arg PARTMAN_ADMIN_PASSWORD=AdminPassword1 \
+  --build-arg PARTMAN_USER_EMAIL=partman@example.com \
+  --build-arg PARTMAN_USER_USERNAME=partman \
+  --build-arg PARTMAN_USER_PASSWORD=partmanpassword \
+  -f 'Dockerfile' -t 'phcreery/partman:latest' '.'
+```
+
+</details>
+
 ## Developing
 
 🚀 Technologies used:
@@ -130,32 +136,44 @@ sudo systemctl start partman
 - Element-Plus
 - Pinia
 
+<details>
+
+<summary>Dev Setup</summary>
+
 ### Dev Setup
 
 Install prerequisites
 
 - golang >= 1.19
 
-- node & npm
+- node & npm OR bun
 
 ```
-npm i
+bun i
 ```
 
 Run server environment
 
 ```
-npm run dev:server
+bun run dev:server
 ```
 
 Run client environment with HRM in another terminal
 
 ```
-npm run dev:client
+bun run dev:client
 ```
 
 ### Build
 
 ```
-npm run build:all:release
+bun run build:all:release
 ```
+
+### Build with Docker
+
+```
+docker build -f 'Dockerfile-build' -t 'phcreery/partman:latest' '.'
+```
+
+</details>

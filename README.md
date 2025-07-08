@@ -125,7 +125,7 @@ sudo systemctl start partman
 - [PocketBase](https://pocketbase.io/)
 - TypeScript
 - Vue 3
-- Vite 3
+- Vite
 - [Geeker Admin Template](https://github.com/HalseySpicy/Geeker-Admin) (from latest commit on 12/11/22)
 - Element-Plus
 - Pinia

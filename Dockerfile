@@ -1,8 +1,6 @@
 FROM partman-build:latest AS build
 
 FROM alpine:3.19
-ARG EMAIL
-ARG PASSWORD
 
 WORKDIR /app
 
@@ -16,7 +14,6 @@ COPY --from=build /app/partman .
 EXPOSE 8092
 
 RUN chmod +x ./partman
-RUN ./partman superuser upsert $EMAIL $PASSWORD
 
 # Define the command to run when the container starts
 CMD ["./partman", "serve", "--http=0.0.0.0:8092"]

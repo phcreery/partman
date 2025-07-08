@@ -13,7 +13,7 @@
     "build:server:all": "goreleaser release --clean --snapshot",
     "build:all": "vue-tsc --noEmit && vite build --mode production && goreleaser release --clean",
     "build:docker": "docker build -f 'Dockerfile-build' -t 'partman:latest' '.'",
-    "commit": "git pull && git add -A && git-cz && git push --follow-tags"
+    "commit": "git add -A && czg && git push --follow-tags"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",

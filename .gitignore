@@ -34,6 +34,7 @@ template
 pb_data
 pb_data*
 pb_public
+_migrations*
 
 # goreleaser builds folder
 .builds

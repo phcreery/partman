@@ -55,11 +55,11 @@ WORKDIR /app
 # Install ca-certificates for HTTPS support if needed
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 
-# uncomment to copy the local pb_migrations dir into the image
-COPY --from=server-builder /app/pb_migrations /app/pb_migrations
+# uncomment to copy the local migrations dir into the image
+COPY --from=server-builder /app/migrations /app/migrations
 
 # uncomment to copy the local pb_hooks dir into the image
-COPY --from=server-builder /app/pb_hooks /app/pb_hooks
+# COPY --from=server-builder /app/pb_hooks /app/pb_hooks
 
 # Copy the built binary from the build stage
 COPY --from=server-builder /app/partman .

@@ -112,19 +112,20 @@ sudo systemctl start partman
 ### Docker
 
 ```
-docker run -d phcreery/partman:latest \
+docker run -d \
   --name partman \
   -v /your/host/path/to/pd_data:/app/pd_data \
   -e PARTMAN_USER_EMAIL=partman@example.com \
   -e PARTMAN_USER_USERNAME=partman \
   -e PARTMAN_USER_PASSWORD=partmanpassword \
-  -p 8092:8092
+  -p 8092:8092 \
+  phcreery/partman:latest
 ```
 
 Setup superuser/admin account
 
 ```
-docker exec -ti partman /app/partman superuser create admin@cexample.com adminadmin
+docker exec -ti partman /app/partman superuser create admin@example.com adminadmin
 ```
 
 </details>

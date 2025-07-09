@@ -1,6 +1,7 @@
 package migrations
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/pocketbase/pocketbase/core"
@@ -9,10 +10,6 @@ import (
 
 func init() {
 	m.Register(func(app core.App) error {
-		settings := app.Settings()
-		settings.Meta.AppName = "partman"
-		settings.Meta.AppURL = "https://github.com/phcreery/partman"
-
 		// https://pocketbase.io/docs/go-migrations/#0-register-the-migrate-command
 		users, err := app.FindCollectionByNameOrId("users")
 		if err != nil {
@@ -26,7 +23,7 @@ func init() {
 		record.Set("username", os.Getenv("PARTMAN_USER_USERNAME"))
 
 		// log
-		app.Logger().Info("Creating default user: %s", record.GetString("username"))
+		fmt.Printf("Creating default user: %s\n", record.GetString("username"))
 
 		return app.Save(record)
 

@@ -73,6 +73,23 @@ func main() {
 	app.RootCmd.Short = "partman CLI"
 	app.RootCmd.Version = Version
 
+	app.OnBootstrap().BindFunc(func(e *core.BootstrapEvent) error {
+		if err := e.Next(); err != nil {
+			return err
+		}
+		settings := e.App.Settings()
+		// for all available settings fields you could check
+		// https://github.com/pocketbase/pocketbase/blob/develop/core/settings_model.go#L121-L130
+		settings.Meta = core.MetaConfig{
+			AppName: "partman",
+			AppURL:  "https://github.com/phcreery/partman",
+		}
+
+		app.Save(settings)
+
+		return nil
+	})
+
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
 
 		// Authentication middleware

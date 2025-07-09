@@ -112,13 +112,19 @@ sudo systemctl start partman
 ### Docker
 
 ```
-docker build \
-  --build-arg PARTMAN_ADMIN_EMAIL=admin@example.com \
-  --build-arg PARTMAN_ADMIN_PASSWORD=AdminPassword1 \
-  --build-arg PARTMAN_USER_EMAIL=partman@example.com \
-  --build-arg PARTMAN_USER_USERNAME=partman \
-  --build-arg PARTMAN_USER_PASSWORD=partmanpassword \
-  -f 'Dockerfile' -t 'phcreery/partman:latest' '.'
+docker run -d phcreery/partman:latest \
+  --name partman \
+  -v /your/host/path/to/pd_data:/app/pd_data \
+  -e PARTMAN_USER_EMAIL=partman@example.com \
+  -e PARTMAN_USER_USERNAME=partman \
+  -e PARTMAN_USER_PASSWORD=partmanpassword \
+  -p 8092:8092
+```
+
+Setup superuser/admin account
+
+```
+docker exec -ti partman /app/partman superuser create admin@cexample.com adminadmin
 ```
 
 </details>
@@ -173,7 +179,21 @@ bun run build:all:release
 ### Build with Docker
 
 ```
-docker build -f 'Dockerfile-build' -t 'phcreery/partman:latest' '.'
+docker build -f 'Dockerfile' -t 'phcreery/partman:latest' '.'
+OR
+bun run build:docker
+```
+
+With predefined account options (not recommended)
+
+```
+docker build \
+  --build-arg PARTMAN_ADMIN_EMAIL=admin@example.com \
+  --build-arg PARTMAN_ADMIN_PASSWORD=AdminPassword1 \
+  --build-arg PARTMAN_USER_EMAIL=partman@example.com \
+  --build-arg PARTMAN_USER_USERNAME=partman \
+  --build-arg PARTMAN_USER_PASSWORD=partmanpassword \
+  -f 'Dockerfile' -t 'phcreery/partman:latest' '.'
 ```
 
 </details>

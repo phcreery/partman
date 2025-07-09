@@ -114,7 +114,8 @@ sudo systemctl start partman
 ```
 docker run -d \
   --name partman \
-  -v /your/host/path/to/pd_data:/app/pd_data \
+  --restart unless-stopped \
+  -v $(pwd)/data:/app/pb_data \
   -e PARTMAN_USER_EMAIL=partman@example.com \
   -e PARTMAN_USER_USERNAME=partman \
   -e PARTMAN_USER_PASSWORD=partmanpassword \

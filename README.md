@@ -64,9 +64,11 @@ I like to build small circuits and development boards. This requires me to desig
 
         partman serve --http="0.0.0.0:8090"
 
-    > Visit the link and follow the steps to create a new admin account.
+5.  Visit the link and follow the steps to create a new admin account, OR, run the following
 
-5.  (optional) Create systemd service
+        partman superuser upsert <PARTMAN_ADMIN_EMAIL> <PARTMAN_ADMIN_PASSWORD>
+
+6.  (optional) Create systemd service
 
         sudo nano /lib/systemd/system/partman.service
 
@@ -75,19 +77,19 @@ I like to build small circuits and development boards. This requires me to desig
 Description = partman
 
 [Service]
-Type           = simple
-User           = partman
-Group          = partman
-LimitNOFILE    = 4096
-Restart        = always
-RestartSec     = 5s
-StandardOutput = append:/home/partman/errors.log
-StandardError  = append:/home/partman/errors.log
-WorkingDirectory=/home/partman/
-ExecStart      = /home/partman/partman serve --http="0.0.0.0:8080"
+Type             = simple
+User             = partman
+Group            = partman
+LimitNOFILE      = 4096
+Restart          = always
+RestartSec       = 5s
+StandardOutput   = append:/home/partman/errors.log
+StandardError    = append:/home/partman/errors.log
+WorkingDirectory = /home/partman/
+ExecStart        = /home/partman/partman serve --http="0.0.0.0:8080"
 
 [Install]
-WantedBy = multi-user.target
+WantedBy         = multi-user.target
 ```
 
 ```

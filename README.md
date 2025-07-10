@@ -52,19 +52,23 @@ I like to build small circuits and development boards. This requires me to desig
 
 1.  Download latest release of partman for your system. See [Releases](https://github.com/phcreery/partman/releases)
 
-2.  Initialize database
+2.  Set environment variables for PARTMAN_USER_EMAIL, PARTMAN_USER_USERNAME, and PARTMAN_USER_PASSWORD
+
+3.  Initialize database
 
         partman migrate up
 
     > This will prompt you to create the UI name, username, and password
 
-3.  Start partman
+    > Note: env variables for PARTMAN_USER_EMAIL, PARTMAN_USER_USERNAME, and PARTMAN_USER_PASSWORD are needed for first time database creation only.
+
+4.  Start partman
 
         partman serve --http="0.0.0.0:8090"
 
     > Visit the link and follow the steps to create a new admin account.
 
-4.  (optional) Create systemd service
+5.  (optional) Create systemd service
 
         sudo nano /lib/systemd/system/partman.service
 
@@ -129,9 +133,15 @@ Setup superuser/admin account
 docker exec -ti partman /app/partman superuser create admin@example.com adminadmin
 ```
 
+> Note: env variables for PARTMAN_USER_EMAIL, PARTMAN_USER_USERNAME, and PARTMAN_USER_PASSWORD are needed for first time database creation only.
+
 </details>
 
 ## Developing
+
+<details>
+
+<summary>Dev Setup</summary>
 
 🚀 Technologies used:
 
@@ -143,10 +153,6 @@ docker exec -ti partman /app/partman superuser create admin@example.com adminadm
 - [Geeker Admin Template](https://github.com/HalseySpicy/Geeker-Admin) (from latest commit on 12/11/22)
 - Element-Plus
 - Pinia
-
-<details>
-
-<summary>Dev Setup</summary>
 
 ### Dev Setup
 

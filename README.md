@@ -54,13 +54,11 @@ I like to build small circuits and development boards. This requires me to desig
 
 2.  Set environment variables for PARTMAN_USER_EMAIL, PARTMAN_USER_USERNAME, and PARTMAN_USER_PASSWORD
 
+    > Note: env variables for PARTMAN_USER_EMAIL, PARTMAN_USER_USERNAME, and PARTMAN_USER_PASSWORD are needed for first time database creation only.
+
 3.  Initialize database
 
         partman migrate up
-
-    > This will prompt you to create the UI name, username, and password
-
-    > Note: env variables for PARTMAN_USER_EMAIL, PARTMAN_USER_USERNAME, and PARTMAN_USER_PASSWORD are needed for first time database creation only.
 
 4.  Start partman
 

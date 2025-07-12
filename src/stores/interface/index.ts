@@ -31,7 +31,7 @@ export interface GlobalState {
 /* UserState */
 export interface UserState {
   token: string;
-  userInfo: { email: string; avatar?: string; username: string };
+  userInfo: { id: string; email: string; avatar?: string; username: string };
 }
 
 // export interface UserGetters {}

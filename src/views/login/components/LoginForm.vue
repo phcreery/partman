@@ -74,6 +74,7 @@ const login = (formEl: FormInstance | undefined, admin: boolean = false) => {
         console.log("login data", data);
         userStore.setToken(data.token);
         userStore.setUserInfo({
+          id: data.record.id,
           email: data.record.email,
           // avatar: data.record.avatar,
           username: data.record.email
@@ -83,6 +84,7 @@ const login = (formEl: FormInstance | undefined, admin: boolean = false) => {
         console.log("login data", data);
         userStore.setToken(data.token);
         userStore.setUserInfo({
+          id: data.record.id,
           email: data.record.email,
           // avatar: data.record.avatar,
           username: data.record.username

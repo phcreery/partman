@@ -36,6 +36,7 @@ export namespace Upload {
 // * Login module
 export namespace Login {
   export type LoginColumns = {
+    id: string;
     username: string;
     // name: string;
     email: string;

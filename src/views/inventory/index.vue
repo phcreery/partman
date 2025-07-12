@@ -245,7 +245,7 @@ const columns: ColumnProps<Component.ResGetComponentRecord>[] = [
     align: "left",
     enum: getStorageLocationPathEnumTree,
     // isFilterEnum: false,
-    fieldNames: { value: "id", label: "_fullName" },
+    fieldNames: { value: "id", label: "name" },
     sortable: true,
     search: {
       el: "tree-select",

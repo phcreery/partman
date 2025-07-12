@@ -1,7 +1,7 @@
 // import { showFullScreenLoading, tryHideFullScreenLoading } from "@/config/serviceLoading";
 import { showFullScreenLoading, tryHideFullScreenLoading } from "@/components/Loading/fullScreen";
 import { ResultEnum } from "@/enums/httpEnum";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElNotification } from "element-plus";
 import { useUserStore } from "@/stores/modules/user";
 import router from "@/routers";
 
@@ -61,6 +61,10 @@ client.afterSend = function (response: Response, data) {
   // * Global error information interception (return data stream when downloading files, without code, directly report an error)
   if (response.status && response.status !== ResultEnum.SUCCESS) {
     // ElMessage.error(data.message);
+    ElNotification({
+      title: data.message || "Request failed",
+      message: data
+    });
     ElMessage({
       message: data.message || "Request failed",
       type: "error"

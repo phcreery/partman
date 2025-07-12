@@ -11,13 +11,15 @@
       <Fullscreen />
       <SwitchDark />
     </div>
-    <span class="username">{{ userInfo?.name }}</span>
+    <span class="username">{{ userInfo?.username }}</span>
     <Avatar />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
+
+// Components
 import SearchMenu from "./components/SearchMenu.vue";
 import Fullscreen from "./components/Fullscreen.vue";
 // import Message from "./components/Message.vue";
@@ -28,10 +30,12 @@ import Avatar from "./components/Avatar.vue";
 import About from "./components/About.vue";
 import SwitchDark from "@/components/SwitchDark/index.vue";
 
+// Stores
 import { useUserStore } from "@/stores/modules/user";
+import { UserState } from "@/stores/interface";
 
 const userStore = useUserStore();
-const userInfo = computed(() => userStore.userInfo);
+const userInfo = computed<UserState["userInfo"]>(() => userStore.userInfo);
 </script>
 
 <style scoped lang="scss">

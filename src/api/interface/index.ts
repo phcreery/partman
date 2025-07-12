@@ -37,7 +37,7 @@ export namespace Upload {
 export namespace Login {
   export type LoginColumns = {
     username: string;
-    name: string;
+    // name: string;
     email: string;
     // avatar: string;
   };
@@ -299,7 +299,8 @@ export namespace ComponentLog {
 
 export namespace User {
   export type UserColumns = {
-    name: string;
+    // name: string;
+    username: string;
     avatar: string;
     userId: string;
     email: string;
@@ -309,7 +310,8 @@ export namespace User {
   export type ReqGetUserListParams = ReqList;
   export type ReqGetUserListForExportParams = { filter: ReqList["filter"] };
   export type ReqGetUserParams = ReqRecord;
-  export type ReqCreateUserParams = UserColumns;
+  // params also needs passwordConfirm
+  export type ReqCreateUserParams = UserColumns & { passwordConfirm: string };
   export interface ReqUpdateUserParams extends ReqRecord, UserColumns {
     oldPassword?: string;
     passwordConfirm?: string;

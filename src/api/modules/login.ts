@@ -8,13 +8,7 @@ import { HOME_URL } from "@/config";
  */
 // * User login interface
 export const loginApi = async (params: Login.ReqLoginForm): Promise<Login.ResLogin> => {
-  // return http.post<Login.ResLogin>(PORT1 + `/login`, params); // normal post json ask  ==>  application/json
-  // return http.post<Login.ResLogin>(PORT1 + `/login`, {}, { params }); // post Request to carry Query parameter  ==>  ?username=admin&password=123456
-  // return http.post<Login.ResLogin>(PORT1 + `/login`, qs.stringify(params)); // post Request to carry form parameters  ==>  application/x-www-form-urlencoded
-  // return http.post<Login.ResLogin>(PORT1 + `/login`, params, { headers: { noLoading: true } }); // Control the current request does not display loading
   const authData = await client.collection("users").authWithPassword(params.username, params.password);
-  // authData.user = await client.collection("users").getOne(authData.record.id);
-  // console.log("authData", authData);
   return authData as unknown as Login.ResLogin;
 };
 
@@ -25,7 +19,6 @@ export const loginApiAsAdmin = async (params: Login.ReqLoginForm): Promise<Login
 
 // * User logout
 export const logoutApi = () => {
-  // return http.post<Login.ResLogout>(PORT1 + `/logout`);
   return null;
 };
 
@@ -35,21 +28,14 @@ export const getAuthButtonListApi = (): Login.ResAuthButtons => {
     code: 200,
     msg: "success",
     data: {
-      inventory: ["add", "batchAdd", "export", "batchDelete", "status", "view", "edit", "reset", "delete", "merge"],
+      inventory: ["add", "delete", "view", "edit", "batchAdd", "batchDelete", "export", "status", "reset", "merge"],
+      categories: ["add", "delete", "view", "edit"],
       footprints: ["add", "delete", "view", "edit"],
       storage: ["add", "delete", "view", "edit"],
-      categories: ["add", "delete", "view", "edit"],
-      projects: ["add", "delete", "view", "edit", "batchAdd", "export"],
-      builds: ["add", "view", "export"],
-      logs: ["export"]
-      // users: [
-      //   "add",
-      //   "delete",
-      //   "view",
-      //   "edit",
-      //   "batchAdd",
-      //   "export"
-      // ]
+      projects: ["add", "delete", "view", "edit", "batchAdd", "batchDelete", "export"],
+      builds: ["add", "delete", "view", "edit", "export"],
+      logs: ["export"],
+      users: ["add", "delete", "view", "edit", "batchAdd", "export", "batchDelete"]
     }
   };
   return res.data;
@@ -196,12 +182,27 @@ export const getAuthMenuListApi = (): MenuOptions[] => {
             children: []
           },
           {
-            path: "/logs",
+            path: "/settings/logs",
             name: "logs",
-            component: "/settings/logs",
+            component: "/settings/logs/index",
             meta: {
               icon: "DataAnalysis",
               title: "Logs",
+              isLink: "",
+              isHide: false,
+              isFull: false,
+              isAffix: false,
+              isKeepAlive: true
+            },
+            children: []
+          },
+          {
+            path: "/settings/users",
+            name: "users",
+            component: "/settings/users/index",
+            meta: {
+              icon: "UserFilled",
+              title: "Users",
               isLink: "",
               isHide: false,
               isFull: false,

@@ -68,15 +68,26 @@ const login = (formEl: FormInstance | undefined, admin: boolean = false) => {
     loading.value = true;
     try {
       // const { data } = await loginApi({ ...loginForm, password: md5(loginForm.password) });
-      const data = admin ? await loginApiAsAdmin(loginForm) : await loginApi(loginForm);
-      console.log("login data", data);
-      userStore.setToken(data.token);
-      userStore.setUserInfo({
-        name: data.record.name,
-        email: data.record.email,
-        // avatar: data.record.avatar,
-        username: data.record.username
-      });
+      if (admin) {
+        // Admin login logic
+        const data = await loginApiAsAdmin(loginForm);
+        console.log("login data", data);
+        userStore.setToken(data.token);
+        userStore.setUserInfo({
+          email: data.record.email,
+          // avatar: data.record.avatar,
+          username: data.record.email
+        });
+      } else {
+        const data = await loginApi(loginForm);
+        console.log("login data", data);
+        userStore.setToken(data.token);
+        userStore.setUserInfo({
+          email: data.record.email,
+          // avatar: data.record.avatar,
+          username: data.record.username
+        });
+      }
 
       // 2.添加动态路由
       await initDynamicRouter();
@@ -106,7 +117,8 @@ const resetForm = (formEl: FormInstance | undefined) => {
   formEl.resetFields();
 };
 
-const onKeydown = (e: KeyboardEvent) => {
+const onKeydown = (e: Event | KeyboardEvent) => {
+  if (!(e instanceof KeyboardEvent)) return;
   if (e.code === "Enter" || e.code === "NumpadEnter") {
     if (loading.value) return;
     login(loginFormRef.value, false);

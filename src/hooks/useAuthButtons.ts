@@ -9,7 +9,6 @@ export const useAuthButtons = () => {
   const route = useRoute();
   const authStore = useAuthStore();
   const authButtons = authStore.authButtonListGet[route.name as string] || [];
-  console.log("authButtons", JSON.stringify(authButtons));
 
   const BUTTONS = computed(() => {
     const currentPageAuthButton: { [key: string]: boolean } = {};

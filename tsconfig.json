@@ -4,6 +4,7 @@
     "useDefineForClassFields": true,
     "module": "esnext",
     "moduleResolution": "bundler",
+    "types": ["vite/client", "element-plus/global"],
 
     /* Strict Type-Checking Options */
     "strict": true /* Enable all strict type-checking options. */,

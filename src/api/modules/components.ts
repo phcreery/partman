@@ -593,6 +593,7 @@ export const deleteUser = async (params: User.ReqDeleteUserParams) => {
 };
 
 export const postUserCreate = async (params: User.ReqCreateUserParams) => {
+  params.passwordConfirm = params.password; // PocketBase requires passwordConfirm to be the same as password
   let record = await client.collection("users").create(params);
   return record as unknown as User.ResGetUserRecord;
 };

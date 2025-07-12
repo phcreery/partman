@@ -7,6 +7,7 @@
   "scripts": {
     "dev:client": "vite",
     "dev:server": "cross-env CGO_ENABLED=0 go run . serve --http=\"0.0.0.0:8090\"",
+    "check:client": "vue-tsc --noEmit",
     "build:client:dev": "vue-tsc --noEmit && vite build --mode development",
     "build:client:prod": "vue-tsc --noEmit && vite build --mode production",
     "build:server": "cross-env CGO_ENABLED=0 go build",

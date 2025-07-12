@@ -74,7 +74,6 @@ import ProTable from "@/components/ProTable/index.vue";
 // import ImportExcel from "@/components/ImportExcel/index.vue";
 import ImportExcel from "./components/ImportExcel.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
-import type { DrawerExpose } from "@/views/inventory/components/ComponentDrawer.vue";
 import ComponentStockEdit from "@/views/inventory/components/ComponentStockEdit.vue";
 import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
 import MergeComponents from "./components/MergeComponents.vue";

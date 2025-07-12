@@ -89,7 +89,7 @@ console.log("BUTTONS", BUTTONS);
 // Table configuration item
 const columns: Partial<ColumnProps<User.ResGetUserRecord>>[] = [
   { type: "selection", width: 40, fixed: "left" },
-  { type: "expand", label: "" },
+  // { type: "expand", label: "" },
   {
     prop: "username",
     label: "User Name",

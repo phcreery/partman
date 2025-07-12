@@ -12,6 +12,7 @@
           <!-- <img class="login-icon" src="@/assets/images/logo.png" alt="" /> -->
           <h2 class="logo-text">partman</h2>
         </div>
+        <!-- <AdminSwitch /> -->
         <LoginForm ref="loginRef"></LoginForm>
       </div>
     </div>
@@ -21,6 +22,7 @@
 <script setup lang="ts" name="login">
 import SwitchDark from "@/components/SwitchDark/index.vue";
 import LoginForm from "./components/LoginForm.vue";
+// import AdminSwitch from "./components/AdminSwitch.vue";
 </script>
 
 <style scoped lang="scss">

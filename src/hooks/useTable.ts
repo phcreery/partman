@@ -71,7 +71,7 @@ export const useTable = (
     try {
       // 先把初始化参数和分页参数放到总参数里面
       Object.assign(state.totalParam, initParam, isPageable ? pageParam.value : {});
-      console.log("{ ...state.searchInitParam, ...state.totalParam }", { ...state.searchInitParam, ...state.totalParam });
+      // console.log("{ ...state.searchInitParam, ...state.totalParam }", { ...state.searchInitParam, ...state.totalParam });
       let data = await api({ ...state.searchInitParam, ...state.totalParam });
       // console.log("data", data);
       dataCallBack && (data = dataCallBack(data));

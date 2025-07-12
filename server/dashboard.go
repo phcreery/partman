@@ -26,7 +26,7 @@ func AddDashboardRequests(app core.App, se *core.ServeEvent, version string) {
 			// Description 			string `json:"description"`
 			Stock string `json:"stock"`
 			// Comment 				string `json:"comment"`'
-			Storage_location string `json:"storage_location"`
+			StorageLocation string `json:"storageLocation"`
 		}
 		type ProjectRecord struct {
 			// models.Record
@@ -34,13 +34,18 @@ func AddDashboardRequests(app core.App, se *core.ServeEvent, version string) {
 		}
 		type StorageLocationRecord struct {
 			// models.Record
-			Id                   string `json:"id"`
-			Number_of_components string `json:"number_of_components"`
+			Id                 string `json:"id"`
+			NumberOfComponents string `json:"numberOfComponents"`
+		}
+		type ProjectBuildsRecord struct {
+			// models.Record
+			Id string `json:"id"`
 		}
 
 		componentsRecords := []ComponentRecord{}
 		projectRecords := []ProjectRecord{}
 		storageLocationRecords := []StorageLocationRecord{}
+		projectBuildsRecords := []ProjectBuildsRecord{}
 
 		db := app.DB()
 
@@ -55,6 +60,10 @@ func AddDashboardRequests(app core.App, se *core.ServeEvent, version string) {
 		db.
 			NewQuery("SELECT * FROM `storage_locations`").
 			All(&storageLocationRecords)
+
+		db.
+			NewQuery("SELECT * FROM `project_builds`").
+			All(&projectBuildsRecords)
 
 		// add up all records stock
 		totalComponents := 0
@@ -84,7 +93,7 @@ func AddDashboardRequests(app core.App, se *core.ServeEvent, version string) {
 			// loop through all components records
 			for _, componentRecord := range componentsRecords {
 				// read component record storage location
-				componentRecordStorageLocation := componentRecord.Storage_location
+				componentRecordStorageLocation := componentRecord.StorageLocation
 				// if component record storage location matches storage location record id
 				if componentRecordStorageLocation == storageLocationRecordId {
 					// read component record stock
@@ -106,7 +115,7 @@ func AddDashboardRequests(app core.App, se *core.ServeEvent, version string) {
 			// find index of storage location record in storage location records and number of components to total
 			for i, storageLocationRecord := range storageLocationRecords {
 				if storageLocationRecord.Id == storageLocationRecordId {
-					storageLocationRecords[i].Number_of_components = strconv.Itoa(total)
+					storageLocationRecords[i].NumberOfComponents = strconv.Itoa(total)
 				}
 			}
 		}
@@ -117,7 +126,8 @@ func AddDashboardRequests(app core.App, se *core.ServeEvent, version string) {
 			TotalComponents       int `json:"totalComponents"`
 			TotalProjects         int `json:"totalProjects"`
 			TotalStorageLocations int `json:"totalStorageLocations"`
-			// StorageLocationTree []models.StorageLocation `json:"storageLocationTree"`
+			TotalBuilds           int `json:"totalProjectBuilds"`
+			// StorageLocationTree   []StorageLocation       `json:"storageLocationTree"`
 			Components       []ComponentRecord       `json:"components"`
 			StorageLocations []StorageLocationRecord `json:"storageLocations"`
 			Version          string                  `json:"version"`
@@ -129,7 +139,8 @@ func AddDashboardRequests(app core.App, se *core.ServeEvent, version string) {
 			TotalComponents:       totalComponents,
 			TotalProjects:         len(projectRecords),
 			TotalStorageLocations: len(storageLocationRecords),
-			// StorageLocationTree: storageLocationTree,
+			TotalBuilds:           len(projectBuildsRecords),
+			// StorageLocationTree:   storageLocationTree,
 			Components:       componentsRecords,
 			StorageLocations: storageLocationRecords,
 			Version:          version,

@@ -86,7 +86,7 @@ export namespace Component {
     description: string;
     stock: number;
     comment: string;
-    storage_location: string;
+    storageLocation: string;
     category: string;
     footprint: string;
     supplier: string;

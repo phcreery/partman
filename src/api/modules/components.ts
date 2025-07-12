@@ -1,4 +1,5 @@
-import { arrayToTree } from "performant-array-to-tree";
+import { arrayToTree } from "performant-array-to-tree"; // deprecated
+// import { unflatten, flatten } from "un-flatten-tree";
 import client, { tryCatchAsync } from "@/api";
 import { nestedObjectAssign } from "@/utils/nestedObjectAssign";
 
@@ -652,28 +653,32 @@ export const getDashboardInfo = async () => {
     totalComponents: number;
     totalProjects: number;
     totalStorageLocations: number;
+    totalProjectBuilds: number;
     components: Component.ResGetComponentRecord[];
-    storageLocations: Storage.ResGetStorageRecord[];
+    storageLocations: (Storage.ResGetStorageRecord & { numberOfComponents: number })[];
     storageLocationsTree: Storage.ResGetStorageRecordTree[];
     version: string;
   };
 
   let res = (await client.send("/api/custom/dashboard/info", {})) as unknown as ResultData<DashboardInfo>;
-  let storageLocationsTree = await getStorageLocationPathEnumTree();
 
+  let storageLocationsTree = await getStorageLocationPathEnumTree();
   let components = res.data.components;
 
   // iterate recursively and find each elements where child = [] and set value: 1
-  async function iter(o: any) {
-    if (o.children && o.children.length !== 0) {
-      o.children.forEach((c: any) => iter(c));
+  async function iter(o: any, childKey: string, cb: (o: any) => void) {
+    if (o[childKey] && o[childKey].length !== 0) {
+      o[childKey].forEach((c: any) => iter(c, childKey, cb));
     } else {
-      // set value to component qty
-      o.value = components.filter((component: Component.ResGetComponentRecord) => component.storage_location === o.id).length;
+      cb(o);
     }
   }
   for (const storageLocation of storageLocationsTree) {
-    await iter(storageLocation);
+    await iter(storageLocation, "children", (o: any) => {
+      let foundComponents = components.filter((component: Component.ResGetComponentRecord) => component.storageLocation === o.id);
+      o.value = foundComponents.length;
+      o.numberOfComponents = foundComponents.length;
+    });
   }
   res.data.storageLocationsTree = storageLocationsTree;
   return res.data as unknown as DashboardInfo;

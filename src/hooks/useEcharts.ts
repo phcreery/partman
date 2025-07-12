@@ -17,15 +17,15 @@ export const useEcharts = (myChart: echarts.ECharts, options: echarts.EChartsCor
 
   window.addEventListener("resize", echartsResize);
 
-  onActivated(() => {
-    window.addEventListener("resize", echartsResize);
-  });
+  // onActivated(() => {
+  //   window.addEventListener("resize", echartsResize);
+  // });
 
-  onDeactivated(() => {
-    window.removeEventListener("resize", echartsResize);
-  });
+  // onDeactivated(() => {
+  //   window.removeEventListener("resize", echartsResize);
+  // });
 
-  onBeforeUnmount(() => {
-    window.removeEventListener("resize", echartsResize);
-  });
+  // onBeforeUnmount(() => {
+  //   window.removeEventListener("resize", echartsResize);
+  // });
 };

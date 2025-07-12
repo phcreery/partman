@@ -3,17 +3,17 @@
     <el-row :gutter="12">
       <el-col :span="6">
         <el-card shadow="hover">
-          <b>{{ qty.total_components }}</b> Total Components
+          <b>{{ qty.totalComponents }}</b> Total Components
         </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="hover">
-          <b>{{ qty.unique_components }}</b> Unique Components
+          <b>{{ qty.uniqueComponents }}</b> Unique Components
         </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="hover">
-          <b>{{ qty.total_storage_locations }}</b> Storage Locations
+          <b>{{ qty.totalStorageLocations }}</b> Storage Locations
         </el-card>
       </el-col>
       <!-- <el-col :span="6">
@@ -23,7 +23,7 @@
       </el-col> -->
       <el-col :span="6">
         <el-card shadow="hover">
-          <b>{{ qty.total_projects }}</b> Projects
+          <b>{{ qty.totalProjects }}</b> Projects
         </el-card>
       </el-col>
     </el-row>
@@ -31,6 +31,11 @@
       <el-col :span="12">
         <el-card shadow="never">
           <div ref="componentStorageTreeRef" style="width: 100%; height: 400px"></div>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card shadow="hover">
+          <b>{{ qty.totalProjectBuilds }}</b> Project Builds
         </el-card>
       </el-col>
       <el-col :span="6">
@@ -46,7 +51,7 @@
 </template>
 
 <script setup lang="ts" name="Home">
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, reactive, onMounted, computed, watch } from "vue";
 import * as echarts from "echarts";
 import echartsThemeWonderland from "./echarts-theme-wonderland.json";
 import echartsThemeWonderlandDark from "./echarts-theme-wonderland-dark.json";
@@ -59,15 +64,15 @@ const componentStorageTreeRef = ref(null);
 const globalStore = useGlobalStore();
 const themeConfig = computed(() => globalStore);
 
-const qty = ref({
-  total_components: 0,
-  unique_components: 0,
-  total_projects: 0,
-  // total_categories: 0,
-  total_storage_locations: 0,
+const qty = reactive({
+  totalComponents: 0,
+  uniqueComponents: 0,
+  totalProjects: 0,
+  // totalCategories: 0,
+  totalStorageLocations: 0,
+  totalProjectBuilds: 0,
   version: ""
 });
-const storageLocationTreeData = ref([{}]);
 
 let storageLocationTreeChart: echarts.ECharts;
 
@@ -89,7 +94,7 @@ const storageLocationTreeOption: echarts.EChartsOption = {
     // emphasis: {
     //     focus: 'ancestor'
     // },
-    data: storageLocationTreeData.value,
+    data: [],
     sort: undefined,
     // radius: [0, "90%"],
     // radius: ["15%", "80%"],
@@ -110,23 +115,23 @@ echarts.registerTheme("wonderland-dark", echartsThemeWonderlandDark);
 
 const getQty = async () => {
   const res = await getDashboardInfo();
-  qty.value.total_components = Number(res.totalComponents);
-  qty.value.unique_components = res.uniqueComponents;
-  qty.value.total_projects = res.totalProjects;
+  qty.totalComponents = Number(res.totalComponents);
+  qty.uniqueComponents = res.uniqueComponents;
+  qty.totalProjects = res.totalProjects;
   // qty.value.total_categories = res.total_categories;
-  qty.value.total_storage_locations = res.totalStorageLocations;
-  qty.value.version = res.version;
-
-  storageLocationTreeData.value = res.storageLocationsTree;
+  qty.totalStorageLocations = res.totalStorageLocations;
+  qty.totalProjectBuilds = res.totalProjectBuilds;
+  qty.version = res.version;
+  (storageLocationTreeOption.series! as echarts.PieSeriesOption).data = res.storageLocationsTree;
 };
 
 const drawChart = () => {
+  // Dispose of the previous chart instance if it exists
   storageLocationTreeChart && storageLocationTreeChart.dispose ? storageLocationTreeChart.dispose() : null;
   storageLocationTreeChart = echarts.init(
     componentStorageTreeRef.value as unknown as HTMLElement,
     themeConfig.value.isDark ? "wonderland-dark" : "wonderland"
   );
-  (storageLocationTreeOption.series! as echarts.PieSeriesOption).data = storageLocationTreeData.value;
   useEcharts(storageLocationTreeChart, storageLocationTreeOption);
 };
 

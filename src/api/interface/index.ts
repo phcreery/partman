@@ -53,6 +53,10 @@ export namespace Login {
   export interface ResAuthButtons {
     [key: string]: string[];
   }
+  export interface ResAuthMethods {
+    methods: any;
+    [key: string]: any;
+  }
 }
 
 // Pocketbase

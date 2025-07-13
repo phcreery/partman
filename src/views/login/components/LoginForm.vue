@@ -24,19 +24,29 @@
   </el-form>
   <div class="login-btn">
     <el-button :icon="CircleClose" round @click="resetForm(loginFormRef)" size="large">Reset</el-button>
-    <el-button :icon="Key" round @click="login(loginFormRef, true)" size="large" :loading="loading"> Admin Login </el-button>
+    <el-button :icon="Key" round @click="login(loginFormRef, 'admin')" size="large" :loading="loading"> Admin Login </el-button>
     <el-button :icon="UserFilled" round @click="login(loginFormRef)" size="large" type="primary" :loading="loading">
       Login
+    </el-button>
+    <el-button
+      v-if="authMethods?.oauth2?.enabled"
+      v-for="(method, index) in authMethods.oauth2.providers"
+      :key="index"
+      type="primary"
+      link
+      @click="login(loginFormRef, 'oauth2')"
+    >
+      Login with {{ method.displayName }}
     </el-button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { Login } from "@/api/interface";
 // import { ElNotification } from "element-plus";
-import { loginApi, loginApiAsAdmin } from "@/api/modules/login";
+import { listAuthMethods, loginApi, loginApiAsAdmin, loginApiWithOAuth2 } from "@/api/modules/login";
 import { useUserStore } from "@/stores/modules/user";
 import { useTabsStore } from "@/stores/modules/tabs";
 // import { getTimeState } from "@/utils/util";
@@ -61,14 +71,16 @@ const loginForm = reactive<Login.ReqLoginForm>({
   username: "",
   password: ""
 });
-const login = (formEl: FormInstance | undefined, admin: boolean = false) => {
+const authMethods = ref<Login.ResAuthMethods | null>(null);
+type LoginType = "admin" | "user" | "oauth2";
+const login = (formEl: FormInstance | undefined, type: LoginType = "user") => {
   if (!formEl) return;
   formEl.validate(async valid => {
     if (!valid) return;
     loading.value = true;
     try {
       // const { data } = await loginApi({ ...loginForm, password: md5(loginForm.password) });
-      if (admin) {
+      if (type === "admin") {
         // Admin login logic
         const data = await loginApiAsAdmin(loginForm);
         console.log("login data", data);
@@ -78,6 +90,16 @@ const login = (formEl: FormInstance | undefined, admin: boolean = false) => {
           email: data.record.email,
           // avatar: data.record.avatar,
           username: data.record.email
+        });
+      } else if (type === "oauth2") {
+        const data = await loginApiWithOAuth2("oidc");
+        console.log("login data", data);
+        userStore.setToken(data.token);
+        userStore.setUserInfo({
+          id: data.record.id,
+          email: data.record.email,
+          // avatar: data.record.avatar,
+          username: data.record.username
         });
       } else {
         const data = await loginApi(loginForm);
@@ -123,9 +145,14 @@ const onKeydown = (e: Event | KeyboardEvent) => {
   if (!(e instanceof KeyboardEvent)) return;
   if (e.code === "Enter" || e.code === "NumpadEnter") {
     if (loading.value) return;
-    login(loginFormRef.value, false);
+    login(loginFormRef.value);
   }
 };
+
+onMounted(async () => {
+  authMethods.value = await listAuthMethods();
+  console.log("Auth Methods", authMethods.value);
+});
 </script>
 
 <style scoped lang="scss">

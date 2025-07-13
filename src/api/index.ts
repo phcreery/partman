@@ -17,7 +17,7 @@ const config = {
 };
 
 const client = new PocketBase(config.baseURL, undefined, "en-US");
-
+client.autoCancellation(false);
 client.beforeSend = function (url, reqConfig) {
   console.log("before send", url, reqConfig);
   // * If the current request does not need to display loading, in the API service: { headers: { noLoading: true } } Let's control not to display loading, see login api

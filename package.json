@@ -8,6 +8,7 @@
     "dev:client": "vite",
     "dev:server": "cross-env CGO_ENABLED=0 go run . --dev serve --http=\"0.0.0.0:8090\"",
     "check:client": "vue-tsc --noEmit",
+    "gen:types": "pocketbase-typegen --db ./pb_data/data.db --out ./src/api/interface/pocketbase-types.ts",
     "build:client:dev": "vue-tsc --noEmit && vite build --mode development",
     "build:client:prod": "vue-tsc --noEmit && vite build --mode production",
     "build:server": "cross-env CGO_ENABLED=0 go build",

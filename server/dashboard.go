@@ -147,7 +147,7 @@ func AddDashboardRequests(app core.App, se *core.ServeEvent, version string) {
 		}
 
 		// print dashboardInfo
-		fmt.Println(dashboardInfo)
+		// fmt.Println(dashboardInfo)
 
 		// obj := map[string]interface{}{"message": "Hello world!"}
 		apiData := map[string]interface{}{"data": dashboardInfo}

@@ -23,6 +23,8 @@ import {
   Health
 } from "@/api/interface/index";
 
+import { Collections } from "@/api/interface/pocketbase-types";
+
 const emptyData = (params?: ReqList): ResList<null> => {
   return {
     page: params ? params.page : 0,
@@ -84,7 +86,7 @@ export const getFileUrl = (record: any, name: string, queryParams?: {} | undefin
 // ---- COMPONENTS ----
 
 export const getComponentList = async (params: Component.ReqGetComponentListParams) => {
-  let res = await client.collection("components").getList(params.page, params.perPage, {
+  let res = await client.collection(Collections.Components).getList(params.page, params.perPage, {
     // filter: Object.keys(params.filter).length !== 0 ? params.filter : "",
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
@@ -106,16 +108,16 @@ export const getComponentsListForExport = async (params: Component.ReqGetCompone
 };
 
 export const deleteComponent = async (params: Component.ReqDeleteComponentParams) => {
-  await client.collection("components").delete(params.id);
+  await client.collection(Collections.Components).delete(params.id);
 };
 
 export const postComponentCreate = async (params: Component.ReqCreateComponentParams) => {
-  let record = await client.collection("components").create(params);
+  let record = await client.collection(Collections.Components).create(params);
   return { data: record } as unknown as Component.ResGetComponentRecord;
 };
 
 export const patchComponentUpdate = async (params: Component.ReqUpdateComponentParams, id?: string) => {
-  let record = await client.collection("components").update(id ?? params.id, params);
+  let record = await client.collection(Collections.Components).update(id ?? params.id, params);
   return { data: record } as unknown as Component.ResGetComponentRecord;
 };
 
@@ -123,14 +125,14 @@ export const patchComponentUpdate = async (params: Component.ReqUpdateComponentP
 export const deleteComponents = async (params: Component.ReqDeleteComponentsParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.collection("components").delete(id);
+    await client.collection(Collections.Components).delete(id);
   }
   return true;
 };
 
 export const getComponentEnum = async () => {
   // TODO: use pb.collection('example').getFullList();
-  let [res, err] = await tryCatchAsync(() => client.collection("components").getList(1, 99999, { $autoCancel: false }));
+  let [res, err] = await tryCatchAsync(() => client.collection(Collections.Components).getList(1, 99999, { $autoCancel: false }));
   if (err) {
     console.error("getCompEnum res err", res, err);
     // return false;
@@ -142,7 +144,7 @@ export const getComponentEnum = async () => {
 };
 
 export const getComponent = async (id: string) => {
-  let res = await client.collection("components").getOne(id);
+  let res = await client.collection(Collections.Components).getOne(id);
   return res as unknown as Component.ResGetComponentRecord;
 };
 
@@ -157,25 +159,27 @@ export const postComponentsUpload = async (params: any) => {
 // ---- COMPONENT CATEGORIES ----
 
 export const postComponentCategoryCreate = async (params: ComponentCategory.ReqCreateComponentCategoryParams) => {
-  let record = await client.collection("component_categories").create(params);
+  let record = await client.collection(Collections.ComponentCategories).create(params);
   return record as unknown as ComponentCategory.ResGetComponentCategoryRecord;
 };
 
 export const patchComponentCategoryUpdate = async (params: ComponentCategory.ReqUpdateComponentCategoryParams) => {
-  let record = await client.collection("component_categories").update(params.id, params);
+  let record = await client.collection(Collections.ComponentCategories).update(params.id, params);
   return record as unknown as Component.ResGetComponentRecord;
 };
 
 export const deleteComponentCategories = async (params: ComponentCategory.ReqDeleteComponentCategoriesParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.collection("component_categories").delete(id);
+    await client.collection(Collections.ComponentCategories).delete(id);
   }
   return true;
 };
 
 export const getComponentCategoryEnum = async () => {
-  let [res, err] = await tryCatchAsync(() => client.collection("component_categories").getList(1, 99999, { $autoCancel: false }));
+  let [res, err] = await tryCatchAsync(() =>
+    client.collection(Collections.ComponentCategories).getList(1, 99999, { $autoCancel: false })
+  );
   if (err) {
     console.error("getCompCatEnum res err", res, err);
     // return false;
@@ -195,7 +199,7 @@ export const getComponentCategoryEnumTree = async () => {
 // ---- FOOTPRINTS ----
 
 export const getFootprintList = async (params: Footprint.ReqGetFootprintListParams) => {
-  let res = await client.collection("footprints").getList(params.page, params.perPage, {
+  let res = await client.collection(Collections.Footprints).getList(params.page, params.perPage, {
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
@@ -204,24 +208,24 @@ export const getFootprintList = async (params: Footprint.ReqGetFootprintListPara
 };
 
 export const getFootprintsEnum = async () => {
-  let res = await client.collection("footprints").getList(1, 99999, {});
+  let res = await client.collection(Collections.Footprints).getList(1, 99999, {});
   return res.items as unknown as Footprint.ResGetFootprintRecord[];
 };
 
 export const postFootprintCreate = async (params: Footprint.ReqCreateFootprintParams) => {
-  let record = await client.collection("footprints").create(params);
+  let record = await client.collection(Collections.Footprints).create(params);
   return record as unknown as Footprint.ResGetFootprintRecord;
 };
 
 export const patchFootprintUpdate = async (params: Footprint.ReqUpdateFootprintParams) => {
-  let record = await client.collection("footprints").update(params.id, params);
+  let record = await client.collection(Collections.Footprints).update(params.id, params);
   return record as unknown as Footprint.ResGetFootprintRecord;
 };
 
 export const deleteFootprints = async (params: Footprint.ReqDeleteFootprintsParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.collection("footprints").delete(id);
+    await client.collection(Collections.Footprints).delete(id);
   }
   return true;
 };
@@ -229,25 +233,27 @@ export const deleteFootprints = async (params: Footprint.ReqDeleteFootprintsPara
 // ---- FOOTPRINT CATEGORY ----
 
 export const postFootprintCategoryCreate = async (params: FootprintCategory.ReqCreateFootprintCategoryParams) => {
-  let record = await client.collection("footprint_categories").create(params);
+  let record = await client.collection(Collections.FootprintCategories).create(params);
   return record as unknown as FootprintCategory.ResGetFootprintCategoryRecord;
 };
 
 export const patchFootprintCategoryUpdate = async (params: FootprintCategory.ReqUpdateFootprintCategoryParams) => {
-  let record = await client.collection("footprint_categories").update(params.id, params);
+  let record = await client.collection(Collections.FootprintCategories).update(params.id, params);
   return record as unknown as Footprint.ResGetFootprintRecord;
 };
 
 export const deleteFootprintCategories = async (params: FootprintCategory.ReqDeleteFootprintCategoriesParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.collection("footprint_categories").delete(id);
+    await client.collection(Collections.FootprintCategories).delete(id);
   }
   return true;
 };
 
 export const getFootprintCategoryEnum = async () => {
-  let [res, err] = await tryCatchAsync(() => client.collection("footprint_categories").getList(1, 99999, { $autoCancel: false }));
+  let [res, err] = await tryCatchAsync(() =>
+    client.collection(Collections.FootprintCategories).getList(1, 99999, { $autoCancel: false })
+  );
   if (err) {
     console.error("getFootprintCatEnum res err", res, err);
     // return false;
@@ -267,12 +273,12 @@ export const getFootprintCategoryEnumTree = async () => {
 // ---- STORAGE LOCATIONS ----
 
 export const getComponentStorageLocationEnum = async () => {
-  let res = await client.collection("storage_locations").getList(1, 99999, { $autoCancel: false });
+  let res = await client.collection(Collections.StorageLocations).getList(1, 99999, { $autoCancel: false });
   return res.items as unknown as Storage.ResGetStorageRecord[];
 };
 
 export const getStorageList = async (params: Storage.ReqGetStorageListParams) => {
-  let res = await client.collection("storage_locations").getList(params.page, params.perPage, {
+  let res = await client.collection(Collections.StorageLocations).getList(params.page, params.perPage, {
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
@@ -281,19 +287,19 @@ export const getStorageList = async (params: Storage.ReqGetStorageListParams) =>
 };
 
 export const postStorageCreate = async (params: Storage.ReqCreateStorageParams) => {
-  let record = await client.collection("storage_locations").create(params);
+  let record = await client.collection(Collections.StorageLocations).create(params);
   return record as unknown as Storage.ResGetStorageRecord;
 };
 
 export const patchStorageUpdate = async (params: Storage.ReqUpdateStorageParams) => {
-  let record = await client.collection("storage_locations").update(params.id, params);
+  let record = await client.collection(Collections.StorageLocations).update(params.id, params);
   return record as unknown as Storage.ResGetStorageRecord;
 };
 
 export const deleteStorages = async (params: Storage.ReqDeleteStoragesParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.collection("storage_locations").delete(id);
+    await client.collection(Collections.StorageLocations).delete(id);
   }
   return true;
 };
@@ -334,25 +340,27 @@ export const getStorageLocationPathEnumTree = async () => {
 // ---- STORAGE CATEGORY ----
 
 export const postStorageCategoryCreate = async (params: StorageCategory.ReqCreateStorageCategoryParams) => {
-  let record = await client.collection("storage_categories").create(params);
+  let record = await client.collection(Collections.StorageCategories).create(params);
   return record as unknown as StorageCategory.ResGetStorageCategoryRecord;
 };
 
 export const patchStorageCategoryUpdate = async (params: StorageCategory.ReqUpdateStorageCategoryParams) => {
-  let record = await client.collection("storage_categories").update(params.id, params);
+  let record = await client.collection(Collections.StorageCategories).update(params.id, params);
   return record as unknown as Storage.ResGetStorageRecord;
 };
 
 export const deleteStorageCategories = async (params: StorageCategory.ReqDeleteStorageCategoriesParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.collection("storage_categories").delete(id);
+    await client.collection(Collections.StorageCategories).delete(id);
   }
   return true;
 };
 
 export const getStorageCategoryEnum = async () => {
-  let [res, err] = await tryCatchAsync(() => client.collection("storage_categories").getList(1, 99999, { $autoCancel: false }));
+  let [res, err] = await tryCatchAsync(() =>
+    client.collection(Collections.StorageCategories).getList(1, 99999, { $autoCancel: false })
+  );
   if (err) {
     console.error("getStorageCatEnum res err", res, err);
     // return false;
@@ -372,7 +380,7 @@ export const getStorageCategoryEnumTree = async () => {
 // ---- PROJECTS ----
 
 export const getProjectList = async (params: Project.ReqGetProjectListParams) => {
-  let res = await client.collection("projects").getList(params.page, params.perPage, {
+  let res = await client.collection(Collections.Projects).getList(params.page, params.perPage, {
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
@@ -381,29 +389,29 @@ export const getProjectList = async (params: Project.ReqGetProjectListParams) =>
 };
 
 export const getProjectListForEnum = async () => {
-  let res = await client.collection("projects").getList(1, 99999, {});
+  let res = await client.collection(Collections.Projects).getList(1, 99999, {});
   return res.items as unknown as Project.ResGetProjectRecord[];
 };
 
 export const getProjectsEnum = async () => {
-  let res = await client.collection("projects").getList(1, 99999, {});
+  let res = await client.collection(Collections.Projects).getList(1, 99999, {});
   return res.items as unknown as Project.ResGetProjectRecord[];
 };
 
 export const postProjectCreate = async (params: Project.ReqCreateProjectParams) => {
-  let record = await client.collection("projects").create(params);
+  let record = await client.collection(Collections.Projects).create(params);
   return record as unknown as Project.ResGetProjectRecord;
 };
 
 export const patchProjectUpdate = async (params: Project.ReqUpdateProjectParams) => {
-  const record = await client.collection("projects").update(params.id, params);
+  const record = await client.collection(Collections.Projects).update(params.id, params);
   return record as unknown as Project.ResGetProjectRecord;
 };
 
 export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) => {
   // TODO: speed this up??
   for (const id of params.ids) {
-    await client.collection("projects").delete(id);
+    await client.collection(Collections.Projects).delete(id);
   }
   return true;
 };
@@ -412,7 +420,9 @@ export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) =>
 
 export const getProjectComponentsList = async (params: ProjectComponents.ReqGetProjectComponentListParams) => {
   if (params.projectID === "") return emptyData(params) as unknown as ResList<ProjectComponents.ResGetProjectComponentRecord>;
-  let res_project = (await client.collection("projects").getOne(params.projectID, {})) as unknown as Project.ResGetProjectRecord;
+  let res_project = (await client
+    .collection(Collections.Projects)
+    .getOne(params.projectID, {})) as unknown as Project.ResGetProjectRecord;
 
   if (res_project.components.length === 0) res_project.components = ["none"]; // TODO: should be `= []` ?
 
@@ -422,7 +432,7 @@ export const getProjectComponentsList = async (params: ProjectComponents.ReqGetP
   nestedObjectAssign(filter, params.filter?.component ? { component: params.filter?.component } : {});
   nestedObjectAssign(filter, params.filter?.refdesignators ? { refdesignators: params.filter?.refdesignators } : {});
 
-  let res_project_components = (await client.collection("project_components").getList(params.page, params.perPage, {
+  let res_project_components = (await client.collection(Collections.ProjectComponents).getList(params.page, params.perPage, {
     filter: filterToPBString(filter),
     sort: params.sort ?? "",
     expand: "component" // params.expand ?? "",
@@ -447,7 +457,7 @@ export const getProjectComponentsListForExport = async (params: ProjectComponent
 };
 
 export const postProjectComponentAdd = async (params: ProjectComponents.ReqAddProjectComponentParams) => {
-  let res_project_components = await client.collection("project_components").create({
+  let res_project_components = await client.collection(Collections.ProjectComponents).create({
     bom_id: params.bom_id,
     component: params.component,
     quantity: params.quantity,
@@ -455,20 +465,20 @@ export const postProjectComponentAdd = async (params: ProjectComponents.ReqAddPr
   });
 
   let res_project = (await client
-    .collection("projects")
+    .collection(Collections.Projects)
     .getOne(params._ofProjectID, {})) as unknown as Project.ResGetProjectRecord;
 
   // append res_project_components.id to res_project.components
   res_project.components.push(res_project_components.id);
 
   const record = (await client
-    .collection("projects")
+    .collection(Collections.Projects)
     .update(params._ofProjectID, res_project)) as unknown as Project.ResGetProjectRecord;
   return record as unknown as ProjectComponents.ResGetProjectComponentRecord;
 };
 
 export const patchProjectComponentUpdate = async (params: ProjectComponents.ReqUpdateProjectComponentParams) => {
-  const record = await client.collection("project_components").update(params.id, {
+  const record = await client.collection(Collections.ProjectComponents).update(params.id, {
     bom_id: params.bom_id,
     component: params.component,
     quantity: params.quantity,
@@ -478,15 +488,17 @@ export const patchProjectComponentUpdate = async (params: ProjectComponents.ReqU
 };
 
 export const deleteProjectComponents = async (params: ProjectComponents.ReqRemoveProjectComponentsParams) => {
-  let res_project = (await client.collection("projects").getOne(params.projectID, {})) as unknown as Project.ResGetProjectRecord;
+  let res_project = (await client
+    .collection(Collections.Projects)
+    .getOne(params.projectID, {})) as unknown as Project.ResGetProjectRecord;
   for (const id of params.ids) {
     let index = res_project.components.findIndex(x => x == id);
     if (index !== -1) {
       res_project.components.splice(index, 1);
     }
-    await client.collection("project_components").delete(id);
+    await client.collection(Collections.ProjectComponents).delete(id);
   }
-  const record = await client.collection("projects").update(params.projectID, res_project);
+  const record = await client.collection(Collections.Projects).update(params.projectID, res_project);
   return record as unknown as Project.ResGetProjectRecord;
 };
 
@@ -501,7 +513,7 @@ export const postProjectComponentsUpload = async (params: any) => {
 // ---- PROJECT BUILDS ----
 
 export const getProjectBuildsList = async (params: ProjectBuilds.ReqGetProjectBuildListParams) => {
-  let res = (await client.collection("project_builds").getList(params.page, params.perPage, {
+  let res = (await client.collection(Collections.ProjectBuilds).getList(params.page, params.perPage, {
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
@@ -521,7 +533,7 @@ export const getProjectBuildsListForExport = async (params: ProjectBuilds.ReqGet
 };
 
 export const postProjectBuildsCreate = async (params: ProjectBuilds.ReqCreateProjectBuildParams) => {
-  let res = await client.collection("project_builds").create(params);
+  let res = await client.collection(Collections.ProjectBuilds).create(params);
   await client.send(
     "/api/custom/projectbuilds/new?" +
       new URLSearchParams({
@@ -543,7 +555,7 @@ export const postProjectBuildsCreate = async (params: ProjectBuilds.ReqCreatePro
 // ---- COMPONENT LOGS ----
 
 export const getComponentLogsList = async (params: ComponentLog.ReqGetComponentLogListParams) => {
-  let res = (await client.collection("component_log").getList(params.page, params.perPage, {
+  let res = (await client.collection(Collections.ComponentLog).getList(params.page, params.perPage, {
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
@@ -565,7 +577,7 @@ export const getComponentLogsListForExport = async (params: ComponentLog.ReqGetC
 // ---- USERS ----
 
 export const getUserList = async (params: User.ReqGetUserListParams) => {
-  let res = await client.collection("users").getList(params.page, params.perPage, {
+  let res = await client.collection(Collections.Users).getList(params.page, params.perPage, {
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? "" // Default expand all???
@@ -585,23 +597,22 @@ export const getUsersListForExport = async (params: User.ReqGetUserListForExport
 };
 
 export const getUser = async (params: User.ReqGetUserParams) => {
-  let res = await client.collection("users").getOne(params.id);
+  let res = await client.collection(Collections.Users).getOne(params.id);
   return res as unknown as User.ResGetUserRecord;
 };
 
 export const deleteUser = async (params: User.ReqDeleteUserParams) => {
-  await client.collection("users").delete(params.id);
+  await client.collection(Collections.Users).delete(params.id);
 };
 
 export const postUserCreate = async (params: User.ReqCreateUserParams) => {
   params.passwordConfirm = params.password; // PocketBase requires passwordConfirm to be the same as password
-  let record = await client.collection("users").create(params);
+  let record = await client.collection(Collections.Users).create(params);
   return record as unknown as User.ResGetUserRecord;
 };
 
 export const patchUserUpdate = async (params: User.ReqUpdateUserParams) => {
-  console.log("patchUserUpdate", params);
-  const record = await client.collection("users").update(params.id, params);
+  const record = await client.collection(Collections.Users).update(params.id, params);
   return record as unknown as User.ResGetUserRecord;
 };
 
@@ -614,7 +625,7 @@ export const deleteUsers = async (params: User.ReqDeleteUsersParams) => {
 };
 
 export const getUserEnum = async () => {
-  let [res, err] = await tryCatchAsync(() => client.collection("users").getList(1, 99999, { $autoCancel: false }));
+  let [res, err] = await tryCatchAsync(() => client.collection(Collections.Users).getList(1, 99999, { $autoCancel: false }));
   if (err) {
     console.error("getUserEnum res err", res, err);
     // return false;
@@ -625,23 +636,23 @@ export const getUserEnum = async () => {
 // ---- SETTINGS/CONFIG ----
 
 export const getConfig = async (params: Config.ReqGetConfigParams) => {
-  let res = (await client.collection("config").getList()) as unknown as ResList<Config.ResGetConfigRecord>;
+  let res = (await client.collection(Collections.Config).getList()) as unknown as ResList<Config.ResGetConfigRecord>;
   let configRecord = res.items.find(record => record.category === params.category);
   return configRecord?.value as unknown as ResList<Config.ResGetConfigRecord>;
 };
 
 export const patchConfigUpdate = async (params: Config.ReqUpdateConfigParams) => {
-  let res = (await client.collection("config").getList()) as unknown as ResList<Config.ResGetConfigRecord>;
+  let res = (await client.collection(Collections.Config).getList()) as unknown as ResList<Config.ResGetConfigRecord>;
   let configRecord = res.items.find(record => record.category === params.category);
   // create if not found
   if (!configRecord) {
-    res = await client.collection("config").create({ category: params.category, value: params.value });
+    res = await client.collection(Collections.Config).create({ category: params.category, value: params.value });
   }
   if (!configRecord?.id) {
     console.error("patchConfigUpdate configRecord?.id not found", configRecord);
     return false;
   }
-  const record = await client.collection("config").update(configRecord?.id, params);
+  const record = await client.collection(Collections.Config).update(configRecord?.id, params);
   return record as unknown as Config.ResGetConfigRecord;
 };
 

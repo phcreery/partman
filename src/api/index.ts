@@ -64,10 +64,10 @@ client.afterSend = function (response: Response, data) {
   // * Global error information interception (return data stream when downloading files, without code, directly report an error)
   if (response.status && response.status !== ResultEnum.SUCCESS) {
     // ElMessage.error(data.message);
-    ElNotification({
-      title: data.message || "Request failed",
-      message: data
-    });
+    // ElNotification({
+    //   title: data.message || "Request failed",
+    //   message: data
+    // });
     ElMessage({
       message: data.message || "Request failed",
       type: "error"

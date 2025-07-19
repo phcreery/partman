@@ -80,7 +80,7 @@
     "vite-plugin-html": "^3.2.2",
     "vite-plugin-svg-icons": "^2.0.1",
     "vite-plugin-vue-setup-extend": "^0.4.0",
-    "vue-tsc": "^3.0.1",
+    "vue-tsc": "^3.0.3",
     "zip-build": "^1.8.0"
   },
   "config": {}

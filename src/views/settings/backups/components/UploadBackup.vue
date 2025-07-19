@@ -46,7 +46,6 @@ const props = ref<Partial<DrawerProps>>({});
 
 // Receive parent component parameters
 const acceptParams = (params?: any): void => {
-  console.log("params", params);
   props.value = params;
   dialogVisible.value = true;
 };
@@ -109,7 +108,6 @@ const zipUploadSuccess = (): void => {
 };
 
 const handleApiUpload = (req: UploadRequestOptions): Promise<any> => {
-  console.log("req", req);
   if (!props.value.apiUpload) {
     console.error("API upload function is not defined");
     return Promise.reject(new Error("API upload function is not defined"));

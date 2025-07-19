@@ -117,7 +117,6 @@ const mergeComponents = ref(true);
 
 // Receive parent component parameters
 const acceptParams = (params?: any): void => {
-  console.log("params", params);
   parameter.value = params;
   acceptProps({
     columns: params.columns,
@@ -256,7 +255,7 @@ const useImporter = (
       component.action = "new";
       if (row._action === "update") {
         let existingComponent = findExistingComponent(row);
-        console.log("merging", component);
+        console.info("merging", component);
 
         let {
           mergeColumns,
@@ -267,22 +266,20 @@ const useImporter = (
           intelligentCheck,
           mergedComponent
         } = useMerger(mergeColumnOptions.value as MergeColumnOptions[]);
-        console.log(mergeColumns, leftComponent, rightComponent);
+        // console.log(mergeColumns, leftComponent, rightComponent);
         setLeftComponent(component);
         setRightComponent(existingComponent);
         // TODO: option to swap left and right (Merge priority: Existing Data / New Data)
         intelligentCheck();
-        console.log("merged to ", mergedComponent.value);
+        // console.log("merged to ", mergedComponent.value);
         component = mergedComponent.value as any;
         component.action = "update";
       }
       tableDataPostProcessed.push(component);
     }
 
-    console.log("tableData (sending to server)", tableDataPostProcessed);
     try {
       let res = await parameter.value.apiUpload!(tableDataPostProcessed);
-      console.log(res);
     } catch (e) {
       console.error("error updating component", e);
     }

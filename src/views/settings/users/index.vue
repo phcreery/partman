@@ -84,7 +84,6 @@ const dataCallback = (data: ListResult<User.ResGetUserRecord>): PageableList<Use
 
 // Page button permission
 const { BUTTONS } = useAuthButtons();
-console.log("BUTTONS", BUTTONS);
 
 // Table configuration item
 const columns: Partial<ColumnProps<User.ResGetUserRecord>>[] = [

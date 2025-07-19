@@ -41,7 +41,6 @@ const onSubmit = async () => {
 };
 
 onMounted(() => {
-  console.log("mounted");
   getOctopartFormData();
 });
 </script>

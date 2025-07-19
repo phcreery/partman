@@ -86,7 +86,6 @@ const initParam = reactive({});
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
 const dataCallback = (data: ListResult<Backup.ResGetBackupRecord>): PageableList<Backup.ResGetBackupRecord> => {
-  console.log("dataCallback", data);
   return {
     list: data.items,
     total: data.totalItems,
@@ -97,7 +96,6 @@ const dataCallback = (data: ListResult<Backup.ResGetBackupRecord>): PageableList
 
 // Page button permission
 const { BUTTONS } = useAuthButtons();
-console.log("BUTTONS", BUTTONS);
 
 // Table configuration item
 const columns: Partial<ColumnProps<Backup.ResGetBackupRecord>>[] = [

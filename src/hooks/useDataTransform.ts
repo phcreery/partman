@@ -12,7 +12,6 @@ export const JSON2CSV = async (json: any = {}, fields: Array<string>) => {
     const opts = { fields };
     const parser = new json2csv.Parser(opts);
     const csv = parser.parse(json);
-    // console.log(csv);
     return csv;
   } catch (err) {
     console.error(err);
@@ -30,14 +29,12 @@ export const JSON2CSV = async (json: any = {}, fields: Array<string>) => {
 //       let data = e.target.result;
 //       data = new Uint8Array(data);
 //       let workbook = XLSX.read(data, {type: 'array'});
-//       console.log(workbook);
 //       let result = {};
 //       workbook.SheetNames.forEach(function (sheetName) {
 //         let roa = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {header: 1});
 //           if (roa.length) result[sheetName] = roa;
 //       });
 //       // see the result, caution: it works after reader event is done.
-//       console.log(result);
 //   };
 //   reader.readAsArrayBuffer(oFile);
 // }

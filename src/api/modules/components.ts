@@ -678,7 +678,6 @@ export const deleteBackup = async (params: Backup.ReqDeleteBackupParams) => {
 };
 
 export const deleteBackups = async (params: Backup.ReqDeleteBackupsParams) => {
-  console.log("deleteBackups params", params);
   for (const key of params.keys) {
     await client.backups.delete(key);
   }
@@ -696,7 +695,6 @@ export const getBackupDownloadURL = async (params: Backup.ReqDownloadBackupParam
 };
 
 export const postBackupUpload = async (params: Backup.ReqUploadBackupParams) => {
-  console.log("postBackupUpload params", params);
   const res = await client.backups.upload(params);
   return res;
 };

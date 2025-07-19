@@ -32,7 +32,6 @@ const updateHealth = async () => {
 };
 
 onMounted(async () => {
-  console.log("mounted");
   await updateHealth();
 });
 </script>

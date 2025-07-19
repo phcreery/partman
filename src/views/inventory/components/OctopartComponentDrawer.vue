@@ -55,8 +55,8 @@
                   props.row.part.bestImage && props.row.part.bestImage.url
                     ? props.row.part.bestImage.url
                     : props.row.part.images && props.row.part.images.length > 0 && props.row.part.images[0].url
-                    ? props.row.part.images[0].url
-                    : undefined
+                      ? props.row.part.images[0].url
+                      : undefined
                 "
                 :zoom-rate="1.2"
                 fit="cover"
@@ -141,12 +141,10 @@ const handleSubmit = (part: SupPart) => {
 };
 
 const openOctopart = (part: SupPart) => {
-  console.log("opening", part.octopartUrl);
   window.open(part.octopartUrl, "_blank");
 };
 
 const openOctopartSearch = () => {
-  console.log("opening", "https://octopart.com/search?q=" + drawerData.value.rowData?.mpn);
   window.open("https://octopart.com/search?q=" + drawerData.value.rowData?.mpn, "_blank");
 };
 

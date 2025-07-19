@@ -360,7 +360,6 @@ const batchAdd = async () => {
       mergeOptions: { single: true }
     }
   ];
-  console.log(templateColumns);
   let params = {
     title: "Components",
     columns: templateColumns,

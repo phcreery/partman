@@ -54,7 +54,6 @@ const changePassword = async () => {
       passwordConfirm: rowData.newPasswordConfirm,
       oldPassword: rowData.oldPassword
     });
-    console.log(res);
     ElNotification({
       title: "Success",
       message: "Password changed successfully",
@@ -72,7 +71,7 @@ const changePassword = async () => {
       path: "/login"
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     ElNotification({
       title: "Error",
       message: "Password change error",

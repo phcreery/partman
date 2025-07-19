@@ -22,7 +22,9 @@ const client = new PocketBase(config.baseURL, store, "en-US") as TypedPocketBase
 client.autoCancellation(false);
 
 client.beforeSend = function (url, reqConfig) {
-  console.log("before send", url, reqConfig);
+  if (import.meta.env.DEV) {
+    console.log("before send", url, reqConfig);
+  }
   // * If the current request does not need to display loading, in the API service: { headers: { noLoading: true } } Let's control not to display loading, see login api
   reqConfig.headers!.noLoading || showFullScreenLoading();
   // const userStore = useUserStore();
@@ -40,7 +42,10 @@ client.beforeSend = function (url, reqConfig) {
 
 client.afterSend = function (response: Response, data) {
   // do something with the response state
-  console.log("after send response:", response, "data:", data);
+
+  if (import.meta.env.DEV) {
+    console.log("after send response", response, "data", data);
+  }
 
   const userStore = useUserStore();
 

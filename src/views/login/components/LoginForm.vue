@@ -82,13 +82,20 @@ const login = (formEl: FormInstance | undefined, type: LoginType = "user") => {
       if (type === "admin") {
         // Admin login logic
         const data = await loginApiAsAdmin(loginForm);
-        console.log("login data", data);
+        // if dev
+        if (import.meta.env.DEV) {
+          console.log("Admin login data", data);
+        }
       } else if (type === "oauth2") {
         const data = await loginApiWithOAuth2("oidc");
-        console.log("login data", data);
+        if (import.meta.env.DEV) {
+          console.log("OIDC login data", data);
+        }
       } else {
         const data = await loginApi(loginForm);
-        console.log("login data", data);
+        if (import.meta.env.DEV) {
+          console.log("login data", data);
+        }
       }
 
       // 2. Add dynamic routes

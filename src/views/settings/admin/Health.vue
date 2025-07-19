@@ -1,9 +1,5 @@
 <template>
-  <el-result
-    :icon="health.data.code === 200 ? 'success' : 'error'"
-    :title="health.data.message"
-    :sub-title="'Code: ' + health.data.code"
-  >
+  <el-result :icon="health.code === 200 ? 'success' : 'error'" :title="health.message" :sub-title="'Code: ' + health.code">
     <template #extra>
       <el-button @click="updateHealth">Refresh</el-button>
       <el-button type="primary" @click="gotoAdminUI">Pocketbase Admin UI</el-button>
@@ -12,12 +8,12 @@
 </template>
 
 <script setup lang="tsx" name="generalSettings">
-import { ref, reactive, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 import { getHealth } from "@/api/modules/components";
-import { ResultData, Health } from "@/api/interface/index";
+import type { HealthCheckResponse } from "pocketbase";
 
-const health = ref<ResultData<Health.ResHealth>>({ code: 500, msg: "", data: { message: "", code: 0 } });
+const health = ref<HealthCheckResponse>({ code: 0, message: "", data: {} });
 
 const gotoAdminUI = () => {
   window.open(import.meta.env.VITE_API_URL + "_/", "_blank");
@@ -25,7 +21,7 @@ const gotoAdminUI = () => {
 
 const updateHealth = async () => {
   try {
-    health.value.data = await getHealth();
+    health.value = await getHealth();
   } catch (error) {
     console.error("Error fetching health data:", error);
   }

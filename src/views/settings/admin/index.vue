@@ -17,9 +17,6 @@
 <script setup lang="tsx" name="generalSettings">
 import { ref, reactive, onMounted } from "vue";
 import { ElMessage } from "element-plus";
-// import { useAuthButtons } from "@/hooks/useAuthButtons";
-import { getConfig, patchConfigUpdate, getHealth } from "@/api/modules/components";
-import type { ResultData, Health } from "@/api/interface/index";
 import HealthPage from "./Health.vue";
 import OctopartConfig from "./OctopartConfig.vue";
 

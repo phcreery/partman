@@ -7,6 +7,7 @@ import router from "@/routers";
 
 import PocketBase from "pocketbase";
 import type { TypedPocketBase } from "@/api/interface/pocketbase-types";
+import { store } from "@/api/modules/auth";
 
 const config = {
   // The default address request address can be modified in the file of the beginning of .env
@@ -17,8 +18,9 @@ const config = {
   withCredentials: true
 };
 
-const client = new PocketBase(config.baseURL, undefined, "en-US") as TypedPocketBase;
+const client = new PocketBase(config.baseURL, store, "en-US") as TypedPocketBase;
 client.autoCancellation(false);
+
 client.beforeSend = function (url, reqConfig) {
   console.log("before send", url, reqConfig);
   // * If the current request does not need to display loading, in the API service: { headers: { noLoading: true } } Let's control not to display loading, see login api

@@ -5,9 +5,11 @@ import piniaPersistConfig from "@/stores/helper/persist";
 export const useUserStore = defineStore("geeker-user", {
   state: (): UserState => ({
     token: "",
-    userInfo: { id: "", email: "", avatar: "", username: "" }
+    userInfo: { id: "", email: "", avatar: "", username: "", collectionName: "" }
   }),
-  getters: {},
+  getters: {
+    isSuperuser: state => state.userInfo.collectionName === "_superusers"
+  },
   actions: {
     // Set Token
     setToken(token: string) {

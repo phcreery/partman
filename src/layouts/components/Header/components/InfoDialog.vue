@@ -1,7 +1,6 @@
 <template>
   <el-dialog v-model="dialogVisible" title="User Information" width="500px" draggable>
-    <el-descriptions border :column="2">
-      <el-descriptions-item label="Name" label-align="right">{{ userInfo.name }}</el-descriptions-item>
+    <el-descriptions border :column="1">
       <el-descriptions-item label="Username" label-align="right">{{ userInfo.username }}</el-descriptions-item>
       <el-descriptions-item label="Email" label-align="right">{{ userInfo.email }}</el-descriptions-item>
     </el-descriptions>

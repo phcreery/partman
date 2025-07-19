@@ -79,49 +79,27 @@ const login = (formEl: FormInstance | undefined, type: LoginType = "user") => {
     if (!valid) return;
     loading.value = true;
     try {
-      // const { data } = await loginApi({ ...loginForm, password: md5(loginForm.password) });
       if (type === "admin") {
         // Admin login logic
         const data = await loginApiAsAdmin(loginForm);
         console.log("login data", data);
-        userStore.setToken(data.token);
-        userStore.setUserInfo({
-          id: data.record.id,
-          email: data.record.email,
-          // avatar: data.record.avatar,
-          username: data.record.email
-        });
       } else if (type === "oauth2") {
         const data = await loginApiWithOAuth2("oidc");
         console.log("login data", data);
-        userStore.setToken(data.token);
-        userStore.setUserInfo({
-          id: data.record.id,
-          email: data.record.email,
-          // avatar: data.record.avatar,
-          username: data.record.username
-        });
       } else {
         const data = await loginApi(loginForm);
         console.log("login data", data);
-        userStore.setToken(data.token);
-        userStore.setUserInfo({
-          id: data.record.id,
-          email: data.record.email,
-          // avatar: data.record.avatar,
-          username: data.record.username
-        });
       }
 
-      // 2.添加动态路由
+      // 2. Add dynamic routes
       await initDynamicRouter();
 
-      // 3.清除上个账号的 tab 信息
+      // 3. Clear the previous account's tab information
       tabsStore.closeMultipleTab();
       tabsStore.setTabs([]);
       // keepAliveStore.setKeepAliveName([])
 
-      // 4.跳转到首页
+      // 4. Redirect to home page
       router.push(HOME_URL);
       // router.push({ name: "home" });
       // ElNotification({

@@ -1,7 +1,7 @@
 import client from "@/api";
 import { ElMessage } from "element-plus";
 
-import { ResList, Config } from "@/api/interface/index";
+import { ListResult, Config } from "@/api/interface/index";
 import { Query } from "@/api/interface/octopart";
 type OctopartTokenRes =
   | {
@@ -13,7 +13,7 @@ type OctopartTokenRes =
   | { error: string };
 
 const getOctopartConfig = async () => {
-  let res = (await client.collection("config").getList()) as unknown as ResList<Config.ResGetConfigRecord>;
+  let res = (await client.collection("config").getList()) as unknown as ListResult<Config.ResGetConfigRecord>;
   let configRecord = res.items.find(record => record.category === "octopart");
   const id = configRecord?.value.id;
   const secret = configRecord?.value.secret;

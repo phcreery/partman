@@ -3,7 +3,7 @@ import type { BreakPoint, Responsive } from "@/components/Grid/interface";
 import type { TableColumnCtx } from "element-plus/es/components/table/src/table-column/defaults";
 import type ProTable from "@/components/ProTable/index.vue";
 import type { ColProps, DialogProps, DrawerProps, FormItemRule, FormProps } from "element-plus";
-import type { ResList } from "@/api/interface/index";
+import type { ListResult } from "@/api/interface/index";
 
 export interface EnumProps {
   label?: string; // The text displayed for the option
@@ -100,7 +100,7 @@ export interface ProTableProps<Q = any, I = any> {
   pageAuthId: string;
   columns: ColumnProps<I>[]; // Column configuration items ==> required
   data?: I[]; // Static table data. If present, requestApi's data will not be used ==> optional
-  requestApi?: (_params: Q) => Promise<ResList<I>>; // API to request table data ==> optional
+  requestApi?: (_params: Q) => Promise<ListResult<I>>; // API to request table data ==> optional
   requestAuto?: boolean; // Whether to automatically execute the request API ==> optional (default: true)
   requestError?: (_params: any) => void; // Table API request error listener ==> optional
   dataCallback?: (_data: any) => I[] | PageableList<I>; // Callback function for returned data, can be used to process data ==> optional

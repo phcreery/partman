@@ -1,12 +1,12 @@
-import { arrayToTree } from "performant-array-to-tree"; // deprecated
-// import { unflatten, flatten } from "un-flatten-tree";
-import client, { tryCatchAsync } from "@/api";
+import { arrayToTree } from "performant-array-to-tree"; // Note: deprecated
+import type { ListResult } from "pocketbase";
+
 import { nestedObjectAssign } from "@/utils/nestedObjectAssign";
+import client, { tryCatchAsync } from "@/api";
+import { Collections } from "@/api/interface/pocketbase-types";
+import { emptyData, filterToPBString, getPathName } from "@/api/helper/pocketbase";
 
 import {
-  ReqList,
-  ResultData,
-  ResList,
   Component,
   ComponentCategory,
   Footprint,
@@ -19,68 +19,11 @@ import {
   ComponentLog,
   User,
   Config,
-  Backup,
-  Health
+  Backup
 } from "@/api/interface/index";
 
-import { Collections } from "@/api/interface/pocketbase-types";
-
-const emptyData = (params?: ReqList): ResList<null> => {
-  return {
-    page: params ? params.page : 0,
-    perPage: params ? params.perPage : 25,
-    totalPages: 0,
-    totalItems: 0,
-    items: []
-  };
-};
-
-/* 
-function that converts JSON object of parameters to a consumable PocketBase 'filter' string.
-ex. filter: { id: 'asdf', footprint: {0: '0806', 1: '0604'}} -> "id='asdf' && (footprint='0806' || footprint='0604')"
-*/
-const filterToPBString = (filter: { [propName: string]: any }) => {
-  // console.log("filter", filter);
-  let filterParams = Object.keys(filter);
-  let sarr: string[] = []; // string array
-  for (const param of filterParams) {
-    if (param === "created" || param === "updated") {
-      sarr.push(`${param}>='${filter[param][0]}' && ${param}<='${filter[param][1]}'`);
-      // console.log(param, filter[param], sarr);
-    } else if (typeof filter[param] === "object") {
-      let lsarr: string[] = []; // local string array
-      Object.keys(filter[param]).forEach(key => {
-        lsarr.push(`${param}~'${filter[param][key]}'`);
-      });
-      if (lsarr.length > 0) sarr.push(`(${lsarr.join(" || ")})`);
-    } else {
-      sarr.push(`${param}~'${filter[param]}'`);
-    }
-  }
-  let s = sarr.join(" && ");
-  // console.log("filter string", s);
-  return s;
-};
-
-/* 
-Function that converts a list of tree items that have 'parent id' relations and returns a full tree name for specified item
-*/
-const getPathName = (data: any[], id: string, identifier = "id", parentIdentifier = "parent", path: string[] = []): string => {
-  const found = data.find(element => element[identifier] === id);
-  path.push(found.name);
-  const parent = data.find(element => element[identifier] === found[parentIdentifier]);
-  if (!parent) {
-    return path.reverse().join(" ▸ "); // / > ‣ → ▻ ▸ ▶ ▷
-  }
-  return getPathName(data, parent[identifier], identifier, parentIdentifier, path);
-};
-
-export const buildUrl = (path: string) => {
-  return client.buildUrl(path);
-};
-
 export const getFileUrl = (record: any, name: string, queryParams?: {} | undefined) => {
-  return client.getFileUrl(record, name, queryParams);
+  return client.files.getURL(record, name, queryParams);
 };
 
 // ---- COMPONENTS ----
@@ -93,7 +36,7 @@ export const getComponentList = async (params: Component.ReqGetComponentListPara
     expand: params.expand ?? "", // Default expand all???
     $autoCancel: false
   });
-  return res as unknown as ResList<Component.ResGetComponentRecord>;
+  return res as unknown as ListResult<Component.ResGetComponentRecord>;
 };
 
 export const getComponentsListForExport = async (params: Component.ReqGetComponentListForExportParams) => {
@@ -204,7 +147,7 @@ export const getFootprintList = async (params: Footprint.ReqGetFootprintListPara
     sort: params.sort ?? "",
     expand: params.expand ?? ""
   });
-  return res as unknown as ResList<Footprint.ResGetFootprintRecord>;
+  return res as unknown as ListResult<Footprint.ResGetFootprintRecord>;
 };
 
 export const getFootprintsEnum = async () => {
@@ -283,7 +226,7 @@ export const getStorageList = async (params: Storage.ReqGetStorageListParams) =>
     sort: params.sort ?? "",
     expand: params.expand ?? ""
   });
-  return res as unknown as ResList<Storage.ResGetStorageRecord>;
+  return res as unknown as ListResult<Storage.ResGetStorageRecord>;
 };
 
 export const postStorageCreate = async (params: Storage.ReqCreateStorageParams) => {
@@ -385,7 +328,7 @@ export const getProjectList = async (params: Project.ReqGetProjectListParams) =>
     sort: params.sort ?? "",
     expand: params.expand ?? ""
   });
-  return res as unknown as ResList<Project.ResGetProjectRecord>;
+  return res as unknown as ListResult<Project.ResGetProjectRecord>;
 };
 
 export const getProjectListForEnum = async () => {
@@ -419,7 +362,7 @@ export const deleteProjects = async (params: Project.ReqDeleteProjectsParams) =>
 // ---- PROJECT COMPONENTS ----
 
 export const getProjectComponentsList = async (params: ProjectComponents.ReqGetProjectComponentListParams) => {
-  if (params.projectID === "") return emptyData(params) as unknown as ResList<ProjectComponents.ResGetProjectComponentRecord>;
+  if (params.projectID === "") return emptyData(params) as unknown as ListResult<ProjectComponents.ResGetProjectComponentRecord>;
   let res_project = (await client
     .collection(Collections.Projects)
     .getOne(params.projectID, {})) as unknown as Project.ResGetProjectRecord;
@@ -436,15 +379,15 @@ export const getProjectComponentsList = async (params: ProjectComponents.ReqGetP
     filter: filterToPBString(filter),
     sort: params.sort ?? "",
     expand: "component" // params.expand ?? "",
-  })) as unknown as ResList<ProjectComponents.ResGetProjectComponentRecord>;
+  })) as unknown as ListResult<ProjectComponents.ResGetProjectComponentRecord>;
 
   let res = res_project_components;
 
-  return res as unknown as ResList<ProjectComponents.ResGetProjectComponentRecord>;
+  return res as unknown as ListResult<ProjectComponents.ResGetProjectComponentRecord>;
 };
 
 export const getProjectComponentsListForExport = async (params: ProjectComponents.ReqGetProjectComponentListForExportParams) => {
-  if (params.projectID === "") return emptyData() as unknown as ResList<ProjectComponents.ResGetProjectComponentRecord>;
+  if (params.projectID === "") return emptyData() as unknown as ListResult<ProjectComponents.ResGetProjectComponentRecord>;
   let res = await getProjectComponentsList({
     page: 1,
     perPage: 9999,
@@ -517,8 +460,8 @@ export const getProjectBuildsList = async (params: ProjectBuilds.ReqGetProjectBu
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
-  })) as unknown as ResList<ProjectBuilds.ResGetProjectBuildRecord>;
-  return res as unknown as ResList<ProjectBuilds.ResGetProjectBuildRecord>;
+  })) as unknown as ListResult<ProjectBuilds.ResGetProjectBuildRecord>;
+  return res as unknown as ListResult<ProjectBuilds.ResGetProjectBuildRecord>;
 };
 
 export const getProjectBuildsListForExport = async (params: ProjectBuilds.ReqGetProjectBuildListForExportParams) => {
@@ -559,8 +502,8 @@ export const getComponentLogsList = async (params: ComponentLog.ReqGetComponentL
     filter: params.filter ? filterToPBString(params.filter) : "",
     sort: params.sort ?? "",
     expand: params.expand ?? ""
-  })) as unknown as ResList<ComponentLog.ResGetComponentLogRecord>;
-  return res as unknown as ResList<ComponentLog.ResGetComponentLogRecord>;
+  })) as unknown as ListResult<ComponentLog.ResGetComponentLogRecord>;
+  return res as unknown as ListResult<ComponentLog.ResGetComponentLogRecord>;
 };
 
 export const getComponentLogsListForExport = async (params: ComponentLog.ReqGetComponentLogListForExportParams) => {
@@ -582,7 +525,7 @@ export const getUserList = async (params: User.ReqGetUserListParams) => {
     sort: params.sort ?? "",
     expand: params.expand ?? "" // Default expand all???
   });
-  return res as unknown as ResList<User.ResGetUserRecord>;
+  return res as unknown as ListResult<User.ResGetUserRecord>;
 };
 
 export const getUsersListForExport = async (params: User.ReqGetUserListForExportParams) => {
@@ -636,13 +579,13 @@ export const getUserEnum = async () => {
 // ---- SETTINGS/CONFIG ----
 
 export const getConfig = async (params: Config.ReqGetConfigParams) => {
-  let res = (await client.collection(Collections.Config).getList()) as unknown as ResList<Config.ResGetConfigRecord>;
+  let res = (await client.collection(Collections.Config).getList()) as unknown as ListResult<Config.ResGetConfigRecord>;
   let configRecord = res.items.find(record => record.category === params.category);
-  return configRecord?.value as unknown as ResList<Config.ResGetConfigRecord>;
+  return configRecord?.value as unknown as ListResult<Config.ResGetConfigRecord>;
 };
 
 export const patchConfigUpdate = async (params: Config.ReqUpdateConfigParams) => {
-  let res = (await client.collection(Collections.Config).getList()) as unknown as ResList<Config.ResGetConfigRecord>;
+  let res = (await client.collection(Collections.Config).getList()) as unknown as ListResult<Config.ResGetConfigRecord>;
   let configRecord = res.items.find(record => record.category === params.category);
   // create if not found
   if (!configRecord) {
@@ -671,10 +614,10 @@ export const getDashboardInfo = async () => {
     version: string;
   };
 
-  let res = (await client.send("/api/custom/dashboard/info", {})) as unknown as ResultData<DashboardInfo>;
+  let res = await client.send<DashboardInfo>("/api/custom/dashboard/info", {});
 
   let storageLocationsTree = await getStorageLocationPathEnumTree();
-  let components = res.data.components;
+  let components = res.components;
 
   // iterate recursively and find each elements where child = [] and set value: 1
   async function iter(o: any, childKey: string, cb: (o: any) => void) {
@@ -691,8 +634,8 @@ export const getDashboardInfo = async () => {
       o.numberOfComponents = foundComponents.length;
     });
   }
-  res.data.storageLocationsTree = storageLocationsTree;
-  return res.data as unknown as DashboardInfo;
+  res.storageLocationsTree = storageLocationsTree;
+  return res as unknown as DashboardInfo;
 };
 
 // export const getDashboardComponentSupplyDemandRatio = async () => {
@@ -734,7 +677,5 @@ export const postBackupRestore = async (params: Backup.ReqRestoreBackupParams) =
 // ---- HEALTH ----
 
 export const getHealth = async () => {
-  let res = (await client.send("/api/health", {})) as unknown as Health.ResHealth;
-  console.log("getHealth", res);
-  return res as unknown as Health.ResHealth;
+  return client.health.check();
 };

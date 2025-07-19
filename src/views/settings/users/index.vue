@@ -63,7 +63,7 @@ import {
   patchUserUpdate,
   deleteUsers
 } from "@/api/modules/components";
-import type { ResList, User } from "@/api/interface";
+import type { ListResult, User } from "@/api/interface";
 import { useHandleData } from "@/hooks/useHandleData";
 import { ElNotification } from "element-plus";
 
@@ -73,7 +73,7 @@ const proTable = ref<InstanceType<typeof ProTable>>();
 const initParam = reactive({});
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
-const dataCallback = (data: ResList<User.ResGetUserRecord>): PageableList<User.ResGetUserRecord> => {
+const dataCallback = (data: ListResult<User.ResGetUserRecord>): PageableList<User.ResGetUserRecord> => {
   return {
     list: data.items,
     total: data.totalItems,

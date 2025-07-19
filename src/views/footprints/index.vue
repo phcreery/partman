@@ -77,7 +77,7 @@ import ProTree from "@/components/ProTree/index.vue";
 import FootprintDrawer from "@/views/footprints/components/FootprintDrawer.vue";
 import FootprintCategoryDrawer from "@/views/footprints/components/FootprintCategoryDrawer.vue";
 import { CirclePlus, Delete, EditPen } from "@element-plus/icons-vue";
-import { ResList, Footprint, FootprintCategory } from "@/api/interface";
+import { ListResult, Footprint, FootprintCategory } from "@/api/interface";
 import {
   getFootprintList,
   postFootprintCreate,
@@ -106,7 +106,7 @@ const initParamCategory = reactive({});
 const dataCallbackTree = (data: any) => {
   return data;
 };
-const dataCallbackTable = (data: ResList<Footprint.ResGetFootprintRecord>): PageableList<Footprint.ResGetFootprintRecord> => {
+const dataCallbackTable = (data: ListResult<Footprint.ResGetFootprintRecord>): PageableList<Footprint.ResGetFootprintRecord> => {
   return {
     list: data.items,
     total: data.totalItems,

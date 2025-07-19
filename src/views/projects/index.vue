@@ -97,7 +97,7 @@ import { useAuthButtons } from "@/hooks/useAuthButtons";
 import { JSON2CSV } from "@/hooks/useDataTransform";
 
 // API
-import { ResList, Project, ProjectComponents } from "@/api/interface";
+import { ListResult, Project, ProjectComponents } from "@/api/interface";
 import {
   getComponentEnum,
   getProjectsEnum,
@@ -133,7 +133,7 @@ const dataCallbackTree = (data: any) => {
   return data;
 };
 const dataCallbackTable = (
-  data: ResList<ProjectComponents.ReqGetProjectComponentListParams>
+  data: ListResult<ProjectComponents.ReqGetProjectComponentListParams>
 ): PageableList<ProjectComponents.ReqGetProjectComponentListParams> => {
   return {
     list: data.items,

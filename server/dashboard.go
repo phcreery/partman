@@ -150,8 +150,8 @@ func AddDashboardRequests(app core.App, se *core.ServeEvent, version string) {
 		// fmt.Println(dashboardInfo)
 
 		// obj := map[string]interface{}{"message": "Hello world!"}
-		apiData := map[string]interface{}{"data": dashboardInfo}
-		return e.JSON(http.StatusOK, apiData)
+		// apiData := map[string]interface{}{"data": dashboardInfo}
+		return e.JSON(http.StatusOK, dashboardInfo)
 	},
 	).Bind(apis.RequireAuth())
 }

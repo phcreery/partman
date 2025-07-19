@@ -7,24 +7,8 @@ export interface ReqList {
   expand?: string;
 }
 
-// * Paging response parameter
-export interface ResList<T> {
-  items: T[];
-  page: number;
-  perPage: number;
-  totalPages: number;
-  totalItems: number;
-}
-
-export interface Result {
-  code: number;
-  msg: string;
-}
-
-// 请求响应参数（包含data）
-export interface ResultData<T = any> extends Result {
-  data: T;
-}
+// Re-export interface ResList<T>
+export type { ListResult } from "pocketbase";
 
 // * 文件上传模块
 export namespace Upload {
@@ -353,11 +337,4 @@ export namespace Backup {
   export type ReqDownloadBackupParams = { key: string };
   // Responses
   export type ResGetBackupRecord = BackupColumns;
-}
-
-export namespace Health {
-  export type ResHealth = {
-    code: number;
-    message: string;
-  };
 }

@@ -77,7 +77,7 @@ import ProTree from "@/components/ProTree/index.vue";
 import StorageDrawer from "@/views/storage/components/StorageDrawer.vue";
 import StorageCategoryDrawer from "@/views/storage/components/StorageCategoryDrawer.vue";
 import { CirclePlus, Delete, EditPen } from "@element-plus/icons-vue";
-import { ResList, Storage, StorageCategory } from "@/api/interface";
+import { ListResult, Storage, StorageCategory } from "@/api/interface";
 import {
   getStorageList,
   postStorageCreate,
@@ -105,7 +105,7 @@ const initParamCategory = reactive({});
 const dataCallbackTree = (data: any) => {
   return data;
 };
-const dataCallbackTable = (data: ResList<Storage.ResGetStorageRecord>): PageableList<Storage.ResGetStorageRecord> => {
+const dataCallbackTable = (data: ListResult<Storage.ResGetStorageRecord>): PageableList<Storage.ResGetStorageRecord> => {
   return {
     list: data.items,
     total: data.totalItems,

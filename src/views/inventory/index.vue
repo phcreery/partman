@@ -78,7 +78,7 @@ import ComponentStockEdit from "@/views/inventory/components/ComponentStockEdit.
 import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
 import MergeComponents from "./components/MergeComponents.vue";
 import {
-  ResList,
+  ListResult,
   Component
   // ComponentCategory,
   // Footprint,
@@ -114,7 +114,7 @@ const initParam = reactive({
 });
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
-const dataCallback = (data: ResList<Component.ResGetComponentRecord>) => {
+const dataCallback = (data: ListResult<Component.ResGetComponentRecord>) => {
   return {
     list: data.items,
     total: data.totalItems,

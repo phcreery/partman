@@ -88,7 +88,7 @@ import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 import ComponentCategoryDrawer from "@/views/categories/components/ComponentCategoryDrawer.vue";
 import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
 import { filterNodeMethod } from "@/utils/filterNodeMethod";
-import { ResList, Component, ComponentCategory } from "@/api/interface";
+import { ListResult, Component, ComponentCategory } from "@/api/interface";
 import {
   getComponentList,
   postComponentCreate,
@@ -119,7 +119,7 @@ const initParamCategory = reactive({});
 const dataCallbackTree = (data: any) => {
   return data;
 };
-const dataCallbackTable = (data: ResList<Component.ResGetComponentRecord>) => {
+const dataCallbackTable = (data: ListResult<Component.ResGetComponentRecord>) => {
   return {
     list: data.items,
     total: data.totalItems,

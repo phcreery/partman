@@ -45,7 +45,7 @@ import { JSON2CSV } from "@/hooks/useDataTransform";
 // import { filterNodeMethod } from "@/utils/filterNodeMethod";
 import ProTable from "@/components/ProTable/index.vue";
 import ProjectBuildDrawer from "@/views/builds/components/ProjectBuildDrawer.vue";
-import { ResList, Component, ProjectBuilds } from "@/api/interface";
+import { ListResult, Component, ProjectBuilds } from "@/api/interface";
 import {
   getProjectsEnum,
   getProjectBuildsList,
@@ -63,7 +63,7 @@ const initParam = reactive({
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
 const dataCallback = (
-  data: ResList<ProjectBuilds.ResGetProjectBuildRecord>
+  data: ListResult<ProjectBuilds.ResGetProjectBuildRecord>
 ): PageableList<ProjectBuilds.ResGetProjectBuildRecord> => {
   return {
     list: data.items,

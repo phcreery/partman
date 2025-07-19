@@ -224,6 +224,7 @@ const batchDelete = async (ids: string[]) => {
     "Remove the selected components(s) from project"
   );
   proTable.value.getTableList();
+  proTable.value.clearSelection();
 };
 
 // Batch delete footprints

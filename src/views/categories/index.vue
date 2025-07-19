@@ -290,6 +290,7 @@ const columns: ColumnProps<Component.ResGetComponentRecord>[] = [
 const batchDelete = async (ids: string[]) => {
   await useHandleData(deleteComponents, { ids }, "Delete the selected footprints(s)");
   proTable.value.getTableList();
+  proTable.value.clearSelection();
 };
 
 // Batch delete footprints

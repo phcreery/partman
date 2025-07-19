@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-drawer v-model="drawerVisible" :destroy-on-close="true" size="600px" :title="`${drawerData.title} User`">
+    <el-drawer v-model="drawerVisible" :destroy-on-close="true" size="600px" :title="`${drawerData.title} Backup`">
       <el-form
         ref="ruleFormRef"
         :rules="rules"
@@ -10,23 +10,8 @@
         label-suffix=" :"
         :append-to-body="true"
       >
-        <el-form-item label="E-Mail" prop="email">
-          <el-input v-model="drawerData.rowData!.email" placeholder="Please fill in the user email" clearable autosize>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="Username" prop="username">
-          <el-input v-model="drawerData.rowData!.username" placeholder="Please fill in the username" clearable autosize>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="Password" prop="password">
-          <el-input
-            v-model="drawerData.rowData!.password"
-            type="password"
-            placeholder="Please fill in the user password"
-            clearable
-            autosize
-          >
-          </el-input>
+        <el-form-item label="E-Mail" prop="name">
+          <el-input v-model="drawerData.rowData!.name" placeholder="Please fill in the name" clearable autosize> </el-input>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -37,23 +22,21 @@
   </div>
 </template>
 
-<script setup lang="ts" name="UserDrawer">
+<script setup lang="ts" name="BackupDrawer">
 import { ref, reactive, watch } from "vue";
 import { ElMessage, FormInstance } from "element-plus";
 
 // API
-import { User } from "@/api/interface";
+import { Backup } from "@/api/interface";
 
 const rules = reactive({
-  username: [{ required: true, message: "Please enter the username", trigger: "change" }],
-  email: [{ required: true, message: "Please enter the email", trigger: "change" }],
-  password: [{ required: true, message: "Please enter the password", trigger: "change" }]
+  name: [{ required: true, message: "Please enter the name", trigger: "change" }]
 });
 
 export interface DrawerProps {
   title: string;
   isView: boolean;
-  rowData: User.ResGetUserRecord;
+  rowData: Backup.ResGetBackupRecord;
   apiUrl?: (params: any, id?: string) => Promise<any>;
   updateTable?: () => Promise<any>;
 }
@@ -63,7 +46,7 @@ const drawerVisible = ref(false);
 const drawerData = ref<DrawerProps>({
   isView: false,
   title: "",
-  rowData: {} as User.ResGetUserRecord
+  rowData: {} as Backup.ResGetBackupRecord
 });
 
 // Parameters transmitted from the parent component

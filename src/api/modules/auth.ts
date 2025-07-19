@@ -38,7 +38,8 @@ export const getAuthButtonListApi = (): Login.ResAuthButtons => {
     projects: ["add", "delete", "view", "edit", "batchAdd", "batchDelete", "export"],
     builds: ["add", "delete", "view", "edit", "export"],
     logs: ["export"],
-    users: ["add", "delete", "view", "edit", "batchAdd", "export", "batchDelete"]
+    users: ["add", "delete", "view", "edit", "batchAdd", "export", "batchDelete"],
+    backups: ["add", "delete", "restore", "export", "import", "batchDelete"]
   };
   return res;
 };
@@ -206,6 +207,21 @@ export const getAuthMenuListApi = (): MenuOptions[] => {
           meta: {
             icon: "UserFilled",
             title: "Users",
+            isLink: "",
+            isHide: false,
+            isFull: false,
+            isAffix: false,
+            isKeepAlive: true
+          },
+          children: []
+        },
+        {
+          path: "/settings/backups",
+          name: "backups",
+          component: "/settings/backups/index",
+          meta: {
+            icon: "Suitcase",
+            title: "Backups",
             isLink: "",
             isHide: false,
             isFull: false,

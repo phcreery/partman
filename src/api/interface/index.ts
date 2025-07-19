@@ -333,8 +333,10 @@ export namespace Backup {
   export type ReqGetBackupListParams = { fields?: string[] };
   export type ReqCreateBackupParams = { name?: string };
   export type ReqDeleteBackupParams = { key: string };
+  export type ReqDeleteBackupsParams = { keys: string[] };
   export type ReqRestoreBackupParams = { key: string };
   export type ReqDownloadBackupParams = { key: string };
+  export type ReqUploadBackupParams = { file: File };
   // Responses
   export type ResGetBackupRecord = BackupColumns;
 }

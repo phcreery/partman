@@ -299,6 +299,7 @@ const batchDelete = async (ids: string[]) => {
 
   await useHandleData(deleteComponents, { ids }, "Delete the selected component(s)");
   proTable.value.getTableList();
+  proTable.value.clearSelection();
 };
 
 // Export component list

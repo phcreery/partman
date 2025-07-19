@@ -62,7 +62,7 @@ client.afterSend = function (response: Response, data) {
   }
 
   // * Global error information interception (return data stream when downloading files, without code, directly report an error)
-  if (response.status && response.status !== ResultEnum.SUCCESS) {
+  if (response.status && response.status !== ResultEnum.SUCCESS && response.status !== ResultEnum.NO_CONTENT) {
     // ElMessage.error(data.message);
     // ElNotification({
     //   title: data.message || "Request failed",

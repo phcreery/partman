@@ -655,13 +655,20 @@ export const getDashboardInfo = async () => {
 
 // ---- BACKUPS ----
 
-export const getBackupsList = async () => {
+export const getBackupsList = async (): Promise<ListResult<Backup.ResGetBackupRecord>> => {
   const backups = await client.backups.getFullList();
-  return backups as unknown as Backup.ResGetBackupRecord[];
+  // return backups as unknown as Backup.ResGetBackupRecord[];
+  return {
+    items: backups as unknown as Backup.ResGetBackupRecord[],
+    page: 1,
+    perPage: backups.length,
+    totalItems: backups.length,
+    totalPages: 1
+  };
 };
 
-export const postBackupCreate = async (params: Backup.ReqCreateBackupParams) => {
-  const name = params.name ? params.name : "";
+export const postBackupCreate = async (params?: Backup.ReqCreateBackupParams) => {
+  const name = params?.name ? params.name : "";
   const backup = await client.backups.create(name);
   return backup as unknown as Backup.ResGetBackupRecord;
 };
@@ -670,8 +677,28 @@ export const deleteBackup = async (params: Backup.ReqDeleteBackupParams) => {
   await client.backups.delete(params.key);
 };
 
+export const deleteBackups = async (params: Backup.ReqDeleteBackupsParams) => {
+  console.log("deleteBackups params", params);
+  for (const key of params.keys) {
+    await client.backups.delete(key);
+  }
+  return true;
+};
+
 export const postBackupRestore = async (params: Backup.ReqRestoreBackupParams) => {
   await client.backups.restore(params.key);
+};
+
+export const getBackupDownloadURL = async (params: Backup.ReqDownloadBackupParams) => {
+  const token = await client.files.getToken();
+  const backupURL = await client.backups.getDownloadURL(token, params.key);
+  return backupURL;
+};
+
+export const postBackupUpload = async (params: Backup.ReqUploadBackupParams) => {
+  console.log("postBackupUpload params", params);
+  const res = await client.backups.upload(params);
+  return res;
 };
 
 // ---- HEALTH ----

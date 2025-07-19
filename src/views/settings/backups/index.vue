@@ -2,16 +2,17 @@
   <div class="table-box">
     <ProTable
       ref="proTable"
-      pageAuthId="users"
+      pageAuthId="backups"
+      rowKey="key"
       :columns="columns"
-      :requestApi="getUserList"
+      :requestApi="getBackupsList"
       :initParam="initParam"
       :isPageable="true"
       :dataCallback="dataCallback"
     >
       <!-- Table header button -->
       <template #tableHeader="scope">
-        <el-button type="primary" :icon="CirclePlus" @click="openDrawer('New')" v-if="BUTTONS.add"> New User </el-button>
+        <el-button type="primary" :icon="CirclePlus" @click="postBackupCreate()" v-if="BUTTONS.add"> New Backup </el-button>
         <el-button
           type="danger"
           :icon="Delete"
@@ -22,7 +23,8 @@
         >
           Delete
         </el-button>
-        <el-button :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button>
+        <!-- <el-button :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button> -->
+        <el-button :icon="Upload" plain @click="uploadFile" v-if="BUTTONS.import">Upload</el-button>
       </template>
       <!-- Expand -->
       <template #expand="scope">
@@ -30,50 +32,61 @@
       </template>
       <!-- Table operation -->
       <template #operation="scope">
-        <el-button type="primary" link :icon="EditPen" @click="openDrawer('Edit', scope.row)">Edit</el-button>
-        <!-- <el-button type="primary" link :icon="ZoomIn" @click="openDrawer('View', scope.row)">View</el-button> -->
+        <el-button
+          type="primary"
+          link
+          :icon="FolderOpened"
+          @click="postBackupRestore({ key: scope.row.key })"
+          v-if="BUTTONS.restore"
+        >
+          Restore
+        </el-button>
+        <el-button type="primary" link :icon="Download" @click="downloadFile(scope.row.key)" v-if="BUTTONS.export">
+          Download
+        </el-button>
       </template>
     </ProTable>
-    <UserDrawer ref="drawerRef"></UserDrawer>
   </div>
+  <UploadBackup ref="dialogRefUpload"></UploadBackup>
 </template>
 
 <script setup lang="tsx" name="logs">
 import { ref, reactive } from "vue";
-import { ZoomIn, Download, CirclePlus, EditPen, Delete } from "@element-plus/icons-vue";
+import { ZoomIn, Download, CirclePlus, EditPen, Delete, FolderOpened, Upload } from "@element-plus/icons-vue";
 
-// Copmponents
+// Components
 import { ColumnProps, PageableList } from "@/components/ProTable/interface/index";
 import ProTable from "@/components/ProTable/index.vue";
 
-// View components
-import UserDrawer from "./components/UserDrawer.vue";
+// Backup components
+import UploadBackup from "./components/UploadBackup.vue";
 
 // Hooks
 import { useAuthButtons } from "@/hooks/useAuthButtons";
-import { useDownload } from "@/hooks/useDownload";
-import { JSON2CSV } from "@/hooks/useDataTransform";
 
 // API
 import {
-  getUser,
-  getUserList,
-  getUsersListForExport,
-  postUserCreate,
-  patchUserUpdate,
-  deleteUsers
+  getBackupsList,
+  postBackupCreate,
+  deleteBackup,
+  deleteBackups,
+  postBackupRestore,
+  getBackupDownloadURL,
+  postBackupUpload
 } from "@/api/modules/components";
-import type { ListResult, User } from "@/api/interface";
+import type { Backup, ListResult } from "@/api/interface";
 import { useHandleData } from "@/hooks/useHandleData";
 import { ElNotification } from "element-plus";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
 const proTable = ref<InstanceType<typeof ProTable>>();
+
 // If the table needs to initialize the request parameter, it will be directly defined to the propable (each request will automatically bring the parameter every time, and it will always be brought to
 const initParam = reactive({});
 
 // DataCallBack is processed to the returned table data. If the data returned in the background is not DataList && Total && PAGENUM && PageSize, then you can process these fields here.
-const dataCallback = (data: ListResult<User.ResGetUserRecord>): PageableList<User.ResGetUserRecord> => {
+const dataCallback = (data: ListResult<Backup.ResGetBackupRecord>): PageableList<Backup.ResGetBackupRecord> => {
+  console.log("dataCallback", data);
   return {
     list: data.items,
     total: data.totalItems,
@@ -87,26 +100,18 @@ const { BUTTONS } = useAuthButtons();
 console.log("BUTTONS", BUTTONS);
 
 // Table configuration item
-const columns: Partial<ColumnProps<User.ResGetUserRecord>>[] = [
+const columns: Partial<ColumnProps<Backup.ResGetBackupRecord>>[] = [
   { type: "selection", width: 40, fixed: "left" },
-  // { type: "expand", label: "" },
   {
-    prop: "username",
-    label: "User Name",
+    prop: "key",
+    label: "Key",
     align: "left",
     search: { el: "input" },
     sortable: false
   },
   {
-    prop: "email",
-    label: "E-Mail",
-    align: "left",
-    search: { el: "input" },
-    sortable: false
-  },
-  {
-    prop: "created",
-    label: "Created",
+    prop: "modified",
+    label: "Modified",
     width: 200,
     sortable: true,
     search: { el: "date-picker", span: 1, props: { type: "datetimerange" } },
@@ -115,45 +120,34 @@ const columns: Partial<ColumnProps<User.ResGetUserRecord>>[] = [
   {
     prop: "operation",
     label: "Operation",
-    width: 100,
+    width: 200,
     fixed: "right"
   }
 ];
 
 // Export component list
-const downloadFile = async () => {
+const downloadFile = async (id: string) => {
+  const URL = await getBackupDownloadURL({ key: id });
+  window && window.open(URL)!.focus();
+};
+
+const dialogRefUpload = ref<InstanceType<typeof UploadBackup>>();
+const uploadFile = () => {
+  // ElNotification({
+  //   title: "Notification",
+  //   message: "This feature is not implemented yet.",
+  //   type: "warning"
+  // });
   if (!proTable.value) {
     console.error("ProTable is not initialized");
     return;
   }
-
-  // useDownload(exportUserInfo, "user list", proTable.value.searchParam);
-  let name = "all";
-  let json = await getUsersListForExport({
-    filter: proTable.value.searchParam
-  });
-
-  let columns = proTable.value.tableColumns.map((c: Partial<ColumnProps>) => c.prop ?? "").filter((c: string) => c);
-  // remove specific columns from array
-  let removeColumns = ["operation", "expand", "selection", "footprint", "name"];
-  columns = columns.filter((c: string) => !removeColumns.includes(c));
-
-  let csv = JSON2CSV(json, columns);
-  useDownload(() => csv, `${name}_component_list`, {}, true, ".csv");
-};
-
-// Open the drawer (new, view, edit)
-const drawerRef = ref<InstanceType<typeof UserDrawer>>();
-const openDrawer = async (title: string, rowData?: User.ResGetUserRecord) => {
   let params = {
-    title,
-    rowData: { ...rowData } as User.ResGetUserRecord,
-    isView: title === "View",
-    apiUrl:
-      title === "New" ? postUserCreate : title === "Edit" ? patchUserUpdate : title === "Stock" ? patchUserUpdate : undefined,
-    updateTable: proTable.value!.getTableList
+    title: "Backups",
+    apiUpload: postBackupUpload,
+    refresh: proTable.value.getTableList
   };
-  drawerRef.value!.acceptParams(params);
+  dialogRefUpload.value!.acceptParams(params);
 };
 
 // Batch delete components
@@ -168,7 +162,7 @@ const batchDelete = async (ids: string[]) => {
     return;
   }
 
-  await useHandleData(deleteUsers, { ids }, "Delete the selected user(s)");
+  await useHandleData(deleteBackups, { keys: ids }, "Delete the selected backup(s)");
   proTable.value.getTableList();
   proTable.value.clearSelection();
 };

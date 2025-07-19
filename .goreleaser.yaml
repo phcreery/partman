@@ -1,5 +1,8 @@
 project_name: partman
 
+# GoReleaser configuration file version
+version: 2
+
 dist: .builds
 
 before:
@@ -30,10 +33,11 @@ builds:
         goarch: arm
 
 release:
+  disable: true
   draft: true
 
 archives:
-  - format: zip
+  - formats: ["zip"]
     files:
       - LICENSE*
       - CHANGELOG*
@@ -42,7 +46,7 @@ checksum:
   name_template: "checksums.txt"
 
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  version_template: "{{ incpatch .Version }}-next"
 
 changelog:
   sort: asc

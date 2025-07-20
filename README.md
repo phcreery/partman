@@ -34,7 +34,7 @@ I like to build small circuits and development boards. This requires me to desig
 
 - [x] User Management
 - [x] Backup Management
-- [ ] Clone Component Operation
+- [x] Clone Component Operation
 - [ ] "Fast" Entry (Barcode/QR code reader)
 - [x] Fix: auto logout after leave/timeout
 - [ ] Update from UI

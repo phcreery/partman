@@ -36,7 +36,6 @@
       </template>
       <!-- Expand -->
       <template #expand="scope">
-        <!-- {{ scope.row }} -->
         <ComponentDetails
           :title="scope.row.mpn ?? ''"
           :isView="true"
@@ -51,6 +50,7 @@
 
       <!-- Table operation -->
       <template #operation="scope">
+        <el-button type="primary" link :icon="CopyDocument" @click="openDrawer('New', scope.row)">Clone</el-button>
         <el-button type="primary" link :icon="EditPen" @click="openDrawer('Edit', scope.row)">Edit</el-button>
       </template>
     </ProTable>
@@ -62,21 +62,29 @@
 </template>
 
 <script setup lang="tsx" name="inventory">
-import { ref, reactive, ExtractPublicPropTypes } from "vue";
-import { CirclePlus, Delete, EditPen, Download, Upload, DCaret, Switch } from "@element-plus/icons-vue";
+import { ref, reactive } from "vue";
+import { CirclePlus, Delete, EditPen, Download, Upload, DCaret, Switch, CopyDocument } from "@element-plus/icons-vue";
+import { ElNotification } from "element-plus";
+
+// Components
 import { ColumnProps } from "@/components/ProTable/interface/index";
-import { useHandleData } from "@/hooks/useHandleData";
-import { useAuthButtons } from "@/hooks/useAuthButtons";
-import { useDownload } from "@/hooks/useDownload";
-import { JSON2CSV } from "@/hooks/useDataTransform";
-import { filterNodeMethod } from "@/utils/filterNodeMethod";
 import ProTable from "@/components/ProTable/index.vue";
-// import ImportExcel from "@/components/ImportExcel/index.vue";
 import ImportExcel from "./components/ImportExcel.vue";
 import ComponentDrawer from "@/views/inventory/components/ComponentDrawer.vue";
 import ComponentStockEdit from "@/views/inventory/components/ComponentStockEdit.vue";
 import ComponentDetails from "@/views/inventory/components/ComponentDetails.vue";
 import MergeComponents from "./components/MergeComponents.vue";
+
+// Hooks
+import { useHandleData } from "@/hooks/useHandleData";
+import { useAuthButtons } from "@/hooks/useAuthButtons";
+import { useDownload } from "@/hooks/useDownload";
+import { JSON2CSV } from "@/hooks/useDataTransform";
+
+// Utils
+import { filterNodeMethod } from "@/utils/filterNodeMethod";
+
+// API
 import {
   ListResult,
   Component
@@ -104,7 +112,6 @@ import {
   // postStorageCreate,
   // postFootprintCreate
 } from "@/api/modules/components";
-import { ElNotification } from "element-plus";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)
 const proTable = ref<InstanceType<typeof ProTable>>();
@@ -223,21 +230,6 @@ const columns: ColumnProps<Component.ResGetComponentRecord>[] = [
     search: { el: "input" },
     isShow: true
   },
-  // {
-  //   prop: "storage_location",
-  //   label: "Short Location",
-  //   width: 160,
-  //   enum: getComponentStorageLocationEnum,
-  //   fieldNames: { value: "id", label: "name" },
-  //   sortable: true,
-  //   search: { el: "select" },
-  //   //
-  //   // searchType: "select",
-  //   // enumFunction: getComponentStorageLocationEnum,
-  //   // searchProps: { value: "id", label: "name" },
-  //   isShow: true
-  // },
-
   {
     prop: "storage_location",
     label: "Location",
@@ -280,7 +272,7 @@ const columns: ColumnProps<Component.ResGetComponentRecord>[] = [
   {
     prop: "operation",
     label: "Operation",
-    width: 100,
+    width: 140,
     fixed: "right"
   }
 ];
@@ -386,8 +378,8 @@ const openMergeDialog = (ids: string[], selectList: Record<string, any>[]) => {
   let params = {
     title: "Merge Components",
     // ids,
-    leftComponent: JSON.parse(JSON.stringify(selectList[0])), // selectList[0]
-    rightComponent: JSON.parse(JSON.stringify(selectList[1])), // selectList[1],
+    leftComponent: JSON.parse(JSON.stringify(selectList[0])),
+    rightComponent: JSON.parse(JSON.stringify(selectList[1])),
     enumMap: proTable.value.enumMap,
     apiUrlUpdate: patchComponentUpdate,
     apiUrlDelete: deleteComponents,
@@ -399,7 +391,11 @@ const openMergeDialog = (ids: string[], selectList: Record<string, any>[]) => {
 // Open the drawer (new, view, edit)
 const drawerRef = ref<InstanceType<typeof ComponentDrawer>>();
 const openDrawer = (title: string, rowData?: Component.ResGetComponentRecord) => {
-  /*eslint indent: ["error", 2, { "ignoredNodes": ["ConditionalExpression"] }]*/
+  if (title === "New" && rowData) {
+    // Remove id if present
+    let { id, ...rest } = rowData;
+    rowData = rest as Component.ResGetComponentRecord;
+  }
   let params = {
     title,
     rowData: { ...rowData } as Component.ResGetComponentRecord,

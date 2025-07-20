@@ -5,27 +5,52 @@ import { Login } from "@/api/interface/index";
 import { HOME_URL } from "@/config";
 // import client from "@/api";
 
+interface SerializedData {
+  token: string;
+  record: Partial<AuthRecord>;
+}
+
+const getInitialAuthRecord = async (): Promise<string> => {
+  // wait for pinia store to be ready
+  await new Promise(resolve => setTimeout(resolve, 0));
+  const userStore = useUserStore();
+  const payload: SerializedData = {
+    token: userStore.token,
+    record: {
+      id: userStore.id,
+      email: userStore.email,
+      avatar: userStore.avatar,
+      username: userStore.username || userStore.email,
+      collectionName: userStore.collectionName
+    }
+  };
+  // console.log("getInitialAuthRecord", payload);
+  return JSON.stringify({ token: userStore.token, record: payload });
+};
+
 export const store = new AsyncAuthStore({
   save: async serialized => {
-    interface SerializedData {
-      token: string;
-      record: AuthRecord;
-    }
     let { token, record }: SerializedData = JSON.parse(serialized);
     if (!token || !record) {
       console.error("No token or record found in serialized data");
       return;
     }
+    // console.log("store save", token, record);
     const userStore = useUserStore();
     userStore.setToken(token);
+    if (!record.id) {
+      console.error("No user ID found in PB AuthStore record, will not set user info");
+      return;
+    }
     userStore.setUserInfo({
       id: record.id,
-      email: record.email,
-      avatar: record.avatar,
-      username: record.username || record.email,
-      collectionName: record.collectionName
+      email: record.email!,
+      avatar: record.avatar!,
+      username: record.username || record.email!,
+      collectionName: record.collectionName!
     });
-  }
+  },
+  initial: getInitialAuthRecord()
 });
 
 // * Get the button permissions

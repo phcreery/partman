@@ -32,11 +32,11 @@ I like to build small circuits and development boards. This requires me to desig
 
 ### Goals
 
-- [ ] User Management
-- [ ] Backup Management
+- [x] User Management
+- [x] Backup Management
 - [ ] Clone Operation
 - [ ] "Fast" Entry (Barcode/QR code reader)
-- [ ] Fix: auto logout after leave/timeout
+- [x] Fix: auto logout after leave/timeout
 - [ ] Update from UI
 - [ ] Merge Categories
 - [ ] Public Demo

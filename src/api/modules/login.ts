@@ -13,11 +13,12 @@ export const loginApiAsAdmin = async (params: Login.ReqLoginForm): Promise<Login
 };
 
 export const loginApiWithOAuth2 = async (provider: string): Promise<Login.ResLogin> => {
+  let w = window.open();
   const authData = await client.collection("users").authWithOAuth2({
     // provider,
-    provider: "oidc",
+    provider: provider,
     urlCallback: url => {
-      window.location.href = url;
+      w!.location.href = url;
     }
     // redirectUrl: "https://example.com"
   });

@@ -24,17 +24,27 @@
   </el-form>
   <div class="login-btn">
     <el-button :icon="CircleClose" round @click="resetForm(loginFormRef)" size="large">Reset</el-button>
-    <el-button :icon="Key" round @click="login(loginFormRef, 'admin')" size="large" :loading="loading"> Admin Login </el-button>
-    <el-button :icon="UserFilled" round @click="login(loginFormRef)" size="large" type="primary" :loading="loading">
+    <el-button :icon="Key" round @click="login(loginFormRef, LoginTypes.ADMIN)" size="large" :loading="loading">
+      Admin Login
+    </el-button>
+    <el-button
+      :icon="UserFilled"
+      round
+      @click="login(loginFormRef, LoginTypes.USER)"
+      size="large"
+      type="primary"
+      :loading="loading"
+    >
       Login
     </el-button>
     <el-button
       v-if="authMethods?.oauth2?.enabled"
       v-for="(method, index) in authMethods.oauth2.providers"
       :key="index"
-      type="primary"
-      link
-      @click="login(loginFormRef, 'oauth2')"
+      round
+      size="large"
+      style="width: 100%"
+      @click="login(loginFormRef, LoginTypes.OAUTH2, method.name)"
     >
       Login with {{ method.displayName }}
     </el-button>
@@ -44,17 +54,32 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { Login } from "@/api/interface";
 // import { ElNotification } from "element-plus";
-import { listAuthMethods, loginApi, loginApiAsAdmin, loginApiWithOAuth2 } from "@/api/modules/login";
-import { useUserStore } from "@/stores/modules/user";
-import { useTabsStore } from "@/stores/modules/tabs";
-// import { getTimeState } from "@/utils/util";
-import { HOME_URL } from "@/config";
-import { initDynamicRouter } from "@/routers/modules/dynamicRouter";
+import { ElMessage } from "element-plus";
 import { CircleClose, UserFilled, Key } from "@element-plus/icons-vue";
 import type { ElForm } from "element-plus";
-// import md5 from "js-md5";
+
+// Config
+import { HOME_URL } from "@/config";
+
+// API
+import { Login } from "@/api/interface";
+import { listAuthMethods, loginApi, loginApiAsAdmin, loginApiWithOAuth2 } from "@/api/modules/login";
+
+// Stores
+import { useUserStore } from "@/stores/modules/user";
+import { useTabsStore } from "@/stores/modules/tabs";
+
+// Utils
+import { initDynamicRouter } from "@/routers/modules/dynamicRouter";
+
+const LoginTypes = {
+  ADMIN: "admin",
+  USER: "user",
+  OAUTH2: "OAuth2"
+} as const;
+
+type LoginType = (typeof LoginTypes)[keyof typeof LoginTypes];
 
 const router = useRouter();
 const tabsStore = useTabsStore();
@@ -72,24 +97,28 @@ const loginForm = reactive<Login.ReqLoginForm>({
   password: ""
 });
 const authMethods = ref<Login.ResAuthMethods | null>(null);
-type LoginType = "admin" | "user" | "oauth2";
-const login = (formEl: FormInstance | undefined, type: LoginType = "user") => {
+const login = (formEl: FormInstance | undefined, authType: LoginType = "user", provider?: string) => {
   if (!formEl) return;
   formEl.validate(async valid => {
-    if (!valid) return;
+    if (!valid && authType !== LoginTypes.OAUTH2) return;
     loading.value = true;
     try {
-      if (type === "admin") {
+      if (authType === LoginTypes.ADMIN) {
         // Admin login logic
         const data = await loginApiAsAdmin(loginForm);
         // if dev
         if (import.meta.env.DEV) {
           console.log("Admin login data", data);
         }
-      } else if (type === "oauth2") {
-        const data = await loginApiWithOAuth2("oidc");
+      } else if (authType === LoginTypes.OAUTH2) {
+        if (!provider) {
+          console.error("Provider is required for OAuth2 login");
+          ElMessage.error("Provider is required for OAuth2 login");
+          return;
+        }
+        const data = await loginApiWithOAuth2(provider);
         if (import.meta.env.DEV) {
-          console.log("OIDC login data", data);
+          console.log("OAuth2 login data", data);
         }
       } else {
         const data = await loginApi(loginForm);

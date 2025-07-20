@@ -45,7 +45,6 @@ I like to build small circuits and development boards. This requires me to desig
 ## Installation
 
 <details>
-
 <summary>Install on Linux Bare Metal</summary>
 
 ### Install on Linux Bare Metal
@@ -110,7 +109,6 @@ sudo systemctl start partman
 </details>
 
 <details>
-
 <summary>Docker</summary>
 
 ### Docker
@@ -137,11 +135,28 @@ docker exec -ti partman /app/partman superuser create admin@example.com adminadm
 
 </details>
 
-## Developing
+## Configure
 
 <details>
+<summary>OIDC</summary>
 
+## OIDC
+
+Authelia config
+
+See: https://www.authelia.com/integration/openid-connect/pocketbase/
+
+```
+...
+...
+```
+
+</details>
+
+<details>
 <summary>Dev Setup</summary>
+
+### Dev Setup
 
 🚀 Technologies used:
 

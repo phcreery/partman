@@ -52,17 +52,25 @@
 
 <script setup lang="ts" name="Home">
 import { ref, reactive, onMounted, computed, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
+// ECharts
 import * as echarts from "echarts";
 import echartsThemeWonderland from "./echarts-theme-wonderland.json";
 import echartsThemeWonderlandDark from "./echarts-theme-wonderland-dark.json";
-import { getDashboardInfo } from "@/api/modules/components";
-import { useGlobalStore } from "@/stores/modules/global";
 import { useEcharts } from "@/hooks/useEcharts";
+
+// API
+import { getDashboardInfo } from "@/api/modules/components";
+
+// Stores
+import { useGlobalStore } from "@/stores/modules/global";
 
 const componentStorageTreeRef = ref(null);
 
 const globalStore = useGlobalStore();
 const themeConfig = computed(() => globalStore);
+const route = useRoute();
 
 const qty = reactive({
   totalComponents: 0,
@@ -140,13 +148,10 @@ onMounted(async () => {
   drawChart();
 });
 
-// watch themeConfig.isDark, update theme
-watch(
-  () => themeConfig.value.isDark,
-  () => {
-    drawChart();
-  }
-);
+// watch theme and route change, update theme
+watch([() => themeConfig.value.isDark, route.path], () => {
+  drawChart();
+});
 
 function checkForUpdate() {
   window.open("https://github.com/phcreery/partman/releases");

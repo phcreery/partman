@@ -84,7 +84,7 @@ export const getAuthMenuListApi = (): MenuOptions[] => {
         isHide: false,
         isFull: false,
         isAffix: true,
-        isKeepAlive: true
+        isKeepAlive: false
       }
     },
     {

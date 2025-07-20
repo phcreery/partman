@@ -3,7 +3,6 @@ import { useUserStore } from "@/stores/modules/user";
 import type { MenuOptions } from "@/api/modules/menu";
 import { Login } from "@/api/interface/index";
 import { HOME_URL } from "@/config";
-// import client from "@/api";
 
 interface SerializedData {
   token: string;

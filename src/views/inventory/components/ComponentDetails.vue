@@ -5,12 +5,12 @@
     </el-col>
   </el-row>
   <el-row justify="space-around">
-    <el-col :span="11">
+    <el-col :span="6">
       <div class="demo-image__error">
         <div class="block">
           <div class="demo-image__preview">
             <el-image
-              :src="(props.rowData && props.rowData.image) ? getFileUrl(props.rowData, props.rowData!.image) : undefined"
+              :src="props.rowData && props.rowData.image ? getFileUrl(props.rowData, props.rowData!.image) : undefined"
               :zoom-rate="1.2"
               fit="cover"
             >
@@ -24,7 +24,7 @@
         </div>
       </div>
     </el-col>
-    <el-col :span="11">
+    <el-col :span="16">
       <el-descriptions border :column="1">
         <el-descriptions-item label="Manufacturer" label-align="right">{{ props.rowData?.manufacturer }}</el-descriptions-item>
         <el-descriptions-item label="Manufacturer Part Number" label-align="right">{{ props.rowData?.mpn }}</el-descriptions-item>
@@ -34,21 +34,21 @@
         </el-descriptions-item>
         <el-descriptions-item label="Stock" label-align="right">{{ props.rowData?.stock }}</el-descriptions-item>
         <el-descriptions-item v-if="props.enumMap" label="Storage Location" label-align="right">
-          {{ enumRender("storage_location", props.rowData?.storage_location) }}
+          {{ enumRender("storage_location", props.rowData?.storageLocation) }}
         </el-descriptions-item>
         <el-descriptions-item v-if="props.enumMap" label="Footprint" label-align="right">
           {{ enumRender("footprint", props.rowData?.footprint) }}
         </el-descriptions-item>
-        <el-descriptions-item v-if="props.enumMap" label="Supplier" label-align="right">{{
-          enumRender("supplier", props.rowData?.supplier)
-        }}</el-descriptions-item>
-        <el-descriptions-item v-if="props.enumMap" label="Supplier Part Number" label-align="right">{{
-          props.rowData?.spn
-        }}</el-descriptions-item>
+        <el-descriptions-item v-if="props.enumMap" label="Supplier" label-align="right">
+          {{ enumRender("supplier", props.rowData?.supplier) }}
+        </el-descriptions-item>
+        <el-descriptions-item v-if="props.enumMap" label="Supplier Part Number" label-align="right">
+          {{ props.rowData?.spn }}
+        </el-descriptions-item>
         <el-descriptions-item label="Internal Part Number" label-align="right">{{ props.rowData?.ipn }}</el-descriptions-item>
         <el-descriptions-item
           v-for="item in props.rowData?.specs"
-          :key="item.attribute"
+          :key="item.attribute.name"
           :label="item.attribute.name"
           label-align="right"
         >
@@ -93,7 +93,7 @@ const enumRender = (prop: string, value: any) => {
 }
 .demo-image__error .el-image {
   width: 100%;
-  height: 500px;
+  aspect-ratio: 1 / 1;
 }
 .demo-image__error .image-slot {
   display: flex;

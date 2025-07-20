@@ -34,11 +34,11 @@ I like to build small circuits and development boards. This requires me to desig
 
 - [x] User Management
 - [x] Backup Management
-- [ ] Clone Operation
+- [ ] Clone Component Operation
 - [ ] "Fast" Entry (Barcode/QR code reader)
 - [x] Fix: auto logout after leave/timeout
 - [ ] Update from UI
-- [ ] Merge Categories
+- [ ] Merge Categories Operation
 - [ ] Public Demo
 - [ ] McMaster Carr integration
 
@@ -150,7 +150,7 @@ docker exec -ti partman /app/partman superuser create admin@example.com adminadm
 - TypeScript
 - Vue 3
 - Vite
-- [Geeker Admin Template](https://github.com/HalseySpicy/Geeker-Admin) (from latest commit on 12/11/22)
+- [Geeker Admin Template](https://github.com/HalseySpicy/Geeker-Admin) and [Fork](https://github.com/Geeker-Admin/Geeker-Admin) (from latest commit on 7/04/25)
 - Element-Plus
 - Pinia
 

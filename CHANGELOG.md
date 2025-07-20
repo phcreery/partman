@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.3](https://github.com/phcreery/partman/compare/v0.1.2...v0.1.3) (2025-07-20)
+
+
+### Features
+
+* OIDC login ([4e9c0ed](https://github.com/phcreery/partman/commit/4e9c0ede299a0cb26be0ad0e1a0fbee8d092662b))
+
+
+### Bug Fixes
+
+* build ([75279fa](https://github.com/phcreery/partman/commit/75279faa23f4bd3d875f13b65ffe99da13cea0c4))
+
 ## [0.1.2](https://github.com/phcreery/partman/compare/v0.1.1...v0.1.2) (2025-07-19)
 
 

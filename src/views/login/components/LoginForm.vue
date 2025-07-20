@@ -37,6 +37,7 @@
     >
       Login
     </el-button>
+    <el-divider />
     <el-button
       v-if="authMethods?.oauth2?.enabled"
       v-for="(method, index) in authMethods.oauth2.providers"

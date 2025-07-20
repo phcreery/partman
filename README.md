@@ -41,6 +41,7 @@ I like to build small circuits and development boards. This requires me to desig
 - [ ] Merge Categories Operation
 - [ ] Public Demo
 - [ ] McMaster Carr integration
+- [x] OIDC Login
 
 ## Installation
 

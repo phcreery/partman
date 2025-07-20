@@ -204,4 +204,22 @@ docker build \
   -f 'Dockerfile' -t 'phcreery/partman:latest' '.'
 ```
 
+### Release
+
+Test build with
+
+```
+bun run build:all
+```
+
+On success
+
+```
+bun run tag
+git push --follow-tags
+bun run build:all:release
+bun run build:docker:latest
+bun run push:docker:latest
+```
+
 </details>

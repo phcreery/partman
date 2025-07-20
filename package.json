@@ -13,10 +13,12 @@
     "build:client:prod": "vue-tsc --noEmit && vite build --mode production",
     "build:server": "cross-env CGO_ENABLED=0 go build",
     "build:server:all": "goreleaser release --clean --snapshot",
+    "build:all": "vue-tsc --noEmit && vite build --mode production && goreleaser release --clean --snapshot",
+    "build:all:release": "vue-tsc --noEmit && vite build --mode production && goreleaser release --clean",
     "build:docker:latest": "docker build -f 'Dockerfile' -t 'phcreery/partman:latest' '.'",
-    "build:all": "vue-tsc --noEmit && vite build --mode production && goreleaser release --clean",
+    "push:docker:latest": "docker push 'phcreery/partman:latest'",
     "commit": "git add -A && czg && git push --follow-tags",
-    "release": "commit-and-tag-version"
+    "tag": "commit-and-tag-version"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",

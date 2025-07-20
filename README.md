@@ -140,16 +140,74 @@ docker exec -ti partman /app/partman superuser create admin@example.com adminadm
 <details>
 <summary>OIDC</summary>
 
-## OIDC
-
-Authelia config
+## OIDC With Authelia
 
 See: https://www.authelia.com/integration/openid-connect/pocketbase/
 
+Create oidc RSA private key: https://www.authelia.com/reference/guides/generating-secure-values/
+
+```
+authelia crypto pair rsa generate
+cp ./private.pem /config/secrets/oidc/jwks/rsa.2048.key
+chmod 755 -R /config/secrets/
+```
+
+create secret and digest with
+
+```
+authelia crypto hash generate pbkdf2 --variant sha512 --password insecure_secret
+```
+
 ```
 ...
+identity_providers:
+  oidc:
+    ...
+    ## The other portions of the mandatory OpenID Connect 1.0 configuration go here.
+    ## See: https://www.authelia.com/c/oidc
+    jwks:
+      - key: {{ secret "/config/secrets/oidc/jwks/rsa.2048.key" | mindent 10 "|" | msquote }}
+    ...
+    clients:
+      - client_id: 'partman'
+        client_name: 'partman'
+        client_secret: '$pbkdf2-sha512$310000$c8p78n7pUMln0jzvd4aK4Q$JNRBzwAo0ek5qKn50cFzzvE9RXV88h1wJn5KGiHrD0YKtZaR/nCb2CJPOsKaPK0hjf.9yHxzQGZziziccp6Yng'  # The digest of 'insecure_secret'.
+        public: false
+        authorization_policy: 'two_factor'
+        require_pkce: true
+        pkce_challenge_method: 'S256'
+        redirect_uris:
+          - 'https://example.com/api/oauth2-redirect'
+          - 'http://localhost:8090/api/oauth2-redirect'
+        scopes:
+          - 'email'
+          - 'groups'
+          - 'openid'
+          - 'profile'
+        response_types:
+          - 'code'
+        grant_types:
+          - 'authorization_code'
+        access_token_signed_response_alg: 'none'
+        userinfo_signed_response_alg: 'none'
+        token_endpoint_auth_method: 'client_secret_basic'
 ...
 ```
+
+Currently this requires authelia to be run with `--config.experimental.filters template`
+
+- Connect to PocketBase admin view at https://example.com/_/
+- On the left menu, go to Settings.
+- In Authentication section, go to Auth providers.
+- Select the gear on OpenID Connect (oidc)
+- Configure the following options:
+- ClientID: partman
+- Client secret: insecure_secret
+- Display name: Authelia (or whatever you want)
+  - Auth URL: https://example.com/api/oidc/authorization
+  - Token URL: https://example.com/api/oidc/token
+  - User API URL: https://example.com/api/oidc/userinfo
+  - You can leave Support PKCE checked
 
 </details>
 

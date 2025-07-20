@@ -22,6 +22,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const root = process.cwd();
   const env = loadEnv(mode, root);
   const viteEnv = wrapperEnv(env);
+  console.log("Vite Environment Variables:", viteEnv);
 
   return {
     base: viteEnv.VITE_PUBLIC_PATH,

@@ -12,11 +12,12 @@ import { ref, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 import { getHealth } from "@/api/modules/components";
 import type { HealthCheckResponse } from "pocketbase";
+import { config } from "@/api";
 
 const health = ref<HealthCheckResponse>({ code: 0, message: "", data: {} });
 
 const gotoAdminUI = () => {
-  window.open(import.meta.env.VITE_API_URL + "_/", "_blank");
+  window.open(config.baseURL + "_/", "_blank");
 };
 
 const updateHealth = async () => {

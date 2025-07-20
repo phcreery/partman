@@ -1,5 +1,4 @@
 import path from "path";
-import { loadAndValidateEnv } from "@julr/vite-plugin-validate-env";
 
 export function isDevFn(mode: string): boolean {
   return mode === "development";
@@ -35,11 +34,6 @@ export function wrapperEnv(envConf: Recordable): ImportMetaEnv {
     }
     sanitized[envName] = realName;
   }
-
-  // loadAndValidateEnv(sanitized, {
-  //   // configFile: "env.ts"
-  //   configFile: "build/env"
-  // });
   return sanitized;
 }
 

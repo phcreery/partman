@@ -51,6 +51,8 @@ I like to build small circuits and development boards. This requires me to desig
 
 1.  Download latest release of partman for your system. See [Releases](https://github.com/phcreery/partman/releases)
 
+        wget https://github.com/phcreery/partman/releases/download/v{version_number}/partman_{version_number}_{os}_{arch}.zip
+
 2.  Set environment variables for PARTMAN_USER_EMAIL, PARTMAN_USER_USERNAME, and PARTMAN_USER_PASSWORD
 
     > Note: env variables for PARTMAN_USER_EMAIL, PARTMAN_USER_USERNAME, and PARTMAN_USER_PASSWORD are needed for first time database creation only.
@@ -254,7 +256,7 @@ bun run dev:client
 ### Build
 
 ```
-bun run build:all:release
+bun run build:all
 ```
 
 ### Build with Docker
@@ -262,7 +264,7 @@ bun run build:all:release
 ```
 docker build -f 'Dockerfile' -t 'phcreery/partman:latest' '.'
 OR
-bun run build:docker
+bun run build:docker:latest
 ```
 
 With predefined account options (not recommended)
@@ -283,16 +285,18 @@ Test build with
 
 ```
 bun run build:all
+bun run build:docker:latest
 ```
 
 On success
 
 ```
 bun run tag
-git push --follow-tags
-bun run build:all:release
-bun run build:docker:latest
+git push --follow-tags origin master
+NODE_ENV=production bun run build:all:release
 bun run push:docker:latest
 ```
+
+Yes, `NODE_ENV=production` is needed for bun since bun currently sets NODE_ENV to development and loads .env.development
 
 </details>

@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.5](https://github.com/phcreery/partman/compare/v0.1.4...v0.1.5) (2025-07-21)
+
+
+### Features
+
+* Clone Component Operation ([fe92c26](https://github.com/phcreery/partman/commit/fe92c261df7281fbcc9df9c45f50c3bbff1cbd58))
+
+
+### Bug Fixes
+
+* login button layout ([0052066](https://github.com/phcreery/partman/commit/0052066daa798624620b7ef249c4c7d6bb6a3038))
+* login form card style consistency ([dd1e288](https://github.com/phcreery/partman/commit/dd1e2881ab5825493f01d2774500bcda9a57dc7c))
+* login form provider divider format ([1250146](https://github.com/phcreery/partman/commit/1250146eb7b12ada914b6c8e92f47aed205e83ac))
+* login form style ([2eb670d](https://github.com/phcreery/partman/commit/2eb670daa885ace548d6e5885375a3889b772728))
+* revert auth methos supression ([1e1c29f](https://github.com/phcreery/partman/commit/1e1c29f8be45474ddc1a18e30bf41bcf61e6c0cb))
+
 ## [0.1.4](https://github.com/phcreery/partman/compare/v0.1.3...v0.1.4) (2025-07-20)
 
 

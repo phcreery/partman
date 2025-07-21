@@ -39,12 +39,17 @@
       }
     }
     .login-form {
-      flex: 50%;
+      // similar to .card
+
+      box-sizing: border-box;
       max-width: 420px;
       padding: 2em 2em 2em;
-      border-radius: 10px;
-      box-shadow: 2px 3px 7px rgb(0 0 0 / 20%);
+      // padding: 20px;
       background-color: var(--el-bg-color);
+      border: 1px solid var(--el-border-color-light);
+      border-radius: 6px;
+      box-shadow: 0 0 12px rgb(0 0 0 / 5%);
+
       .login-logo {
         display: flex;
         align-items: center;
@@ -74,7 +79,7 @@
         white-space: nowrap;
 
         .el-button {
-          margin-bottom: 12px;
+          // margin-bottom: 12px;
           margin-left: 0px;
         }
         .el-divider {

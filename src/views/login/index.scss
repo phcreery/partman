@@ -63,9 +63,9 @@
           color: var(--el-text-color-primary) !important;
         }
       }
-      .el-form-item {
-        // margin-bottom: 40px;
-      }
+      // .el-form-item {
+      //   margin-bottom: 40px;
+      // }
       .login-btn {
         display: flex;
         flex-direction: row;
@@ -78,16 +78,9 @@
           margin-left: 0px;
         }
         .el-divider {
-          margin: 0 0 12px 0;
+          margin: 50px 0 24px 0;
         }
       }
     }
-
-    // @media (max-width: 800px) {
-    //   .login-left,
-    //   .login-form {
-    //     flex: 100%;
-    //   }
-    // }
   }
 }

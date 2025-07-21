@@ -143,7 +143,7 @@ docker exec -ti partman /app/partman superuser create admin@example.com adminadm
 <details>
 <summary>OIDC</summary>
 
-## OIDC With Authelia
+### OIDC With Authelia
 
 See: https://www.authelia.com/integration/openid-connect/pocketbase/
 

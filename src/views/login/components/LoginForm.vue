@@ -167,7 +167,7 @@ const onKeydown = (e: Event | KeyboardEvent) => {
 };
 
 onMounted(async () => {
-  // authMethods.value = await listAuthMethods();
+  authMethods.value = await listAuthMethods();
   console.log("Auth Methods", authMethods.value);
 });
 </script>

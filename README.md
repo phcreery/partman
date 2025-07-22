@@ -46,6 +46,7 @@ I like to build small circuits and development boards. This requires me to desig
 - [ ] Edit Component from Project Page
 - [ ] All Component columns on Project Page
 - [ ] Allow for multiple stocks of same component. Move stock into seperate table. Take storage location with it.
+- [ ] Confirm on backup restore
 
 ## Installation
 

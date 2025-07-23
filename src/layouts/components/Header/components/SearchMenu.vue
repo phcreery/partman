@@ -27,7 +27,7 @@
           <i :class="'iconfont icon-huiche'" class="menu-enter" @click="handleOpen"></i>
         </div>
       </div>
-      <el-empty v-else class="mt20 mb20" :image-size="100" description="暂无菜单" />
+      <el-empty v-else class="mt20 mb20" :image-size="100" description="No menu found" />
     </el-dialog>
   </div>
 </template>

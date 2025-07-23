@@ -24,7 +24,7 @@
         highlight-current
         :filter-node-method="filterNode"
         :node-key="id"
-        :current-node-key="''"
+        :current-node-key="selectedItem.id"
         :check-strictly="false"
       />
     </el-scrollbar>

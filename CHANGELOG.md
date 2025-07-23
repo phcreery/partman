@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.6](https://github.com/phcreery/partman/compare/v0.1.5...v0.1.6) (2025-07-23)
+
+
+### Features
+
+* improve component columns on project page ([8bdd255](https://github.com/phcreery/partman/commit/8bdd255d026bbbee8af8b8b5562759a2d70b8292))
+
+
+### Bug Fixes
+
+* confirm on backup resotre ([192ad86](https://github.com/phcreery/partman/commit/192ad86da26dacbbc69fe8e81788120086c4dc06))
+* inventory operation column size ([9713f5f](https://github.com/phcreery/partman/commit/9713f5f7fae45e6741cd3f3700f3ca5f5a59b187))
+* ProTree selection on refresh ([c3ed26d](https://github.com/phcreery/partman/commit/c3ed26da7116c67efda968f3df34e8d981f2e639))
+* translation ([55d7900](https://github.com/phcreery/partman/commit/55d790083362a2d0aa13569eede9af389dac4d88))
+
 ## [0.1.5](https://github.com/phcreery/partman/compare/v0.1.4...v0.1.5) (2025-07-21)
 
 

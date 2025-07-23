@@ -32,13 +32,7 @@
       </template>
       <!-- Table operation -->
       <template #operation="scope">
-        <el-button
-          type="primary"
-          link
-          :icon="FolderOpened"
-          @click="postBackupRestore({ key: scope.row.key })"
-          v-if="BUTTONS.restore"
-        >
+        <el-button type="primary" link :icon="FolderOpened" @click="restoreBackup({ key: scope.row.key })" v-if="BUTTONS.restore">
           Restore
         </el-button>
         <el-button type="primary" link :icon="Download" @click="downloadFile(scope.row.key)" v-if="BUTTONS.export">
@@ -163,5 +157,14 @@ const batchDelete = async (ids: string[]) => {
   await useHandleData(deleteBackups, { keys: ids }, "Delete the selected backup(s)");
   proTable.value.getTableList();
   proTable.value.clearSelection();
+};
+
+const restoreBackup = async (params: { key: string }) => {
+  if (!proTable.value) {
+    return;
+  }
+
+  await useHandleData(postBackupRestore, params, "restore to the selected backup");
+  proTable.value.getTableList();
 };
 </script>

@@ -300,6 +300,7 @@ On success
 bun run tag
 git push --follow-tags origin master
 NODE_ENV=production bun run build:all:release
+bun run build:docker:latest
 bun run push:docker:latest
 ```
 

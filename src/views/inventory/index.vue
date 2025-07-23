@@ -104,13 +104,14 @@ import {
   // getComponentCategoryEnum,
   getComponentCategoryEnumTree,
   // getStorageLocationPathEnum,
-  getStorageLocationPathEnumTree
+  getStorageLocationPathEnumTree,
   // getStorageCategoryEnum,
   // getStorageCategoryEnumTree,
   // postComponentCreateBatch_Client,
   // postComponentCategoryCreate,
   // postStorageCreate,
   // postFootprintCreate
+  getComponentEnum
 } from "@/api/modules/components";
 
 // Get the ProTable element and call it to get the refresh data method (you can also get the current query parameter, so that it is convenient for exporting and carrying parameters)

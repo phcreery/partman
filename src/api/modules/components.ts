@@ -367,13 +367,47 @@ export const getProjectComponentsList = async (params: ProjectComponents.ReqGetP
     .collection(Collections.Projects)
     .getOne(params.projectID, {})) as unknown as Project.ResGetProjectRecord;
 
-  if (res_project.components.length === 0) res_project.components = ["none"]; // TODO: should be `= []` ?
+  if (res_project.components.length === 0) res_project.components = [];
 
   let filter: object = {};
   nestedObjectAssign(filter, res_project.components ? { id: res_project.components } : {});
   nestedObjectAssign(filter, params.filter?.bom_id ? { bom_id: params.filter?.bom_id } : {});
   nestedObjectAssign(filter, params.filter?.component ? { component: params.filter?.component } : {});
   nestedObjectAssign(filter, params.filter?.refdesignators ? { refdesignators: params.filter?.refdesignators } : {});
+
+  // Expand component fields
+  nestedObjectAssign(
+    filter,
+    params.filter?.["expand.component.manufacturer"]
+      ? { "component.manufacturer": params.filter?.["expand.component.manufacturer"] }
+      : {}
+  );
+  nestedObjectAssign(
+    filter,
+    params.filter?.["expand.component.mpn"] ? { "component.mpn": params.filter?.["expand.component.mpn"] } : {}
+  );
+  nestedObjectAssign(
+    filter,
+    params.filter?.["expand.component.supplier"] ? { "component.supplier": params.filter?.["expand.component.supplier"] } : {}
+  );
+  nestedObjectAssign(
+    filter,
+    params.filter?.["expand.component.spn"] ? { "component.spn": params.filter?.["expand.component.spn"] } : {}
+  );
+  nestedObjectAssign(
+    filter,
+    params.filter?.["expand.component.category"] ? { "component.category": params.filter?.["expand.component.category"] } : {}
+  );
+  nestedObjectAssign(
+    filter,
+    params.filter?.["expand.component.footprint"] ? { "component.footprint": params.filter?.["expand.component.footprint"] } : {}
+  );
+  nestedObjectAssign(
+    filter,
+    params.filter?.["expand.component.description"]
+      ? { "component.description": params.filter?.["expand.component.description"] }
+      : {}
+  );
 
   let res_project_components = (await client.collection(Collections.ProjectComponents).getList(params.page, params.perPage, {
     filter: filterToPBString(filter),

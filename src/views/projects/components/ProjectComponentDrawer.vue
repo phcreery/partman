@@ -14,7 +14,7 @@
         <el-form-item label="ID" prop="bom_id">
           <el-input v-model="drawerData.rowData!.bom_id" placeholder="Please fill in the BOM ID" clearable> </el-input>
         </el-form-item>
-        <el-form-item label="MPN" prop="component" v-loading="components === undefined">
+        <el-form-item label="Component" prop="component" v-loading="components === undefined">
           <!-- <el-input
 						v-model="drawerData.rowData!.mpn"
 						placeholder="Please fill in the component"

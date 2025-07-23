@@ -37,6 +37,7 @@
         :initParam="initParam"
         :isPageable="true"
         :dataCallback="dataCallbackTable"
+        :requestError="requestError"
       >
         <!-- Table header button -->
         <template #tableHeader="scope">
@@ -164,30 +165,6 @@ const columns: ColumnProps[] = [
     search: { el: "input" }
   },
   {
-    prop: "component",
-    label: "MPN",
-    width: 220,
-    align: "left",
-    enum: getComponentEnum,
-    fieldNames: { value: "id", label: "mpn" },
-    sortable: true,
-    search: {
-      el: "select",
-      props: {
-        value: "id",
-        label: "mpn",
-        multiple: true,
-        filterable: true
-      }
-    }
-  },
-  {
-    prop: "quantity",
-    label: "Qty.",
-    width: 80,
-    sortable: true
-  },
-  {
     prop: "refdesignators",
     label: "Ref. Designators",
     align: "left",
@@ -197,7 +174,92 @@ const columns: ColumnProps[] = [
     prop: "comment",
     label: "Comment",
     align: "left",
+    // width: 180,
     search: { el: "input" }
+  },
+  // {
+  //   prop: "component",
+  //   label: "MPN",
+  //   width: 220,
+  //   align: "left",
+  //   // enum: getComponentEnum,
+  //   // fieldNames: { value: "id", label: "mpn" },
+  //   // sortable: true,
+  //   // search: {
+  //   //   el: "select",
+  //   //   props: {
+  //   //     value: "id",
+  //   //     label: "mpn",
+  //   //     multiple: true,
+  //   //     filterable: true
+  //   //   }
+  //   // }
+  //   search: { el: "input" }
+  // },
+  // {
+  //   prop: "expand.component.id",
+  //   label: "Component ID",
+  //   width: 60,
+  //   sortable: true,
+  //   search: { el: "input" }
+  // },
+  // {
+  //   prop: "expand.component.name",
+  //   label: "Display Name",
+  //   width: 260,
+  //   align: "left",
+  //   sortable: false,
+  //   render: (_scope): string => {
+  //     return `${_scope.row.expand.component.manufacturer} - ${_scope.row.expand.component.mpn}`;
+  //   }
+  // },
+  {
+    prop: "expand.component.manufacturer",
+    label: "Mfr.",
+    width: 130,
+    align: "left",
+    sortable: true,
+    search: { el: "input" },
+    isShow: true
+  },
+  {
+    prop: "expand.component.mpn",
+    label: "MPN",
+    width: 130,
+    align: "left",
+    sortable: true,
+    search: { el: "input" },
+    isShow: true
+  },
+  {
+    prop: "expand.component.supplier",
+    label: "Supplier",
+    width: 130,
+    sortable: true,
+    search: { el: "input" },
+    isShow: false
+  },
+  {
+    prop: "expand.component.spn",
+    label: "SPN",
+    width: 130,
+    sortable: true,
+    search: { el: "input" },
+    isShow: false
+  },
+
+  {
+    prop: "expand.component.description",
+    label: "Desc.",
+    width: 220,
+    align: "left",
+    search: { el: "input", key: "expand.component.description" }
+  },
+  {
+    prop: "quantity",
+    label: "Qty.",
+    width: 80,
+    sortable: true
   },
   {
     prop: "operation",
@@ -211,11 +273,6 @@ const columns: ColumnProps[] = [
 const batchDelete = async (ids: string[]) => {
   if (!proTable.value) {
     console.error("ProTable is not initialized");
-    ElNotification({
-      title: "Notification",
-      message: "ProTable is not initialized",
-      type: "error"
-    });
     return;
   }
   await useHandleData(
@@ -231,11 +288,6 @@ const batchDelete = async (ids: string[]) => {
 const batchDeleteProject = async (ids: string[]) => {
   if (!proTree.value || !proTable.value) {
     console.error("ProTree or ProTable is not initialized");
-    ElNotification({
-      title: "Notification",
-      message: "ProTree or ProTable is not initialized",
-      type: "error"
-    });
     return;
   }
   await useHandleData(deleteProjects, { ids }, "Delete the selected projects(s)");
@@ -247,11 +299,6 @@ const batchDeleteProject = async (ids: string[]) => {
 const downloadFile = async () => {
   if (!proTable.value) {
     console.error("ProTable is not initialized");
-    ElNotification({
-      title: "Notification",
-      message: "ProTable is not initialized",
-      type: "error"
-    });
     return;
   }
   // useDownload(exportUserInfo, "user list", proTable.value.searchParam);
@@ -265,6 +312,8 @@ const downloadFile = async () => {
   useDownload(() => csv, `${name}_project_component_list`, {}, true, ".csv");
 };
 
+const requestError = (err: any) => ElNotification.error({ title: "Error", message: err.message });
+
 // Add users in batches
 interface DialogExpose {
   acceptParams: (params: any) => void;
@@ -272,11 +321,6 @@ interface DialogExpose {
 const dialogRefImport = ref<DialogExpose>();
 const batchAdd = async () => {
   if (!initParam.projectID) {
-    ElNotification({
-      title: "Notification",
-      message: "Please select a project first",
-      type: "error"
-    });
     return;
   }
   let templateColumns = [
@@ -311,11 +355,6 @@ interface DrawerExpose {
 const drawerRefComponent = ref<DrawerExpose>();
 const openComponentDrawer = (title: string, rowData: Partial<ProjectComponents.ResGetProjectComponentRecord> = {}) => {
   if (!initParam.projectID) {
-    ElNotification({
-      title: "Notification",
-      message: "Please select a project first",
-      type: "error"
-    });
     return;
   }
   let params = {

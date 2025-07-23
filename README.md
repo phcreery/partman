@@ -44,9 +44,9 @@ I like to build small circuits and development boards. This requires me to desig
 - [ ] ~~McMaster Carr integration~~
 - [ ] Hardware Parts integration
 - [ ] Edit Component from Project Page
-- [ ] All Component columns on Project Page
+- [x] All Component columns on Project Page
 - [ ] Allow for multiple stocks of same component. Move stock into seperate table. Take storage location with it.
-- [ ] Confirm on backup restore
+- [x] Confirm on backup restore
 
 ## Installation
 

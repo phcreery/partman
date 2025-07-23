@@ -234,7 +234,10 @@ export namespace ProjectComponents {
   // Requests
   export interface ReqGetProjectComponentListParams extends ReqList {
     projectID: string;
-    filter: Partial<ProjectComponentColumns>;
+    // filter: Partial<ProjectComponentColumns> & { expand: { component: Partial<Component.ComponentColumns> } };
+    filter: Partial<ProjectComponentColumns> & {
+      [K in keyof Component.ComponentColumns as `expand.component.${K}`]?: Component.ComponentColumns[K];
+    };
   }
   export type ReqGetProjectComponentListForExportParams = { filter: ReqList["filter"]; projectID: string };
   export interface ReqAddProjectComponentParams extends ProjectComponentColumns {

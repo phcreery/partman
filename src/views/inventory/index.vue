@@ -272,7 +272,7 @@ const columns: ColumnProps<Component.ResGetComponentRecord>[] = [
   {
     prop: "operation",
     label: "Operation",
-    width: 140,
+    width: 180,
     fixed: "right"
   }
 ];

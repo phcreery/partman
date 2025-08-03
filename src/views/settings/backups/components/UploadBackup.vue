@@ -1,35 +1,31 @@
 <template>
   <el-dialog v-model="dialogVisible" :title="`Upload ${props.title}`" :destroy-on-close="true" draggable>
-    <el-row justify="center">
-      <el-col :span="24">
-        <el-upload
-          action="string"
-          class="upload"
-          :drag="true"
-          :limit="1"
-          :multiple="true"
-          :show-file-list="true"
-          :http-request="handleApiUpload"
-          :before-upload="beforeZipUpload"
-          :on-exceed="handleExceed"
-          :on-success="zipUploadSuccess"
-          :on-error="zipUploadError"
-          accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"
-        >
-          <el-icon><upload-filled /></el-icon>
-          <div>Drag the file here, or <em>Click to upload</em></div>
-          <template #tip>
-            <div>Please upload .zip</div>
-          </template>
-        </el-upload>
-      </el-col>
-    </el-row>
+    <el-upload
+      action="string"
+      class="upload"
+      :drag="true"
+      :limit="1"
+      :multiple="true"
+      :show-file-list="true"
+      :http-request="handleApiUpload"
+      :before-upload="beforeZipUpload"
+      :on-exceed="handleExceed"
+      :on-success="zipUploadSuccess"
+      :on-error="zipUploadError"
+      accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"
+    >
+      <el-icon><upload-filled /></el-icon>
+      <div>Drag the file here, or <em>Click to upload</em></div>
+      <template #tip>
+        <div class="tip">zip files only</div>
+      </template>
+    </el-upload>
   </el-dialog>
 </template>
 
 <script setup lang="ts" name="ImportExcel">
-import { ref, reactive, toRef, watch, computed } from "vue";
-import { Download, Upload, View } from "@element-plus/icons-vue";
+import { ref } from "vue";
+import { UploadFilled } from "@element-plus/icons-vue";
 import { ElNotification } from "element-plus";
 import type { UploadRequestOptions } from "element-plus";
 
@@ -121,4 +117,9 @@ defineExpose({
 </script>
 <style lang="scss" scoped>
 // @use "./index";
+.tip {
+  font-size: 12px;
+  color: #999;
+  margin-top: 5px;
+}
 </style>

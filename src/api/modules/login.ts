@@ -1,5 +1,8 @@
 import { Login } from "@/api/interface/index";
 import client from "@/api";
+import router from "@/routers";
+import { useUserStore } from "@/stores/modules/user";
+import { ElMessage } from "element-plus";
 
 // * User login interface
 export const loginApi = async (params: Login.ReqLoginForm): Promise<Login.ResLogin> => {
@@ -33,5 +36,15 @@ export const listAuthMethods = async (): Promise<Login.ResAuthMethods> => {
 
 // * User logout
 export const logoutApi = () => {
+  const userStore = useUserStore();
+  client.authStore.clear();
+  userStore.setToken("");
+  router.replace({
+    path: "/login"
+  });
+  ElMessage({
+    message: "Logged out successfully",
+    type: "success"
+  });
   return null;
 };

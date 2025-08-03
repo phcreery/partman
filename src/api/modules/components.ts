@@ -719,7 +719,8 @@ export const deleteBackups = async (params: Backup.ReqDeleteBackupsParams) => {
 };
 
 export const postBackupRestore = async (params: Backup.ReqRestoreBackupParams) => {
-  await client.backups.restore(params.key);
+  const res = await client.backups.restore(params.key);
+  return res; // Wait for the restore to complete
 };
 
 export const getBackupDownloadURL = async (params: Backup.ReqDownloadBackupParams) => {

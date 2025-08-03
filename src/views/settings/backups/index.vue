@@ -12,7 +12,7 @@
     >
       <!-- Table header button -->
       <template #tableHeader="scope">
-        <el-button type="primary" :icon="CirclePlus" @click="postBackupCreate()" v-if="BUTTONS.add"> New Backup </el-button>
+        <el-button type="primary" :icon="CirclePlus" @click="createBackup()" v-if="BUTTONS.add"> New Backup </el-button>
         <el-button
           type="danger"
           :icon="Delete"
@@ -23,7 +23,6 @@
         >
           Delete
         </el-button>
-        <!-- <el-button :icon="Download" plain @click="downloadFile" v-if="BUTTONS.export">Export</el-button> -->
         <el-button :icon="Upload" plain @click="uploadFile" v-if="BUTTONS.import">Upload</el-button>
       </template>
       <!-- Expand -->
@@ -32,12 +31,22 @@
       </template>
       <!-- Table operation -->
       <template #operation="scope">
-        <el-button type="primary" link :icon="FolderOpened" @click="restoreBackup({ key: scope.row.key })" v-if="BUTTONS.restore">
-          Restore
-        </el-button>
-        <el-button type="primary" link :icon="Download" @click="downloadFile(scope.row.key)" v-if="BUTTONS.export">
-          Download
-        </el-button>
+        <el-dropdown trigger="click">
+          <el-button type="primary" link :icon="ArrowDown"> Options </el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item :icon="Download" @click="downloadFile(scope.row.key)" v-if="BUTTONS.export">
+                Download
+              </el-dropdown-item>
+              <el-dropdown-item :icon="FolderOpened" @click="restoreBackup({ key: scope.row.key })" v-if="BUTTONS.restore">
+                Restore
+              </el-dropdown-item>
+              <el-dropdown-item :icon="Delete" @click="batchDelete([scope.row.key])" v-if="BUTTONS.batchDelete" divided>
+                Delete
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </template>
     </ProTable>
   </div>
@@ -46,7 +55,8 @@
 
 <script setup lang="tsx" name="logs">
 import { ref, reactive } from "vue";
-import { ZoomIn, Download, CirclePlus, EditPen, Delete, FolderOpened, Upload } from "@element-plus/icons-vue";
+import { ZoomIn, Download, CirclePlus, EditPen, Delete, FolderOpened, Upload, ArrowDown } from "@element-plus/icons-vue";
+import { ElMessageBox, ElMessage } from "element-plus";
 
 // Components
 import { ColumnProps, PageableList } from "@/components/ProTable/interface/index";
@@ -68,6 +78,7 @@ import {
   getBackupDownloadURL,
   postBackupUpload
 } from "@/api/modules/components";
+import { logoutApi } from "@/api/modules/login";
 import type { Backup, ListResult } from "@/api/interface";
 import { useHandleData } from "@/hooks/useHandleData";
 import { ElNotification } from "element-plus";
@@ -112,7 +123,7 @@ const columns: Partial<ColumnProps<Backup.ResGetBackupRecord>>[] = [
   {
     prop: "operation",
     label: "Operation",
-    width: 200,
+    width: 100,
     fixed: "right"
   }
 ];
@@ -125,11 +136,6 @@ const downloadFile = async (id: string) => {
 
 const dialogRefUpload = ref<InstanceType<typeof UploadBackup>>();
 const uploadFile = () => {
-  // ElNotification({
-  //   title: "Notification",
-  //   message: "This feature is not implemented yet.",
-  //   type: "warning"
-  // });
   if (!proTable.value) {
     console.error("ProTable is not initialized");
     return;
@@ -159,12 +165,31 @@ const batchDelete = async (ids: string[]) => {
   proTable.value.clearSelection();
 };
 
+const createBackup = async () => {
+  if (!proTable.value) {
+    console.error("ProTable is not initialized");
+    return;
+  }
+
+  await postBackupCreate();
+  proTable.value.getTableList();
+  proTable.value.clearSelection();
+};
+
 const restoreBackup = async (params: { key: string }) => {
   if (!proTable.value) {
     return;
   }
 
-  await useHandleData(postBackupRestore, params, "restore to the selected backup");
-  proTable.value.getTableList();
+  ElMessageBox.confirm(`This will restore all user information and log out the current logged in user?`, "Prompt", {
+    confirmButtonText: "Confirm",
+    cancelButtonText: "Cancel",
+    type: "warning",
+    draggable: true
+  }).then(async () => {
+    await useHandleData(postBackupRestore, params, "restore to the selected backup");
+    console.log("Backup restored, logging out...");
+    logoutApi();
+  });
 };
 </script>

@@ -29,6 +29,7 @@ const getInitialAuthRecord = async (): Promise<string> => {
 
 export const store = new AsyncAuthStore({
   save: async serialized => {
+    console.log("store save", serialized);
     let { token, record }: SerializedData = JSON.parse(serialized);
     if (!token || !record) {
       console.error("No token or record found in serialized data");

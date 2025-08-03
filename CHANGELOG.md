@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.7](https://github.com/phcreery/partman/compare/v0.1.6...v0.1.7) (2025-08-03)
+
+
+### Features
+
+* better backups UX ([4951780](https://github.com/phcreery/partman/commit/49517800e0e5ce9be0c224e00419a275923edfff))
+
 ## [0.1.6](https://github.com/phcreery/partman/compare/v0.1.5...v0.1.6) (2025-07-23)
 
 
